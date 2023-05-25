@@ -34,8 +34,6 @@ import {
     formatBoardOwner,
     generateGameboardSubjectHexagons,
     isMobile,
-    isPhy,
-    siteSpecific,
     sortIcon,
     stageLabelMap,
     useGameboards
@@ -251,9 +249,6 @@ export const MyGameboards = () => {
         {boards && boards.totalResults == 0 ?
             <>
                 <h3 className="text-center mt-4">You have no gameboards to view.</h3>
-                {isPhy && <div className="text-center mt-3 mb-5">
-                    <Button color="secondary" tag={Link} to="/gameboards/new">Create a gameboard</Button>
-                </div>}
             </>
             :
             <>
@@ -385,8 +380,8 @@ export const MyGameboards = () => {
                                                         <th className="text-center align-middle" style={{whiteSpace: "nowrap"}}>
                                                             Difficulties <span id={`difficulties-help`} className="icon-help mx-1" />
                                                             <RS.UncontrolledTooltip placement="bottom" target={`difficulties-help`}>
-                                                                Practice: {difficultiesOrdered.slice(0, siteSpecific(3, 2)).map(d => difficultyShortLabelMap[d]).join(", ")}<br />
-                                                                Challenge: {difficultiesOrdered.slice(siteSpecific(3, 2)).map(d => difficultyShortLabelMap[d]).join(", ")}
+                                                                Practice: {difficultiesOrdered.slice(0, 2).map(d => difficultyShortLabelMap[d]).join(", ")}<br />
+                                                                Challenge: {difficultiesOrdered.slice(2).map(d => difficultyShortLabelMap[d]).join(", ")}
                                                             </RS.UncontrolledTooltip>
                                                         </th>
                                                         <th className="text-center align-middle">Creator</th>

@@ -1,20 +1,10 @@
-import {siteSpecific} from "../../services";
-import {HomepageCS} from "./cs/HomepageCS";
-import {HeaderCS} from "./cs/HeaderCS";
-import {RoutesCS} from "./cs/RoutesCS";
-import {HomepagePhy} from "./phy/HomepagePhy";
-import {HeaderPhy} from "./phy/HeaderPhy";
-import {RoutesPhy} from "./phy/RoutesPhy";
+import {Homepage} from "./Homepage";
+import {Header} from "./Header";
+import {Routes} from "./Routes";
 
-export default siteSpecific(
-    {
-        Homepage: HomepagePhy,
-        Header: HeaderPhy,
-        Routes: RoutesPhy,
-    },
+export const SiteComponents =
     {
         Homepage: HomepageCS,
         Header: HeaderCS,
         Routes: RoutesCS,
-    }
-);
+    };

@@ -17,17 +17,14 @@ import {
     getFilteredExamBoardOptions,
     getFilteredStageOptions,
     groupTagSelectionsByParent,
-    isCS,
     isDefined,
     isFound,
     isItemEqual,
-    isPhy,
     Item,
     NOT_FOUND,
     QUESTION_CATEGORY_ITEM_OPTIONS,
     QUESTION_FINDER_CONCEPT_LABEL_PLACEHOLDER,
     selectOnChange,
-    siteSpecific,
     STAGE,
     TAG_ID,
     tags,
@@ -38,7 +35,7 @@ import {NOT_FOUND_TYPE, Tag} from "../../../IsaacAppTypes";
 import {GameboardViewer} from './Gameboard';
 import {ShowLoading} from "../handlers/ShowLoading";
 import queryString from "query-string";
-import {HierarchyFilterHexagonal, HierarchyFilterSummary, Tier} from "../elements/svg/HierarchyFilter";
+import {HierarchyFilterHexagonal, Tier} from "../elements/svg/HierarchyFilter";
 import Select, {GroupBase} from "react-select";
 import {DifficultyFilter} from "../elements/svg/DifficultyFilter";
 import {ContentSummaryDTO, GameboardDTO} from "../../../IsaacApiTypes";
@@ -82,36 +79,24 @@ interface QueryStringResponse {
     queryExamBoards: Item<string>[];
 }
 function processQueryString(query: string): QueryStringResponse {
-    const {subjects, fields, topics, stages, difficulties, questionCategories, concepts, examBoards} = queryString.parse(query);
+    const {topics, stages, difficulties, questionCategories, concepts, examBoards} = queryString.parse(query);
     const tagHierarchy = tags.getTagHierarchy();
 
     const stageItems = itemiseByValue(arrayFromPossibleCsv(stages as Nullable<string[] | string>), getFilteredStageOptions());
-    const difficultyItems = itemiseByValue(arrayFromPossibleCsv(difficulties as Nullable<string[] | string>), siteSpecific(DIFFICULTY_ITEM_OPTIONS, DIFFICULTY_ICON_ITEM_OPTIONS));
+    const difficultyItems = itemiseByValue(arrayFromPossibleCsv(difficulties as Nullable<string[] | string>), DIFFICULTY_ICON_ITEM_OPTIONS);
     const examBoardItems = itemiseByValue(arrayFromPossibleCsv(examBoards as Nullable<string[] | string>), getFilteredExamBoardOptions({byStages: stageItems.map(item => item.value as STAGE)}));
     const questionCategoryItems = itemiseByValue(arrayFromPossibleCsv(questionCategories as Nullable<string[] | string>), QUESTION_CATEGORY_ITEM_OPTIONS);
     const conceptItems = itemiseConcepts(arrayFromPossibleCsv(concepts as Nullable<string[] | string>))
 
     const selectionItems: Item<TAG_ID>[][] = [];
-    if (isPhy) {
-        let plausibleParentHierarchy = true;
-        [subjects, fields, topics].forEach((tier, index) => {
-            if (tier && plausibleParentHierarchy) {
-                const validTierTags = tags
-                    .getSpecifiedTags(tagHierarchy[index], (tier instanceof Array ? tier : tier.split(",")) as TAG_ID[]);
-                // Only allow another layer of specificity if only one parent is selected
-                plausibleParentHierarchy = validTierTags.length === 1;
-                selectionItems.push(validTierTags.map(itemiseTag));
-            }
-        });
-    } else {
-        // On CS, the query params do not contain subject and field tag ids, so we set subject to "computer_science" and
-        // populate field tags based on selected topics
+
+    // On CS, the query params do not contain subject and field tag ids, so we set subject to "computer_science" and
+    // populate field tags based on selected topics
         selectionItems.push([itemiseTag(tags.getById(TAG_ID.computerScience))]);
         const topicTags = topics ? tags.getSpecifiedTags(tagHierarchy[2], (topics instanceof Array ? topics : topics.split(",")) as TAG_ID[]) : null;
         const fieldTags = topicTags && Array.from(new Set(topicTags.map(tag => tag.parent).filter(isDefined))).map(tagId => itemiseTag(tags.getById(tagId)));
         if (fieldTags) selectionItems.push(fieldTags);
         if (topicTags) selectionItems.push(topicTags.map(itemiseTag));
-    }
 
     return {
         querySelections: selectionItems, queryStages: stageItems, queryDifficulties: difficultyItems, queryQuestionCategories: questionCategoryItems, queryConcepts: conceptItems, queryExamBoards: examBoardItems
@@ -376,33 +361,18 @@ export const GameboardFilter = withRouter(({location}: RouteComponentProps) => {
         }
     }, [gameboard, gameboardIdAnchor]);
 
-    const [filterExpanded, setFilterExpanded] = useState(siteSpecific(deviceSize != "xs", true));
+    const [filterExpanded, setFilterExpanded] = useState(true);
     const gameboardRef = useRef<HTMLDivElement>(null);
 
     const [selections, setSelections] = useState<Item<TAG_ID>[][]>(querySelections);
 
     const choices = [tags.allSubjectTags.map(itemiseTag)];
-    let i;
-    if (isPhy) {
-        for (i = 0; i < selections.length && i < 2; i++) {
-            const selection = selections[i];
-            if (selection.length !== 1) break;
-            choices.push(tags.getChildren(selection[0].value).map(itemiseTag));
-        }
-    } else {
-        i = 2;
-    }
-
-    const tiers: Tier[] = siteSpecific([
-            {id: "subjects", name: "Subject"},
-            {id: "fields", name: "Field"},
-            {id: "topics", name: "Topic"},
-        ],
-        [
+  
+    const tiers: Tier[] = [
             {id: "subjects", name: "Category"},
             {id: "fields", name: "Strand"},
             {id: "topics", name: "Topic"},
-        ]).map(tier => ({...tier, for: "for_" + tier.id})).slice(0, i + 1);
+        ].map(tier => ({...tier, for: "for_" + tier.id})).slice(0, 3);
 
     const [stages, setStages] = useState<Item<string>[]>(
         queryStages.length > 0 ? queryStages : itemiseByValue([userContext.stage], getFilteredStageOptions()));
@@ -437,7 +407,7 @@ export const GameboardFilter = withRouter(({location}: RouteComponentProps) => {
     // Title changing states and logic
     const [customBoardTitle, setCustomBoardTitle] = useState<string>();
     const [pendingCustomBoardTitle, setPendingCustomBoardTitle] = useState<string>();
-    const defaultBoardTitle = siteSpecific(generatePhyBoardName, generateCSBoardName)(selections);
+    const defaultBoardTitle = generateCSBoardName(selections);
     const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
 
     function loadNewGameboard(stages: Item<string>[], difficulties: Item<string>[], concepts: Item<string>[],
@@ -448,18 +418,14 @@ export const GameboardFilter = withRouter(({location}: RouteComponentProps) => {
         if (stages.length) params.stages = toCSV(stages);
         if (difficulties.length) params.difficulties = toCSV(difficulties);
         if (concepts.length) params.concepts = toCSV(concepts);
-        if (isCS && examBoards.length) params.examBoards = toCSV(examBoards);
-        if (isPhy) {params.questionCategories = "quick_quiz,learn_and_practice";}
+        if (examBoards.length) params.examBoards = toCSV(examBoards);
         params.title = boardTitle;
 
         // Populate query parameters with the selected subjects, fields, and topics
         tiers.forEach((tier, i) => {
             if (!selections[i] || selections[i].length === 0) {
                 if (i === 0) {
-                    params[tier.id] = siteSpecific(
-                        TAG_ID.physics + "," + TAG_ID.maths + "," + TAG_ID.chemistry + "," + TAG_ID.biology,
-                        TAG_ID.computerScience
-                    );
+                    params[tier.id] = TAG_ID.computerScience;
                 }
                 return;
             }
@@ -469,10 +435,9 @@ export const GameboardFilter = withRouter(({location}: RouteComponentProps) => {
         generateTemporaryGameboard(params).then(extractDataFromQueryResponse).then((gameboard) => {
             setGameboard(gameboard);
             // Don't add subject and strands to CS URL
-            if (isCS) {
-                if (tiers[0]?.id) delete params[tiers[0].id];
-                if (tiers[1]?.id) delete params[tiers[1].id];
-            }
+            if (tiers[0]?.id) delete params[tiers[0].id];
+            if (tiers[1]?.id) delete params[tiers[1].id];
+            
             delete params.questionCategories;
             history.replace({search: queryString.stringify(params, {encode: false})});
         });
@@ -525,38 +490,13 @@ export const GameboardFilter = withRouter(({location}: RouteComponentProps) => {
     }
 
     return <RS.Container id="gameboard-generator" className="mb-5">
-        <TitleAndBreadcrumb currentPageTitle={siteSpecific("Choose your Questions", "Question Finder")} help={pageHelp} modalId="gameboard_filter_help"/>
+        <TitleAndBreadcrumb currentPageTitle="Question Finder" help={pageHelp} modalId="gameboard_filter_help"/>
         <CanonicalHrefElement />
 
         <RS.Card id="filter-panel" className="mt-4 px-2 py-3 p-sm-4 pb-5">
             {/* Filter Summary */}
-            {isPhy && <RS.Row>
-                <RS.Col sm={8} lg={9}>
-                    <button className="bg-transparent w-100 p-0" onClick={() => setFilterExpanded(!filterExpanded)}>
-                        <RS.Row>
-                            <RS.Col lg={6} className="mt-3 mt-lg-0">
-                                <RS.Label className="d-block text-left d-sm-flex mb-0 pointer-cursor">
-                                    <span>Topics:</span>
-                                    <span><HierarchyFilterSummary {...{tiers, choices, selections}} /></span>
-                                </RS.Label>
-                            </RS.Col>
-                        </RS.Row>
-                    </button>
-                </RS.Col>
-                <RS.Col sm={4} lg={3} className={`text-center mt-3 mb-4 m-sm-0`}>
-                    {filterExpanded ?
-                        <RS.Button color={"link"} block className="filter-action" onClick={scrollToQuestions}>
-                            Scroll to questions...
-                        </RS.Button>
-                        :
-                        <RS.Button color={"link"} className="filter-action" onClick={() => setFilterExpanded(true)}>
-                            Edit question filters
-                        </RS.Button>
-                    }
-                </RS.Col>
-            </RS.Row>}
 
-            {isCS && (filterExpanded
+            {filterExpanded
                 ?
                 <RS.Row className={"mb-3"}>
                     <RS.Col>
@@ -568,13 +508,12 @@ export const GameboardFilter = withRouter(({location}: RouteComponentProps) => {
                     <RS.Button size="sm" color="primary" outline onClick={() => setFilterExpanded(true)}>
                         Edit question filters ✎
                     </RS.Button>
-                </RS.Col>)}
+                </RS.Col>}
 
             {/* Filter */}
-            {filterExpanded && siteSpecific(
-                <PhysicsFilter {...filterProps} tiers={tiers} choices={choices}/>,
+            {filterExpanded && 
                 <CSFilter {...filterProps} examBoards={examBoards} setExamBoards={setExamBoards} concepts={concepts} setConcepts={setConcepts}/>
-            )}
+            }
 
             {/* Buttons */}
             <RS.Row className={filterExpanded ? "mt-4" : ""}>
@@ -590,7 +529,7 @@ export const GameboardFilter = withRouter(({location}: RouteComponentProps) => {
                 </RS.Col>
             </RS.Row>
             <RS.Button color="link" className="filter-go-to-questions" onClick={scrollToQuestions}>
-                {siteSpecific("Go to Questions...", "Scroll to Questions...")}
+                Scroll to Questions...
             </RS.Button>
             <RS.Button
                 color="link" id="expand-filter-button" onClick={() => setFilterExpanded(!filterExpanded)}
@@ -599,13 +538,7 @@ export const GameboardFilter = withRouter(({location}: RouteComponentProps) => {
         </RS.Card>
 
         {isFound(gameboard) && <div ref={gameboardRef} className="row mt-4 mb-3">
-            {siteSpecific(
-                // PHY
-                <RS.Col xs={12} lg={"auto"} >
-                    <h3>{defaultBoardTitle}</h3>
-                </RS.Col>,
-                // CS
-                <>
+              <>
                     <RS.Col xs={12} lg={"auto"} >
                         {isEditingTitle
                             ? <RS.Input defaultValue={customBoardTitle ?? gameboard?.title}
@@ -637,7 +570,6 @@ export const GameboardFilter = withRouter(({location}: RouteComponentProps) => {
                             </RS.Button>}
                     </RS.Col>
                 </>
-            )}
             <RS.Col xs={8} lg={"auto"} className="ml-auto text-right">
                 <RS.Button tag={Link} color="secondary"
                            to={`/add_gameboard/${gameboard.id}/${customBoardTitle ?? gameboard.title}`}

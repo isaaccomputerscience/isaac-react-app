@@ -22,9 +22,7 @@ import {
     isFound,
     isPhy,
     isTutorOrAbove,
-    NOT_FOUND,
     showWildcard,
-    siteSpecific,
     TAG_ID,
     TAG_LEVEL,
     tags
@@ -51,7 +49,7 @@ const GameboardItemComponent = ({gameboard, question}: {gameboard: GameboardDTO,
     let itemClasses = "p-3 content-summary-link text-info bg-transparent";
     const itemSubject = tags.getSpecifiedTag(TAG_LEVEL.subject, question.tags as TAG_ID[]);
     const iconClasses = `gameboard-item-icon ${itemSubject?.id}-fill`;
-    let iconHref = siteSpecific("/assets/question-hex.svg#icon", "/assets/question.svg");
+    let iconHref = "/assets/question.svg";
     let message = "";
     let messageClasses = "";
 
@@ -78,10 +76,7 @@ const GameboardItemComponent = ({gameboard, question}: {gameboard: GameboardDTO,
     return <RS.ListGroupItem key={question.id} className={itemClasses}>
         <Link to={`/questions/${question.id}?board=${gameboard.id}`} className="align-items-center">
             <span>
-                {siteSpecific(
-                    <svg className={iconClasses}><use href={iconHref} xlinkHref={iconHref}/></svg>,
-                    <img src={iconHref} alt=""/>
-                )}
+                <img src={iconHref} alt=""/>
             </span>
             <div className={`d-md-flex flex-fill`}>
                 {/* TODO CP shouldn't the subject colour here depend on the contents/tags of the gameboard? */}
@@ -175,7 +170,7 @@ export const Gameboard = withRouter(({ location }) => {
     </Container>;
 
     return !gameboardId
-        ? <Redirect to={siteSpecific("/gameboards/new", "/gameboards#example-gameboard")} />
+        ? <Redirect to="/gameboards#example-gameboard" />
         : <RS.Container className="mb-5">
             <ShowLoadingQuery
                 query={gameboardQuery}
@@ -192,12 +187,12 @@ export const Gameboard = withRouter(({ location }) => {
                             ? <RS.Row className="col-8 offset-2">
                                 <RS.Col className="mt-4">
                                     <RS.Button tag={Link} to={`/add_gameboard/${gameboardId}`} color="primary" outline className="btn-block">
-                                        {siteSpecific("Set as Assignment", "Set as assignment")}
+                                        Set as assignment
                                     </RS.Button>
                                 </RS.Col>
                                 <RS.Col className="mt-4">
                                     <RS.Button tag={Link} to={{pathname: "/gameboard_builder", search: `?base=${gameboardId}`}} color="primary" block outline>
-                                        {siteSpecific("Duplicate and Edit", "Duplicate and edit")}
+                                        Duplicate and edit
                                     </RS.Button>
                                 </RS.Col>
                             </RS.Row>
@@ -207,7 +202,7 @@ export const Gameboard = withRouter(({ location }) => {
                                                onClick={() => setAssignBoardPath("/set_assignments")}
                                                color="primary" outline className="btn-block"
                                     >
-                                        {siteSpecific("Save to My Gameboards", "Save to My gameboards")}
+                                        Save to My gameboards
                                     </RS.Button>
                                 </RS.Col>
                             </RS.Row>

@@ -1,12 +1,12 @@
 import React from "react";
 import {Link} from "react-router-dom";
-import {selectors, useAppSelector} from "../../../state";
+import {selectors, useAppSelector} from "../../state";
 import {Col, Container, Row} from "reactstrap";
-import {MainSearch} from "../../elements/MainSearch";
-import {NavigationBarCS} from "./NavigationBarCS";
-import {useDeviceSize} from "../../../services";
+import {MainSearch} from "../elements/MainSearch";
+import {NavigationBarCS} from "./NavigationBar";
+import {useDeviceSize} from "../../services";
 
-export const HeaderCS = () => {
+export const Header = () => {
     const user = useAppSelector(selectors.user.orNull);
     const mainContentId = useAppSelector(selectors.mainContentId.orDefault);
     const deviceSize = useDeviceSize();

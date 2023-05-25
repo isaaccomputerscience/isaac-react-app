@@ -5,15 +5,15 @@ import {
     NavigationBar,
     NavigationSection,
     useAssignmentsCount
-} from "../../navigation/NavigationBar";
-import {useAppSelector, selectors} from "../../../state";
+} from "../navigation/NavigationBar";
+import {useAppSelector, selectors} from "../../state";
 import {
     isAdmin,
     isAdminOrEventManager,
     isEventLeader,
     isStaff,
     isTeacherOrAbove, isTutorOrAbove
-} from "../../../services";
+} from "../../services";
 
 export const NavigationBarCS = () => {
     const user = useAppSelector(selectors.user.orNull);

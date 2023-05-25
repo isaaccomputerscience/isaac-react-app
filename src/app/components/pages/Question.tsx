@@ -10,9 +10,7 @@ import {
     DOCUMENT_TYPE,
     fastTrackProgressEnabledBoards,
     generateQuestionTitle,
-    isPhy,
     isStudent,
-    siteSpecific,
     TAG_ID,
     tags,
     useNavigation
@@ -39,12 +37,7 @@ interface QuestionPageProps extends RouteComponentProps<{questionId: string}> {
     match: match & { params: { questionId: string } };
 }
 
-
-
 function getTags(docTags?: string[]) {
-    if (!isPhy) {
-        return [];
-    }
     if (!docTags) return [];
 
     return tags.getByIdsAsHierarchy(docTags as TAG_ID[])
@@ -95,7 +88,7 @@ export const Question = withRouter(({questionIdOverride, match, location}: Quest
                         </div>
                     </div>
                     <Row className="question-content-container">
-                        <Col md={siteSpecific({size: 12}, {size: 8, offset: 2})} className="py-4 question-panel">
+                        <Col md={{size: 8, offset: 2}} className="py-4 question-panel">
 
                             <SupersededDeprecatedWarningBanner doc={doc} />
 
