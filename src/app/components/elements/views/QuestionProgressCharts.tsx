@@ -8,7 +8,6 @@ import {
     difficultyLabelMap,
     doughnutColours,
     Item,
-    specificDoughnutColours,
     STAGE,
     stageLabelMap,
     TAG_ID,
@@ -36,9 +35,7 @@ const colourPicker = (names: string[]): { [key: string]: string } => {
     let currentIndex = 0;
 
     for (let i = 0; i < names.length; i++) {
-        if (names[i] in specificDoughnutColours) {
-            selected[names[i]] = specificDoughnutColours[names[i]];
-        } else if (currentIndex < doughnutColours.length) {
+        if (currentIndex < doughnutColours.length) {
             selected[names[i]] = doughnutColours[currentIndex];
             currentIndex += 1;
         }
