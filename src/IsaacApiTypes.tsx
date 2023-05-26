@@ -511,7 +511,7 @@ export type Stage = "year_7_and_8" | "year_9" | "gcse" | "a_level" | "further_a"
 
 export type ExamBoard = "aqa" | "cie" | "edexcel" | "eduqas" | "ocr" | "wjec" | "all";
 
-export type Difficulty = "practice_1" | "practice_2" | "practice_3" | "challenge_1" | "challenge_2" | "challenge_3";
+export type Difficulty = "practice_1" | "practice_2" | "challenge_1" | "challenge_2";
 
 export type RoleRequirement = "logged_in" | "teacher";
 
