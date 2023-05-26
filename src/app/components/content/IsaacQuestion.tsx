@@ -57,17 +57,7 @@ export const IsaacQuestion = withRouter(({doc, location}: {doc: ApiTypes.Questio
         !!locked
     );
 
-    const tooManySigFigsFeedback = <p>
-        Whether your answer is correct or not, it has the wrong number of&nbsp;
-        <strong><a target='_blank' href='/solving_problems#acc_solving_problems_sig_figs'> significant figures</a></strong>.
-    </p>;
-
-    const tooFewSigFigsFeedback = <p>
-        We can&apos;t mark this until you provide more&nbsp;
-        <strong><a target='_blank' href='/solving_problems#acc_solving_problems_sig_figs'> significant figures</a></strong>.
-    </p>;
-
-    const invalidFormatFeeback = <p>
+    const invalidFormatFeedback = <p>
         Your answer is not in a format we recognise, please enter your answer as a decimal number.<br/>
         {invalidFormatErrorStdForm && <>When writing standard form, you must include <code>^</code> or <code>**</code> between the 10 and the exponent.<br/></>}
     </p>;
@@ -127,7 +117,7 @@ export const IsaacQuestion = withRouter(({doc, location}: {doc: ApiTypes.Questio
                         <h1 className="m-0">{correct ? "Correct!" : "Incorrect"}</h1>
                     </div>
                     {validationResponse.explanation && <div className="mb-2">
-                        {invalidFormatError ? invalidFormatFeeback : <IsaacContent doc={validationResponse.explanation as ContentDTO}/>}
+                        {invalidFormatError ? invalidFormatFeedback : <IsaacContent doc={validationResponse.explanation as ContentDTO}/>}
                     </div>}
                 </div>}
 

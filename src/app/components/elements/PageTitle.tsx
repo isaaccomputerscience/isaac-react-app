@@ -1,9 +1,8 @@
 import React, {ReactElement, useEffect, useRef} from "react";
-import {Button, UncontrolledTooltip} from "reactstrap";
+import {Button} from "reactstrap";
 import {
     AUDIENCE_DISPLAY_FIELDS,
     filterAudienceViewsByProperties,
-    isPhy,
     SITE_SUBJECT_TITLE,
     STAGE,
     stageLabelMap,
@@ -57,8 +56,6 @@ export const PageTitle = ({currentPageTitle, subTitle, disallowLaTeX, help, clas
     const openModal = useAppSelector((state: AppState) => Boolean(state?.activeModals?.length));
     const headerRef = useRef<HTMLHeadingElement>(null);
 
-    const showModal = modalId && isPhy;
-
     useEffect(() => {dispatch(mainContentIdSlice.actions.set("main-heading"));}, []);
     useEffect(() => {
         document.title = currentPageTitle + " — Isaac " + SITE_SUBJECT_TITLE;
@@ -94,11 +91,7 @@ export const PageTitle = ({currentPageTitle, subTitle, disallowLaTeX, help, clas
             <meta property="og:title" content={currentPageTitle} />
         </Helmet>
         {audienceViews && <AudienceViewer audienceViews={audienceViews} />}
-        {help && !showModal && <React.Fragment>
-            <div id="title-help" className="title-help">Help</div>
-            <UncontrolledTooltip target="#title-help" placement="bottom">{help}</UncontrolledTooltip>
-        </React.Fragment>}
-        {modalId && showModal && <React.Fragment>
+        {modalId && <React.Fragment>
             <Button color="link" className="title-help title-help-modal" onClick={() => openHelpModal(modalId)}>Help</Button>
         </React.Fragment>}
     </h1>

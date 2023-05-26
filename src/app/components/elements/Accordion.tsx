@@ -5,8 +5,6 @@ import {
     ALPHABET,
     audienceStyle,
     DOCUMENT_TYPE, isAQuestionLikeDoc,
-    isCS,
-    isPhy,
     NOT_FOUND,
     notRelevantMessage,
     scrollVerticallyIntoView,
@@ -41,7 +39,7 @@ export const Accordion = withRouter(({id, trustedTitle, index, children, startOp
 
     // Toggle
     const isFirst = index === 0;
-    const openFirst = isCS || Boolean(page && page !== NOT_FOUND && page.type === DOCUMENT_TYPE.QUESTION);
+    const openFirst = Boolean(page && page !== NOT_FOUND && page.type === DOCUMENT_TYPE.QUESTION);
     const [open, setOpen] = useState(disabled ? false : (startOpen === undefined ? (openFirst && isFirst) : startOpen));
 
     // If start open changes we need to update whether or not the accordion section should be open
@@ -167,7 +165,7 @@ export const Accordion = withRouter(({id, trustedTitle, index, children, startOp
                 aria-expanded={isOpen ? "true" : "false"}
             >
                 {isConceptPage && audienceString && <span className={"stage-label badge-secondary d-flex align-items-center " +
-                    "justify-content-center " + classNames({[audienceStyle(audienceString)]: isCS})}>
+                    "justify-content-center " + classNames([audienceStyle(audienceString)])}>
                     {audienceString}
                 </span>}
                 <div className="accordion-title pl-3">
@@ -179,7 +177,7 @@ export const Accordion = withRouter(({id, trustedTitle, index, children, startOp
                                 {trustedTitle}
                             </Markup>
                         </div>}
-                        {isCS && deEmphasised && <div className="ml-auto mr-3 d-flex align-items-center">
+                        {deEmphasised && <div className="ml-auto mr-3 d-flex align-items-center">
                             <span id={`audience-help-${componentId}`} className="icon-help mx-1" />
                             <RS.UncontrolledTooltip placement="bottom" target={`audience-help-${componentId}`}>
                                 {`This content has ${notRelevantMessage(userContext)}.`}
@@ -195,9 +193,7 @@ export const Accordion = withRouter(({id, trustedTitle, index, children, startOp
                     </RS.Row>
                 </div>
 
-                {accordionIcon && isPhy && <span className={"accordion-icon align-self-center accordion-icon-" + accordionIcon}>
-                    <span className="sr-only">{accordionIcon == "tick" ? "All questions in this part are answered correctly" : "All questions in this part are answered incorrectly"}</span>
-                </span>}
+
             </RS.Button>
         </div>
         <RS.Collapse isOpen={isOpen} className="mt-1">

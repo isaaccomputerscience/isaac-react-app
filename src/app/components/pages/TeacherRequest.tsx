@@ -24,7 +24,6 @@ import {
 } from "reactstrap";
 import {
     api,
-    isPhy,
     isTeacherOrAbove,
     schoolNameWithPostcode,
     SITE_SUBJECT_TITLE,
@@ -151,7 +150,6 @@ export const TeacherRequest = () => {
                                         {"name of your school should be shown in the 'School' field. If any of the "}
                                         {"information is incorrect or missing, you can amend it on your "}
                                         <Link to="/account">My account</Link>{" page."}
-                                        {isPhy && noSchool}
                                     </p>
                                     <Row>
                                         <Col size={12} md={6}>

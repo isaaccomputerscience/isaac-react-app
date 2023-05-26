@@ -17,10 +17,8 @@ import {
     determineAudienceViews,
     filterAudienceViewsByProperties,
     generateQuestionTitle,
-    isCS,
     isDefined,
     isFound,
-    isPhy,
     isTutorOrAbove,
     showWildcard,
     TAG_ID,
@@ -31,7 +29,6 @@ import {Redirect} from "react-router";
 import queryString from "query-string";
 import {StageAndDifficultySummaryIcons} from "../elements/StageAndDifficultySummaryIcons";
 import {Markup} from "../elements/markup";
-import classNames from "classnames";
 import {skipToken} from "@reduxjs/toolkit/query";
 import {ShowLoadingQuery} from "../handlers/ShowLoadingQuery";
 
@@ -71,7 +68,7 @@ const GameboardItemComponent = ({gameboard, question}: {gameboard: GameboardDTO,
     }
 
     const questionTags = tags.getByIdsAsHierarchy((question.tags || []) as TAG_ID[])
-        .filter((t, i) => !isCS || i !== 0); // CS always has Computer Science at the top level
+        .filter((t, i) => i !== 0); // CS always has Computer Science at the top level
 
     return <RS.ListGroupItem key={question.id} className={itemClasses}>
         <Link to={`/questions/${question.id}?board=${gameboard.id}`} className="align-items-center">
@@ -80,11 +77,11 @@ const GameboardItemComponent = ({gameboard, question}: {gameboard: GameboardDTO,
             </span>
             <div className={`d-md-flex flex-fill`}>
                 {/* TODO CP shouldn't the subject colour here depend on the contents/tags of the gameboard? */}
-                <div className={"flex-grow-1 " + itemSubject?.id || (isPhy ? "physics" : "")}>
-                    <Markup encoding={"latex"} className={classNames({"text-secondary": isPhy})}>
+                <div className={"flex-grow-1 " + itemSubject?.id }>
+                    <Markup encoding={"latex"}>
                         {generateQuestionTitle(question)}
                     </Markup>
-                    {message && <span className={"gameboard-item-message" + (isPhy ? "-phy " : " ") + messageClasses}>{message}</span>}
+                    {message && <span className={"gameboard-item-message" + messageClasses}>{message}</span>}
                     {questionTags && <div className="hierarchy-tags">
                         {questionTags.map(tag => (<span className="hierarchy-tag" key={tag.id}>{tag.title}</span>))}
                     </div>}
@@ -161,11 +158,6 @@ export const Gameboard = withRouter(({ location }) => {
             <small>
                 {"We're sorry, we were not able to find a gameboard with the id "}<code>{gameboardId}</code>{"."}
             </small>
-            {isPhy && <div className="mt-4 text-center">
-                <RS.Button tag={Link} to={`/gameboards/new`} color="primary" outline className="btn-lg">
-                    Generate a new gameboard
-                </RS.Button>
-            </div>}
         </h3>
     </Container>;
 

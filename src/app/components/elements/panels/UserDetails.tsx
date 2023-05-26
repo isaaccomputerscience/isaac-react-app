@@ -1,7 +1,6 @@
 import React, {ChangeEvent} from "react";
 import {
     allRequiredInformationIsPresent,
-    isCS,
     isTutor,
     PROGRAMMING_LANGUAGE,
     programmingLanguagesMap, TEACHER_REQUEST_ROUTE,
@@ -62,7 +61,11 @@ export const UserDetails = (props: UserDetailsProps) => {
                     <small>(Are you a teacher or tutor? {" "}
                         <Link to={TEACHER_REQUEST_ROUTE} target="_blank">
                             Upgrade your account
+<<<<<<< HEAD
                         </Link>.)</small>
+=======
+                        </Link>)</small>
+>>>>>>> c1ea2b0c (isPhy removal)
                 </span>}
             </Col>
         </Row>
@@ -119,7 +122,7 @@ export const UserDetails = (props: UserDetailsProps) => {
             <Col md={6}>
                 <FormGroup>
                     <GenderInput userToUpdate={userToUpdate} setUserToUpdate={setUserToUpdate} submissionAttempted={submissionAttempted}
-                                 required={isCS}/>
+                                 required />
                 </FormGroup>
             </Col>
         </Row>
@@ -127,7 +130,7 @@ export const UserDetails = (props: UserDetailsProps) => {
             <Col md={6}>
                 <FormGroup>
                     <SchoolInput userToUpdate={userToUpdate} setUserToUpdate={setUserToUpdate} submissionAttempted={submissionAttempted}
-                                 required={isCS && !isTutor(userToUpdate)}/>
+                                 required={!isTutor(userToUpdate)}/>
                 </FormGroup>
             </Col>
             <Col md={6}>
@@ -138,7 +141,7 @@ export const UserDetails = (props: UserDetailsProps) => {
                 />
             </Col>
         </Row>
-        {isCS && <Row>
+        <Row>
             <Col md={6}>
                 <FormGroup>
                     <Label className="d-inline-block pr-2" htmlFor="programming-language-select">
@@ -162,7 +165,7 @@ export const UserDetails = (props: UserDetailsProps) => {
             <Col md={6}>
                 <BooleanNotationInput booleanNotation={booleanNotation} setBooleanNotation={setBooleanNotation} />
             </Col>
-        </Row>}
+        </Row>
 
         {submissionAttempted && !allRequiredFieldsValid && <h4 role="alert" className="text-danger text-center mt-4 mb-3">
             Not all required fields have been correctly filled.

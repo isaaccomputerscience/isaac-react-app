@@ -20,7 +20,6 @@ import {
 import {PasswordFeedback} from "../../../IsaacAppTypes";
 import {
     FIRST_LOGIN_STATE,
-    isCS,
     isDefined, 
     isDobOldEnoughForSite,
     KEY,
@@ -112,7 +111,7 @@ export const Registration = withRouter(({location}:  RouteComponentProps<{}, {},
     return <Container id="registration-page" className="mb-5">
 
         <TitleAndBreadcrumb currentPageTitle="Registration" className="mb-4" />
-        {isCS && <MetaDescription description={metaDescriptionCS} />}
+        <MetaDescription description={metaDescriptionCS} />
 
         <Card>
             <CardBody>
