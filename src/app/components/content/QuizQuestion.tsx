@@ -1,8 +1,8 @@
 import React, {Suspense, useContext, useEffect} from "react";
 import {submitQuizQuestionIfDirty, useAppDispatch} from "../../state";
 import classnames from "classnames";
-import {isCS, isDefined, isPhy, QUESTION_TYPES} from "../../services";
-import {IsaacLinkHints, IsaacTabbedHints} from "./IsaacHints";
+import {isCS, isDefined, QUESTION_TYPES} from "../../services";
+import {IsaacLinkHints} from "./IsaacHints";
 import {IsaacContent} from "./IsaacContent";
 import * as ApiTypes from "../../../IsaacApiTypes";
 import {QuizAttemptContext} from "../../../IsaacAppTypes";
@@ -55,11 +55,6 @@ export const QuizQuestion = ({doc}: { doc: ApiTypes.QuestionDTO }) => {
                 {validationResponse && validationResponse.explanation && <div className="mb-1">
                     <IsaacContent doc={validationResponse.explanation as ContentDTO} />
                 </div>}
-            </div>}
-
-            {/* Physics Hints */}
-            {isPhy && <div className={correct ? "mt-5" : ""}>
-                <IsaacTabbedHints questionPartId={doc.id as string} hints={doc.hints}/>
             </div>}
         </div>
     </React.Fragment>;

@@ -12,7 +12,6 @@ import {TitleAndBreadcrumb} from "../elements/TitleAndBreadcrumb";
 import {Card, CardBody, Col, Container, Row} from "reactstrap";
 import {
     HUMAN_QUESTION_TYPES,
-    isPhy,
     isTeacherOrAbove,
     safePercentage
 } from "../../services";
@@ -20,7 +19,6 @@ import {RouteComponentProps, withRouter} from "react-router-dom";
 import {PotentialUser} from "../../../IsaacAppTypes";
 import {Unauthorised} from "./Unauthorised";
 import {AggregateQuestionStats} from "../elements/panels/AggregateQuestionStats";
-import {StreakPanel} from "../elements/panels/StreakPanel";
 import {Tabs} from "../elements/Tabs";
 import {FlushableRef, QuestionProgressCharts} from "../elements/views/QuestionProgressCharts";
 import {ActivityGraph} from "../elements/views/ActivityGraph";
@@ -84,9 +82,6 @@ const MyProgress = withRouter((props: MyProgressProps) => {
                             <Col>
                                 <AggregateQuestionStats userProgress={progress} />
                             </Col>
-                            {isPhy && <Col className="align-self-center" xs={12} md={3}>
-                                <StreakPanel userProgress={progress} />
-                            </Col>}
                         </Row>
 
                         <Card className="mt-4">
