@@ -61,11 +61,7 @@ export const UserDetails = (props: UserDetailsProps) => {
                     <small>(Are you a teacher or tutor? {" "}
                         <Link to={TEACHER_REQUEST_ROUTE} target="_blank">
                             Upgrade your account
-<<<<<<< HEAD
                         </Link>.)</small>
-=======
-                        </Link>)</small>
->>>>>>> c1ea2b0c (isPhy removal)
                 </span>}
             </Col>
         </Row>
