@@ -1,5 +1,5 @@
 import React, {ReactElement, useEffect, useRef} from "react";
-import {Button} from "reactstrap";
+import {UncontrolledTooltip} from "reactstrap";
 import {
     AUDIENCE_DISPLAY_FIELDS,
     filterAudienceViewsByProperties,
@@ -10,13 +10,10 @@ import {
 } from "../../services";
 import {
     AppState,
-    closeActiveModal,
     mainContentIdSlice,
-    openActiveModal,
     useAppDispatch,
     useAppSelector
 } from "../../state";
-import {PageFragment} from "./PageFragment";
 import {ViewingContext} from "../../../IsaacAppTypes";
 import {DifficultyIcons} from "./svg/DifficultyIcons";
 import classnames from "classnames";
@@ -65,22 +62,6 @@ export const PageTitle = ({currentPageTitle, subTitle, disallowLaTeX, help, clas
         }
     }, [currentPageTitle]);
 
-    interface HelpModalProps {
-        modalId: string;
-    }
-
-    const HelpModal = (props: HelpModalProps) => {
-        return <PageFragment fragmentId={props.modalId} ifNotFound={help}/>
-    };
-
-    function openHelpModal(modalId: string) {
-        dispatch(openActiveModal({
-            closeAction: () => {dispatch(closeActiveModal())},
-            size: "xl",
-            title: "Help",
-            body: <HelpModal modalId={modalId}/>
-        }))
-    }
 
     return <h1 id="main-heading" tabIndex={-1} ref={headerRef} className={`h-title h-secondary d-sm-flex ${className ? className : ""}`}>
         <div className="mr-auto" data-testid={"main-heading"}>
@@ -91,8 +72,9 @@ export const PageTitle = ({currentPageTitle, subTitle, disallowLaTeX, help, clas
             <meta property="og:title" content={currentPageTitle} />
         </Helmet>
         {audienceViews && <AudienceViewer audienceViews={audienceViews} />}
-        {modalId && <React.Fragment>
-            <Button color="link" className="title-help title-help-modal" onClick={() => openHelpModal(modalId)}>Help</Button>
+        {help && <React.Fragment>
+            <div id="title-help" className="title-help">Help</div>
+            <UncontrolledTooltip target="#title-help" placement="bottom">{help}</UncontrolledTooltip>
         </React.Fragment>}
     </h1>
 };
