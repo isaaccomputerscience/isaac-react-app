@@ -48,7 +48,7 @@ export interface PageTitleProps {
     audienceViews?: ViewingContext[];
     modalId?: string;
 }
-export const PageTitle = ({currentPageTitle, subTitle, disallowLaTeX, help, className, audienceViews, modalId}: PageTitleProps) => {
+export const PageTitle = ({currentPageTitle, subTitle, disallowLaTeX, help, className, audienceViews}: PageTitleProps) => {
     const dispatch = useAppDispatch();
     const openModal = useAppSelector((state: AppState) => Boolean(state?.activeModals?.length));
     const headerRef = useRef<HTMLHeadingElement>(null);
