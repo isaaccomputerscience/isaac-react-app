@@ -537,20 +537,26 @@ export const stageLabelMap: {[stage in Stage]: string} = {
 export const difficultyShortLabelMap: {[difficulty in Difficulty]: string} = {
     practice_1: "P1",
     practice_2: "P2",
+    practice_3: "P3",
     challenge_1: "C1",
     challenge_2: "C2",
+    challenge_3: "C3",
 }
 export const difficultyLabelMap: {[difficulty in Difficulty]: string} = {
     practice_1: "Practice\u00A0(P1)",
     practice_2: "Practice\u00A0(P2)",
+    practice_3: "Practice\u00A0(P3)",
     challenge_1: "Challenge\u00A0(C1)",
     challenge_2: "Challenge\u00A0(C2)",
+    challenge_3: "Challenge\u00A0(C3)",
 }
 export const difficultyIconLabelMap: {[difficulty in Difficulty]: string} = {
     practice_1: `Practice (P1) \u2B22\u2B21`,
     practice_2: `Practice (P2) \u2B22\u2B22`,
+    practice_3: `Practice (P3) \u2B22\u2B22`,
     challenge_1: `Challenge (C1) \u25A0\u25A1`,
     challenge_2: `Challenge (C2) \u25A0\u25A0`,
+    challenge_3: `Challenge (C3) \u25A0\u25A0`,
 }
 export const difficultiesOrdered: Difficulty[] = ["practice_1", "practice_2", "challenge_1", "challenge_2"];
 
