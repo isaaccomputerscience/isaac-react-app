@@ -21,9 +21,10 @@ import {
     FormGroup,
     Input,
     Label,
-    Row
+    Row,
+    UncontrolledTooltip
 } from "reactstrap";
-import {history, SITE_SUBJECT_TITLE} from "../../services";
+import {history, SITE_SUBJECT_TITLE, validatePassword} from "../../services";
 import {Redirect} from "react-router";
 import {MetaDescription} from "../elements/MetaDescription";
 import {Loading} from "../handlers/IsaacSpinner";
@@ -45,7 +46,7 @@ export const useLoginLogic = () => {
     const [logInAttempted, setLoginAttempted] = useState(false);
 
     const isValidEmail = email.length > 0 && email.includes("@");
-    const isValidPassword = password.length > 0;
+    const isValidPassword = validatePassword(password);
 
     const [passwordResetAttempted, setPasswordResetAttempted] = useState(false);
 
@@ -180,7 +181,11 @@ export const EmailPasswordInputs =({setEmail, setPassword, validEmail, validPass
         </FormGroup>
 
         <FormGroup className="mb-0">
-            {displayLabels && <Label htmlFor="password-input">Password</Label>}
+            {displayLabels && (<><Label htmlFor="password-input">Password</Label>
+            <span id={`password-help-tooltip`} className="icon-help ml-1" />
+            <UncontrolledTooltip target={`password-help-tooltip`} placement="bottom">
+                {"Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one special character."}
+            </UncontrolledTooltip></>)}
             <Input
                 id="password-input" type="password" name="password" placeholder="Password"
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => setPassword(event.target.value)}
@@ -189,7 +194,7 @@ export const EmailPasswordInputs =({setEmail, setPassword, validEmail, validPass
                 required
             />
             <FormFeedback id="passwordValidationMessage">
-                {!validPassword && "Passwords must be at least six characters long"}
+                {!validPassword && "Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one special character."}
             </FormFeedback>
         </FormGroup>
     </>;
