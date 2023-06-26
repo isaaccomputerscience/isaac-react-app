@@ -52,7 +52,8 @@ export const useLoginLogic = () => {
 
     const validateAndLogIn = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if ((isValidPassword && isValidEmail)) {
+        // Password check here will have to remain on old requirements as existing accounts will not be able to log in otherwise
+        if ((password.length > 6 && isValidEmail)) {
             dispatch(logInUser("SEGUE", {email: email, password: password, rememberMe: rememberMe}));
         }
     };
