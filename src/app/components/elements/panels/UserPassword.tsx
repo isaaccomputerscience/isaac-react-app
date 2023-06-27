@@ -17,12 +17,12 @@ interface UserPasswordProps {
     setNewPasswordConfirm: (e: any) => void;
     newPasswordConfirm: string;
     editingOtherUser: boolean;
-    doPasswordsMatch: boolean;
+    arePasswordsIdentical: boolean;
     passwordMeetsRequirements: boolean;
 }
 
 export const UserPassword = (
-    {currentPassword, currentUserEmail, setCurrentPassword, myUser, setMyUser, isNewPasswordConfirmed, userAuthSettings, setNewPassword, setNewPasswordConfirm, newPasswordConfirm, editingOtherUser, doPasswordsMatch, passwordMeetsRequirements}: UserPasswordProps) => {
+    {currentPassword, currentUserEmail, setCurrentPassword, myUser, setMyUser, isNewPasswordConfirmed, userAuthSettings, setNewPassword, setNewPasswordConfirm, newPasswordConfirm, editingOtherUser, arePasswordsIdentical, passwordMeetsRequirements}: UserPasswordProps) => {
 
     const dispatch = useAppDispatch();
     const authenticationProvidersUsed = (provider: AuthenticationProvider) => userAuthSettings && userAuthSettings.linkedAccounts && userAuthSettings.linkedAccounts.includes(provider);
@@ -115,7 +115,7 @@ export const UserPassword = (
                                     disabled={!editingOtherUser && currentPassword == ""}
                                 />
                                     <FormFeedback id="passwordConfirmationValidationMessage">
-                                    {!doPasswordsMatch ? "New passwords must match." : !passwordMeetsRequirements && "Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one special character."}
+                                    {!arePasswordsIdentical ? "New passwords must match." : !passwordMeetsRequirements && "Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one special character."}
                                     </FormFeedback>
                             </FormGroup>
                         </Col>
