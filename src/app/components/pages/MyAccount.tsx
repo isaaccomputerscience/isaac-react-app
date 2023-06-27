@@ -185,9 +185,9 @@ const AccountPageComponent = ({user, getChosenUserAuthSettings, errorMessage, us
     }, [hashAnchor, authToken]);
 
     // Values derived from inputs (props and state)
-    const validPassword = (newPasswordConfirm.length === 0) || validatePassword(newPasswordConfirm);
+    const passwordMeetsRequirements = (newPasswordConfirm.length === 0) || validatePassword(newPasswordConfirm);
     const doPasswordsMatch = (newPassword === newPasswordConfirm);
-    const isNewPasswordConfirmed = doPasswordsMatch && validPassword;
+    const isNewPasswordConfirmed = doPasswordsMatch && passwordMeetsRequirements;
 
     function setProgrammingLanguage(newProgrammingLanguage: ProgrammingLanguage) {
         setMyUserPreferences({...myUserPreferences, PROGRAMMING_LANGUAGE: newProgrammingLanguage});
@@ -339,7 +339,7 @@ const AccountPageComponent = ({user, getChosenUserAuthSettings, errorMessage, us
                                     setCurrentPassword={setCurrentPassword} currentPassword={currentPassword}
                                     isNewPasswordConfirmed={isNewPasswordConfirmed} newPasswordConfirm={newPasswordConfirm}
                                     setNewPassword={setNewPassword} setNewPasswordConfirm={setNewPasswordConfirm} editingOtherUser={editingOtherUser}
-                                    doPasswordsMatch={doPasswordsMatch} validPassword={validPassword}
+                                    doPasswordsMatch={doPasswordsMatch} passwordMeetsRequirements={passwordMeetsRequirements}
                                 />
                                 {isStaff(user) && !editingOtherUser &&
                                     // Currently staff only

@@ -18,11 +18,11 @@ interface UserPasswordProps {
     newPasswordConfirm: string;
     editingOtherUser: boolean;
     doPasswordsMatch: boolean;
-    validPassword: boolean;
+    passwordMeetsRequirements: boolean;
 }
 
 export const UserPassword = (
-    {currentPassword, currentUserEmail, setCurrentPassword, myUser, setMyUser, isNewPasswordConfirmed, userAuthSettings, setNewPassword, setNewPasswordConfirm, newPasswordConfirm, editingOtherUser, doPasswordsMatch, validPassword}: UserPasswordProps) => {
+    {currentPassword, currentUserEmail, setCurrentPassword, myUser, setMyUser, isNewPasswordConfirmed, userAuthSettings, setNewPassword, setNewPasswordConfirm, newPasswordConfirm, editingOtherUser, doPasswordsMatch, passwordMeetsRequirements}: UserPasswordProps) => {
 
     const dispatch = useAppDispatch();
     const authenticationProvidersUsed = (provider: AuthenticationProvider) => userAuthSettings && userAuthSettings.linkedAccounts && userAuthSettings.linkedAccounts.includes(provider);
@@ -115,7 +115,7 @@ export const UserPassword = (
                                     disabled={!editingOtherUser && currentPassword == ""}
                                 />
                                     <FormFeedback id="passwordConfirmationValidationMessage">
-                                    {!doPasswordsMatch ? "New passwords must match." : !validPassword && "Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one special character."}
+                                    {!doPasswordsMatch ? "New passwords must match." : !passwordMeetsRequirements && "Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one special character."}
                                     </FormFeedback>
                             </FormGroup>
                         </Col>
