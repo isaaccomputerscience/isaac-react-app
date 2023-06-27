@@ -88,7 +88,7 @@ export const SchoolInput = ({userToUpdate, setUserToUpdate, submissionAttempted,
                 isClearable
                 isDisabled={disableInput}
                 inputId={`school-input-${randomNumber}`}
-                placeholder={"Type your school name"}
+                placeholder={"Type your school or college name"}
                 value={schoolValue}
                 className={(isInvalid ? "react-select-error " : "") + "basic-multi-select"}
                 classNamePrefix="select"
