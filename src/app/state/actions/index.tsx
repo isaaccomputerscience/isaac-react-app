@@ -252,7 +252,7 @@ export const updateCurrentUser = (
         if (isFirstLogin) {
             persistence.session.remove(KEY.FIRST_LOGIN);
             if (redirect) {
-                history.push(persistence.pop(KEY.AFTER_AUTH_PATH) || '/account', {firstLogin: isFirstLogin});
+                history.push(persistence.pop(KEY.AFTER_AUTH_PATH) || '/', {firstLogin: isFirstLogin});
             }
         } else if (!editingOtherUser) {
             dispatch(showToast({
@@ -1530,6 +1530,10 @@ export const handleServerError = () => {
 export const handleApiGoneAway = () => {
     store.dispatch(errorSlice.actions.apiGoneAway());
 };
+
+export const clearError = () => {
+    store.dispatch(errorSlice.actions.clearError());
+}
 
 export const setAssignBoardPath = (path: string) => {
     persistence.save(KEY.ASSIGN_BOARD_PATH, path);

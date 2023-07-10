@@ -8,7 +8,7 @@ import {
 } from "reactstrap";
 import { PasswordFeedback, ValidationUser } from "../../../../IsaacAppTypes";
 import { Immutable } from "immer";
-import { passwordDebounce, validatePassword } from "../../../services";
+import { PASSWORD_REQUIREMENTS, passwordDebounce, validatePassword } from "../../../services";
 
 interface PasswordInputProps {
   fieldType: "password" | "confirmPassword";
@@ -41,9 +41,7 @@ export const PasswordInput = ({
       <Label htmlFor="password-input">Password</Label>
       <span id={`password-help-tooltip`} className="icon-help ml-1" />
       <UncontrolledTooltip target={`password-help-tooltip`} placement="bottom">
-        {
-          "Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one punctuation character."
-        }
+        {PASSWORD_REQUIREMENTS}
       </UncontrolledTooltip>
       <Input
         id="password-input"
@@ -53,10 +51,10 @@ export const PasswordInput = ({
         required
         defaultValue={defaultPassword}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          setUnverifiedPassword(e.target.value);
           passwordDebounce(e.target.value, setPasswordFeedback);
         }}
         onBlur={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setUnverifiedPassword(e.target.value);
           passwordDebounce(e.target.value, setPasswordFeedback);
         }}
       />
@@ -88,17 +86,10 @@ export const PasswordInput = ({
         }}
       />
       {/* Feedback that appears for password match before submission */}
-      <FormFeedback id="password-match-feedback" className="always-show">
+      <FormFeedback id="invalidPassword" className="always-show">
         {userToUpdate.password &&
-          !(userToUpdate.password == unverifiedPassword) &&
-          "Passwords don't match."}
-      </FormFeedback>
-      {/* Feedback that is hidden until after form submission attempt */}
-      <FormFeedback id="password-validation-feedback">
-        {submissionAttempted &&
-          userToUpdate.password == unverifiedPassword &&
-          !validatePassword(userToUpdate.password || "") &&
-          "Please ensure your password is at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one punctuation character."}
+          (!(userToUpdate.password == unverifiedPassword) ? "Passwords don't match." : !validatePassword(userToUpdate.password || "") &&
+          PASSWORD_REQUIREMENTS)}
       </FormFeedback>
     </FormGroup>
   );

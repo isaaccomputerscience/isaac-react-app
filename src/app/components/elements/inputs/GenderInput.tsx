@@ -22,6 +22,7 @@ export const GenderInput = ({
     <RS.FormGroup>
       <RS.Label htmlFor={`${idPrefix}-gender-select`}>Gender</RS.Label>
       <Input
+        className="pl-2"
         type="select"
         name="gender"
         id={`${idPrefix}-gender-select`}

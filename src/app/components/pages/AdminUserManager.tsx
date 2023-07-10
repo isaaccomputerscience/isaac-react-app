@@ -293,6 +293,7 @@ export const AdminUserManager = () => {
                                             <th>User role</th>
                                             <th>School</th>
                                             <th>Verification status</th>
+                                            <th>Teacher pending?</th>
                                             <th>Member since</th>
                                             <th>Last seen</th>
                                         </tr>
@@ -328,6 +329,7 @@ export const AdminUserManager = () => {
                                                 <td>{user.role}</td>
                                                 <td>{isDefined(user.id) && isDefined(userIdToSchoolMapping) && isDefined(userIdToSchoolMapping[user.id]) && (userIdToSchoolMapping[user.id].name ?? "")}</td>
                                                 <td>{user.emailVerificationStatus}</td>
+                                                <td>{user.teacherPending === true ? "Y" : "N"}</td>
                                                 <td><DateString>{user.registrationDate}</DateString></td>
                                                 <td><DateString>{user.lastSeen}</DateString></td>
                                             </tr>

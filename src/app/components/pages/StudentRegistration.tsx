@@ -87,7 +87,9 @@ export const StudentRegistration = () => {
 
   loadZxcvbnIfNotPresent();
 
-  const [unverifiedPassword, setUnverifiedPassword] = useState<string | undefined>();
+  const [unverifiedPassword, setUnverifiedPassword] = useState<
+    string | undefined
+  >();
   const [dobOver13CheckboxChecked, setDobOver13CheckboxChecked] =
     useState(false);
   const [attemptedSignUp, setAttemptedSignUp] = useState(false);
@@ -227,7 +229,7 @@ export const StudentRegistration = () => {
                   setUnverifiedPassword={setUnverifiedPassword}
                   submissionAttempted={attemptedSignUp}
                   unverifiedPassword={unverifiedPassword}
-               />
+                />
               </Col>
               <Col md={6}>
                 <PasswordInput

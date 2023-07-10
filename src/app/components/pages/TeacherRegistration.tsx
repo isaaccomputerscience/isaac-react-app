@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   selectors,
+  submitMessage,
   updateCurrentUser,
   useAppDispatch,
   useAppSelector,
@@ -27,12 +28,15 @@ import {
   ValidationUser,
 } from "../../../IsaacAppTypes";
 import {
+  allowedDomain,
+  api,
   FIRST_LOGIN_STATE,
   isDobOverThirteen,
   KEY,
   loadZxcvbnIfNotPresent,
   persistence,
   REGISTER_CRUMB,
+  schoolNameWithPostcode,
   validateEmail,
   validateEmailPreferences,
   validateName,
@@ -53,6 +57,7 @@ import { EmailInput } from "../elements/inputs/EmailInput";
 import { RegistrationNameInput } from "../elements/inputs/RegistrationNameInput";
 import { RegistrationDobInput } from "../elements/inputs/RegistrationDobInput";
 import { PasswordInput } from "../elements/inputs/PasswordInput";
+import TeacherVerification from "../elements/inputs/TeacherVerification";
 
 const metaDescriptionCS =
   "Sign up for a free account and get powerful GCSE and A Level Computer Science resources and questions. For classwork, homework, and revision.";
@@ -182,6 +187,11 @@ export const TeacherRegistrationBody = () => {
     UserEmailPreferences | undefined
   >({ ASSIGNMENTS: true });
 
+  // states & functions for teacher verification
+  const [otherInformation, setOtherInformation] = useState("");
+  const [verificationDetails, setVerificationDetails] = useState<string>();
+  const [school, setSchool] = useState<string | undefined>();
+
   // Inputs which trigger re-render
   const [registrationUser, setRegistrationUser] = useState<
     Immutable<ValidationUser>
@@ -195,6 +205,7 @@ export const TeacherRegistrationBody = () => {
     gender: undefined,
     schoolId: undefined,
     schoolOther: undefined,
+    teacherPending: true,
   });
 
   loadZxcvbnIfNotPresent();
@@ -203,7 +214,7 @@ export const TeacherRegistrationBody = () => {
     string | undefined
   >();
   const [dobOver13CheckboxChecked, setDobOver13CheckboxChecked] =
-    useState(false);
+    useState(true);
   const [attemptedSignUp, setAttemptedSignUp] = useState(false);
 
   const validateForm =
@@ -218,12 +229,32 @@ export const TeacherRegistrationBody = () => {
     validateUserContexts(userContexts) &&
     validateEmailPreferences(emailPreferences);
 
+  useEffect(() => {
+    function fetchSchool(urn: string) {
+      if (urn !== "") {
+        api.schools.getByUrn(urn).then(({ data }) => {
+          setSchool(schoolNameWithPostcode(data[0]));
+        });
+      } else if (registrationUser.schoolOther) {
+        setSchool(registrationUser.schoolOther);
+      } else {
+        setSchool(undefined);
+      }
+    }
+
+    fetchSchool(registrationUser.schoolId || "");
+  }, [registrationUser.schoolOther, registrationUser.schoolId]);
+
   // Form's submission method
   const register = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setAttemptedSignUp(true);
 
-    if (validateForm) {
+    if (
+      validateForm &&
+      allowedDomain(registrationUser.email) &&
+      verificationDetails
+    ) {
       const userPreferencesToUpdate = {
         BOOLEAN_NOTATION: booleanNotation,
         DISPLAY_SETTING: displaySettings,
@@ -234,6 +265,29 @@ export const TeacherRegistrationBody = () => {
       const newUser = { ...registrationUser, loggedIn: false };
       const newUserLoggedIn = { ...registrationUser, loggedIn: true };
 
+      const firstName = registrationUser.givenName || "";
+      const lastName = registrationUser.familyName || "";
+      const emailAddress = registrationUser.email || "";
+
+      const subject = "Teacher Account Request";
+      const message =
+        "Hello,\n\n" +
+        "Please could you convert my Isaac account into a teacher account.\n\n" +
+        "My school is: " +
+        school +
+        "\n" +
+        "A link to my school website with a staff list showing my name and email (or a phone number to contact the school) is: " +
+        verificationDetails +
+        "\n\n" +
+        "Any other information: " +
+        otherInformation +
+        "\n\n" +
+        "Thanks, \n\n" +
+        firstName +
+        " " +
+        lastName;
+
+      // create account
       dispatch(
         updateCurrentUser(
           newUser,
@@ -244,6 +298,18 @@ export const TeacherRegistrationBody = () => {
           true
         )
       );
+
+      // send email for account upgrade request
+      dispatch(
+        submitMessage({
+          firstName,
+          lastName,
+          emailAddress,
+          subject,
+          message,
+        })
+      );
+
       // FIXME - the below ought to be in an action, but we don't know that the update actually registration:
       ReactGA.event({
         category: "user",
@@ -316,6 +382,7 @@ export const TeacherRegistrationBody = () => {
                   userToUpdate={registrationUser}
                   setUserToUpdate={setRegistrationUser}
                   submissionAttempted={attemptedSignUp}
+                  teacherRegistration={true}
                 />
               </Col>
               <Col md={6}>
@@ -353,17 +420,25 @@ export const TeacherRegistrationBody = () => {
             </Row>
 
             {/* User contexts */}
-            <Col className="px-0 pb-3">
-              <RegistrationContext
-                userContexts={userContexts}
-                setUserContexts={setUserContexts}
-                displaySettings={displaySettings}
-                setDisplaySettings={setDisplaySettings}
-                setBooleanNotation={setBooleanNotation}
-                submissionAttempted={attemptedSignUp}
-                userRole="TEACHER"
-              />
-            </Col>
+            <Row className="pb-3">
+              <Col md={6}>
+                <RegistrationContext
+                  userContexts={userContexts}
+                  setUserContexts={setUserContexts}
+                  displaySettings={displaySettings}
+                  setDisplaySettings={setDisplaySettings}
+                  setBooleanNotation={setBooleanNotation}
+                  submissionAttempted={attemptedSignUp}
+                  userRole="TEACHER"
+                />
+              </Col>
+              <Col md={6}>
+                <TeacherVerification
+                  setVerificationDetails={setVerificationDetails}
+                  setOtherInformation={setOtherInformation}
+                />
+              </Col>
+            </Row>
 
             <hr className="text-center" />
 

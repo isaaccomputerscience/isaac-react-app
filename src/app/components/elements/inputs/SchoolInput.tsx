@@ -43,27 +43,25 @@ export const SchoolInput = ({userToUpdate, setUserToUpdate, submissionAttempted,
 
     useEffect(() => {
         fetchSchool(userToUpdate.schoolId || "");
-    }, [userToUpdate]);
+    }, [userToUpdate.schoolId]);
 
     // Set schoolId or schoolOther
     function setUserSchool(school: any) {
-        const {schoolId, schoolOther, ...userWithoutSchoolInfo} = userToUpdate;
         if (school.urn) {
-            setUserToUpdate?.({...userWithoutSchoolInfo, schoolId: school.urn});
+            setUserToUpdate?.({...userToUpdate, schoolId: school.urn, schoolOther: undefined});
             setSelectedSchoolObject(school);
         } else if (school) {
-            setUserToUpdate?.({...userWithoutSchoolInfo, schoolOther: school});
+            setUserToUpdate?.({...userToUpdate, schoolOther: school, schoolId: undefined});
             setSelectedSchoolObject(school);
         }
     }
 
     // Called when school input box option selected
     function handleSetSchool(newValue: {value: string | School} | null) {
-        const {schoolId, schoolOther, ...userWithoutSchoolInfo} = userToUpdate;
         if (newValue == null) {
             setSelectedSchoolObject(undefined);
-            setUserToUpdate?.(userWithoutSchoolInfo);
-        } else if (newValue && newValue.value) {
+            setUserToUpdate?.({ ...userToUpdate, schoolId: undefined, schoolOther: undefined });
+          } else if (newValue && newValue.value) {
             setUserSchool(newValue.value);
         } else if (newValue) {
             setUserSchool(newValue);
@@ -82,7 +80,7 @@ export const SchoolInput = ({userToUpdate, setUserToUpdate, submissionAttempted,
 
     const isInvalid = submissionAttempted && required && !validateUserSchool(userToUpdate);
     return <RS.FormGroup className={`school ${className}`}>
-        <RS.Label htmlFor={`school-input-${randomNumber}`} >My current school</RS.Label>
+        <RS.Label htmlFor={`school-input-${randomNumber}`} >My current school or college</RS.Label>
         {userToUpdate.schoolOther !== NOT_APPLICABLE && <React.Fragment>
             <AsyncCreatableSelect
                 isClearable
@@ -113,7 +111,7 @@ export const SchoolInput = ({userToUpdate, setUserToUpdate, submissionAttempted,
                         setUserToUpdate?.(userWithoutSchoolInfo);
                     }
                 })}
-                label="I am not associated with a school"
+                label="I am not associated with a school or college"
                 className="larger-checkbox"
             />
         </div>}
