@@ -117,5 +117,10 @@ export const SchoolInput = ({userToUpdate, setUserToUpdate, submissionAttempted,
                 className="larger-checkbox"
             />
         </div>}
+
+        <div className="invalid-school">
+            {submissionAttempted && !validateUserSchool(userToUpdate) ? "Please specify a school or college" : null}
+        </div>
+
     </RS.FormGroup>
 };

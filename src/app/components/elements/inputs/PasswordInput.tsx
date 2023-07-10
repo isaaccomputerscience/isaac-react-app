@@ -42,7 +42,7 @@ export const PasswordInput = ({
       <span id={`password-help-tooltip`} className="icon-help ml-1" />
       <UncontrolledTooltip target={`password-help-tooltip`} placement="bottom">
         {
-          "Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one special character."
+          "Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one punctuation character."
         }
       </UncontrolledTooltip>
       <Input
@@ -98,7 +98,7 @@ export const PasswordInput = ({
         {submissionAttempted &&
           userToUpdate.password == unverifiedPassword &&
           !validatePassword(userToUpdate.password || "") &&
-          "Please ensure your password is at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one special character."}
+          "Please ensure your password is at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one punctuation character."}
       </FormFeedback>
     </FormGroup>
   );

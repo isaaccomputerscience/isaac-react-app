@@ -185,7 +185,7 @@ export const EmailPasswordInputs =({setEmail, setPassword, validEmail, validPass
             {displayLabels && (<><Label htmlFor="password-input">Password</Label>
             <span id={`password-help-tooltip`} className="icon-help ml-1" />
             <UncontrolledTooltip target={`password-help-tooltip`} placement="bottom">
-                {"Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one special character."}
+                {"Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one punctuation character."}
             </UncontrolledTooltip></>)}
             <Input
                 id="password-input" autoComplete="current-password" type="password" name="password" placeholder="Password"
@@ -195,7 +195,7 @@ export const EmailPasswordInputs =({setEmail, setPassword, validEmail, validPass
                 required
             />
             <FormFeedback id="passwordValidationMessage">
-                {!validPassword && "Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one special character."}
+                {!validPassword && "Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one punctuation character."}
             </FormFeedback>
         </FormGroup>
     </>;

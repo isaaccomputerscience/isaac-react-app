@@ -8,8 +8,16 @@ import {
   getFilteredStageOptions,
   isDefined,
   STAGE,
+  validateUserContexts,
 } from "../../../services";
-import { Col, FormGroup, Label, Row, UncontrolledTooltip } from "reactstrap";
+import {
+  Col,
+  FormFeedback,
+  FormGroup,
+  Label,
+  Row,
+  UncontrolledTooltip,
+} from "reactstrap";
 import { CustomInput, Input } from "reactstrap";
 import { UserContext, UserRole } from "../../../../IsaacApiTypes";
 
@@ -313,6 +321,12 @@ export const RegistrationContext = ({
                   </Label>
                 )}
             </Col>
+
+            {submissionAttempted && !validateUserContexts(userContexts) && (
+              <FormFeedback id="user-context-feedback" className="always-show">
+                Please select an option.
+              </FormFeedback>
+            )}
           </Row>
         );
       })}
