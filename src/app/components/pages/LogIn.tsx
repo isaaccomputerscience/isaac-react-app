@@ -170,7 +170,7 @@ export const EmailPasswordInputs =({setEmail, setPassword, validEmail, validPass
         <FormGroup>
             {displayLabels && <Label htmlFor="email-input">Email address</Label>}
             <Input
-                id="email-input" type="email" name="email" placeholder="Email address"
+                id="email-input" autoComplete="email" type="email" name="email" placeholder="Email address"
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => setEmail(event.target.value)}
                 invalid={!!errorMessage || (!validEmail && (logInAttempted || passwordResetAttempted))}
                 aria-describedby="emailValidationMessage"
@@ -185,17 +185,17 @@ export const EmailPasswordInputs =({setEmail, setPassword, validEmail, validPass
             {displayLabels && (<><Label htmlFor="password-input">Password</Label>
             <span id={`password-help-tooltip`} className="icon-help ml-1" />
             <UncontrolledTooltip target={`password-help-tooltip`} placement="bottom">
-                {"Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one special character."}
+                {"Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one punctuation character."}
             </UncontrolledTooltip></>)}
             <Input
-                id="password-input" type="password" name="password" placeholder="Password"
+                id="password-input" autoComplete="current-password" type="password" name="password" placeholder="Password"
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => setPassword(event.target.value)}
                 invalid={!!errorMessage || (!validPassword && (logInAttempted))}
                 aria-describedby="passwordValidationMessage"
                 required
             />
             <FormFeedback id="passwordValidationMessage">
-                {!validPassword && "Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one special character."}
+                {!validPassword && "Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one punctuation character."}
             </FormFeedback>
         </FormGroup>
     </>;

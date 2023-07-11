@@ -751,6 +751,7 @@ export const HOME_CRUMB = {title: "Home", to: "/"};
 export const ALL_TOPICS_CRUMB = {title: "All topics", to: "/topics"};
 export const ADMIN_CRUMB = {title: "Admin", to: "/admin"};
 export const EVENTS_CRUMB = {title: "Events", to: "/events"};
+export const REGISTER_CRUMB = {title: "Registration", to: "/register"};
 export const ASSIGNMENT_PROGRESS_CRUMB = {title: "My markbook", to: "/my_markbook"};
 
 export const UserFacingRole: {[role in UserRole]: string} = {
