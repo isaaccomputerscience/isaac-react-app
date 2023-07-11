@@ -44,7 +44,7 @@ export const UserPassword = (
                     <h4 className="mb-0">Password</h4>
                     <span id={`password-help-tooltip`} className="icon-help mb-0" style={{ alignSelf: "center" }}/>
                     <UncontrolledTooltip target={`password-help-tooltip`} placement="bottom">
-                        {"Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one special character."}
+                        {"Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one punctuation character."}
                     </UncontrolledTooltip>
                 </div>
             </Col>
@@ -115,7 +115,7 @@ export const UserPassword = (
                                     disabled={!editingOtherUser && currentPassword == ""}
                                 />
                                     <FormFeedback id="passwordConfirmationValidationMessage">
-                                    {!arePasswordsIdentical ? "New passwords must match." : !passwordMeetsRequirements && "Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one special character."}
+                                    {!arePasswordsIdentical ? "New passwords must match." : !passwordMeetsRequirements && "Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one punctuation character."}
                                     </FormFeedback>
                             </FormGroup>
                         </Col>

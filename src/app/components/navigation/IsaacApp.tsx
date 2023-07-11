@@ -88,6 +88,8 @@ import {Loading} from "../handlers/IsaacSpinner";
 import {AssignmentSchedule} from "../pages/AssignmentSchedule";
 import {ExternalRedirect} from "../handlers/ExternalRedirect";
 import {TutorRequest} from "../pages/TutorRequest";
+import {StudentRegistration} from '../pages/StudentRegistration';
+import {TeacherRegistration} from '../pages/TeacherRegistration';
 
 const ContentEmails = lazy(() => import('../pages/ContentEmails'));
 const MyProgress = lazy(() => import('../pages/MyProgress'));
@@ -233,6 +235,8 @@ export const IsaacApp = () => {
                         <TrackedRoute exact path="/login" component={LogIn} />
                         <TrackedRoute exact path="/logout" component={LogOutHandler} />
                         <TrackedRoute exact path="/register" component={Registration} />
+                        <TrackedRoute exact path="/register/student" component={StudentRegistration} />
+                        <TrackedRoute exact path="/register/teacher" component={TeacherRegistration} />
                         <TrackedRoute exact path="/auth/:provider/callback" component={ProviderCallbackHandler} />
                         <TrackedRoute exact path="/resetpassword/:token" component={ResetPasswordHandler}/>
                         <TrackedRoute exact path="/verifyemail" component={EmailAlterHandler}/>
