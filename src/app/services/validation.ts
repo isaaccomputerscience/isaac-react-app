@@ -145,3 +145,25 @@ export function validateBookingSubmission(event: AugmentedEvent, user: Immutable
 export function safePercentage(correct: number | null | undefined, attempts: number | null | undefined) {
     return (!(correct || correct == 0) || !attempts) ? null : correct / attempts * 100;
 }
+
+
+export const validateForm = (
+    registrationUser: Immutable<ValidationUser>,
+    unverifiedPassword: string | undefined,
+    userContexts: UserContext[],
+    dobOver13CheckboxChecked: boolean,
+    emailPreferences: UserEmailPreferences | undefined
+  ) => {
+    return (
+      validateName(registrationUser.familyName) &&
+      validateName(registrationUser.givenName) &&
+      validatePassword(registrationUser.password || "") &&
+      registrationUser.password === unverifiedPassword &&
+      validateEmail(registrationUser.email) &&
+      (isDobOverThirteen(registrationUser.dateOfBirth) || dobOver13CheckboxChecked) &&
+      validateUserGender(registrationUser) &&
+      validateUserContexts(userContexts) &&
+      validateEmailPreferences(emailPreferences)
+    );
+  };
+  

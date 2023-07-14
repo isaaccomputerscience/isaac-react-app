@@ -276,8 +276,9 @@ const TeacherContext = ({
             </Row>
             {showPlusOption && (
               <Row className="mt-3 ml-0">
-                <Label className="vertical-center">
+                <Label className="vertical-center" for="context-add-stage">
                   <button
+                    id="context-add-stage"
                     type="button"
                     aria-label="Add stage"
                     className="align-middle close float-none pointer-cursor"
