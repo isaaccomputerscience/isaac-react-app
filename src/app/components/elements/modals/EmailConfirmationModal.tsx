@@ -20,7 +20,6 @@ const EmailConfirmationModalBody = () => {
     dispatch(closeActiveModal());
   }
 
-
   return (
     <CardBody className="p-0" id="email-verification-modal">
       {status === "NOT_VERIFIED" && (

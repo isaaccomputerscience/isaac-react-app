@@ -69,8 +69,7 @@ const useRegistration = ({ isTeacher }: RegistrationOptions) => {
     const newUser = { ...registrationUser, loggedIn: false };
     const newUserLoggedIn = { ...registrationUser, loggedIn: true };
 
-    if (isTeacher) {
-      //teacher registration
+    const handleTeacherRegistration = () => {
       if (
         isValidForm &&
         allowedDomain(registrationUser.email) &&
@@ -124,8 +123,9 @@ const useRegistration = ({ isTeacher }: RegistrationOptions) => {
           })
         );
       }
-    } else {
-      //student registration
+    };
+
+    const handleStudentRegistration = () => {
       if (isValidForm) {
         persistence.session.save(
           KEY.FIRST_LOGIN,
@@ -148,7 +148,17 @@ const useRegistration = ({ isTeacher }: RegistrationOptions) => {
           label: "Create Account (SEGUE)",
         });
       }
-    }
+    };
+
+    const handleRegistration = () => {
+      if (isTeacher) {
+        handleTeacherRegistration();
+      } else {
+        handleStudentRegistration();
+      }
+    };
+
+    handleRegistration();
   };
 
   return { register, attemptedSignUp };

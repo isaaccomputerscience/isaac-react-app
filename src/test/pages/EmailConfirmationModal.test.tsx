@@ -1,4 +1,4 @@
-import { screen, within } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import produce from "immer";
 import { renderTestEnvironment } from "../utils";
 import userEvent from "@testing-library/user-event";
@@ -20,8 +20,10 @@ describe("EmailConfirmationModal", () => {
           u.emailVerificationStatus = "NOT_VERIFIED";
         }),
     });
+    await waitFor(() => {
     const modal = screen.queryByTestId("active-modal");
     expect(modal).toBeNull();
+    });
   });
 
   it("If the user has a teacherPending: true flag, but email is VERIFIED the modal will not appear", async () => {
@@ -33,8 +35,10 @@ describe("EmailConfirmationModal", () => {
           u.emailVerificationStatus = "VERIFIED";
         }),
     });
+    await waitFor(() => {
     const modal = screen.queryByTestId("active-modal");
     expect(modal).toBeNull();
+    });
   });
 
   it("If the user has a teacherPending: true flag, and email NOT_VERIFIED the modal will appear, with the correct text", async () => {

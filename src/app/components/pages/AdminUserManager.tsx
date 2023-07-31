@@ -293,7 +293,10 @@ export const AdminUserManager = () => {
                                             <th>User role</th>
                                             <th>School</th>
                                             <th>Verification status</th>
-                                            <th>Teacher pending?</th>
+                                            <th>Teacher pending? 
+                                                <span id="teacher-pending" className="icon-help mb-0" style={{ alignSelf: "center" }} />
+                                                <RS.UncontrolledTooltip target="#teacher-pending" placement="bottom">Awaiting teacher status verification</RS.UncontrolledTooltip>
+                                            </th>
                                             <th>Member since</th>
                                             <th>Last seen</th>
                                         </tr>
