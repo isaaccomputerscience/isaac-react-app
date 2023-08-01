@@ -27,7 +27,7 @@ export const RegistrationNameInput = ({
             id="first-name-input"
             type="text"
             name="givenName"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            onBlur={(e: React.ChangeEvent<HTMLInputElement>) => {
               setUserToUpdate({ ...userToUpdate, givenName: e.target.value });
             }}
             invalid={attemptedSignUp && !givenNameIsValid}
@@ -46,7 +46,7 @@ export const RegistrationNameInput = ({
             id="last-name-input"
             type="text"
             name="familyName"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            onBlur={(e: React.ChangeEvent<HTMLInputElement>) => {
               setUserToUpdate({ ...userToUpdate, familyName: e.target.value });
             }}
             invalid={attemptedSignUp && !familyNameIsValid}

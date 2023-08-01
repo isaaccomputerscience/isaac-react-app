@@ -1,4 +1,4 @@
-import { CardBody, FormGroup, Table } from "reactstrap";
+import { CardBody, FormGroup, Row, Table } from "reactstrap";
 import React from "react";
 import { UserEmailPreferences } from "../../../../IsaacAppTypes";
 import { TrueFalseRadioInput } from "./TrueFalseRadioInput";
@@ -25,6 +25,7 @@ export const RegistrationEmailPreference = ({
   };
 
   return (
+    <Row className="m-0">
     <CardBody className="p-0">
       <h3 className="pb-4">Your communication preferences</h3>
       <p>
@@ -96,5 +97,6 @@ export const RegistrationEmailPreference = ({
         <hr className="text-center"/>
       </FormGroup>
     </CardBody>
+    </Row>
   );
 };

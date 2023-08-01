@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
     AppState,
+    clearError,
     handleProviderLoginRedirect,
     logInUser,
     resetPassword,
@@ -24,7 +25,7 @@ import {
     Row,
     UncontrolledTooltip
 } from "reactstrap";
-import {history, SITE_SUBJECT_TITLE, validatePassword} from "../../services";
+import {history, PASSWORD_REQUIREMENTS, SITE_SUBJECT_TITLE, validatePassword} from "../../services";
 import {Redirect} from "react-router";
 import {MetaDescription} from "../elements/MetaDescription";
 import {Loading} from "../handlers/IsaacSpinner";
@@ -185,7 +186,7 @@ export const EmailPasswordInputs =({setEmail, setPassword, validEmail, validPass
             {displayLabels && (<><Label htmlFor="password-input">Password</Label>
             <span id={`password-help-tooltip`} className="icon-help ml-1" />
             <UncontrolledTooltip target={`password-help-tooltip`} placement="bottom">
-                {"Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one punctuation character."}
+            {PASSWORD_REQUIREMENTS}
             </UncontrolledTooltip></>)}
             <Input
                 id="password-input" autoComplete="current-password" type="password" name="password" placeholder="Password"
@@ -195,7 +196,7 @@ export const EmailPasswordInputs =({setEmail, setPassword, validEmail, validPass
                 required
             />
             <FormFeedback id="passwordValidationMessage">
-                {!validPassword && "Passwords must be at least 12 characters, containing at least one number, one lowercase letter, one uppercase letter, and one punctuation character."}
+                {!validPassword && PASSWORD_REQUIREMENTS}
             </FormFeedback>
         </FormGroup>
     </>;
@@ -210,6 +211,11 @@ export const LogIn = () => {
     const {attemptLogIn, signUp, validateAndLogIn} = loginFunctions;
     const {setEmail, setPassword, setRememberMe, setPasswordResetAttempted} = setStateFunctions;
     const {email, totpChallengePending, errorMessage, logInAttempted, passwordResetAttempted, rememberMe, isValidEmail, isValidPassword} = loginValues;
+
+    // clear any state errors on mount (e.g. from previous login attempt
+    useEffect(() => {
+        clearError();
+    }, []);
 
     const headingRef = useRef<HTMLHeadingElement>(null);
     const subHeadingRef = useRef<HTMLHeadingElement>(null);

@@ -546,6 +546,7 @@ export interface RegisteredUserDTO extends AbstractSegueUserDTO {
     emailVerificationStatus?: EmailVerificationStatus;
     id?: number;
     _id?: number;
+    teacherPending?: boolean;
 }
 
 export interface UserAuthenticationSettingsDTO extends AbstractSegueUserDTO {
@@ -568,6 +569,7 @@ export interface UserSummaryDTO extends AbstractSegueUserDTO {
     emailVerificationStatus?: EmailVerificationStatus;
     registeredContexts?: UserContext[];
     id?: number;
+    teacherPending?: boolean;
 }
 
 export interface UserSummaryForAdminUsersDTO extends UserSummaryWithEmailAddressDTO {
