@@ -14,7 +14,7 @@ import {
   ValidationUser,
 } from "../../../IsaacAppTypes";
 import { UserContext } from "../../../IsaacApiTypes";
-import ReactGA4 from "react-ga4";
+import ReactGA from "react-ga4";
 import { Immutable } from "immer";
 
 interface RegisterProps {
@@ -86,7 +86,7 @@ const useRegistration = ({ isTeacher }: RegistrationOptions) => {
             true
           )
         );
-        ReactGA4.event({
+        ReactGA.event({
           category: "user",
           action: "registration",
           label: "Create Account (SEGUE)",
@@ -142,7 +142,7 @@ const useRegistration = ({ isTeacher }: RegistrationOptions) => {
             true
           )
         );
-        ReactGA4.event({
+        ReactGA.event({
           category: "user",
           action: "registration",
           label: "Create Account (SEGUE)",
