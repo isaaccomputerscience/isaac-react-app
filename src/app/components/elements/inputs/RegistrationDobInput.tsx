@@ -67,9 +67,11 @@ export const RegistrationDobInput = ({
         )}
       </Row>
       <FormFeedback id="dob-validation-feedback" className="always-show">
-        {attemptedSignUp &&
+        {userToUpdate.dateOfBirth &&
           !confirmedOverThirteen &&
-          "Please enter a date of birth or confirm you are over 13 years old."}
+          (teacherRegistration
+            ? "Please enter a valid date of birth."
+            : "Please enter a valid date of birth or confirm you are over 13 years old.")}
       </FormFeedback>
     </FormGroup>
   );
