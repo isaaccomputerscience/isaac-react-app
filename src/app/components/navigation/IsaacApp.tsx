@@ -11,6 +11,7 @@ import {
     useAppSelector
 } from "../../state";
 import {Route, Router, Switch} from "react-router-dom";
+import ErrorClearingRouter from './ErrorClearingRouter';
 import {Footer} from "./Footer";
 import {Question} from "../pages/Question";
 import {Concept} from "../pages/Concept";
@@ -91,6 +92,7 @@ import {TutorRequest} from "../pages/TutorRequest";
 import {StudentRegistration} from '../pages/StudentRegistration';
 import {TeacherRegistration} from '../pages/TeacherRegistration';
 
+
 const ContentEmails = lazy(() => import('../pages/ContentEmails'));
 const MyProgress = lazy(() => import('../pages/MyProgress'));
 const Equality = lazy(() => import('../pages/Equality'));
@@ -142,6 +144,7 @@ export const IsaacApp = () => {
 
     // Render
     return <Router history={history}>
+        <ErrorClearingRouter>
         <Header />
         <Toasts />
         <ActiveModals />
@@ -275,5 +278,6 @@ export const IsaacApp = () => {
         </main>
         <Footer />
         <ConsistencyErrorModal consistencyError={consistencyError} />
-    </Router>;
+        </ErrorClearingRouter>
+    </Router>
 };
