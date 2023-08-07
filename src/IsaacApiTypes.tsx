@@ -120,9 +120,6 @@ export interface IsaacFeaturedProfileDTO extends ContentDTO {
 export interface IsaacFreeTextQuestionDTO extends QuestionDTO {
 }
 
-export interface IsaacGraphSketcherQuestionDTO extends IsaacSymbolicQuestionDTO {
-}
-
 export interface IsaacItemQuestionDTO extends QuestionDTO {
     items?: ItemDTO[];
 }
@@ -192,8 +189,6 @@ export interface IsaacRegexMatchQuestionDTO extends QuestionDTO {
     multiLineEntry?: boolean;
 }
 
-export interface IsaacSymbolicChemistryQuestionDTO extends IsaacSymbolicQuestionDTO {
-}
 
 export interface IsaacSymbolicLogicQuestionDTO extends IsaacSymbolicQuestionDTO {
 }
@@ -507,7 +502,7 @@ export interface GroupMembershipDTO {
     created?: Date;
 }
 
-export type Stage = "year_7_and_8" | "year_9" | "gcse" | "a_level" | "further_a" | "university" | "all";
+export type Stage = "gcse" | "a_level" | "all";
 
 export type ExamBoard = "aqa" | "cie" | "edexcel" | "eduqas" | "ocr" | "wjec" | "all";
 
