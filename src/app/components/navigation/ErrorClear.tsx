@@ -1,18 +1,10 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { clearError } from "../../state";
-
-interface ErrorClearingRouterProps {
-  children: ReactNode;
-}
 
 // This component clears the error state when the location changes (i.e. when the user navigates to a new page)
 
-const ErrorClearingRouter: React.FC<ErrorClearingRouterProps> = ({
-  children,
-}) => {
-  const dispatch = useDispatch();
+const ErrorClear = () => {
   const location = useLocation();
   const [previousLocation, setPreviousLocation] = useState<string | null>(null);
 
@@ -21,9 +13,10 @@ const ErrorClearingRouter: React.FC<ErrorClearingRouterProps> = ({
       clearError();
       setPreviousLocation(location.pathname);
     }
-  }, [dispatch, location, previousLocation]);
+  }, [location, previousLocation]);
 
-  return <>{children}</>;
+  return null;
+
 };
 
-export default ErrorClearingRouter;
+export default ErrorClear;
