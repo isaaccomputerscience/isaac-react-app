@@ -249,7 +249,7 @@ export const LogIn = () => {
                         <Form name="login" onSubmit={validateAndLogIn} noValidate>
 
                             <h2 className="h-title mb-4"  ref={headingRef} tabIndex={-1}>
-                                Log&nbsp;in or sign&nbsp;up:
+                                Log in or sign up:
                             </h2>
                             {totpChallengePending ?
                                 <TFAInput ref={subHeadingRef} rememberMe={rememberMe} />
