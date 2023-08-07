@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { clearError } from "../../state";
 
@@ -6,14 +6,10 @@ import { clearError } from "../../state";
 
 const ErrorClear = () => {
   const location = useLocation();
-  const [previousLocation, setPreviousLocation] = useState<string | null>(null);
 
   useEffect(() => {
-    if (previousLocation !== location.pathname) {
       clearError();
-      setPreviousLocation(location.pathname);
-    }
-  }, [location, previousLocation]);
+  }, [location.pathname]);
 
   return null;
 
