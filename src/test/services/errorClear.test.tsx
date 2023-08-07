@@ -3,9 +3,12 @@ import { fillTextField, renderTestEnvironment } from "../utils";
 import userEvent from "@testing-library/user-event";
 import { rest } from "msw";
 import { API_PATH } from "../../app/services";
+import * as actions from "../../app/state/actions";
 
 describe("ErrorClear", () => {
   it("If a error is received from API and stored into state, this will display on the page, but when changing route it will clear", async () => {
+    const clearErrorSpy = jest.spyOn(actions, 'clearError');
+
     renderTestEnvironment({
       role: "ANONYMOUS",
       extraEndpoints: [
@@ -61,8 +64,11 @@ describe("ErrorClear", () => {
       name: "Register as a student",
     });
     expect(newTitle2).toBeInTheDocument();
+    // expect clearError to have happened 4 times - once on homepage, once on Login page, once on Registration page, once on Student registration page
+    expect(clearErrorSpy).toHaveBeenCalledTimes(4);
     // check if error message is still present:
     const errorMessage2 = screen.queryByText(/incorrect credentials/i);
     expect(errorMessage2).not.toBeInTheDocument();
+    clearErrorSpy.mockRestore();
   });
 });

@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
     AppState,
-    clearError,
     handleProviderLoginRedirect,
     logInUser,
     resetPassword,
@@ -211,11 +210,6 @@ export const LogIn = () => {
     const {attemptLogIn, signUp, validateAndLogIn} = loginFunctions;
     const {setEmail, setPassword, setRememberMe, setPasswordResetAttempted} = setStateFunctions;
     const {email, totpChallengePending, errorMessage, logInAttempted, passwordResetAttempted, rememberMe, isValidEmail, isValidPassword} = loginValues;
-
-    // clear any state errors on mount (e.g. from previous login attempt
-    useEffect(() => {
-        clearError();
-    }, []);
 
     const headingRef = useRef<HTMLHeadingElement>(null);
     const subHeadingRef = useRef<HTMLHeadingElement>(null);
