@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
     AppState,
-    clearError,
     handleProviderLoginRedirect,
     logInUser,
     resetPassword,
@@ -212,11 +211,6 @@ export const LogIn = () => {
     const {setEmail, setPassword, setRememberMe, setPasswordResetAttempted} = setStateFunctions;
     const {email, totpChallengePending, errorMessage, logInAttempted, passwordResetAttempted, rememberMe, isValidEmail, isValidPassword} = loginValues;
 
-    // clear any state errors on mount (e.g. from previous login attempt
-    useEffect(() => {
-        clearError();
-    }, []);
-
     const headingRef = useRef<HTMLHeadingElement>(null);
     const subHeadingRef = useRef<HTMLHeadingElement>(null);
 
@@ -249,7 +243,7 @@ export const LogIn = () => {
                         <Form name="login" onSubmit={validateAndLogIn} noValidate>
 
                             <h2 className="h-title mb-4"  ref={headingRef} tabIndex={-1}>
-                                Log&nbsp;in or sign&nbsp;up:
+                                Log in or sign up:
                             </h2>
                             {totpChallengePending ?
                                 <TFAInput ref={subHeadingRef} rememberMe={rememberMe} />

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { clearError, selectors, useAppSelector } from "../../state";
+import React, { useState } from "react";
+import { selectors, useAppSelector } from "../../state";
 import {
   Button,
   Card,
@@ -20,15 +20,9 @@ import { UserRole } from "../../../IsaacApiTypes";
 export const Registration = () => {
   const user = useAppSelector(selectors.user.orNull);
 
-  // clear any state errors on mount (e.g. from previous login attempt)
-  useEffect(() => {
-    clearError();
-  }, []);
-
   const [role, setRole] = useState<UserRole>();
   const [error, setError] = useState<boolean>(false);
   const [redirectTo, setRedirectTo] = useState<string | null>();
-
 
   // Continue button handler
   const handleContinue = () => {
