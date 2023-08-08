@@ -1,5 +1,7 @@
 import { screen } from "@testing-library/react";
 import {
+  checkPageTitle,
+  clickButton,
   fillFormCorrectly,
   fillTextField,
   getById,
@@ -26,28 +28,18 @@ describe("Teacher Registration", () => {
     });
   };
 
-  const acceptTeacherConditions = async () => {
-    const acceptTeacherConditionsButton = screen.getByRole("button", {
-      name: /continue to a teacher account/i,
-    });
-    await userEvent.click(acceptTeacherConditionsButton);
-  };
 
   it("On page load the teacher conditions are visible and accept button needs to be pressed in order to view the form", async () => {
     renderTeacherRegistration();
-    const heading = screen.getByTestId("main-heading");
-    expect(heading).toHaveTextContent(/conditions for teacher accounts/i);
-    await acceptTeacherConditions();
-    const newHeading = screen.getByTestId("main-heading");
-    expect(newHeading).toHaveTextContent(/register as a teacher/i);
+    checkPageTitle("Conditions for teacher accounts");
+    await clickButton("Continue to a teacher account");
+    checkPageTitle("Register as a teacher")
   });
 
   it("On teacher registration page all expected fields are present and only teacher options are available", async () => {
     renderTeacherRegistration();
-    await acceptTeacherConditions();
-    // find the form
+    await clickButton("Continue to a teacher account");
     const form = await screen.findByRole("form");
-    // find givenName, familyName, current school, DOB, email, gender, password, confirmPassword, contexts, email preferences, verification info and additional info
     const formFields = getFormFields();
     const {
       givenName,
@@ -91,7 +83,6 @@ describe("Teacher Registration", () => {
       otherInfo(),
     ].forEach((each) => expect(each).toBeVisible());
     expect(assignmentPreferences()).not.toBeInTheDocument();
-    // text should to be "teaching" rather than studying
     expect(form).toHaveTextContent("I am teaching");
     // teacher should have the option to select all stages
     const allOption = Array.from(stage().options).find(
@@ -102,18 +93,16 @@ describe("Teacher Registration", () => {
 
   it("If fields are filled in wrong, various error messages are displayed", async () => {
     renderTeacherRegistration();
-    await acceptTeacherConditions();
-    // fill out first and last name, gender and verification info correctly, but email/pw incorrectly, no options selected school and stage or email options
+    await clickButton("Continue to a teacher account");
     await fillFormCorrectly(false, "teacher");
     const formFields = getFormFields();
     const { password, confirmPassword, submitButton, stage, noSchool, email } =
       formFields;
-    // observe error messages for password requirements
     const pwErrorMessage = screen.getByText(
       /Passwords must be at least 12 characters/i
     );
     expect(pwErrorMessage).toBeVisible();
-    // update PW to meet requirements but not match and error changes
+    // update PW to meet requirements but not match the confirmation, and observe error changes
     await fillTextField(confirmPassword(), registrationUserData.password);
     const newPwErrorMessage = screen.getByText(/Passwords don't match/i);
     expect(newPwErrorMessage).toBeVisible();
@@ -131,7 +120,6 @@ describe("Teacher Registration", () => {
     // select a stage and no school, change email to a valid one and submit again
     await selectOption(stage(), registrationUserData.stage);
     await userEvent.click(noSchool());
-    await userEvent.click(email());
     await userEvent.clear(email());
     await fillTextField(email(), registrationUserData.email);
     await userEvent.click(submitButton());
@@ -157,17 +145,11 @@ describe("Teacher Registration", () => {
         }),
       ],
     });
-    await acceptTeacherConditions();
-
-    // fill out the form fields correctly
+    await clickButton("Continue to a teacher account");
     await fillFormCorrectly(true, "teacher");
     const formFields = getFormFields();
     const { submitButton } = formFields;
-
-    // Submit the form
     await userEvent.click(submitButton());
-
-    //   Verify that updateCurrentUser was called with the correct arguments
     expect(updateCurrentUserSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         givenName: registrationUserData.givenName,

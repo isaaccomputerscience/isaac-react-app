@@ -174,6 +174,18 @@ export const selectOption = async (
   await userEvent.selectOptions(selectElement, optionValue);
 };
 
+export const checkPageTitle = (pageTitle: string) => {
+  const title = screen.getByRole("heading", {
+    name: new RegExp(pageTitle, "i"),
+  });
+  expect(title).toBeInTheDocument();
+};
+
+export const clickButton = async (buttonName: string) => {
+  const button = screen.getByRole("button", { name: buttonName });
+  await userEvent.click(button);
+  }
+
 // helper for finding fields in registration forms
 export const getFormFields = () => {
   const formFields = {

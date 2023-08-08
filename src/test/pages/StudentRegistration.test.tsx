@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/react";
 import {
+  checkPageTitle,
   fillFormCorrectly,
   getFormFields,
   renderTestEnvironment,
@@ -24,13 +25,8 @@ describe("Student Registration", () => {
 
   it("On student registration page all expected fields are present and only student options are available", async () => {
     renderStudentRegistration();
-    // find the form
     const form = screen.getByRole("form");
-    // check that the page title is correct
-    expect(screen.getByTestId("main-heading")).toHaveTextContent(
-      /register as a student/i
-    );
-    // find givenName, familyName, current school, DOB, email, gender, password, confirmPassword, contexts, email preferences
+    checkPageTitle("Register as a student");
     const formFields = getFormFields();
     const {
       givenName,
@@ -49,7 +45,6 @@ describe("Student Registration", () => {
       submitButton,
     } = formFields;
 
-    // expect each to be visible
     [
       givenName(),
       familyName(),
@@ -66,7 +61,6 @@ describe("Student Registration", () => {
       events(),
       submitButton(),
     ].forEach((each) => expect(each).toBeVisible());
-    // text should to be "studying" rather than teaching
     expect(form).toHaveTextContent("I am studying");
     // student should not have the option to select all stages
     const allOption = Array.from(stage().options).find(
@@ -77,13 +71,10 @@ describe("Student Registration", () => {
 
   it("If fields are filled in wrong, error messages are displayed", async () => {
     renderStudentRegistration();
-    // fill out some form fields but choose a PW not meeting requirements
     await fillFormCorrectly(false, "student");
-    // Attempt to submit the form
     const formFields = getFormFields();
     const { submitButton } = formFields;
     await userEvent.click(submitButton());
-    // observe error messages
     const pwErrorMessage = screen.getByText(
       /Passwords must be at least 12 characters/i
     );
@@ -106,10 +97,7 @@ describe("Student Registration", () => {
       ],
     });
 
-    // fill out the form fields correctly
     await fillFormCorrectly(true, "student");
-
-    // Submit the form
     const formFields = getFormFields();
     const { submitButton } = formFields;
     await userEvent.click(submitButton());
