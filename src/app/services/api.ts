@@ -100,6 +100,11 @@ export const api = {
         {
             return endpoint.post(`/users`, {registeredUser, userPreferences, passwordCurrent, registeredUserContexts});
         },
+        registerUser: (newUser: Immutable<ValidationUser>, userPreferences: UserPreferencesDTO, passwordCurrent: string | null, registeredUserContexts: UserContext[], token: string)
+        :  AxiosPromise<Immutable<ApiTypes.RegisteredUserDTO>> =>
+    {
+        return endpoint.post(`/users/register`, {newUser, userPreferences, passwordCurrent, registeredUserContexts, token});
+    },
         passwordResetById: (id: number) => {
             return endpoint.post(`/users/${id}/resetpassword`);
         },
