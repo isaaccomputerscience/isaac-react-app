@@ -282,7 +282,7 @@ export const registerUser = (
     
     try {
         dispatch({type: ACTION_TYPE.USER_REGISTRATION_REQUEST});
-        const currentUser = await api.users.registerUser(newUser, userPreferences, userContexts, token);
+        const currentUser = await api.users.updateCurrent(newUser, userPreferences, null, userContexts, token);
         dispatch({type: ACTION_TYPE.USER_REGISTRATION_RESPONSE_SUCCESS, user: currentUser.data});
         dispatch(requestCurrentUser() as any);
 

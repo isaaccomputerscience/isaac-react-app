@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { selectors, useAppSelector } from "../../state";
 import {
   Button,
@@ -40,6 +40,8 @@ import { PasswordInputs } from "../elements/inputs/PasswordInput";
 import TeacherVerification from "../elements/inputs/TeacherVerification";
 import useRegistration from "../handlers/useRegistration";
 import { RegistrationSubmit } from "../elements/inputs/RegistrationSubmit";
+import ReCAPTCHA from "react-google-recaptcha";
+import { Recaptcha } from "../elements/inputs/Recaptcha";
 
 const metaDescriptionCS =
   "Sign up for a free account and get powerful GCSE and A Level Computer Science resources and questions. For classwork, homework, and revision.";
@@ -197,6 +199,9 @@ export const TeacherRegistrationBody = () => {
   >();
   const [dobOver13CheckboxChecked, setDobOver13CheckboxChecked] =
     useState(true);
+  const [isRecaptchaTicked, setIsRecaptchaTicked] = useState(false);
+
+  const recaptchaRef = useRef<ReCAPTCHA | null>(null);
 
   useEffect(() => {
     function fetchSchool(urn: string) {
@@ -216,18 +221,22 @@ export const TeacherRegistrationBody = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    register({
-      registrationUser: registrationUser,
-      unverifiedPassword: unverifiedPassword,
-      userContexts: userContexts,
-      dobOver13CheckboxChecked: dobOver13CheckboxChecked,
-      emailPreferences: emailPreferences,
-      booleanNotation: booleanNotation,
-      displaySettings: displaySettings,
-      verificationDetails: verificationDetails,
-      otherInformation: otherInformation,
-      school: school,
-    });
+    if (recaptchaRef.current) {
+      const token = recaptchaRef.current.getValue() as string;
+      register({
+        registrationUser: registrationUser,
+        unverifiedPassword: unverifiedPassword,
+        userContexts: userContexts,
+        dobOver13CheckboxChecked: dobOver13CheckboxChecked,
+        emailPreferences: emailPreferences,
+        booleanNotation: booleanNotation,
+        displaySettings: displaySettings,
+        verificationDetails: verificationDetails,
+        otherInformation: otherInformation,
+        school: school,
+        token: token,
+      });
+    }
   };
 
   if (user && user.loggedIn) {
@@ -358,7 +367,11 @@ export const TeacherRegistrationBody = () => {
                 </h4>
               </Col>
             </Row>
-            <RegistrationSubmit />
+            <Recaptcha
+              setIsRecaptchaTicked={setIsRecaptchaTicked}
+              recaptchaRef={recaptchaRef}
+            />
+            <RegistrationSubmit isRecaptchaTicked={isRecaptchaTicked}/>
           </Form>
         </CardBody>
       </Card>

@@ -17,7 +17,6 @@ import {
   ValidationUser,
 } from "../../../IsaacAppTypes";
 import {
-  GOOGLE_RECAPTCHA_SITE_KEY,
   loadZxcvbnIfNotPresent,
   REGISTER_CRUMB,
   validateForm,
@@ -38,6 +37,7 @@ import { PasswordInputs } from "../elements/inputs/PasswordInput";
 import useRegistration from "../handlers/useRegistration";
 import { RegistrationSubmit } from "../elements/inputs/RegistrationSubmit";
 import ReCAPTCHA from "react-google-recaptcha";
+import { Recaptcha } from "../elements/inputs/Recaptcha";
 
 // TODO: useLocation hook to retrieve email/password when upgrading react router to v6+
 export const StudentRegistration = () => {
@@ -55,6 +55,8 @@ export const StudentRegistration = () => {
   const [emailPreferences, setEmailPreferences] = useState<
     UserEmailPreferences | undefined
   >({ ASSIGNMENTS: true });
+  const [isRecaptchaTicked, setIsRecaptchaTicked] = useState(false);
+  const recaptchaRef = useRef<ReCAPTCHA | null>(null);
 
   // Inputs which trigger re-render
   const [registrationUser, setRegistrationUser] = useState<
@@ -78,8 +80,6 @@ export const StudentRegistration = () => {
   >();
   const [dobOver13CheckboxChecked, setDobOver13CheckboxChecked] =
     useState(false);
-
-  const recaptchaRef = useRef<ReCAPTCHA | null>(null);
 
   if (user && user.loggedIn) {
     return <Redirect to="/" />;
@@ -218,13 +218,11 @@ export const StudentRegistration = () => {
                 </h4>
               </Col>
             </Row>
-            <Row>
-              <ReCAPTCHA
-                sitekey={GOOGLE_RECAPTCHA_SITE_KEY}
-                ref={recaptchaRef}
-              />
-            </Row>
-            <RegistrationSubmit />
+            <Recaptcha
+              setIsRecaptchaTicked={setIsRecaptchaTicked}
+              recaptchaRef={recaptchaRef}
+            />
+            <RegistrationSubmit isRecaptchaTicked={isRecaptchaTicked} />
           </Form>
         </CardBody>
       </Card>
