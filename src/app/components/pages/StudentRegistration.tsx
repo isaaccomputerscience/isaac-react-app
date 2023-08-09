@@ -91,7 +91,7 @@ export const StudentRegistration = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (recaptchaRef.current) {
-      const token = recaptchaRef.current.getValue() as string;
+      const recaptchaToken = recaptchaRef.current.getValue() as string;
       register({
         registrationUser: registrationUser,
         unverifiedPassword: unverifiedPassword,
@@ -100,7 +100,7 @@ export const StudentRegistration = () => {
         emailPreferences: emailPreferences,
         booleanNotation: booleanNotation,
         displaySettings: displaySettings,
-        token: token,
+        recaptchaToken: recaptchaToken,
       });
     }
   };

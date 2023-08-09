@@ -222,7 +222,7 @@ export const TeacherRegistrationBody = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (recaptchaRef.current) {
-      const token = recaptchaRef.current.getValue() as string;
+      const recaptchaToken = recaptchaRef.current.getValue() as string;
       register({
         registrationUser: registrationUser,
         unverifiedPassword: unverifiedPassword,
@@ -234,7 +234,7 @@ export const TeacherRegistrationBody = () => {
         verificationDetails: verificationDetails,
         otherInformation: otherInformation,
         school: school,
-        token: token,
+        recaptchaToken: recaptchaToken,
       });
     }
   };

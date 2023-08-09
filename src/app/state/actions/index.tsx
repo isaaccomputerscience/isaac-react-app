@@ -277,12 +277,12 @@ export const registerUser = (
     newUser: Immutable<ValidationUser>,
     userPreferences: UserPreferencesDTO,
     userContexts: UserContext[],
-    token: string,
+    recaptchaToken: string,
 ) => async (dispatch: Dispatch<Action>) => {
     
     try {
         dispatch({type: ACTION_TYPE.USER_REGISTRATION_REQUEST});
-        const currentUser = await api.users.updateCurrent(newUser, userPreferences, null, userContexts, token);
+        const currentUser = await api.users.updateCurrent(newUser, userPreferences, null, userContexts, recaptchaToken);
         dispatch({type: ACTION_TYPE.USER_REGISTRATION_RESPONSE_SUCCESS, user: currentUser.data});
         dispatch(requestCurrentUser() as any);
 

@@ -28,7 +28,7 @@ interface RegisterProps {
   verificationDetails?: string | undefined;
   otherInformation?: string | undefined;
   school?: string | undefined;
-  token: string
+  recaptchaToken: string
 }
 
 interface RegistrationOptions {
@@ -50,7 +50,7 @@ const useRegistration = ({ isTeacher }: RegistrationOptions) => {
     verificationDetails,
     otherInformation,
     school,
-    token
+    recaptchaToken
   }: RegisterProps) => {
     setAttemptedSignUp(true);
 
@@ -82,7 +82,7 @@ const useRegistration = ({ isTeacher }: RegistrationOptions) => {
             newUser,
             userPreferencesToUpdate,
             userContexts,
-            token
+            recaptchaToken
           )
         );
         ReactGA.event({
@@ -136,7 +136,7 @@ const useRegistration = ({ isTeacher }: RegistrationOptions) => {
             newUser,
             userPreferencesToUpdate,
             userContexts,
-            token
+            recaptchaToken
           )
         );
         ReactGA.event({
