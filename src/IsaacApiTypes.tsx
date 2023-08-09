@@ -17,10 +17,6 @@ export interface IsaacCardDeckDTO extends ContentDTO {
     cards?: IsaacCardDTO[];
 }
 
-export interface ChemicalFormulaDTO extends ChoiceDTO {
-    mhchemExpression?: string;
-}
-
 export interface TestCaseDTO extends QuestionValidationResponseDTO {
     expected?: boolean;
 }
@@ -321,11 +317,6 @@ export interface AnvilAppDTO extends ContentDTO {
     appId?: string;
     appAccessKey?: string;
 }
-
-export interface ChemicalFormulaDTO extends ChoiceDTO {
-    mhchemExpression?: string;
-}
-
 export interface ChoiceDTO extends ContentDTO {
 }
 
@@ -415,10 +406,6 @@ export interface InteractiveCodeSnippetDTO extends CodeSnippetDTO {
     testCode?: string;
     expectedResult?: string;
     wrapCodeInMain?: boolean;
-}
-
-export interface GraphChoiceDTO extends ChoiceDTO {
-    graphSpec?: string;
 }
 
 export interface ImageDTO extends MediaDTO {
