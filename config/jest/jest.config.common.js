@@ -46,5 +46,6 @@ module.exports = {
     ],
     "globals": {
         REACT_APP_API_VERSION: "any",
+        GOOGLE_RECAPTCHA_SITE_KEY: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
     }
 };

@@ -70,6 +70,7 @@ declare module "math-random-seed";
 declare var MathJax: any;
 declare var ISAAC_SITE: string;
 declare var REACT_APP_API_VERSION: string;
+declare var GOOGLE_RECAPTCHA_SITE_KEY: string;
 declare const ENV_QUIZ_FEATURE_FLAG: boolean;
 declare var EDITOR_PREVIEW: boolean;
 

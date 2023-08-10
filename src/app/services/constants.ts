@@ -44,8 +44,6 @@ export const EDITOR_COMPARE_URL = EDITOR_ORIGIN + "/#!/compare";
 
 export const GOOGLE_ANALYTICS_4_MEASUREMENT_ID = envSpecific("G-H95WP5C8DR", "G-KZJS9ZKWBD", "G-2QRVC1GSQY");
 
-export const GOOGLE_RECAPTCHA_SITE_KEY = "6LdENZInAAAAAP9c5t9mr-yQ9vL4NObSBBgrvrC7";
-
 export const SOCIAL_LINKS = {
         youtube: {name: "YouTube", href: "https://www.youtube.com/channel/UC-qoIYj8kgR8RZtQphrRBYQ"},
         twitter: {name: "Twitter", href: "https://twitter.com/isaaccompsci"},

@@ -1,8 +1,6 @@
 import React from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Row } from "reactstrap";
-import { GOOGLE_RECAPTCHA_SITE_KEY } from "../../../services/constants";
-
 interface RecaptchaComponentProps {
   setIsRecaptchaTicked: (boolean: boolean) => void;
   recaptchaRef: React.RefObject<ReCAPTCHA>;
