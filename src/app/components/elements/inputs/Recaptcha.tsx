@@ -3,7 +3,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { Row } from "reactstrap";
 interface RecaptchaComponentProps {
   setIsRecaptchaTicked: (boolean: boolean) => void;
-  recaptchaRef: React.RefObject<ReCAPTCHA>;
+  recaptchaRef: React.RefObject<ReCAPTCHA> | null;
 }
 
 export const Recaptcha: React.FC<RecaptchaComponentProps> = ({

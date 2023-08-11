@@ -26,7 +26,8 @@ module.exports = {
     ],
     "moduleNameMapper": {
         "^react-native$": "react-native-web",
-        "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"
+        "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy",
+        '^react-google-recaptcha$': '<rootDir>/src/mocks/react-google-recaptcha.tsx',
     },
     "moduleFileExtensions": [
         "web.js",

@@ -16,7 +16,7 @@ import { rest } from "msw";
 import { API_PATH } from "../../app/services";
 import { registrationMockUser, registrationUserData } from "../../mocks/data";
 
-const updateCurrentUserSpy = jest.spyOn(actions, "updateCurrentUser");
+const registerUserSpy = jest.spyOn(actions, "registerUser");
 const submitMessageSpy = jest.spyOn(actions, "submitMessage");
 
 describe("Teacher Registration", () => {
@@ -60,6 +60,7 @@ describe("Teacher Registration", () => {
       addAnotherStage,
       assignmentPreferences,
       otherInfo,
+      recaptcha
     } = formFields;
 
     // expect each to be visible
@@ -81,6 +82,7 @@ describe("Teacher Registration", () => {
       additionalInfo(),
       addAnotherStage(),
       otherInfo(),
+      recaptcha()
     ].forEach((each) => expect(each).toBeVisible());
     expect(assignmentPreferences()).not.toBeInTheDocument();
     expect(form).toHaveTextContent("I am teaching");
@@ -150,7 +152,7 @@ describe("Teacher Registration", () => {
     const formFields = getFormFields();
     const { submitButton } = formFields;
     await userEvent.click(submitButton());
-    expect(updateCurrentUserSpy).toHaveBeenCalledWith(
+    expect(registerUserSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         givenName: registrationUserData.givenName,
         familyName: registrationUserData.familyName,
@@ -170,18 +172,8 @@ describe("Teacher Registration", () => {
         {
           stage: registrationUserData.stage,
           examBoard: "aqa",
-        },
-      ]),
-      null,
-      expect.objectContaining({
-        givenName: registrationUserData.givenName,
-        familyName: registrationUserData.familyName,
-        email: registrationUserData.email,
-        gender: registrationUserData.gender,
-        teacherPending: true,
-        loggedIn: true,
-      }),
-      true
+        }]),
+      "mocked-recaptcha-token"
     );
     expect(submitMessageSpy).toHaveBeenCalledWith({
       firstName: registrationUserData.givenName,
