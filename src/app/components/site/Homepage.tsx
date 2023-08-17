@@ -10,6 +10,7 @@ import {EventsCarousel} from "../elements/EventsCarousel";
 import {FeaturedNewsItem} from "../elements/FeaturedNewsItem";
 import classNames from "classnames";
 import { PromoItem } from "../elements/PromoItem";
+import { PromoContent } from "../elements/PromoContent";
 
 interface ShowMeButtonsProps {
     className?: string
@@ -121,6 +122,14 @@ export const Homepage = () => {
                     </Col>
                 </Container>
             </section>}
+
+            {!user?.loggedIn && promoItem && <section id="promo-content" className="row bg-primary pattern-05">
+                <Container>
+                    <Col className="py-5 pb-md-0">
+                        <PromoContent item={promoItem} />
+                    </Col>
+                </Container>
+                </section>}
 
             <section id="news">
                 <Container className={classNames("pt-4 pb-5", {"mt-lg-n5 pt-lg-0": user?.loggedIn ?? false})}>
