@@ -9,6 +9,7 @@ import {FeaturedContentTabs} from "../elements/FeaturedContentTabs";
 import {EventsCarousel} from "../elements/EventsCarousel";
 import {FeaturedNewsItem} from "../elements/FeaturedNewsItem";
 import classNames from "classnames";
+import { PromoItem } from "../elements/PromoItem";
 
 interface ShowMeButtonsProps {
     className?: string
@@ -18,9 +19,11 @@ export const Homepage = () => {
     useEffect( () => {document.title = "Isaac " + SITE_SUBJECT_TITLE;}, []);
     const user = useAppSelector(selectors.user.orNull);
     const {data: news} = isaacApi.endpoints.getNewsPodList.useQuery({subject: "news", orderDescending: true});
+    const {data: promo} = isaacApi.endpoints.getNewsPodList.useQuery({subject: "promo", orderDescending: true});
 
     const featuredNewsItem = (news && user?.loggedIn) ? news[0] : undefined;
-    const carouselNewsItems = news ? (user?.loggedIn ? news.slice(1) : news) : [];
+    const carouselNewsItems = news ? (user?.loggedIn && user?.role !== "TEACHER" ? news.slice(1) : news) : [];
+    const promoItem = promo ? promo[0] : undefined
 
     const ShowMeButtons = ({className} : ShowMeButtonsProps) => <Container id="homepageButtons" className={`${className} ${!user?.loggedIn ? "pt-0 px-lg-0" : ""}`}>
         <h3>Show me</h3>
@@ -56,9 +59,11 @@ export const Homepage = () => {
                                     <ShowMeButtons className={"pt-xl-2"}/>
                                     {/*<img id="homepageHeroImg" className="img-fluid" alt="Three Computer Science students studying with two laptops, one with code on the screen" src="/assets/ics_hero.svg" />*/}
                                 </Col>
-                                <Col data-testid={"featured-news-item"} md="12" lg="7" className="d-none d-lg-block">
+                                {user?.role === "TEACHER" && promo ? (<Col data-testid={"featured-news-item"} md="12" lg="7" className="mt-4 d-block">
+                                    <PromoItem item={promoItem} />
+                                </Col>) : (<Col data-testid={"featured-news-item"} md="12" lg="7" className="d-none d-lg-block">
                                     <FeaturedNewsItem item={featuredNewsItem} />
-                                </Col>
+                                </Col>)}
                             </Row>
                         </>
                         :
@@ -121,7 +126,7 @@ export const Homepage = () => {
                 <Container className={classNames("pt-4 pb-5", {"mt-lg-n5 pt-lg-0": user?.loggedIn ?? false})}>
                     <div data-testid={"news-carousel"} className="eventList pt-5 pattern-03-reverse">
                         <h2 className="h-title mb-4">News</h2>
-                        {user?.loggedIn && <div className={"d-block d-lg-none mb-4 mb-lg-0"}>
+                        {user?.loggedIn && user?.role !=="TEACHER" && <div className={"d-block d-lg-none mb-4 mb-lg-0"}>
                             <FeaturedNewsItem item={featuredNewsItem} />
                         </div>}
                         <NewsCarousel items={carouselNewsItems} />

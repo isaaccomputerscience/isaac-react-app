@@ -7,9 +7,10 @@ import {apiHelper} from "../../../services";
 interface NewsCardProps {
     newsItem: IsaacPodDTO;
     showTitle?: boolean;
+    linkText?: string;
 }
 
-export const NewsCard = ({newsItem, showTitle}: NewsCardProps) => {
+export const NewsCard = ({newsItem, showTitle, linkText}: NewsCardProps) => {
     const {title, value, image, url} = newsItem;
 
     return <Card data-testid={"news-pod"} className={"card-neat news-card"}>
@@ -46,7 +47,7 @@ export const NewsCard = ({newsItem, showTitle}: NewsCardProps) => {
                     </Link> :
                     // eslint-disable-next-line react/jsx-no-target-blank
                     <a className="focus-target" href={url} target="_blank" rel="noopener">
-                        Find out more
+                        {linkText ? linkText : "Find out more"}
                     </a>
                 }
             </CardText>
