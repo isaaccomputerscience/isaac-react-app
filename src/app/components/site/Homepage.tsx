@@ -9,8 +9,9 @@ import {FeaturedContentTabs} from "../elements/FeaturedContentTabs";
 import {EventsCarousel} from "../elements/EventsCarousel";
 import {FeaturedNewsItem} from "../elements/FeaturedNewsItem";
 import classNames from "classnames";
-import { PromoItem } from "../elements/PromoItem";
+import { TeacherPromoItem } from "../elements/TeacherPromoItem";
 import { PromoContent } from "../elements/PromoContent";
+import { ShowLoading } from "../handlers/ShowLoading";
 
 interface ShowMeButtonsProps {
     className?: string
@@ -24,7 +25,7 @@ export const Homepage = () => {
 
     const featuredNewsItem = (news && user?.loggedIn) ? news[0] : undefined;
     const carouselNewsItems = news ? (user?.loggedIn && user?.role !== "TEACHER" ? news.slice(1) : news) : [];
-    const promoItem = promo ? promo[0] : undefined
+    const promoItem = promo ? promo[0] : undefined;
 
     const ShowMeButtons = ({className} : ShowMeButtonsProps) => <Container id="homepageButtons" className={`${className} ${!user?.loggedIn ? "pt-0 px-lg-0" : ""}`}>
         <h3>Show me</h3>
@@ -60,8 +61,8 @@ export const Homepage = () => {
                                     <ShowMeButtons className={"pt-xl-2"}/>
                                     {/*<img id="homepageHeroImg" className="img-fluid" alt="Three Computer Science students studying with two laptops, one with code on the screen" src="/assets/ics_hero.svg" />*/}
                                 </Col>
-                                {user?.role === "TEACHER" && promo ? (<Col data-testid={"featured-news-item"} md="12" lg="7" className="mt-4 d-block">
-                                    <PromoItem item={promoItem} />
+                                {user?.role === "TEACHER" && promo ? (<Col data-testid={"promo-tile"} md="12" lg="7" className="mt-4 d-block">
+                                    <TeacherPromoItem item={promoItem} />
                                 </Col>) : (<Col data-testid={"featured-news-item"} md="12" lg="7" className="d-none d-lg-block">
                                     <FeaturedNewsItem item={featuredNewsItem} />
                                 </Col>)}
@@ -123,13 +124,16 @@ export const Homepage = () => {
                 </Container>
             </section>
 
-            {promoItem && <section id="promo-content" className="row bg-primary pattern-05">
-                <Container>
+            <section data-testid="promo-content" id="promo-content" className="row bg-primary pattern-05">
+                <ShowLoading
+                until={promoItem}
+                thenRender={()=><Container>
                     <Col className="py-5">
-                        <PromoContent item={promoItem} />
+                        {promoItem && <PromoContent item={promoItem} />}
                     </Col>
-                </Container>
-                </section>}</>
+                </Container>}
+                />
+                </section></>
             }
 
             <section id="news">

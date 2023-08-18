@@ -139,4 +139,36 @@ describe("IsaacApp", () => {
         );
         expect(newsPodLinks.slice(featuredNewsPodLinks.length)).toEqual(nonFeaturedNewsPodLinks);
     });
+
+    it('should show the promo content banner for anonymous users', async () => {
+        renderTestEnvironment({role: "ANONYMOUS"});
+        await screen.findByTestId("main");
+        const promoContent = await screen.findByTestId("promo-content");
+        expect(promoContent).toBeInTheDocument();
+    })
+
+    let roles = ["STUDENT", "TUTOR", "TEACHER", "EVENT_LEADER", "EVENT_MANAGER", "CONTENT_EDITOR", "ADMIN"]
+    it.each(roles)('should not show the promo content banner for %s users', async () => {
+        renderTestEnvironment({role: "%s" as UserRole});
+        await screen.findByTestId("main");
+        const promoContent = screen.queryByTestId("promo-content");
+        expect(promoContent).not.toBeInTheDocument();
+    })
+
+    it('should show the teacher promo tile for logged in teachers, and not show featured news', async () => {
+        renderTestEnvironment({role: "TEACHER"});
+        await screen.findByTestId("main");
+        const promoTile = await screen.findByTestId("promo-tile");
+        expect(promoTile).toBeInTheDocument();
+        const featuredNewsSection = screen.queryByTestId("featured-news-item");
+        expect(featuredNewsSection).not.toBeInTheDocument();
+    })
+
+    roles = ["STUDENT", "TUTOR", "EVENT_LEADER", "EVENT_MANAGER", "CONTENT_EDITOR", "ADMIN", "ANONYMOUS"]
+    it.each(roles)('should not show the promo tile for %s users', async () => {
+        renderTestEnvironment({role: "%s" as UserRole});
+        await screen.findByTestId("main");
+        const promoContent = screen.queryByTestId("promo-tile");
+        expect(promoContent).not.toBeInTheDocument();
+    })
 });
