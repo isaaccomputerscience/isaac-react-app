@@ -6,7 +6,7 @@ import {
   persistence,
   validateForm,
 } from "../../services";
-import { useAppDispatch, updateCurrentUser, submitMessage } from "../../state";
+import { useAppDispatch, registerUser, submitMessage } from "../../state";
 import {
   BooleanNotation,
   DisplaySettings,
@@ -28,6 +28,7 @@ interface RegisterProps {
   verificationDetails?: string | undefined;
   otherInformation?: string | undefined;
   school?: string | undefined;
+  recaptchaToken: string
 }
 
 interface RegistrationOptions {
@@ -49,6 +50,7 @@ const useRegistration = ({ isTeacher }: RegistrationOptions) => {
     verificationDetails,
     otherInformation,
     school,
+    recaptchaToken
   }: RegisterProps) => {
     setAttemptedSignUp(true);
 
@@ -67,7 +69,6 @@ const useRegistration = ({ isTeacher }: RegistrationOptions) => {
     };
 
     const newUser = { ...registrationUser, loggedIn: false };
-    const newUserLoggedIn = { ...registrationUser, loggedIn: true };
 
     const handleTeacherRegistration = () => {
       if (
@@ -77,13 +78,11 @@ const useRegistration = ({ isTeacher }: RegistrationOptions) => {
       ) {
         // create account
         dispatch(
-          updateCurrentUser(
+          registerUser(
             newUser,
             userPreferencesToUpdate,
             userContexts,
-            null,
-            newUserLoggedIn,
-            true
+            recaptchaToken
           )
         );
         ReactGA.event({
@@ -133,13 +132,11 @@ const useRegistration = ({ isTeacher }: RegistrationOptions) => {
         );
 
         dispatch(
-          updateCurrentUser(
+          registerUser(
             newUser,
             userPreferencesToUpdate,
             userContexts,
-            null,
-            newUserLoggedIn,
-            true
+            recaptchaToken
           )
         );
         ReactGA.event({

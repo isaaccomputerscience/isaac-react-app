@@ -2,7 +2,12 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Col, Input, Row } from 'reactstrap'
 
-export const RegistrationSubmit = () => {
+interface RegistrationSubmitProps {
+  isRecaptchaTicked: boolean;
+}
+
+export const RegistrationSubmit: React.FC<RegistrationSubmitProps> = ({isRecaptchaTicked}) => {
+
   return (
     <>
     <Row>
@@ -24,6 +29,7 @@ export const RegistrationSubmit = () => {
       <Input
         type="submit"
         value="Register my account"
+        disabled={!isRecaptchaTicked}
         className="btn btn-block btn-secondary border-0"
       />
     </Col>

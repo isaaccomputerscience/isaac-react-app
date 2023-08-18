@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { selectors, useAppSelector } from "../../state";
 import {
   Card,
@@ -36,6 +36,8 @@ import { RegistrationDobInput } from "../elements/inputs/RegistrationDobInput";
 import { PasswordInputs } from "../elements/inputs/PasswordInput";
 import useRegistration from "../handlers/useRegistration";
 import { RegistrationSubmit } from "../elements/inputs/RegistrationSubmit";
+import ReCAPTCHA from "react-google-recaptcha";
+import { Recaptcha } from "../elements/inputs/Recaptcha";
 
 // TODO: useLocation hook to retrieve email/password when upgrading react router to v6+
 export const StudentRegistration = () => {
@@ -53,6 +55,8 @@ export const StudentRegistration = () => {
   const [emailPreferences, setEmailPreferences] = useState<
     UserEmailPreferences | undefined
   >({ ASSIGNMENTS: true });
+  const [isRecaptchaTicked, setIsRecaptchaTicked] = useState(false);
+  const recaptchaRef = useRef<ReCAPTCHA | null>(null);
 
   // Inputs which trigger re-render
   const [registrationUser, setRegistrationUser] = useState<
@@ -86,15 +90,19 @@ export const StudentRegistration = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    register({
-      registrationUser: registrationUser,
-      unverifiedPassword: unverifiedPassword,
-      userContexts: userContexts,
-      dobOver13CheckboxChecked: dobOver13CheckboxChecked,
-      emailPreferences: emailPreferences,
-      booleanNotation: booleanNotation,
-      displaySettings: displaySettings,
-    });
+    if (recaptchaRef.current) {
+      const recaptchaToken = recaptchaRef.current.getValue() as string;
+      register({
+        registrationUser: registrationUser,
+        unverifiedPassword: unverifiedPassword,
+        userContexts: userContexts,
+        dobOver13CheckboxChecked: dobOver13CheckboxChecked,
+        emailPreferences: emailPreferences,
+        booleanNotation: booleanNotation,
+        displaySettings: displaySettings,
+        recaptchaToken: recaptchaToken,
+      });
+    }
   };
 
   // Render
@@ -184,13 +192,13 @@ export const StudentRegistration = () => {
               />
             </Col>
 
-            <hr className="text-center" />           
-              <RegistrationEmailPreference
-                emailPreferences={emailPreferences}
-                setEmailPreferences={setEmailPreferences}
-                submissionAttempted={attemptedSignUp}
-                userRole="STUDENT"
-              />
+            <hr className="text-center" />
+            <RegistrationEmailPreference
+              emailPreferences={emailPreferences}
+              setEmailPreferences={setEmailPreferences}
+              submissionAttempted={attemptedSignUp}
+              userRole="STUDENT"
+            />
 
             {/* Form Error */}
             <Row>
@@ -210,7 +218,11 @@ export const StudentRegistration = () => {
                 </h4>
               </Col>
             </Row>
-            <RegistrationSubmit />
+            <Recaptcha
+              setIsRecaptchaTicked={setIsRecaptchaTicked}
+              recaptchaRef={recaptchaRef}
+            />
+            <RegistrationSubmit isRecaptchaTicked={isRecaptchaTicked} />
           </Form>
         </CardBody>
       </Card>

@@ -12,9 +12,12 @@ import { rest } from "msw";
 import { API_PATH } from "../../app/services";
 import { registrationMockUser, registrationUserData } from "../../mocks/data";
 
-const updateCurrentUserSpy = jest.spyOn(actions, "updateCurrentUser");
+
+const registerUserSpy = jest.spyOn(actions, "registerUser");
+
 
 describe("Student Registration", () => {
+
   const renderStudentRegistration = () => {
     renderTestEnvironment({
       role: "ANONYMOUS",
@@ -43,6 +46,7 @@ describe("Student Registration", () => {
       newsPreferences,
       events,
       submitButton,
+      recaptcha
     } = formFields;
 
     [
@@ -60,6 +64,7 @@ describe("Student Registration", () => {
       newsPreferences(),
       events(),
       submitButton(),
+      recaptcha()
     ].forEach((each) => expect(each).toBeVisible());
     expect(form).toHaveTextContent("I am studying");
     // student should not have the option to select all stages
@@ -102,8 +107,7 @@ describe("Student Registration", () => {
     const { submitButton } = formFields;
     await userEvent.click(submitButton());
 
-    // Verify that updateCurrentUser was called with the correct arguments
-    expect(updateCurrentUserSpy).toHaveBeenCalledWith(
+    expect(registerUserSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         givenName: registrationUserData.givenName,
         familyName: registrationUserData.familyName,
@@ -124,15 +128,17 @@ describe("Student Registration", () => {
           examBoard: "aqa",
         },
       ]),
-      null,
-      expect.objectContaining({
-        givenName: registrationUserData.givenName,
-        familyName: registrationUserData.familyName,
-        email: registrationUserData.email,
-        gender: registrationUserData.gender,
-        loggedIn: true,
-      }),
-      true
+      "mocked-recaptcha-token"
     );
   });
+  
+  it("Register button is disabled until recaptcha checkbox is ticked", async () => {
+    renderStudentRegistration();
+    checkPageTitle("Register as a student");
+    const formFields = getFormFields();
+    const { submitButton, recaptcha } = formFields;
+    expect(submitButton()).toBeDisabled();
+    await userEvent.click(recaptcha());
+    expect(submitButton()).toBeEnabled();
+  })
 });
