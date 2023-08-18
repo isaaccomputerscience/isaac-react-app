@@ -184,7 +184,7 @@ export const checkPageTitle = (pageTitle: string) => {
 export const clickButton = async (buttonName: string) => {
   const button = screen.getByRole("button", { name: buttonName });
   await userEvent.click(button);
-  }
+};
 
 // helper for finding fields in registration forms
 export const getFormFields = () => {
@@ -215,11 +215,11 @@ export const getFormFields = () => {
     events: () => screen.getByRole("radio", { name: /no for events/i }),
     additionalInfo: () =>
       screen.getByRole("textbox", { name: /any other information/i }),
-    otherInfo: () => screen.getByRole("textbox", { name: /other information/i }),
+    otherInfo: () =>
+      screen.getByRole("textbox", { name: /other information/i }),
     submitButton: () =>
       screen.getByRole("button", { name: "Register my account" }),
-    recaptcha: () =>
-    screen.getByTestId("mock-recaptcha-checkbox")
+    recaptcha: () => screen.getByTestId("mock-recaptcha-checkbox"),
   };
 
   return formFields;
@@ -247,7 +247,7 @@ export const fillFormCorrectly = async (
         newsPreferences,
         events,
         otherInfo,
-        recaptcha
+        recaptcha,
       } = formFields;
 
       await fillTextField(givenName(), registrationUserData.givenName);
@@ -275,7 +275,7 @@ export const fillFormCorrectly = async (
         );
         await fillTextField(email(), registrationUserData.wrongEmail);
       }
-      await userEvent.click(recaptcha())
+      await userEvent.click(recaptcha());
       break;
     }
 
@@ -292,7 +292,7 @@ export const fillFormCorrectly = async (
         confirmPassword,
         newsPreferences,
         events,
-        recaptcha
+        recaptcha,
       } = formFields;
       await fillTextField(givenName(), registrationUserData.givenName);
       await fillTextField(familyName(), registrationUserData.familyName);
@@ -313,7 +313,7 @@ export const fillFormCorrectly = async (
           registrationUserData.wrongPassword
         );
       }
-      await userEvent.click(recaptcha())
+      await userEvent.click(recaptcha());
       break;
     }
   }

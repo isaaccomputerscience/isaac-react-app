@@ -1,10 +1,7 @@
 import React, { useRef } from 'react';
 
 interface MockReCAPTCHAProps {
-    sitekey: string;
     onChange: () => void;
-    onExpired: () => void;
-    ref: React.RefObject<any>
 }
 
 export interface MockReCAPTCHARef {
@@ -12,9 +9,7 @@ export interface MockReCAPTCHARef {
   }
 
 const MockReCAPTCHA:React.ForwardRefRenderFunction<MockReCAPTCHARef, MockReCAPTCHAProps> = ({
-  sitekey,
   onChange,
-  onExpired
 },
 ref) => {
   const valueRef = useRef<string | null>(null);
