@@ -72,6 +72,7 @@ export const Homepage = () => {
                   <WhySignUpTabs />
                 </Col>
               </Container>
+
             </section>
             <section id="promo-content" className="row bg-primary pattern-05">
               <ShowLoading
