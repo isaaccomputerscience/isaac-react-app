@@ -114,22 +114,23 @@ export const Homepage = () => {
                 <hr/>
             </Container>}
 
-            {!user?.loggedIn && <section id="why-sign-up" className="row sign-up-tabs">
+            {!user?.loggedIn && <><section id="why-sign-up" className="row sign-up-tabs">
                 <Container>
                     <Col className="pb-5 pt-4 pattern-04">
                         <h2 className="text-center mb-5">Why sign up?</h2>
                         <WhySignUpTabs/>
                     </Col>
                 </Container>
-            </section>}
+            </section>
 
-            {!user?.loggedIn && promoItem && <section id="promo-content" className="row bg-primary pattern-05">
+            {promoItem && <section id="promo-content" className="row bg-primary pattern-05">
                 <Container>
-                    <Col className="py-5 pb-md-0">
+                    <Col className="py-5">
                         <PromoContent item={promoItem} />
                     </Col>
                 </Container>
-                </section>}
+                </section>}</>
+            }
 
             <section id="news">
                 <Container className={classNames("pt-4 pb-5", {"mt-lg-n5 pt-lg-0": user?.loggedIn ?? false})}>
