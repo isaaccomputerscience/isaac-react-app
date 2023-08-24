@@ -47,7 +47,7 @@ export const NewsCard = ({newsItem, showTitle, linkText}: NewsCardProps) => {
                     </Link> :
                     // eslint-disable-next-line react/jsx-no-target-blank
                     <a className="focus-target" href={url} target="_blank" rel="noopener">
-                        {linkText ? linkText : "Find out more"}
+                        {linkText || "Find out more"}
                     </a>
                 }
             </CardText>

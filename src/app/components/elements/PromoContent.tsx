@@ -23,7 +23,7 @@ export const PromoContent = ({ item }: { item: IsaacPodDTO }) => {
             >
               <img
                 src={path}
-                alt={image?.altText ? image.altText : "promo image"}
+                alt={image?.altText || "promo image"}
               />
             </Col>
             <Col xs={12} md className="pt-3 pl-3">
