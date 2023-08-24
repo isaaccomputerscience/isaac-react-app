@@ -148,8 +148,8 @@ describe("IsaacApp", () => {
     })
 
     let roles = ["STUDENT", "TUTOR", "TEACHER", "EVENT_LEADER", "EVENT_MANAGER", "CONTENT_EDITOR", "ADMIN"]
-    it.each(roles)('should not show the promo content banner for %s users', async () => {
-        renderTestEnvironment({role: "%s" as UserRole});
+    it.each(roles)('should not show the promo content banner for %s users', async (role) => {
+        renderTestEnvironment({role: role as UserRole});
         await screen.findByTestId("main");
         const promoContent = screen.queryByTestId("promo-content");
         expect(promoContent).not.toBeInTheDocument();
@@ -165,8 +165,8 @@ describe("IsaacApp", () => {
     })
 
     roles = ["STUDENT", "TUTOR", "EVENT_LEADER", "EVENT_MANAGER", "CONTENT_EDITOR", "ADMIN", "ANONYMOUS"]
-    it.each(roles)('should not show the promo tile for %s users', async () => {
-        renderTestEnvironment({role: "%s" as UserRole});
+    it.each(roles)('should not show the promo tile for %s users', async (role) => {
+        renderTestEnvironment({role: role as UserRole});
         await screen.findByTestId("main");
         const promoContent = screen.queryByTestId("promo-tile");
         expect(promoContent).not.toBeInTheDocument();
