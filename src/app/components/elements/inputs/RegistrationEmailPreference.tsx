@@ -1,8 +1,7 @@
-import { CardBody, FormGroup, Row, Table } from "reactstrap";
+import { CardBody, FormGroup, Table } from "reactstrap";
 import React from "react";
 import { UserEmailPreferences } from "../../../../IsaacAppTypes";
 import { TrueFalseRadioInput } from "./TrueFalseRadioInput";
-import { SITE_SUBJECT_TITLE } from "../../../services";
 import { UserRole } from "../../../../IsaacApiTypes";
 
 interface RegistrationEmailPreferenceProps {
@@ -11,92 +10,58 @@ interface RegistrationEmailPreferenceProps {
   submissionAttempted: boolean;
   userRole: UserRole;
 }
+
+type EmailPreferenceDescriptions = {
+  assignments: string;
+  news: string;
+  events: string;
+};
+
 export const RegistrationEmailPreference = ({
   emailPreferences,
   setEmailPreferences,
   userRole,
   submissionAttempted,
 }: RegistrationEmailPreferenceProps) => {
-  const isaacEmailPreferenceDescriptions = {
+  const preferences = [
+    { key: 'assignments', property: 'ASSIGNMENTS', condition: userRole === 'STUDENT' },
+    { key: 'news', property: 'NEWS_AND_UPDATES' },
+    { key: 'events', property: 'EVENTS' },
+  ];
+  const isaacEmailPreferenceDescriptions: EmailPreferenceDescriptions = {
     assignments: "Receive assignment notifications from your teacher.",
     news: "Be the first to know about new topics, new platform features, and our fantastic competition giveaways.",
-    events:
-      "Get valuable updates on our free student workshops/teacher CPD events happening near you.",
+    events: "Get valuable updates on our free student workshops/teacher CPD events happening near you.",
   };
 
   return (
-    <Row className="m-0">
     <CardBody className="p-0">
       <h3 className="pb-4">Your communication preferences</h3>
-      <p>
-        Get important information about the Isaac {SITE_SUBJECT_TITLE} programme
-        delivered to your inbox. These settings can be changed at any time.
-        Expect one email per term for News and a monthly bulletin for Events.{" "}
-        {userRole === "STUDENT" &&
-          "Assignment notifications will be sent as needed by your teacher."}
-      </p>
       <FormGroup className="overflow-auto">
         <Table className="mb-0">
-          <thead>
-            <tr>
-              <th>Email</th>
-              <th className="d-none d-sm-table-cell">Description</th>
-              <th className="text-center">Preference</th>
-            </tr>
-          </thead>
           <tbody>
-            {userRole === "STUDENT" && (
-              <tr>
-                <td>Assignments</td>
-                <td className="d-none d-sm-table-cell">
-                  {isaacEmailPreferenceDescriptions.assignments}
-                </td>
-                <td className="text-center">
-                  <TrueFalseRadioInput
-                    id="assignments"
-                    stateObject={emailPreferences}
-                    propertyName="ASSIGNMENTS"
-                    setStateFunction={setEmailPreferences}
-                    submissionAttempted={submissionAttempted}
-                  />
-                </td>
-              </tr>
-            )}
-            <tr>
-              <td>News</td>
-              <td className="d-none d-sm-table-cell">
-                {isaacEmailPreferenceDescriptions.news}
-              </td>
-              <td className="text-center">
-                <TrueFalseRadioInput
-                  id="news"
-                  stateObject={emailPreferences}
-                  propertyName="NEWS_AND_UPDATES"
-                  setStateFunction={setEmailPreferences}
-                  submissionAttempted={submissionAttempted}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>Events</td>
-              <td className="d-none d-sm-table-cell">
-                {isaacEmailPreferenceDescriptions.events}
-              </td>
-              <td className="text-center">
-                <TrueFalseRadioInput
-                  id="events"
-                  stateObject={emailPreferences}
-                  propertyName="EVENTS"
-                  setStateFunction={setEmailPreferences}
-                  submissionAttempted={submissionAttempted}
-                />
-              </td>
-            </tr>
+            {preferences.map((preference, index) => {
+              const description = isaacEmailPreferenceDescriptions[preference.key as keyof EmailPreferenceDescriptions];
+              return preference.condition === undefined || preference.condition ? (
+                <tr key={index}>
+                  <td>{preference.key.charAt(0).toUpperCase() + preference.key.slice(1)}</td>
+                  <td className="d-none d-sm-table-cell">{description}</td>
+                  <td className="text-center">
+                    <TrueFalseRadioInput
+                      id={preference.key}
+                      stateObject={emailPreferences}
+                      propertyName={preference.property}
+                      setStateFunction={setEmailPreferences}
+                      submissionAttempted={submissionAttempted}
+                    />
+                  </td>
+                </tr>
+              ) : null;
+            })}
           </tbody>
         </Table>
-        <hr className="text-center"/>
+        <hr className="text-center" />
       </FormGroup>
     </CardBody>
-    </Row>
   );
 };
