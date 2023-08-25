@@ -15,51 +15,48 @@ export const RegistrationNameInput = ({
   setUserToUpdate,
   attemptedSignUp,
 }: RegistrationNameProps) => {
-  const givenNameIsValid = validateName(userToUpdate.givenName);
-  const familyNameIsValid = validateName(userToUpdate.familyName);
+
+  const nameFields = [
+    {
+      label: "First name",
+      name: "givenName",
+      value: userToUpdate.givenName,
+      isValid: validateName(userToUpdate.givenName),
+    },
+    {
+      label: "Last name",
+      name: "familyName",
+      value: userToUpdate.familyName,
+      isValid: validateName(userToUpdate.familyName),
+    },
+  ];
 
   return (
     <>
-      <Col md={6}>
-        <FormGroup>
-          <Label htmlFor="first-name-input">First name</Label>
-          <Input
-            id="first-name-input"
-            type="text"
-            name="givenName"
-            onBlur={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setUserToUpdate({ ...userToUpdate, givenName: e.target.value });
-            }}
-            invalid={attemptedSignUp && !givenNameIsValid}
-            aria-describedby="firstNameValidationMessage"
-            required
-          />
-          <FormFeedback id="firstNameValidationMessage">
-            {attemptedSignUp && !givenNameIsValid ? "Enter a valid name" : null}
-          </FormFeedback>
-        </FormGroup>
-      </Col>
-      <Col md={6}>
-        <FormGroup>
-          <Label htmlFor="last-name-input">Last name</Label>
-          <Input
-            id="last-name-input"
-            type="text"
-            name="familyName"
-            onBlur={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setUserToUpdate({ ...userToUpdate, familyName: e.target.value });
-            }}
-            invalid={attemptedSignUp && !familyNameIsValid}
-            aria-describedby="lastNameValidationMessage"
-            required
-          />
-          <FormFeedback id="lastNameValidationMessage">
-            {attemptedSignUp && !familyNameIsValid
-              ? "Enter a valid name"
-              : null}
-          </FormFeedback>
-        </FormGroup>
-      </Col>
+      {nameFields.map((each) => (
+        <Col md={6} key={each.name}>
+          <FormGroup>
+            <Label htmlFor={`${each.name}-input`}>{each.label}</Label>
+            <Input
+              id={`${each.name}-input`}
+              type="text"
+              name={each.name}
+              onBlur={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setUserToUpdate({
+                  ...userToUpdate,
+                  [each.name]: e.target.value,
+                });
+              }}
+              invalid={attemptedSignUp && !each.isValid}
+              aria-describedby={`${each.name}ValidationMessage`}
+              required
+            />
+            <FormFeedback id={`${each.name}ValidationMessage`}>
+              {attemptedSignUp && !each.isValid ? "Enter a valid name" : null}
+            </FormFeedback>
+          </FormGroup>
+        </Col>
+      ))}
     </>
   );
 };

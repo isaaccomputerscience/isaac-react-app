@@ -117,7 +117,7 @@ export const SchoolInput = ({userToUpdate, setUserToUpdate, submissionAttempted,
         </div>}
 
         <div className="invalid-school">
-            {submissionAttempted && !validateUserSchool(userToUpdate) ? "Please specify a school or college" : null}
+            {submissionAttempted && !validateUserSchool(userToUpdate) && "Please specify a school or college"}
         </div>
 
     </RS.FormGroup>

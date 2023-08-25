@@ -160,6 +160,7 @@ export const validateForm = (
     return (
       validateName(registrationUser.familyName) &&
       validateName(registrationUser.givenName) &&
+      validateUserSchool(registrationUser) &&
       validatePassword(registrationUser.password || "") &&
       registrationUser.password === unverifiedPassword &&
       validateEmail(registrationUser.email) &&
