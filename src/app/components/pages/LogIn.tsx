@@ -28,6 +28,7 @@ import {history, PASSWORD_REQUIREMENTS, SITE_SUBJECT_TITLE, validatePassword} fr
 import {Redirect} from "react-router";
 import {MetaDescription} from "../elements/MetaDescription";
 import {Loading} from "../handlers/IsaacSpinner";
+import usePasswordToggle from '../handlers/usePasswordToggle';
 
 /* Interconnected state and functions providing a "logging in" API - intended to be used within a component that displays
  * email and password inputs, and a button to login, all inside a Form component. You will also need a TFAInput component,
@@ -166,6 +167,7 @@ interface EmailPasswordInputsProps {
     displayLabels?: boolean;
 }
 export const EmailPasswordInputs =({setEmail, setPassword, validEmail, validPassword, logInAttempted, passwordResetAttempted, errorMessage, displayLabels = true}: EmailPasswordInputsProps) => {
+    const [PasswordInputType, ToggleIcon] = usePasswordToggle() as ["text" | "password", React.ReactNode];
     return <>
         <FormGroup>
             {displayLabels && <Label htmlFor="email-input">Email address</Label>}
@@ -187,13 +189,16 @@ export const EmailPasswordInputs =({setEmail, setPassword, validEmail, validPass
             <UncontrolledTooltip target={`password-help-tooltip`} placement="bottom">
             {PASSWORD_REQUIREMENTS}
             </UncontrolledTooltip></>)}
+            <div className="password-group">
             <Input
-                id="password-input" autoComplete="current-password" type="password" name="password" placeholder="Password"
+                id="password-input" autoComplete="current-password" type={PasswordInputType} name="password" placeholder="Password"
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => setPassword(event.target.value)}
                 invalid={!!errorMessage || (!validPassword && (logInAttempted))}
                 aria-describedby="passwordValidationMessage"
                 required
             />
+            <span className="password-toggle-icon" id="password-toggle">{ToggleIcon}</span>
+            </div>
             <FormFeedback id="passwordValidationMessage">
                 {!validPassword && PASSWORD_REQUIREMENTS}
             </FormFeedback>

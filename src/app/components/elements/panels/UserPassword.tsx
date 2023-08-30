@@ -4,6 +4,7 @@ import {PasswordFeedback, ValidationUser} from "../../../../IsaacAppTypes";
 import {AuthenticationProvider, UserAuthenticationSettingsDTO} from "../../../../IsaacApiTypes";
 import {PASSWORD_REQUIREMENTS, loadZxcvbnIfNotPresent, passwordDebounce, validateEmail} from "../../../services";
 import {linkAccount, resetPassword, unlinkAccount, useAppDispatch} from "../../../state";
+import usePasswordToggle from "../../handlers/usePasswordToggle";
 
 interface UserPasswordProps {
     currentPassword?: string;
@@ -36,6 +37,7 @@ export const UserPassword = (
             setPasswordResetRequested(true);
         }
     };
+    const [PasswordInputType, ToggleIcon] = usePasswordToggle() as ["text" | "password", React.ReactNode];
 
     return <CardBody className={"pb-0"}>
         <Row className="mb-2">
@@ -57,12 +59,15 @@ export const UserPassword = (
                         <Col md={{size: 6, offset: 3}}>
                             <FormGroup>
                                 <Label htmlFor="password-current">Current password</Label>
+                                <div className="password-group">
                                 <Input
-                                    id="password-current" type="password" name="current-password"
+                                    id="password-current" type={PasswordInputType} name="current-password"
                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                         setCurrentPassword(e.target.value)
                                     }
                                 />
+                                <span className="password-toggle-icon">{ToggleIcon}</span>
+                                </div>
                             </FormGroup>
                         </Col>
                     </Row>
@@ -74,7 +79,7 @@ export const UserPassword = (
                                 <Input
                                     invalid={!!newPasswordConfirm && !isNewPasswordConfirmed}
                                     id="new-password" 
-                                    type="password" 
+                                    type={PasswordInputType} 
                                     name="new-password"
                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                         setNewPassword(e.target.value);
@@ -105,7 +110,7 @@ export const UserPassword = (
                                 <Input
                                     invalid={!!currentPassword && !isNewPasswordConfirmed}
                                     id="password-confirm"
-                                    type="password" 
+                                    type={PasswordInputType} 
                                     name="password-confirmation"
                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                         setNewPasswordConfirm(e.target.value);

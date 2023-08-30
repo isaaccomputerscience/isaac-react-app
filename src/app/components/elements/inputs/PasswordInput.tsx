@@ -15,6 +15,7 @@ import {
   passwordDebounce,
   validatePassword,
 } from "../../../services";
+import usePasswordToggle from "../../handlers/usePasswordToggle";
 interface PasswordInputProps {
   userToUpdate: Immutable<ValidationUser>;
   setUserToUpdate: (user: Immutable<ValidationUser>) => void;
@@ -32,6 +33,7 @@ export const PasswordInputs = ({
   setUnverifiedPassword,
   defaultPassword,
 }: PasswordInputProps) => {
+  const [PasswordInputType, ToggleIcon] = usePasswordToggle() as ["text" | "password", React.ReactNode];
   const [passwordFeedback, setPasswordFeedback] =
     useState<PasswordFeedback | null>(null);
 
@@ -51,9 +53,10 @@ export const PasswordInputs = ({
           >
             {PASSWORD_REQUIREMENTS}
           </UncontrolledTooltip>
+          <div className="password-group">
           <Input
             id="password-input"
-            type="password"
+            type={PasswordInputType}
             name="password"
             autoComplete="new-password"
             required
@@ -66,6 +69,8 @@ export const PasswordInputs = ({
               passwordDebounce(e.target.value, setPasswordFeedback);
             }}
           />
+          <span id="password-toggle" className="password-toggle-icon">{ToggleIcon}</span>
+          </div>
           {passwordFeedback && (
             <span className="float-right small mt-1">
               <strong>Password strength: </strong>
@@ -82,7 +87,7 @@ export const PasswordInputs = ({
           <Input
             id="password-confirm"
             name="password"
-            type="password"
+            type={PasswordInputType}
             autoComplete="new-password"
             required
             aria-describedby="invalidPassword"
