@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 
-const usePasswordToggle = () => {
+interface PasswordToggleProps {
+    PasswordInputType: "text" | "password";
+    ToggleIcon: React.ReactNode;
+  }
+
+const usePasswordToggle = (): PasswordToggleProps => {
   const [visible, setVisible] = useState(false);
 
   const eyeSlashIcon = (
@@ -32,7 +37,7 @@ const usePasswordToggle = () => {
 
   const InputType = visible ? "text" : "password";
 
-  return [InputType, Icon];
+  return { PasswordInputType: InputType, ToggleIcon: Icon };
 };
 
 export default usePasswordToggle;

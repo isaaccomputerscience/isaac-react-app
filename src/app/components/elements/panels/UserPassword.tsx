@@ -37,7 +37,7 @@ export const UserPassword = (
             setPasswordResetRequested(true);
         }
     };
-    const [PasswordInputType, ToggleIcon] = usePasswordToggle() as ["text" | "password", React.ReactNode];
+    const { PasswordInputType, ToggleIcon } = usePasswordToggle();
 
     return <CardBody className={"pb-0"}>
         <Row className="mb-2">

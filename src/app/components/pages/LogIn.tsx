@@ -167,7 +167,7 @@ interface EmailPasswordInputsProps {
     displayLabels?: boolean;
 }
 export const EmailPasswordInputs =({setEmail, setPassword, validEmail, validPassword, logInAttempted, passwordResetAttempted, errorMessage, displayLabels = true}: EmailPasswordInputsProps) => {
-    const [PasswordInputType, ToggleIcon] = usePasswordToggle() as ["text" | "password", React.ReactNode];
+    const { PasswordInputType, ToggleIcon } = usePasswordToggle();
     return <>
         <FormGroup>
             {displayLabels && <Label htmlFor="email-input">Email address</Label>}

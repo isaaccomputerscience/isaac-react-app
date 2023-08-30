@@ -33,7 +33,7 @@ export const PasswordInputs = ({
   setUnverifiedPassword,
   defaultPassword,
 }: PasswordInputProps) => {
-  const [PasswordInputType, ToggleIcon] = usePasswordToggle() as ["text" | "password", React.ReactNode];
+  const { PasswordInputType, ToggleIcon } = usePasswordToggle();
   const [passwordFeedback, setPasswordFeedback] =
     useState<PasswordFeedback | null>(null);
 
