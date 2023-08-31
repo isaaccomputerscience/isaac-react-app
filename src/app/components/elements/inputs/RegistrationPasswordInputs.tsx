@@ -3,7 +3,6 @@ import {
   Col,
   FormFeedback,
   FormGroup,
-  Input,
   Label,
   Row,
   UncontrolledTooltip,
@@ -16,6 +15,8 @@ import {
   validatePassword,
 } from "../../../services";
 import usePasswordToggle from "../../handlers/usePasswordToggle";
+import NewPassword from "./NewPassword";
+import ConfirmPassword from "./ConfirmPassword";
 interface PasswordInputProps {
   userToUpdate: Immutable<ValidationUser>;
   setUserToUpdate: (user: Immutable<ValidationUser>) => void;
@@ -25,7 +26,7 @@ interface PasswordInputProps {
   defaultPassword?: string;
 }
 
-export const PasswordInputs = ({
+export const RegistrationPasswordInputs = ({
   userToUpdate,
   setUserToUpdate,
   submissionAttempted,
@@ -45,7 +46,7 @@ export const PasswordInputs = ({
     <Row>
       <Col md={6}>
         <FormGroup>
-          <Label htmlFor="password-input">Password</Label>
+          <Label htmlFor="new-password">Password</Label>
           <span id={`password-help-tooltip`} className="icon-help ml-1" />
           <UncontrolledTooltip
             target={`password-help-tooltip`}
@@ -53,24 +54,18 @@ export const PasswordInputs = ({
           >
             {PASSWORD_REQUIREMENTS}
           </UncontrolledTooltip>
-          <div className="password-group">
-          <Input
-            id="password-input"
+          <NewPassword
             type={PasswordInputType}
-            name="password"
-            autoComplete="new-password"
-            required
             defaultValue={defaultPassword}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            onChange={(e) => {
               passwordDebounce(e.target.value, setPasswordFeedback);
             }}
-            onBlur={(e: React.ChangeEvent<HTMLInputElement>) => {
+            onBlur={(e) => {
               setUnverifiedPassword(e.target.value);
               passwordDebounce(e.target.value, setPasswordFeedback);
-            }}
+              }}
+            toggleIcon={ToggleIcon}
           />
-          <span id="password-toggle" className="password-toggle-icon">{ToggleIcon}</span>
-          </div>
           {passwordFeedback && (
             <span className="float-right small mt-1">
               <strong>Password strength: </strong>
@@ -84,13 +79,8 @@ export const PasswordInputs = ({
       <Col md={6}>
         <FormGroup>
           <Label htmlFor="password-confirm">Re-enter password</Label>
-          <Input
-            id="password-confirm"
-            name="password"
+          <ConfirmPassword
             type={PasswordInputType}
-            autoComplete="new-password"
-            required
-            aria-describedby="invalidPassword"
             disabled={!unverifiedPassword}
             invalid={submissionAttempted && !passwordIsValid}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,10 +1,13 @@
-import {Button, CardBody, Col, FormGroup, Input, Label, Row, UncontrolledTooltip, FormFeedback} from "reactstrap";
+import {Button, CardBody, Col, FormGroup, Label, Row, UncontrolledTooltip, FormFeedback} from "reactstrap";
 import React, {useState} from "react";
 import {PasswordFeedback, ValidationUser} from "../../../../IsaacAppTypes";
 import {AuthenticationProvider, UserAuthenticationSettingsDTO} from "../../../../IsaacApiTypes";
 import {PASSWORD_REQUIREMENTS, loadZxcvbnIfNotPresent, passwordDebounce, validateEmail} from "../../../services";
 import {linkAccount, resetPassword, unlinkAccount, useAppDispatch} from "../../../state";
 import usePasswordToggle from "../../handlers/usePasswordToggle";
+import NewPassword from "../inputs/NewPassword";
+import ConfirmPassword from "../inputs/ConfirmPassword";
+import CurrentPassword from "../inputs/CurrentPassword";
 
 interface UserPasswordProps {
     currentPassword?: string;
@@ -59,15 +62,13 @@ export const UserPassword = (
                         <Col md={{size: 6, offset: 3}}>
                             <FormGroup>
                                 <Label htmlFor="password-current">Current password</Label>
-                                <div className="password-group">
-                                <Input
-                                    id="password-current" type={PasswordInputType} name="current-password"
+                                <CurrentPassword
+                                    type={PasswordInputType} 
                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                         setCurrentPassword(e.target.value)
                                     }
+                                    toggleIcon={ToggleIcon}
                                 />
-                                <span className="password-toggle-icon">{ToggleIcon}</span>
-                                </div>
                             </FormGroup>
                         </Col>
                     </Row>
@@ -76,21 +77,18 @@ export const UserPassword = (
                         <Col md={{size: 6, offset: 3}}>
                             <FormGroup>
                                 <Label htmlFor="new-password">New password</Label>
-                                <Input
-                                    invalid={!!newPasswordConfirm && !isNewPasswordConfirmed}
-                                    id="new-password" 
-                                    type={PasswordInputType} 
-                                    name="new-password"
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                        setNewPassword(e.target.value);
-                                        passwordDebounce(e.target.value, setPasswordFeedback);
+                                <NewPassword
+                                    type={PasswordInputType}
+                                    onChange={(e) => {
+                                    setNewPassword(e.target.value);
+                                    passwordDebounce(e.target.value, setPasswordFeedback);
                                     }}
-                                    onBlur={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                        passwordDebounce(e.target.value, setPasswordFeedback);
+                                    onBlur={(e) => {
+                                    passwordDebounce(e.target.value, setPasswordFeedback);
                                     }}
                                     onFocus={loadZxcvbnIfNotPresent}
-                                    aria-describedby="passwordConfirmationValidationMessage"
-                                    disabled={!editingOtherUser && currentPassword == ""}
+                                    invalid={!!newPasswordConfirm && !isNewPasswordConfirmed}
+                                    disabled={!editingOtherUser && currentPassword === ""}
                                 />
                                 {passwordFeedback &&
                                 <span className='float-right small mt-1'>
@@ -104,25 +102,30 @@ export const UserPassword = (
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={{size: 6, offset: 3}}>
-                            <FormGroup>
-                                <Label htmlFor="password-confirm">Re-enter new password</Label>
-                                <Input
-                                    invalid={!!currentPassword && !isNewPasswordConfirmed}
-                                    id="password-confirm"
-                                    type={PasswordInputType} 
-                                    name="password-confirmation"
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                        setNewPasswordConfirm(e.target.value);
-                                        setMyUser(Object.assign({}, myUser, {password: e.target.value}));
-                                    }} 
-                                    aria-describedby="passwordConfirmationValidationMessage"
-                                    disabled={!editingOtherUser && currentPassword == ""}
-                                />
-                                    <FormFeedback id="passwordConfirmationValidationMessage">
-                                    {!arePasswordsIdentical ? "New passwords must match." : !passwordMeetsRequirements && PASSWORD_REQUIREMENTS}
-                                    </FormFeedback>
-                            </FormGroup>
+                        <Col md={{ size: 6, offset: 3 }}>
+                        <FormGroup>
+                            <Label htmlFor="password-confirm">
+                            Re-enter new password
+                            </Label>
+                            <ConfirmPassword
+                                invalid={!!currentPassword && !isNewPasswordConfirmed}
+                                type={PasswordInputType}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                setNewPasswordConfirm(e.target.value);
+                                setMyUser(
+                                Object.assign({}, myUser, {
+                                    password: e.target.value,
+                                })
+                                );
+                                }}
+                                disabled={!editingOtherUser && currentPassword == ""}
+                            />
+                            <FormFeedback id="invalidPassword" style={{display: "block"}}>
+                            {!arePasswordsIdentical
+                                ? "New passwords must match."
+                                : !passwordMeetsRequirements && PASSWORD_REQUIREMENTS}
+                            </FormFeedback>
+                        </FormGroup>
                         </Col>
                     </Row>
                 </Col>
