@@ -27,9 +27,8 @@ import {
 import {history, PASSWORD_REQUIREMENTS, SITE_SUBJECT_TITLE, validatePassword} from "../../services";
 import {Redirect} from "react-router";
 import {MetaDescription} from "../elements/MetaDescription";
-import {Loading} from "../handlers/IsaacSpinner";
-import usePasswordToggle from '../handlers/usePasswordToggle';
-import CurrentPassword from '../elements/inputs/CurrentPassword';
+import {Loading} from "../handlers/IsaacSpinner"; 
+import Password from '../elements/inputs/Password';
 
 /* Interconnected state and functions providing a "logging in" API - intended to be used within a component that displays
  * email and password inputs, and a button to login, all inside a Form component. You will also need a TFAInput component,
@@ -168,7 +167,7 @@ interface EmailPasswordInputsProps {
     displayLabels?: boolean;
 }
 export const EmailPasswordInputs =({setEmail, setPassword, validEmail, validPassword, logInAttempted, passwordResetAttempted, errorMessage, displayLabels = true}: EmailPasswordInputsProps) => {
-    const { PasswordInputType, ToggleIcon } = usePasswordToggle();
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     return <>
         <FormGroup>
             {displayLabels && <Label htmlFor="email-input">Email address</Label>}
@@ -190,11 +189,13 @@ export const EmailPasswordInputs =({setEmail, setPassword, validEmail, validPass
             <UncontrolledTooltip target={`password-help-tooltip`} placement="bottom">
             {PASSWORD_REQUIREMENTS}
             </UncontrolledTooltip></>)}
-            <CurrentPassword
-                type={PasswordInputType} 
+            <Password
+                passwordFieldType="Current"
+                isPasswordVisible={isPasswordVisible}
+                setIsPasswordVisible={setIsPasswordVisible} 
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => setPassword(event.target.value)}
                 invalid={!!errorMessage || (!validPassword && (logInAttempted))}
-                toggleIcon={ToggleIcon}
+                showToggleIcon={true}
             />
         </FormGroup>
     </>;

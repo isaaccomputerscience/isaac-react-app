@@ -4,10 +4,7 @@ import {PasswordFeedback, ValidationUser} from "../../../../IsaacAppTypes";
 import {AuthenticationProvider, UserAuthenticationSettingsDTO} from "../../../../IsaacApiTypes";
 import {PASSWORD_REQUIREMENTS, loadZxcvbnIfNotPresent, passwordDebounce, validateEmail} from "../../../services";
 import {linkAccount, resetPassword, unlinkAccount, useAppDispatch} from "../../../state";
-import usePasswordToggle from "../../handlers/usePasswordToggle";
-import NewPassword from "../inputs/NewPassword";
-import ConfirmPassword from "../inputs/ConfirmPassword";
-import CurrentPassword from "../inputs/CurrentPassword";
+import Password from "../inputs/Password";
 
 interface UserPasswordProps {
     currentPassword?: string;
@@ -40,7 +37,7 @@ export const UserPassword = (
             setPasswordResetRequested(true);
         }
     };
-    const { PasswordInputType, ToggleIcon } = usePasswordToggle();
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     return <CardBody className={"pb-0"}>
         <Row className="mb-2">
@@ -62,12 +59,14 @@ export const UserPassword = (
                         <Col md={{size: 6, offset: 3}}>
                             <FormGroup>
                                 <Label htmlFor="password-current">Current password</Label>
-                                <CurrentPassword
-                                    type={PasswordInputType} 
+                                <Password
+                                    passwordFieldType="Current"
+                                    isPasswordVisible={isPasswordVisible}
+                                    setIsPasswordVisible={setIsPasswordVisible} 
                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                         setCurrentPassword(e.target.value)
                                     }
-                                    toggleIcon={ToggleIcon}
+                                    showToggleIcon={true}
                                 />
                             </FormGroup>
                         </Col>
@@ -77,8 +76,10 @@ export const UserPassword = (
                         <Col md={{size: 6, offset: 3}}>
                             <FormGroup>
                                 <Label htmlFor="new-password">New password</Label>
-                                <NewPassword
-                                    type={PasswordInputType}
+                                <Password
+                                    passwordFieldType="New"
+                                    isPasswordVisible={isPasswordVisible}
+                                    setIsPasswordVisible={setIsPasswordVisible}
                                     onChange={(e) => {
                                     setNewPassword(e.target.value);
                                     passwordDebounce(e.target.value, setPasswordFeedback);
@@ -107,9 +108,11 @@ export const UserPassword = (
                             <Label htmlFor="password-confirm">
                             Re-enter new password
                             </Label>
-                            <ConfirmPassword
+                            <Password
+                                passwordFieldType="Confirm"
+                                isPasswordVisible={isPasswordVisible}
+                                setIsPasswordVisible={setIsPasswordVisible}
                                 invalid={!!currentPassword && !isNewPasswordConfirmed}
-                                type={PasswordInputType}
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                 setNewPasswordConfirm(e.target.value);
                                 setMyUser(
@@ -119,6 +122,7 @@ export const UserPassword = (
                                 );
                                 }}
                                 disabled={!editingOtherUser && currentPassword == ""}
+                                ariadescribedby="invalidPassword"
                             />
                             <FormFeedback id="invalidPassword" style={{display: "block"}}>
                             {!arePasswordsIdentical

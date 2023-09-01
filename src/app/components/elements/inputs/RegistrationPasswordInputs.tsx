@@ -14,9 +14,7 @@ import {
   passwordDebounce,
   validatePassword,
 } from "../../../services";
-import usePasswordToggle from "../../handlers/usePasswordToggle";
-import NewPassword from "./NewPassword";
-import ConfirmPassword from "./ConfirmPassword";
+import Password from "./Password";
 interface PasswordInputProps {
   userToUpdate: Immutable<ValidationUser>;
   setUserToUpdate: (user: Immutable<ValidationUser>) => void;
@@ -34,7 +32,7 @@ export const RegistrationPasswordInputs = ({
   setUnverifiedPassword,
   defaultPassword,
 }: PasswordInputProps) => {
-  const { PasswordInputType, ToggleIcon } = usePasswordToggle();
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [passwordFeedback, setPasswordFeedback] =
     useState<PasswordFeedback | null>(null);
 
@@ -54,8 +52,10 @@ export const RegistrationPasswordInputs = ({
           >
             {PASSWORD_REQUIREMENTS}
           </UncontrolledTooltip>
-          <NewPassword
-            type={PasswordInputType}
+          <Password
+            passwordFieldType="New"
+            isPasswordVisible={isPasswordVisible}
+            setIsPasswordVisible={setIsPasswordVisible}
             defaultValue={defaultPassword}
             onChange={(e) => {
               passwordDebounce(e.target.value, setPasswordFeedback);
@@ -64,7 +64,7 @@ export const RegistrationPasswordInputs = ({
               setUnverifiedPassword(e.target.value);
               passwordDebounce(e.target.value, setPasswordFeedback);
               }}
-            toggleIcon={ToggleIcon}
+            showToggleIcon={true}
           />
           {passwordFeedback && (
             <span className="float-right small mt-1">
@@ -79,13 +79,16 @@ export const RegistrationPasswordInputs = ({
       <Col md={6}>
         <FormGroup>
           <Label htmlFor="password-confirm">Re-enter password</Label>
-          <ConfirmPassword
-            type={PasswordInputType}
+          <Password
+            passwordFieldType="Confirm"
+            isPasswordVisible={isPasswordVisible}
+            setIsPasswordVisible={setIsPasswordVisible}
             disabled={!unverifiedPassword}
             invalid={submissionAttempted && !passwordIsValid}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setUserToUpdate({ ...userToUpdate, password: e.target.value });
             }}
+            ariadescribedby="invalidPassword"
           />
           {/* Feedback that appears for password match before submission */}
           <FormFeedback id="invalidPassword" className="always-show">
