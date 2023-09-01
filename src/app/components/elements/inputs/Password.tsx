@@ -1,7 +1,7 @@
 import React from "react";
 import { Input } from "reactstrap";
 
-interface PasswordProps {
+export interface PasswordProps {
   isPasswordVisible: boolean;
   setIsPasswordVisible: React.Dispatch<React.SetStateAction<boolean>>;
   passwordFieldType: "New" | "Confirm" | "Current";
