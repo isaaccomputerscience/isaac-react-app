@@ -63,7 +63,7 @@ export const RegistrationPasswordInputs = ({
             onBlur={(e) => {
               setUnverifiedPassword(e.target.value);
               passwordDebounce(e.target.value, setPasswordFeedback);
-              }}
+            }}
             showToggleIcon={true}
           />
           {passwordFeedback && (
@@ -88,7 +88,7 @@ export const RegistrationPasswordInputs = ({
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setUserToUpdate({ ...userToUpdate, password: e.target.value });
             }}
-            ariadescribedby="invalidPassword"
+            ariaDescribedBy="invalidPassword"
           />
           {/* Feedback that appears for password match before submission */}
           <FormFeedback id="invalidPassword" className="always-show">

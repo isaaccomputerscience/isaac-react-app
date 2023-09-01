@@ -172,7 +172,7 @@ export const EmailPasswordInputs =({setEmail, setPassword, validEmail, validPass
         <FormGroup>
             {displayLabels && <Label htmlFor="email-input">Email address</Label>}
             <Input
-                id="email-input" autoComplete="email" type="email" name="email" placeholder="Email address"
+                id="email-input" autoComplete="email" type="email" name="email"
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => setEmail(event.target.value)}
                 invalid={!!errorMessage || (!validEmail && (logInAttempted || passwordResetAttempted))}
                 aria-describedby="emailValidationMessage"
