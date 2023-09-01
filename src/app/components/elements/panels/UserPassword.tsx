@@ -58,7 +58,7 @@ export const UserPassword = (
                     <Row>
                         <Col md={{size: 6, offset: 3}}>
                             <FormGroup>
-                                <Label htmlFor="password-current">Current password</Label>
+                                <Label htmlFor="current-password">Current password</Label>
                                 <Password
                                     passwordFieldType="Current"
                                     isPasswordVisible={isPasswordVisible}
