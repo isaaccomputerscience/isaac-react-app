@@ -6,9 +6,9 @@ import { IsaacContentValueOrChildren } from "../content/IsaacContentValueOrChild
 import { Tabs } from "./Tabs";
 
 export const PromoContent = ({ item }: { item: IsaacPodDTO }) => {
-  const { title, subtitle, value, image, url } = item;
+  const { title, subtitle, value, image, url, encoding } = item;
 
-  const path = image && image.src && apiHelper.determineImageUrl(image.src);
+  const path = image?.src && apiHelper.determineImageUrl(image.src);
   return (
     <Tabs tabContentClass="mt-3 mt-md-5" activeTabOverride={1}>
       {{
@@ -21,10 +21,7 @@ export const PromoContent = ({ item }: { item: IsaacPodDTO }) => {
               xl={4}
               className="d-flex align-items-center justify-content-center"
             >
-              <img
-                src={path}
-                alt={image?.altText || "promo image"}
-              />
+              <img src={path} alt={image?.altText || "promo image"} />
             </Col>
             <Col xs={12} md className="pt-3 pl-3">
               <h5>
@@ -34,7 +31,7 @@ export const PromoContent = ({ item }: { item: IsaacPodDTO }) => {
               </h5>
               <div className="text-left">
                 <IsaacContentValueOrChildren
-                  encoding={item.encoding}
+                  encoding={encoding}
                   value={value}
                 />
               </div>

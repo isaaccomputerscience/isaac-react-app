@@ -12,6 +12,7 @@ import classNames from "classnames";
 import { TeacherPromoItem } from "../elements/TeacherPromoItem";
 import { PromoContent } from "../elements/PromoContent";
 import { ShowLoading } from "../handlers/ShowLoading";
+import { IsaacPodDTO } from "../../../IsaacApiTypes";
 
 interface ShowMeButtonsProps {
   className?: string;
@@ -32,12 +33,41 @@ export const Homepage = () => {
   });
 
   const featuredNewsItem = news && user?.loggedIn ? news[0] : undefined;
-  const carouselNewsItems = news
-    ? user?.loggedIn && user?.role !== "TEACHER"
-      ? news.slice(1)
-      : news
-    : [];
+
+  let carouselNewsItems: IsaacPodDTO[] = [];
+  if (news) {
+    if (user?.loggedIn) {
+      carouselNewsItems =
+        user?.role === "TEACHER" && promo ? news : news.slice(1);
+    } else carouselNewsItems = news;
+  }
+
   const promoItem = promo ? promo[0] : undefined;
+
+  const PromoOrFeaturedNews = ({
+    contentType,
+  }: {
+    contentType: "promo" | "news";
+  }) => {
+    const { dataTestId, className, content } = {
+      promo: {
+        dataTestId: "promo-tile",
+        className: "mt-4 d-block",
+        content: <TeacherPromoItem item={promoItem} />,
+      },
+      news: {
+        dataTestId: "featured-news-item",
+        className: "d-none d-lg-block",
+        content: <FeaturedNewsItem item={featuredNewsItem} />,
+      },
+    }[contentType];
+
+    return (
+      <Col md="12" lg="7" className={className} data-testid={dataTestId}>
+        {content}
+      </Col>
+    );
+  };
 
   const ShowMeButtons = ({ className }: ShowMeButtonsProps) => (
     <Container
@@ -92,25 +122,11 @@ export const Homepage = () => {
                     <ShowMeButtons className={"pt-xl-2"} />
                     {/*<img id="homepageHeroImg" className="img-fluid" alt="Three Computer Science students studying with two laptops, one with code on the screen" src="/assets/ics_hero.svg" />*/}
                   </Col>
-                  {user?.role === "TEACHER" && promo ? (
-                    <Col
-                      data-testid={"promo-tile"}
-                      md="12"
-                      lg="7"
-                      className="mt-4 d-block"
-                    >
-                      <TeacherPromoItem item={promoItem} />
-                    </Col>
-                  ) : (
-                    <Col
-                      data-testid={"featured-news-item"}
-                      md="12"
-                      lg="7"
-                      className="d-none d-lg-block"
-                    >
-                      <FeaturedNewsItem item={featuredNewsItem} />
-                    </Col>
-                  )}
+                  <PromoOrFeaturedNews
+                    contentType={
+                      user.role === "TEACHER" && promo ? "promo" : "news"
+                    }
+                  />
                 </Row>
               </>
             ) : (
@@ -195,11 +211,7 @@ export const Homepage = () => {
               </Container>
             </section>
 
-            <section
-              data-testid="promo-content"
-              id="promo-content"
-              className="row bg-primary pattern-05"
-            >
+            <section id="promo-content" className="row bg-primary pattern-05">
               <ShowLoading
                 until={promoItem}
                 thenRender={() => (
