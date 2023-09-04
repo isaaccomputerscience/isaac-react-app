@@ -38,7 +38,8 @@ export const Homepage = () => {
   let carouselNewsItems: IsaacPodDTO[] = [];
 
   if (news) {
-    (user?.loggedIn && user?.role === "TEACHER") || user?.loggedIn === false
+    (user?.loggedIn && user?.role === "TEACHER" && promoItem) ||
+    user?.loggedIn === false
       ? (carouselNewsItems = news)
       : (carouselNewsItems = news.slice(1));
   }
