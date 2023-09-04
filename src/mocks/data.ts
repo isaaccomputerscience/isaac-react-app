@@ -4826,7 +4826,7 @@ export const mockPromoPods = {
       children: [],
       published: false,
       src: "/assets/events/teacher.svg",
-      altText: ""
+      altText: "sample promo image text"
     },
     url: "https://www.google.com",
     published: true,
