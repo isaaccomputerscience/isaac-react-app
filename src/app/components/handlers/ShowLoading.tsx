@@ -14,7 +14,7 @@ interface ShowLoadingProps<T> {
 
 export const defaultPlaceholder = (
   <div className="w-100 text-center pb-2">
-    <h2 aria-hidden="true" className="pt-5">
+    <h2 data-testid="loading-spinner" aria-hidden="true" className="pt-5">
       Loading...
     </h2>
     <IsaacSpinner />
