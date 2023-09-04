@@ -9,6 +9,7 @@ import {
     mockMyAssignments,
     mockNewsPods,
     mockPage,
+    mockPromoPods,
     mockQuizAssignments,
     mockSetAssignments,
     mockUser,
@@ -142,7 +143,15 @@ export const handlers = [
     }),
     rest.get(API_PATH + "/pages/pods/:tag", (req, res, ctx) => {
         const {tag} = req.params;
-        const podsFilteredByTag = produce(mockNewsPods, pods => {
+        let mockPods;
+        switch (tag) {
+            case "promo":
+                mockPods = mockPromoPods;
+                break;
+            default:
+                mockPods = mockNewsPods;
+        }
+        const podsFilteredByTag = produce(mockPods, pods => {
             pods.results = pods.results.filter(p => p.tags.includes(tag as string))
             pods.totalResults = pods.results.length;
         });

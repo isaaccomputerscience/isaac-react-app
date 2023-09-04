@@ -7,8 +7,10 @@ import { Tabs } from "./Tabs";
 
 export const PromoContent = ({ item }: { item: IsaacPodDTO }) => {
   const { title, subtitle, value, image, url, encoding } = item;
-
-  const path = image?.src && apiHelper.determineImageUrl(image.src);
+  const defaultImage = "/assets/ics_hero.svg";
+  const path = image?.src
+    ? apiHelper.determineImageUrl(image.src)
+    : apiHelper.determineImageUrl(defaultImage);
   return (
     <Tabs tabContentClass="mt-3 mt-md-5" activeTabOverride={1}>
       {{

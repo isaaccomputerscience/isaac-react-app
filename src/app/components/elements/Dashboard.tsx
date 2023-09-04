@@ -98,7 +98,9 @@ export const Dashboard = ({
       </Col>
       <PromoOrFeaturedNews
         contentType={
-          user?.loggedIn && user.role === "TEACHER" ? "promo" : "news"
+          user?.loggedIn && user.role === "TEACHER" && promoItem
+            ? "promo"
+            : "news"
         }
       />
     </Row>

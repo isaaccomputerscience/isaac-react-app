@@ -4808,6 +4808,34 @@ export const mockNewsPods = {
     totalResults: 5
 };
 
+const promoPodTag = "promo";
+export const mockPromoPods = {
+    results: [
+{
+    id: "test-promo-pod",
+    title: "Test Promo Pod",
+    type: "isaacPod",
+    encoding: "markdown",
+    children: [],
+    value: "This is a test promo pod.",
+    tags: [
+        promoPodTag
+      ],
+    image: {
+      type: "image",
+      children: [],
+      published: false,
+      src: "/assets/events/teacher.svg",
+      altText: ""
+    },
+    url: "https://www.google.com",
+    published: true,
+    subtitle: "Custom link text",            
+  }
+],
+  totalResults: 1
+};
+
 export const mockFragment = (pageId: string) => ({
     id: pageId,
     type: "isaacPageFragment",

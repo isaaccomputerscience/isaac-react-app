@@ -33,7 +33,7 @@ export const Homepage = () => {
 
   const promoItem = promo ? promo[0] : undefined;
 
-  const featuredNewsItem = (news && user?.loggedIn) ? news[0] : undefined;
+  const featuredNewsItem = news && user?.loggedIn ? news[0] : undefined;
 
   let carouselNewsItems: IsaacPodDTO[] = [];
 
@@ -70,7 +70,7 @@ export const Homepage = () => {
             </section>
             <section id="promo-content" className="row bg-primary pattern-05">
               <ShowLoading
-                until={promoItem}
+                until={promo}
                 thenRender={() => (
                   <Container>
                     <Col className="py-5">
