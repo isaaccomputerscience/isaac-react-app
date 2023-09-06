@@ -38,10 +38,14 @@ export const Homepage = () => {
   let carouselNewsItems: IsaacPodDTO[] = [];
 
   if (news) {
-    (user?.loggedIn && user?.role === "TEACHER" && promoItem) ||
-    user?.loggedIn === false
-      ? (carouselNewsItems = news)
-      : (carouselNewsItems = news.slice(1));
+    if (
+      (user?.loggedIn && user?.role === "TEACHER" && promoItem) ||
+      user?.loggedIn === false
+    ) {
+      carouselNewsItems = news;
+    } else {
+      carouselNewsItems = news.slice(1);
+    }
   }
 
   return (

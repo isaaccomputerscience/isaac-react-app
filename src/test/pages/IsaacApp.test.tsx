@@ -160,7 +160,7 @@ describe("IsaacApp", () => {
     it.each(roles)(
       "should not show the promo content banner for %s users",
       async (role) => {
-        renderTestEnvironment({ role: role as UserRole });
+        renderTestEnvironment({ role });
         await screen.findByTestId("main");
         const promoContent = document.querySelector("#promo-content");
         expect(promoContent).not.toBeInTheDocument();

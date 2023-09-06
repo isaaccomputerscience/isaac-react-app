@@ -4808,7 +4808,6 @@ export const mockNewsPods = {
     totalResults: 5
 };
 
-const promoPodTag = "promo";
 export const mockPromoPods = {
     results: [
 {
@@ -4819,7 +4818,7 @@ export const mockPromoPods = {
     children: [],
     value: "This is a test promo pod.",
     tags: [
-        promoPodTag
+        "promo"
       ],
     image: {
       type: "image",
