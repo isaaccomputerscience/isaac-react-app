@@ -1,8 +1,6 @@
 import { screen } from "@testing-library/react";
 import { PromoContent } from "../../../app/components/elements/PromoContent";
 import { mockPromoPods } from "../../../mocks/data";
-
-import { IsaacPodDTO } from "../../../IsaacApiTypes";
 import { renderTestEnvironment } from "../../utils";
 
 const mockItem = mockPromoPods.results[0];
@@ -11,7 +9,7 @@ describe("PromoContent", () => {
   it("renders title, subtitle, image, url, value", () => {
     renderTestEnvironment({
       PageComponent: PromoContent,
-      componentProps: { item: mockItem as IsaacPodDTO },
+      componentProps: { item: mockItem },
       initialRouteEntries: ["/"],
     });
     const title = screen.getByText(mockItem.title);
@@ -34,7 +32,7 @@ describe("PromoContent", () => {
     renderTestEnvironment({
       PageComponent: PromoContent,
       componentProps: {
-        item: { ...mockItem, image: undefined } as IsaacPodDTO,
+        item: { ...mockItem, image: undefined },
       },
       initialRouteEntries: ["/"],
     });

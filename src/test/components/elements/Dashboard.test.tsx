@@ -1,5 +1,5 @@
 import { mockNewsPods, mockPromoPods } from "../../../mocks/data";
-import { IsaacPodDTO, UserRole } from "../../../IsaacApiTypes";
+import { UserRole } from "../../../IsaacApiTypes";
 import { Dashboard } from "../../../app/components/elements/Dashboard";
 import { renderTestEnvironment } from "../../utils";
 import { screen, waitFor } from "@testing-library/react";
@@ -13,8 +13,8 @@ describe("Dashboard", () => {
       role: role,
       PageComponent: Dashboard,
       componentProps: {
-        featuredNewsItem: mockFeaturedNewsItem as IsaacPodDTO,
-        promoItem: mockPromoItem as IsaacPodDTO,
+        featuredNewsItem: mockFeaturedNewsItem,
+        promoItem: mockPromoItem,
         ...props,
       },
       initialRouteEntries: ["/"],
