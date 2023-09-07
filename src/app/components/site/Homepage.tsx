@@ -72,7 +72,6 @@ export const Homepage = () => {
                   <WhySignUpTabs />
                 </Col>
               </Container>
-
             </section>
             <section id="promo-content" className="row bg-primary pattern-05">
               <ShowLoading
@@ -123,9 +122,7 @@ export const Homepage = () => {
             <div className="eventList pt-5 pattern-03">
               <h2 className="h-title text-center mb-4">Events</h2>
               <p className="pt-4 pb-2 event-description text-center col-md-8 offset-md-2">
-                {
-                  "We offer free online events for students and teachers. Visit our "
-                }
+                {"We offer free online events for students. Visit our "}
                 <Link to="/events">Events page</Link>
                 {" to see what’s happening, and sign up today!"}
               </p>
