@@ -1,6 +1,7 @@
 import { screen } from "@testing-library/react";
 import {
   checkPageTitle,
+  checkPasswordInputTypes,
   fillFormCorrectly,
   getFormFields,
   renderTestEnvironment,
@@ -142,22 +143,14 @@ describe("Student Registration", () => {
   it("Clicking the show password icon will make the text of password field visible, and the icon change", async () => {
     renderStudentRegistration();
     checkPageTitle("Register as a student");
-    const formFields = getFormFields();
-    const passwordInput = formFields.password() as HTMLInputElement;
-    const confirmPasswordInput =
-      formFields.confirmPassword() as HTMLInputElement;
-    [passwordInput, confirmPasswordInput].forEach((input) => {
-      expect(input.type).toBe("password");
-    });
+    checkPasswordInputTypes("password");
     const showPasswordToggle = screen.queryByTestId("show-password-icon");
     if (showPasswordToggle) {
       await userEvent.click(showPasswordToggle);
     } else {
       fail("Show password icon not found");
     }
-    [passwordInput, confirmPasswordInput].forEach((input) => {
-      expect(input.type).toBe("text");
-    });
+    checkPasswordInputTypes("text");
     const hidePasswordToggle = await screen.findByTestId("hide-password-icon");
     expect(hidePasswordToggle).toBeInTheDocument();
   });
