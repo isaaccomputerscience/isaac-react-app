@@ -19,7 +19,11 @@ describe("Password Component", () => {
     onFocus = jest.fn();
   });
 
-  const passwordFieldTypes = ["New", "Confirm", "Current"] as const;
+  const passwordFieldTypes = [
+    { type: "New", expectedName: "new-password" },
+    { type: "Confirm", expectedName: "password-confirm" },
+    { type: "Current", expectedName: "current-password" },
+  ] as const;
 
   const renderPassword = (props: Partial<PasswordProps> = {}) => {
     const defaultProps: PasswordProps = {
@@ -54,32 +58,32 @@ describe("Password Component", () => {
   });
 
   describe("Toggle Icon", () => {
-    test("shows toggle icon and handles click, changing password input type", () => {
-      const { getByTestId } = renderPassword({
+    test("shows toggle icon and handles click, changing password to visible", () => {
+      const { getByTestId, container } = renderPassword({
         showToggleIcon: true,
       });
-
+      passwordInput = container.querySelector(
+        'input[name="new-password"]'
+      ) as HTMLInputElement;
       toggleIcon = getByTestId("show-password-icon");
       expect(passwordInput).toHaveAttribute("type", "password");
       fireEvent.click(toggleIcon);
       expect(setIsPasswordVisibleMock).toHaveBeenCalledTimes(1);
       expect(setIsPasswordVisibleMock).toHaveBeenCalledWith(true);
+    });
 
-      const { container: updatedContainer } = renderPassword({
+    test("shows toggle icon and handles click, changing password to hidden", () => {
+      const { getByTestId, container } = renderPassword({
         isPasswordVisible: true,
         showToggleIcon: true,
       });
-
-      passwordInput = updatedContainer.querySelector(
+      passwordInput = container.querySelector(
         'input[name="new-password"]'
       ) as HTMLInputElement;
-
       expect(passwordInput).toHaveAttribute("type", "text");
-
       const hideIcon = getByTestId("hide-password-icon");
       fireEvent.click(hideIcon);
-
-      expect(setIsPasswordVisibleMock).toHaveBeenCalledTimes(2);
+      expect(setIsPasswordVisibleMock).toHaveBeenCalledTimes(1);
       expect(setIsPasswordVisibleMock).toHaveBeenCalledWith(false);
     });
 
@@ -104,24 +108,10 @@ describe("Password Component", () => {
 
     test.each(passwordFieldTypes)(
       "renders with correct name attribute for passwordFieldType: %s",
-      (passwordFieldType) => {
+      ({ type, expectedName }) => {
         const { container } = renderPassword({
-          passwordFieldType: passwordFieldType,
+          passwordFieldType: type,
         });
-
-        let expectedName;
-
-        switch (passwordFieldType) {
-          case "New":
-            expectedName = "new-password";
-            break;
-          case "Confirm":
-            expectedName = "password-confirm";
-            break;
-          default:
-            expectedName = "current-password";
-            break;
-        }
 
         passwordInput = container.querySelector(
           `input[name="${expectedName}"]`
