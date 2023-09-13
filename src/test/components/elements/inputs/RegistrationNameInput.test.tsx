@@ -1,9 +1,13 @@
-import { fireEvent, screen } from "@testing-library/react";
-import { renderTestEnvironment } from "../../../utils";
+import { fireEvent } from "@testing-library/react";
+import { getFormFields, renderTestEnvironment } from "../../../utils";
 import { RegistrationNameInput } from "../../../../app/components/elements/inputs/RegistrationNameInput";
 import { mockUserToUpdate } from "../../../../mocks/data";
 
 const setUserToUpdateMock = jest.fn();
+
+const getValidationMessage = (field: string) => {
+  return document.getElementById(`${field}ValidationMessage`);
+};
 
 describe("RegistrationNameInput", () => {
   const setupTest = (props = {}) => {
@@ -22,19 +26,16 @@ describe("RegistrationNameInput", () => {
 
   it("renders the component with first and last name inputs", () => {
     setupTest();
-
-    const firstNameInput = screen.getByLabelText("First name");
-    const lastNameInput = screen.getByLabelText("Last name");
-
-    expect(firstNameInput).toBeInTheDocument();
-    expect(lastNameInput).toBeInTheDocument();
+    const { givenName, familyName } = getFormFields();
+    expect(givenName()).toBeInTheDocument();
+    expect(familyName()).toBeInTheDocument();
   });
 
   it("updates user's first name in the userToUpdate object when input changes", () => {
     setupTest();
-    const firstNameInput = screen.getByLabelText("First name");
-    fireEvent.change(firstNameInput, { target: { value: "John" } });
-    fireEvent.blur(firstNameInput);
+    const { givenName } = getFormFields();
+    fireEvent.change(givenName(), { target: { value: "John" } });
+    fireEvent.blur(givenName());
     expect(setUserToUpdateMock).toHaveBeenCalledWith({
       ...mockUserToUpdate,
       givenName: "John",
@@ -43,9 +44,9 @@ describe("RegistrationNameInput", () => {
 
   it("updates user's last name in the userToUpdate object when input changes", () => {
     setupTest();
-    const familyNameInput = screen.getByLabelText("Last name");
-    fireEvent.change(familyNameInput, { target: { value: "Test" } });
-    fireEvent.blur(familyNameInput);
+    const { familyName } = getFormFields();
+    fireEvent.change(familyName(), { target: { value: "Test" } });
+    fireEvent.blur(familyName());
     expect(setUserToUpdateMock).toHaveBeenCalledWith({
       ...mockUserToUpdate,
       familyName: "Test",
@@ -61,8 +62,8 @@ describe("RegistrationNameInput", () => {
       },
       attemptedSignUp: true,
     });
-    const firstNameValidationMessage = screen.getByText("Enter a valid name");
-    expect(firstNameValidationMessage).toBeInTheDocument();
+    const firstNameError = getValidationMessage("givenName");
+    expect(firstNameError?.textContent).toContain("Enter a valid name");
   });
 
   it("displays validation message when familyName is invalid and signup attempted", () => {
@@ -74,8 +75,8 @@ describe("RegistrationNameInput", () => {
       },
       attemptedSignUp: true,
     });
-    const firstNameValidationMessage = screen.getByText("Enter a valid name");
-    expect(firstNameValidationMessage).toBeInTheDocument();
+    const familyNameError = getValidationMessage("familyName");
+    expect(familyNameError?.textContent).toContain("Enter a valid name");
   });
 
   it("displays two validation messages when both givenName and familyName are invalid and signup attempted", () => {
@@ -87,8 +88,11 @@ describe("RegistrationNameInput", () => {
       },
       attemptedSignUp: true,
     });
-    const validationMessages = screen.queryAllByText("Enter a valid name");
-    expect(validationMessages).toHaveLength(2);
+    const firstNameError = getValidationMessage("givenName");
+    const familyNameError = getValidationMessage("familyName");
+    [firstNameError, familyNameError].forEach((error) => {
+      expect(error?.textContent).toContain("Enter a valid name");
+    });
   });
 
   it("does not display validation message when both names are valid", () => {
@@ -100,7 +104,10 @@ describe("RegistrationNameInput", () => {
       },
       attemptedSignUp: true,
     });
-    const nameValidationMessage = screen.queryByText("Enter a valid name");
-    expect(nameValidationMessage).toBeNull();
+    const firstNameError = getValidationMessage("givenName");
+    const familyNameError = getValidationMessage("familyName");
+    [firstNameError, familyNameError].forEach((error) => {
+      expect(error?.textContent).toHaveLength(0);
+    });
   });
 });

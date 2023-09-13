@@ -1,6 +1,6 @@
 import { screen } from "@testing-library/react";
 import { RegistrationSubmit } from "../../../../app/components/elements/inputs/RegistrationSubmit";
-import { renderTestEnvironment } from "../../../utils";
+import { getFormFields, renderTestEnvironment } from "../../../utils";
 
 describe("RegistrationSubmit", () => {
   const setupTest = (props = {}) => {
@@ -15,35 +15,37 @@ describe("RegistrationSubmit", () => {
     });
   };
 
-  it("renders the component, and submit button is enabled when isRecaptchaTicked is true", async () => {
+  it("renders the component", () => {
     setupTest();
     expect(
       screen.getByText(/by clicking 'register my account'/i)
     ).toBeInTheDocument();
-    const submitButton = screen.getByRole("button", {
-      name: /register my account/i,
-    });
-    expect(submitButton).not.toBeDisabled();
+    const { submitButton } = getFormFields();
+    expect(submitButton()).toBeInTheDocument();
   });
 
-  it("disables the submit button when isRecaptchaTicked is false", async () => {
+  it("submit button is enabled when isRecaptchaTicked is true", () => {
+    setupTest();
+    const { submitButton } = getFormFields();
+    expect(submitButton()).toBeEnabled();
+  });
+
+  it("disables the submit button when isRecaptchaTicked is false", () => {
     setupTest({
       isRecaptchaTicked: false,
     });
-    const submitButton = screen.getByRole("button", {
-      name: /register my account/i,
-    });
-    expect(submitButton).toBeDisabled();
+    const { submitButton } = getFormFields();
+    expect(submitButton()).toBeDisabled();
   });
 
-  it("renders Terms of Use link", async () => {
+  it("renders Terms of Use link", () => {
     setupTest();
     const termsLink = screen.getByRole("link", { name: /terms of use/i });
     expect(termsLink).toBeInTheDocument();
     expect(termsLink.getAttribute("href")).toBe("/terms");
   });
 
-  it("renders Privacy Policy link", async () => {
+  it("renders Privacy Policy link", () => {
     setupTest();
     const privacyLink = screen.getByRole("link", { name: /privacy policy/i });
     expect(privacyLink).toBeInTheDocument();

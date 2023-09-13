@@ -6,6 +6,24 @@ import { mockUserToUpdate } from "../../../../mocks/data";
 const mockSetUserToUpdate = jest.fn();
 const mockSetDobOver13CheckboxChecked = jest.fn();
 
+const getDateOfBirthInputs = () => {
+  return ["day", "month", "year"].map((unit) =>
+    screen.getByRole("combobox", {
+      name: new RegExp(`${unit} of birth`, "i"),
+    })
+  );
+};
+
+const getOver13Checkbox = () => {
+  return screen.queryByRole("checkbox", {
+    name: /i am at least 13 years old/i,
+  });
+};
+
+const getDobFeedbackElement = () => {
+  return document.getElementById("dob-validation-feedback") as HTMLElement;
+};
+
 describe("RegistrationDobInput", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -39,39 +57,23 @@ describe("RegistrationDobInput", () => {
 
   it("renders correctly for student registration", () => {
     setupTest("/register/student");
-    const dateOfBirthInputs = ["day", "month", "year"].map((unit) =>
-      screen.getByRole("combobox", {
-        name: new RegExp(`${unit} of birth`, "i"),
-      })
-    );
+    const dateOfBirthInputs = getDateOfBirthInputs();
     dateOfBirthInputs.forEach((input) => expect(input).toBeInTheDocument());
-    const over13Checkbox = screen.getByRole("checkbox", {
-      name: /i am at least 13 years old/i,
-    });
+    const over13Checkbox = getOver13Checkbox();
     expect(over13Checkbox).toBeInTheDocument();
   });
 
   it("renders correctly for teacher registration", () => {
     setupTest("/register/teacher");
-    const dateOfBirthInputs = ["day", "month", "year"].map((unit) =>
-      screen.getByRole("combobox", {
-        name: new RegExp(`${unit} of birth`, "i"),
-      })
-    );
+    const dateOfBirthInputs = getDateOfBirthInputs();
     dateOfBirthInputs.forEach((input) => expect(input).toBeInTheDocument());
-    const over13Checkbox = screen.queryByRole("checkbox", {
-      name: /i am at least 13 years old/i,
-    });
+    const over13Checkbox = getOver13Checkbox();
     expect(over13Checkbox).not.toBeInTheDocument();
   });
 
-  it("changes the user details when the date of birth dropdowns are changed", async () => {
+  it("changes the user details when the date of birth dropdowns are changed", () => {
     setupTest("/register/student");
-    const dateOfBirthInputs = ["day", "month", "year"].map((unit) =>
-      screen.getByRole("combobox", {
-        name: new RegExp(`${unit} of birth`, "i"),
-      })
-    );
+    const dateOfBirthInputs = getDateOfBirthInputs();
     fireEvent.change(dateOfBirthInputs[0], { target: { value: "15" } });
     fireEvent.change(dateOfBirthInputs[1], { target: { value: "3" } });
     fireEvent.change(dateOfBirthInputs[2], { target: { value: "2006" } });
@@ -82,21 +84,28 @@ describe("RegistrationDobInput", () => {
         dateOfBirth: expectedDate,
       })
     );
+  });
+
+  it("unticks the over 13 checkbox with each change to date of birth dropdowns", () => {
+    setupTest("/register/student");
+    const dateOfBirthInputs = getDateOfBirthInputs();
+    fireEvent.change(dateOfBirthInputs[0], { target: { value: "15" } });
+    expect(mockSetDobOver13CheckboxChecked).toHaveBeenCalledTimes(1);
+    fireEvent.change(dateOfBirthInputs[1], { target: { value: "3" } });
+    expect(mockSetDobOver13CheckboxChecked).toHaveBeenCalledTimes(2);
+    fireEvent.change(dateOfBirthInputs[2], { target: { value: "2006" } });
     expect(mockSetDobOver13CheckboxChecked).toHaveBeenCalledTimes(3);
     expect(mockSetDobOver13CheckboxChecked).toHaveBeenCalledWith(false);
   });
 
-  it("updates the over-13 value if checkbox is checked", async () => {
+  it("updates the over-13 value if checkbox is clicked", () => {
     setupTest("/register/student");
-    const over13Checkbox = screen.getByRole("checkbox", {
-      name: /i am at least 13 years old/i,
-    });
-    fireEvent.click(over13Checkbox);
+    fireEvent.click(getOver13Checkbox() as HTMLElement);
     expect(mockSetDobOver13CheckboxChecked).toHaveBeenCalledTimes(1);
     expect(mockSetDobOver13CheckboxChecked).toHaveBeenCalledWith(true);
   });
 
-  it("if a valid date of birth is selected, the over 13 checkbox is disabled", async () => {
+  it("if user date of birth is over 13y old, the checkbox is disabled and no error message is shown", () => {
     setupTest("/register/student", {
       userToUpdate: {
         ...mockUserToUpdate,
@@ -104,36 +113,32 @@ describe("RegistrationDobInput", () => {
       },
       dobOver13CheckboxChecked: true,
     });
-    const over13Checkbox = screen.getByRole("checkbox", {
-      name: /i am at least 13 years old/i,
-    });
+    const over13Checkbox = getOver13Checkbox();
     expect(over13Checkbox).toBeDisabled();
-    const dobError = screen.queryByText(/please enter a valid date of birth/i);
-    expect(dobError).toBeNull();
+    const dobValidationFeedbackElement = getDobFeedbackElement();
+    expect(dobValidationFeedbackElement.textContent).toHaveLength(0);
   });
 
-  it("if an invalid date of birth is selected, an error is shown", async () => {
+  it("if user date of birth is under 13y old, an error is shown", () => {
+    const elevenYearsAgo = new Date();
+    elevenYearsAgo.setFullYear(elevenYearsAgo.getFullYear() - 11);
     setupTest("/register/student", {
       userToUpdate: {
         ...mockUserToUpdate,
-        dateOfBirth: new Date("2019-03-15"),
+        dateOfBirth: elevenYearsAgo,
       },
     });
-    const dateOfBirthInputs = ["day", "month", "year"].map((unit) =>
-      screen.getByRole("combobox", {
-        name: new RegExp(`${unit} of birth`, "i"),
-      })
-    );
+    const dateOfBirthInputs = getDateOfBirthInputs();
     dateOfBirthInputs.forEach((input) => expect(input).toBeInvalid());
-    const over13Checkbox = screen.getByRole("checkbox", {
-      name: /i am at least 13 years old/i,
-    });
+    const over13Checkbox = getOver13Checkbox();
     expect(over13Checkbox).toBeInvalid();
-    const dobError = screen.getByText(/please enter a valid date of birth/i);
-    expect(dobError).toBeInTheDocument();
+    const dobValidationFeedbackElement = getDobFeedbackElement();
+    expect(dobValidationFeedbackElement.textContent).toContain(
+      "Please enter a valid date of birth"
+    );
   });
 
-  it("if date of birth is selected, user can clear it using X button", async () => {
+  it("if date of birth is selected, user can clear it using X button", () => {
     setupTest("/register/student", {
       userToUpdate: {
         ...mockUserToUpdate,
@@ -155,14 +160,16 @@ describe("RegistrationDobInput", () => {
     expect(mockSetDobOver13CheckboxChecked).toHaveBeenCalledWith(false);
   });
 
-  it("show error if user selects Feb 29th in a non-leap year", async () => {
+  it("show error if user selects Feb 29th in a non-leap year", () => {
     setupTest("/register/student", {
       userToUpdate: {
         ...mockUserToUpdate,
         dateOfBirth: new Date("2023-02-29"),
       },
     });
-    const dobError = screen.getByText(/please enter a valid date of birth/i);
-    expect(dobError).toBeInTheDocument();
+    const dobValidationFeedbackElement = getDobFeedbackElement();
+    expect(dobValidationFeedbackElement.textContent).toContain(
+      "Please enter a valid date of birth"
+    );
   });
 });

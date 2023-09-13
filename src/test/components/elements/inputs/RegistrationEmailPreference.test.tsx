@@ -1,13 +1,13 @@
 import userEvent from "@testing-library/user-event";
 import { screen } from "@testing-library/react";
-import { UserRole } from "../../../../IsaacApiTypes";
 import { RegistrationEmailPreference } from "../../../../app/components/elements/inputs/RegistrationEmailPreference";
-import { renderTestEnvironment } from "../../../utils";
+import { TestUserRole, renderTestEnvironment } from "../../../utils";
 
 describe("RegistrationEmailPreference", () => {
   const mockSetEmailPreferences = jest.fn();
+  const preferences = ["NEWS_AND_UPDATES", "ASSIGNMENTS", "EVENTS"];
 
-  const setupTest = (role: UserRole | "ANONYMOUS", props = {}) => {
+  const setupTest = (role: TestUserRole, props = {}) => {
     renderTestEnvironment({
       role: "ANONYMOUS",
       PageComponent: RegistrationEmailPreference,
@@ -66,8 +66,7 @@ describe("RegistrationEmailPreference", () => {
     expect(assignmentsDescription).not.toBeInTheDocument();
   });
 
-  const preferenceOptions = ["NEWS_AND_UPDATES", "EVENTS", "ASSIGNMENTS"];
-  it.each(preferenceOptions)(
+  it.each(preferences)(
     "handles preference changes for %s correctly",
     async (option) => {
       setupTest("STUDENT");
@@ -88,7 +87,7 @@ describe("RegistrationEmailPreference", () => {
     }
   );
 
-  it("if form submission has been attempted but not all preferences are selected, options are marked as invalid and required", () => {
+  it("if form submission is attempted but not all preferences are selected, affected options are marked as invalid, and 'required' feedback shows", () => {
     setupTest("STUDENT", {
       submissionAttempted: true,
       emailPreferences: { ASSIGNMENTS: false, EVENTS: true },
@@ -116,20 +115,15 @@ describe("RegistrationEmailPreference", () => {
         NEWS_AND_UPDATES: true,
       },
     });
-    const preferences = [
-      { key: "NEWS_AND_UPDATES", label: "NEWS_AND_UPDATES" },
-      { key: "ASSIGNMENTS", label: "ASSIGNMENTS" },
-      { key: "EVENTS", label: "EVENTS" },
-    ];
 
-    preferences.forEach((preference) => {
-      const trueLabel = screen.getByLabelText(`Yes for ${preference.label}`);
-      const falseLabel = screen.getByLabelText(`No for ${preference.label}`);
+    preferences.forEach((option) => {
+      const trueLabel = screen.getByLabelText(`Yes for ${option}`);
+      const falseLabel = screen.getByLabelText(`No for ${option}`);
 
       expect(trueLabel).toBeValid();
       expect(falseLabel).toBeValid();
 
-      const feedbackId = `#${preference.label.toLowerCase()}-feedback`;
+      const feedbackId = `#${option.toLowerCase()}-feedback`;
       const feedbackElement = screen.queryByText("required", {
         selector: feedbackId,
       });
