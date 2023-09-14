@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom';
+import '@testing-library/react'
 import 'core-js';
 import {server} from "../mocks/server";
 import "./matchers";

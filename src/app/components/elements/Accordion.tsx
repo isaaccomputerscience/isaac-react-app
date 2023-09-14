@@ -138,76 +138,122 @@ export const Accordion = withRouter(({id, trustedTitle, index, children, startOp
 
     const isOpen = open && !disabled;
 
-    return <div className="accordion">
+    return (
+      <div className="accordion">
         <div className="accordion-header">
-            <RS.Button
-                id={anchorId || ""} block color="link"
-                tabIndex={disabled ? -1 : 0}
-                onFocus={(e) => {
-                    if (disabled) {
-                        e.target.blur();
-                    }
-                }}
-                className={"d-flex align-items-stretch " + classNames({"de-emphasised": deEmphasised || disabled, "active": isOpen})}
-                onClick={(event: any) => {
-                    if (disabled) {
-                        return;
-                    }
-                    pauseAllVideos();
-                    const nextState = !isOpen;
-                    setOpen(nextState);
-                    if (nextState) {
-                        logAccordionOpen();
-                        scrollVerticallyIntoView(event.target);
-                    }
-                }}
-                aria-expanded={isOpen ? "true" : "false"}
-            >
-                {isConceptPage && audienceString && <span className={classNames(
-                    "stage-label", 
-                    "badge-secondary", 
-                    "d-flex", 
-                    "align-items-center", 
-                    "justify-content-center", 
-                    audienceStyle(audienceString)
-                    )}>
-                    {audienceString}
-                </span>}
-                <div className="accordion-title pl-3">
-                    <RS.Row>
-                        {/* FIXME Revisit this maybe? https://github.com/isaacphysics/isaac-react-app/pull/473#discussion_r841556455 */}
-                        <span className="accordion-part p-3 text-secondary">Part {ALPHABET[(index as number) % ALPHABET.length]}  {" "}</span>
-                        {trustedTitle && <div className="p-3">
-                            <Markup encoding={"latex"}>
-                                {trustedTitle}
-                            </Markup>
-                        </div>}
-                        {deEmphasised && <div className="ml-auto mr-3 d-flex align-items-center">
-                            <span id={`audience-help-${componentId}`} className="icon-help mx-1" />
-                            <RS.UncontrolledTooltip placement="bottom" target={`audience-help-${componentId}`}>
-                                {`This content has ${notRelevantMessage(userContext)}.`}
-                            </RS.UncontrolledTooltip>
-                        </div>}
-                        {typeof disabled === "string" && disabled.length > 0 && <div className={"p-3"}>
-                            <span id={`disabled-tooltip-${componentId}`} className="icon-help" />
-                            <RS.UncontrolledTooltip placement="right" target={`disabled-tooltip-${componentId}`}
-                                                    modifiers={{preventOverflow: {boundariesElement: "viewport"}}}>
-                                {disabled}
-                            </RS.UncontrolledTooltip>
-                        </div>}
-                    </RS.Row>
-                </div>
-            </RS.Button>
+          <RS.Button
+            id={anchorId || ""}
+            block
+            color="link"
+            tabIndex={disabled ? -1 : 0}
+            onFocus={(e) => {
+              if (disabled) {
+                e.target.blur();
+              }
+            }}
+            className={
+              "d-flex align-items-stretch " +
+              classNames({
+                "de-emphasised": deEmphasised || disabled,
+                active: isOpen,
+              })
+            }
+            onClick={(event: any) => {
+              if (disabled) {
+                return;
+              }
+              pauseAllVideos();
+              const nextState = !isOpen;
+              setOpen(nextState);
+              if (nextState) {
+                logAccordionOpen();
+                scrollVerticallyIntoView(event.target);
+              }
+            }}
+            aria-expanded={isOpen ? "true" : "false"}
+          >
+            {isConceptPage && audienceString && (
+              <span
+                className={classNames(
+                  "stage-label",
+                  "badge-secondary",
+                  "d-flex",
+                  "align-items-center",
+                  "justify-content-center",
+                  audienceStyle(audienceString)
+                )}
+              >
+                {audienceString}
+              </span>
+            )}
+            <div className="accordion-title pl-3">
+              <RS.Row>
+                {/* FIXME Revisit this maybe? https://github.com/isaacphysics/isaac-react-app/pull/473#discussion_r841556455 */}
+                <span className="accordion-part p-3 text-secondary">
+                  Part {ALPHABET[(index as number) % ALPHABET.length]}{" "}
+                </span>
+                {trustedTitle && (
+                  <div className="p-3">
+                    <Markup encoding={"latex"}>{trustedTitle}</Markup>
+                  </div>
+                )}
+                {deEmphasised && (
+                  <div className="ml-auto mr-3 d-flex align-items-center">
+                    <span
+                      id={`audience-help-${componentId}`}
+                      className="icon-help mx-1"
+                    />
+                    <RS.UncontrolledTooltip
+                      placement="bottom"
+                      target={`audience-help-${componentId}`}
+                    >
+                      {`This content has ${notRelevantMessage(userContext)}.`}
+                    </RS.UncontrolledTooltip>
+                  </div>
+                )}
+                {typeof disabled === "string" && disabled.length > 0 && (
+                  <div className={"p-3"}>
+                    <span
+                      id={`disabled-tooltip-${componentId}`}
+                      className="icon-help"
+                    />
+                    <RS.UncontrolledTooltip
+                      placement="right"
+                      target={`disabled-tooltip-${componentId}`}
+                      modifiers={[
+                        {
+                          name: "preventOverflow",
+                          enabled: true,
+                          phase: "main",
+                          fn: () => {},
+                          options: {
+                            boundariesElement: "viewport",
+                          },
+                        },
+                      ]}
+                    >
+                      {disabled}
+                    </RS.UncontrolledTooltip>
+                  </div>
+                )}
+              </RS.Row>
+            </div>
+          </RS.Button>
         </div>
         <RS.Collapse isOpen={isOpen} className="mt-1">
-            <AccordionSectionContext.Provider value={{id, clientId: clientId.current, open: isOpen}}>
-                <RS.Card>
-                    <RS.CardBody>
-                        {children}
-                    </RS.CardBody>
-                    <ReportAccordionButton pageId={getPage()?.id} sectionId={id} sectionTitle={trustedTitle}/>
-                </RS.Card>
-            </AccordionSectionContext.Provider>
+          <AccordionSectionContext.Provider
+            value={{ id, clientId: clientId.current, open: isOpen }}
+          >
+            <RS.Card>
+              <RS.CardBody>{children}</RS.CardBody>
+              <ReportAccordionButton
+                pageId={getPage()?.id}
+                sectionId={id}
+                sectionTitle={trustedTitle}
+              />
+            </RS.Card>
+          </AccordionSectionContext.Provider>
         </RS.Collapse>
-    </div>;
+      </div>
+    );
 });

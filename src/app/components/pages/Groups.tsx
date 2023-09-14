@@ -1,25 +1,24 @@
 import React, {MutableRefObject, useEffect, useMemo, useRef, useState} from "react";
 import {
-    Button,
-    ButtonDropdown,
-    Card,
-    CardBody,
-    Col,
-    Container,
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle,
-    Form,
-    Input,
-    InputGroup,
-    InputGroupAddon,
-    Nav,
-    NavItem,
-    NavLink,
-    Row,
-    UncontrolledButtonDropdown,
-    UncontrolledTooltip
-} from "reactstrap"
+  Button,
+  ButtonDropdown,
+  Card,
+  CardBody,
+  Col,
+  Container,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  Form,
+  Input,
+  InputGroup,
+  Nav,
+  NavItem,
+  NavLink,
+  Row,
+  UncontrolledButtonDropdown,
+  UncontrolledTooltip,
+} from "reactstrap";
 import {Link} from "react-router-dom";
 import {
     resetMemberPassword,
@@ -204,99 +203,160 @@ const GroupEditor = ({group, user, createNewGroup, groupNameInputRef}: GroupCrea
 
     const usersInGroup = groupUserIds(group);
 
-    return <Card>
+    return (
+      <Card>
         <CardBody>
-            <Row className="mt-2">
-                <Col xs={5} sm={6} md={group ? 3 : 12} lg={group ? 3 : 12}><h4>{group ? "Edit group" : "Create group"}</h4></Col>
-                {group && <Col xs={7} sm={6} md={9} lg={9} className="text-right">
-                    {/* Only teachers and above can add group managers */}
-                    {isTeacherOrAbove(user) && <>
-                        <Button className="d-none d-sm-inline" size="sm" color="tertiary" onClick={() => dispatch(showGroupManagersModal({group, user}))}>
-                            {isUserGroupOwner ? "Add / remove" : "View all"}<span className="d-none d-xl-inline">{" "}group</span>{" "}managers
-                        </Button>
-                        <span className="d-none d-lg-inline-block">&nbsp;or&nbsp;</span>
-                        <span className="d-inline-block d-md-none">&nbsp;</span>
-                    </>}
+          <Row className="mt-2">
+            <Col xs={5} sm={6} md={group ? 3 : 12} lg={group ? 3 : 12}>
+              <h4>{group ? "Edit group" : "Create group"}</h4>
+            </Col>
+            {group && (
+              <Col xs={7} sm={6} md={9} lg={9} className="text-right">
+                {/* Only teachers and above can add group managers */}
+                {isTeacherOrAbove(user) && (
+                  <>
                     <Button
-                        size="sm" className="text-white d-none d-sm-inline"
-                        color="secondary"
-                        onClick={() => dispatch(showGroupInvitationModal({group, user, firstTime: false}))}
+                      className="d-none d-sm-inline"
+                      size="sm"
+                      color="tertiary"
+                      onClick={() =>
+                        dispatch(showGroupManagersModal({ group, user }))
+                      }
                     >
-                        Invite users
+                      {isUserGroupOwner ? "Add / remove" : "View all"}
+                      <span className="d-none d-xl-inline"> group</span>{" "}
+                      managers
                     </Button>
-                    {isStaff(user) && usersInGroup.length > 0 &&
-                        <span className="d-none d-lg-inline-block">&nbsp;or&nbsp;
-                            <Button
-                                size="sm" className="text-white"
-                                color="secondary"
-                                onClick={() => dispatch(showGroupEmailModal(usersInGroup))}
-                            >
-                                Email users
-                            </Button>
-                        </span>}
-                </Col>}
-            </Row>
-            <Form inline onSubmit={saveUpdatedGroup} className="pt-3">
-                <InputGroup className="w-100">
-                    <Input
-                        innerRef={groupNameInputRef} length={50} placeholder="Group name" value={newGroupName}
-                        onChange={e => setNewGroupName(e.target.value)} aria-label="Group Name" disabled={isDefined(group) && !(isUserGroupOwner || group.additionalManagerPrivileges)}
-                    />
-                    {(!isDefined(group) || isUserGroupOwner || group.additionalManagerPrivileges) && <InputGroupAddon addonType="append">
-                        <Button
-                            color="primary"
-                            className="p-0 border-dark" disabled={newGroupName === "" || (isDefined(group) && newGroupName === group.groupName)}
-                            onClick={saveUpdatedGroup}
-                        >
-                            {group ? "Update" : "Create"}
-                        </Button>
-                    </InputGroupAddon>}
-                </InputGroup>
-            </Form>
-            <Row className="pt-1 mb-3">
-                <Col className="text-right text-muted">
-                    *Group name is shared with students
-                </Col>
-            </Row>
-            {group && <React.Fragment>
-                {(isUserGroupOwner || group.additionalManagerPrivileges) && <Row>
-                    <Col>
-                        <Button block color="tertiary" onClick={toggleArchived}>
-                            {group.archived ? "Unarchive this group" : "Archive this group"}
-                        </Button>
-                    </Col>
-                </Row>}
-                <Row className="mt-4">
-                    <Col>
-                        <ShowLoading until={group.members}>
-                            {group.members && <div>
-                                <Row>
-                                    <Col>
-                                        {group.members.length} users in this group {" "}
-                                        {bigGroup && !isExpanded &&
-                                            <ButtonDropdown className="float-right" toggle={() => setExpanded(true)}>
-                                                <DropdownToggle caret>Show</DropdownToggle>
-                                            </ButtonDropdown>
-                                        }
-                                    </Col>
-                                </Row>
-                                <div>
-                                    {(!bigGroup || isExpanded) && group.members.map((member: AppGroupMembership) => (
-                                        <MemberInfo
-                                            key={member.groupMembershipInformation.userId}
-                                            member={member}
-                                            group={group}
-                                            user={user}
-                                        />
-                                    ))}
-                                </div>
-                            </div>}
-                        </ShowLoading>
-                    </Col>
+                    <span className="d-none d-lg-inline-block">
+                      &nbsp;or&nbsp;
+                    </span>
+                    <span className="d-inline-block d-md-none">&nbsp;</span>
+                  </>
+                )}
+                <Button
+                  size="sm"
+                  className="text-white d-none d-sm-inline"
+                  color="secondary"
+                  onClick={() =>
+                    dispatch(
+                      showGroupInvitationModal({
+                        group,
+                        user,
+                        firstTime: false,
+                      })
+                    )
+                  }
+                >
+                  Invite users
+                </Button>
+                {isStaff(user) && usersInGroup.length > 0 && (
+                  <span className="d-none d-lg-inline-block">
+                    &nbsp;or&nbsp;
+                    <Button
+                      size="sm"
+                      className="text-white"
+                      color="secondary"
+                      onClick={() =>
+                        dispatch(showGroupEmailModal(usersInGroup))
+                      }
+                    >
+                      Email users
+                    </Button>
+                  </span>
+                )}
+              </Col>
+            )}
+          </Row>
+          <Form inline onSubmit={saveUpdatedGroup} className="pt-3">
+            <InputGroup className="w-100">
+              <Input
+                innerRef={groupNameInputRef}
+                length={50}
+                placeholder="Group name"
+                value={newGroupName}
+                onChange={(e) => setNewGroupName(e.target.value)}
+                aria-label="Group Name"
+                disabled={
+                  isDefined(group) &&
+                  !(isUserGroupOwner || group.additionalManagerPrivileges)
+                }
+              />
+              {(!isDefined(group) ||
+                isUserGroupOwner ||
+                group.additionalManagerPrivileges) && (
+                <>
+                  <Button
+                    color="primary"
+                    className="p-0 border-dark"
+                    disabled={
+                      newGroupName === "" ||
+                      (isDefined(group) && newGroupName === group.groupName)
+                    }
+                    onClick={saveUpdatedGroup}
+                  >
+                    {group ? "Update" : "Create"}
+                  </Button>
+                </>
+              )}
+            </InputGroup>
+          </Form>
+          <Row className="pt-1 mb-3">
+            <Col className="text-right text-muted">
+              *Group name is shared with students
+            </Col>
+          </Row>
+          {group && (
+            <React.Fragment>
+              {(isUserGroupOwner || group.additionalManagerPrivileges) && (
+                <Row>
+                  <Col>
+                    <Button block color="tertiary" onClick={toggleArchived}>
+                      {group.archived
+                        ? "Unarchive this group"
+                        : "Archive this group"}
+                    </Button>
+                  </Col>
                 </Row>
-            </React.Fragment>}
+              )}
+              <Row className="mt-4">
+                <Col>
+                  <ShowLoading until={group.members}>
+                    {group.members && (
+                      <div>
+                        <Row>
+                          <Col>
+                            {group.members.length} users in this group{" "}
+                            {bigGroup && !isExpanded && (
+                              <ButtonDropdown
+                                className="float-right"
+                                toggle={() => setExpanded(true)}
+                              >
+                                <DropdownToggle caret>Show</DropdownToggle>
+                              </ButtonDropdown>
+                            )}
+                          </Col>
+                        </Row>
+                        <div>
+                          {(!bigGroup || isExpanded) &&
+                            group.members.map((member: AppGroupMembership) => (
+                              <MemberInfo
+                                key={member.groupMembershipInformation.userId}
+                                member={member}
+                                group={group}
+                                user={user}
+                              />
+                            ))}
+                        </div>
+                      </div>
+                    )}
+                  </ShowLoading>
+                </Col>
+              </Row>
+            </React.Fragment>
+          )}
         </CardBody>
-    </Card>;
+      </Card>
+    );
 };
 
 const MobileGroupCreatorComponent = ({className, createNewGroup}: GroupCreatorProps & {className: string}) => {

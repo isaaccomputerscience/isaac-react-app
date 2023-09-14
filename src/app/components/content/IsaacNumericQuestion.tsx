@@ -4,18 +4,17 @@ import Rand from 'rand-seed';
 import {IsaacContentValueOrChildren} from "./IsaacContentValueOrChildren";
 import {IsaacNumericQuestionDTO, QuantityDTO, QuantityValidationResponseDTO} from "../../../IsaacApiTypes";
 import {
-    Button,
-    Col,
-    Dropdown,
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle,
-    Input,
-    InputGroup,
-    InputGroupAddon,
-    Label,
-    Row,
-    UncontrolledTooltip
+  Button,
+  Col,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  Input,
+  InputGroup,
+  Label,
+  Row,
+  UncontrolledTooltip,
 } from "reactstrap";
 import {useCurrentQuestionAttempt} from "../../services";
 import {v4 as uuid_v4} from 'uuid';
@@ -132,71 +131,126 @@ const IsaacNumericQuestion = ({doc, questionId, validationResponse, readonly}: I
     const noDisplayUnit = doc.displayUnit == null || doc.displayUnit === "";
 
     return (
-        <div className="numeric-question">
-            <div className="question-content">
-                <IsaacContentValueOrChildren value={doc.value} encoding={doc.encoding}>
-                    {doc.children}
-                </IsaacContentValueOrChildren>
-            </div>
-            <Row className="no-print">
-                <Col className="d-flex flex-column flex-sm-row flex-md-column flex-lg-row">
-                    <div className="numeric-value w-100 w-sm-50 w-md-100 w-lg-50">
-                        <Label className="w-100">
-                            Value <br />
-                            <InputGroup className={"feedback-zone nq-feedback"}>
-                                <Input type="text" value={currentAttemptValue || ""} invalid={currentAttemptValueWrong}
-                                       onChange={updateValue} readOnly={readonly}
-                                />
-                                {currentAttemptValueWrong && <div className={"feedback-box"}>
-                                    <span className={"feedback incorrect"}><b>!</b></span>
-                                </div>}
-                                {!readonly && <InputGroupAddon addonType="append">
-                                    <Button type="button" className="numeric-help" size="sm" id={helpTooltipId}>?</Button>
-                                    <UncontrolledTooltip placement="top" autohide={false} target={helpTooltipId}>
-                                        Here are some examples of numbers you can write:<br /><br />
-                                        3.7<br />
-                                        -3x10^14<br />
-                                        2.8e-12<br /><br />
-                                        Do not use commas or spaces.
-                                    </UncontrolledTooltip>
-                                </InputGroupAddon>}
-                            </InputGroup>
-                        </Label>
-                    </div>
-                    {(doc.requireUnits || doc.displayUnit) && <div className="unit-selection w-100 w-sm-50 w-md-100 w-lg-25">
-                        <Label className="w-100 ml-sm-2 ml-md-0 ml-lg-5">
-                            Unit{noDisplayUnit && "s"} <br/>
-                            <Dropdown disabled={readonly} isOpen={isOpen && noDisplayUnit} toggle={() => {setIsOpen(!isOpen);}}>
-                                <DropdownToggle
-                                    disabled={readonly || !noDisplayUnit}
-                                    className={classNames("feedback-zone px-2 py-1", {"border-dark display-unit": !noDisplayUnit, "feedback-showing": currentAttemptUnitsWrong && noDisplayUnit})}
-                                    color={noDisplayUnit ? undefined : "white"}
-                                >
-                                    <Markup encoding={"latex"}>
-                                        {wrapUnitForSelect(noDisplayUnit ? currentAttemptUnits : doc.displayUnit)}
-                                    </Markup>
-                                    {currentAttemptUnitsWrong && noDisplayUnit && <div className={"feedback-box"}>
-                                        <span className={"feedback incorrect"}>✘</span>
-                                    </div>}
-                                </DropdownToggle>
-                                <DropdownMenu right>
-                                    {selectedUnits.map((unit) =>
-                                        <DropdownItem key={wrapUnitForSelect(unit)}
-                                            data-unit={unit || 'None'}
-                                            className={unit === currentAttemptUnits ? "btn bg-grey selected" : ""}
-                                            onClick={(e: FormEvent) => {updateUnits(unit); e.preventDefault();}}>
-                                            <Markup encoding={"latex"}>
-                                                {wrapUnitForSelect(unit)}
-                                            </Markup>
-                                        </DropdownItem>
-                                    )}
-                                </DropdownMenu>
-                            </Dropdown>
-                        </Label>
-                    </div>}
-                </Col>
-            </Row>
+      <div className="numeric-question">
+        <div className="question-content">
+          <IsaacContentValueOrChildren
+            value={doc.value}
+            encoding={doc.encoding}
+          >
+            {doc.children}
+          </IsaacContentValueOrChildren>
         </div>
+        <Row className="no-print">
+          <Col className="d-flex flex-column flex-sm-row flex-md-column flex-lg-row">
+            <div className="numeric-value w-100 w-sm-50 w-md-100 w-lg-50">
+              <Label className="w-100">
+                Value <br />
+                <InputGroup className={"feedback-zone nq-feedback"}>
+                  <Input
+                    type="text"
+                    value={currentAttemptValue || ""}
+                    invalid={currentAttemptValueWrong}
+                    onChange={updateValue}
+                    readOnly={readonly}
+                  />
+                  {currentAttemptValueWrong && (
+                    <div className={"feedback-box"}>
+                      <span className={"feedback incorrect"}>
+                        <b>!</b>
+                      </span>
+                    </div>
+                  )}
+                  {!readonly && (
+                    <>
+                      <Button
+                        type="button"
+                        className="numeric-help"
+                        size="sm"
+                        id={helpTooltipId}
+                      >
+                        ?
+                      </Button>
+                      <UncontrolledTooltip
+                        placement="top"
+                        autohide={false}
+                        target={helpTooltipId}
+                      >
+                        Here are some examples of numbers you can write:
+                        <br />
+                        <br />
+                        3.7
+                        <br />
+                        -3x10^14
+                        <br />
+                        2.8e-12
+                        <br />
+                        <br />
+                        Do not use commas or spaces.
+                      </UncontrolledTooltip>
+                    </>
+                  )}
+                </InputGroup>
+              </Label>
+            </div>
+            {(doc.requireUnits || doc.displayUnit) && (
+              <div className="unit-selection w-100 w-sm-50 w-md-100 w-lg-25">
+                <Label className="w-100 ml-sm-2 ml-md-0 ml-lg-5">
+                  Unit{noDisplayUnit && "s"} <br />
+                  <Dropdown
+                    disabled={readonly}
+                    isOpen={isOpen && noDisplayUnit}
+                    toggle={() => {
+                      setIsOpen(!isOpen);
+                    }}
+                  >
+                    <DropdownToggle
+                      disabled={readonly || !noDisplayUnit}
+                      className={classNames("feedback-zone px-2 py-1", {
+                        "border-dark display-unit": !noDisplayUnit,
+                        "feedback-showing":
+                          currentAttemptUnitsWrong && noDisplayUnit,
+                      })}
+                      color={noDisplayUnit ? undefined : "white"}
+                    >
+                      <Markup encoding={"latex"}>
+                        {wrapUnitForSelect(
+                          noDisplayUnit ? currentAttemptUnits : doc.displayUnit
+                        )}
+                      </Markup>
+                      {currentAttemptUnitsWrong && noDisplayUnit && (
+                        <div className={"feedback-box"}>
+                          <span className={"feedback incorrect"}>✘</span>
+                        </div>
+                      )}
+                    </DropdownToggle>
+                    <DropdownMenu right>
+                      {selectedUnits.map((unit) => (
+                        <DropdownItem
+                          key={wrapUnitForSelect(unit)}
+                          data-unit={unit || "None"}
+                          className={
+                            unit === currentAttemptUnits
+                              ? "btn bg-grey selected"
+                              : ""
+                          }
+                          onClick={(e: FormEvent) => {
+                            updateUnits(unit);
+                            e.preventDefault();
+                          }}
+                        >
+                          <Markup encoding={"latex"}>
+                            {wrapUnitForSelect(unit)}
+                          </Markup>
+                        </DropdownItem>
+                      ))}
+                    </DropdownMenu>
+                  </Dropdown>
+                </Label>
+              </div>
+            )}
+          </Col>
+        </Row>
+      </div>
     );
 };
 export default IsaacNumericQuestion;

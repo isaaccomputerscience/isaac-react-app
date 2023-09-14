@@ -12,7 +12,7 @@ import {
     STAGE
 } from "../../../services";
 import * as RS from "reactstrap";
-import {CustomInput, Input} from "reactstrap";
+import { Input } from "reactstrap";
 import {UserContext} from "../../../../IsaacApiTypes";
 import {v4 as uuid_v4} from "uuid";
 import { selectors, useAppSelector } from "../../../state";
@@ -132,51 +132,117 @@ export function UserContextAccountInput({
                       (p) => p.stage === STAGE.ALL && p.examBoard === EXAM_BOARD.ALL
                     ) === -1;                    
 
-                return <RS.FormGroup key={index}>
+                return (
+                  <RS.FormGroup key={index}>
                     <RS.Row>
-                    <UserContextRow isStudent={!tutorOrAbove}
-                        userContext={userContext} showNullStageOption={userContexts.length <= 1} submissionAttempted={submissionAttempted}
-                        setUserContext={newUc => setUserContexts(userContexts.map((uc, i) => i === index ? newUc : uc))}
-                        existingUserContexts={userContexts} setBooleanNotation={setBooleanNotation} setDisplaySettings={setDisplaySettings}
-                    />
-                    
-                    {tutorOrAbove && userContexts.length > 1 && <button
-                        type="button" className="mx-2 close float-none align-middle" aria-label="clear stage row"
-                        onClick={() => setUserContexts(userContexts.filter((uc, i) => i !== index))}
-                    >
-                        ×
-                    </button>}
-                    </RS.Row>
-                    
-                    {showPlusOption && <RS.Row className="mt-3 ml-0"><RS.Label className="vertical-center">
-                        <button
-                            type="button" aria-label="Add stage"
-                            className="align-middle close float-none pointer-cursor"
-                            onClick={() => setUserContexts([...userContexts, {}])}
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-plus-circle" viewBox="0 0 16 16">
-  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-  <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-</svg>
-                        </button>
-                        <span className="ml-2 mt-1 pointer-cursor">Add another stage</span>
-                    </RS.Label></RS.Row>}
+                      <UserContextRow
+                        isStudent={!tutorOrAbove}
+                        userContext={userContext}
+                        showNullStageOption={userContexts.length <= 1}
+                        submissionAttempted={submissionAttempted}
+                        setUserContext={(newUc) =>
+                          setUserContexts(
+                            userContexts.map((uc, i) =>
+                              i === index ? newUc : uc
+                            )
+                          )
+                        }
+                        existingUserContexts={userContexts}
+                        setBooleanNotation={setBooleanNotation}
+                        setDisplaySettings={setDisplaySettings}
+                      />
 
-                    {index === userContexts.length - 1 && (userContexts.findIndex(p => p.stage === STAGE.ALL && p.examBoard === EXAM_BOARD.ALL) === -1) && <RS.Label className="m-0 mt-3">
-                        <CustomInput
-                            type="checkbox" id={`hide-content-check-${componentId}`} className="d-inline-block larger-checkbox"
-                            checked={isDefined(displaySettings?.HIDE_NON_AUDIENCE_CONTENT) ? !displaySettings?.HIDE_NON_AUDIENCE_CONTENT : true}
-                            onChange={e => setDisplaySettings(oldDs => ({...oldDs, HIDE_NON_AUDIENCE_CONTENT: !e.target.checked}))}
-                        />{" "}
-                        <span>Show other content that is not for my selected exam board. <span id={`show-other-content-${componentId}`} className="icon-help ml-1" /></span>
-                        <RS.UncontrolledTooltip placement="bottom" target={`show-other-content-${componentId}`}>
-                            {tutorOrAbove ?
-                                "If you select this box, additional content that is not intended for your chosen stage and examination board will be shown (e.g. you will also see A level content in your GCSE view)." :
-                                "If you select this box, additional content that is not intended for your chosen stage and examination board will be shown (e.g. you will also see A level content if you are studying GCSE)."
+                      {tutorOrAbove && userContexts.length > 1 && (
+                        <button
+                          type="button"
+                          className="mx-2 close float-none align-middle"
+                          aria-label="clear stage row"
+                          onClick={() =>
+                            setUserContexts(
+                              userContexts.filter((uc, i) => i !== index)
+                            )
+                          }
+                        >
+                          ×
+                        </button>
+                      )}
+                    </RS.Row>
+
+                    {showPlusOption && (
+                      <RS.Row className="mt-3 ml-0">
+                        <RS.Label className="vertical-center">
+                          <button
+                            type="button"
+                            aria-label="Add stage"
+                            className="align-middle close float-none pointer-cursor"
+                            onClick={() =>
+                              setUserContexts([...userContexts, {}])
                             }
-                        </RS.UncontrolledTooltip>
-                    </RS.Label>}
-                </RS.FormGroup>
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              fill="currentColor"
+                              className="bi bi-plus-circle"
+                              viewBox="0 0 16 16"
+                            >
+                              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                              <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                            </svg>
+                          </button>
+                          <span className="ml-2 mt-1 pointer-cursor">
+                            Add another stage
+                          </span>
+                        </RS.Label>
+                      </RS.Row>
+                    )}
+
+                    {index === userContexts.length - 1 &&
+                      userContexts.findIndex(
+                        (p) =>
+                          p.stage === STAGE.ALL &&
+                          p.examBoard === EXAM_BOARD.ALL
+                      ) === -1 && (
+                        <RS.Label className="m-0 mt-3">
+                          <Input
+                            type="checkbox"
+                            id={`hide-content-check-${componentId}`}
+                            className="d-inline-block larger-checkbox"
+                            checked={
+                              isDefined(
+                                displaySettings?.HIDE_NON_AUDIENCE_CONTENT
+                              )
+                                ? !displaySettings?.HIDE_NON_AUDIENCE_CONTENT
+                                : true
+                            }
+                            onChange={(e) =>
+                              setDisplaySettings((oldDs) => ({
+                                ...oldDs,
+                                HIDE_NON_AUDIENCE_CONTENT: !e.target.checked,
+                              }))
+                            }
+                          />{" "}
+                          <span>
+                            Show other content that is not for my selected exam
+                            board.{" "}
+                            <span
+                              id={`show-other-content-${componentId}`}
+                              className="icon-help ml-1"
+                            />
+                          </span>
+                          <RS.UncontrolledTooltip
+                            placement="bottom"
+                            target={`show-other-content-${componentId}`}
+                          >
+                            {tutorOrAbove
+                              ? "If you select this box, additional content that is not intended for your chosen stage and examination board will be shown (e.g. you will also see A level content in your GCSE view)."
+                              : "If you select this box, additional content that is not intended for your chosen stage and examination board will be shown (e.g. you will also see A level content if you are studying GCSE)."}
+                          </RS.UncontrolledTooltip>
+                        </RS.Label>
+                      )}
+                  </RS.FormGroup>
+                );
             })}
         </div>
     </>

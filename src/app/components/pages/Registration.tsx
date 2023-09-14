@@ -7,7 +7,7 @@ import {
   CardTitle,
   Col,
   Container,
-  CustomInput,
+  Input,
   Label,
   Row,
   UncontrolledTooltip,
@@ -65,7 +65,7 @@ export const Registration = () => {
           <Row className="mt-4 mx-0">
             <Col className="mx-0 p-0">
               <Row className="m-0">
-                <CustomInput
+                <Input
                   id="student-input"
                   type="radio"
                   name="option"
@@ -78,7 +78,7 @@ export const Registration = () => {
                 <Label htmlFor="student-input">Student</Label>
               </Row>
               <Row className="m-0">
-                <CustomInput
+                <Input
                   id="teacher-input"
                   type="radio"
                   name="option"

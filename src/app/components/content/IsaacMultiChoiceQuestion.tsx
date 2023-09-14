@@ -1,7 +1,7 @@
 import React from "react";
 import {IsaacContentValueOrChildren} from "./IsaacContentValueOrChildren";
 import {IsaacMultiChoiceQuestionDTO} from "../../../IsaacApiTypes";
-import {CustomInput, Label} from "reactstrap";
+import { Input, Label } from "reactstrap";
 import {useCurrentQuestionAttempt} from "../../services";
 import {IsaacQuestionProps} from "../../../IsaacAppTypes";
 
@@ -9,27 +9,39 @@ const IsaacMultiChoiceQuestion = ({doc, questionId, readonly}: IsaacQuestionProp
 
     const { currentAttempt, dispatchSetCurrentAttempt } = useCurrentQuestionAttempt(questionId);
 
-    return <div className="multichoice-question">
+    return (
+      <div className="multichoice-question">
         <div className="question-content">
-            <IsaacContentValueOrChildren value={doc.value} encoding={doc.encoding}>
-                {doc.children}
-            </IsaacContentValueOrChildren>
+          <IsaacContentValueOrChildren
+            value={doc.value}
+            encoding={doc.encoding}
+          >
+            {doc.children}
+          </IsaacContentValueOrChildren>
         </div>
-        <ul>{doc?.choices?.map((choice, index) =>
+        <ul>
+          {doc?.choices?.map((choice, index) => (
             <li key={choice.value} className="list-unstyled">
-                <Label className="label-radio multichoice-option d-flex">
-                    <CustomInput
-                        id={`${questionId}${index}`} color="secondary" type="radio"
-                        checked={currentAttempt?.value === choice.value}
-                        onChange={() => dispatchSetCurrentAttempt(choice)}
-                        disabled={readonly}
-                    />
-                    <div className="flex-fill">
-                        <IsaacContentValueOrChildren value={choice.value} encoding={doc.encoding} />
-                    </div>
-                </Label>
-            </li>)}
+              <Label className="label-radio multichoice-option d-flex">
+                <Input
+                  id={`${questionId}${index}`}
+                  color="secondary"
+                  type="radio"
+                  checked={currentAttempt?.value === choice.value}
+                  onChange={() => dispatchSetCurrentAttempt(choice)}
+                  disabled={readonly}
+                />
+                <div className="flex-fill">
+                  <IsaacContentValueOrChildren
+                    value={choice.value}
+                    encoding={doc.encoding}
+                  />
+                </div>
+              </Label>
+            </li>
+          ))}
         </ul>
-    </div>;
+      </div>
+    );
 };
 export default IsaacMultiChoiceQuestion;

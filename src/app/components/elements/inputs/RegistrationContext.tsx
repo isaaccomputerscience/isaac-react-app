@@ -11,7 +11,7 @@ import {
   validateUserContexts,
 } from "../../../services";
 import { Col, FormFeedback, Label, Row, UncontrolledTooltip } from "reactstrap";
-import { CustomInput, Input } from "reactstrap";
+import { Input } from "reactstrap";
 import { UserContext, UserRole } from "../../../../IsaacApiTypes";
 
 interface UserContextRowProps {
@@ -176,7 +176,7 @@ const ShowOtherContent = ({
 }: ShowOtherContentProps) => {
   return (
     <Label className={`m-0 pt-3 ${isStudent ? "pt-md-1" : ""}`}>
-      <CustomInput
+      <Input
         type="checkbox"
         id={`hide-content-check`}
         className="d-inline-block larger-checkbox"

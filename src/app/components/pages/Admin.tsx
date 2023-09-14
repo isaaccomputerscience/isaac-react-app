@@ -78,38 +78,55 @@ export const Admin = ({user}: {user: RegisteredUserDTO}) => {
                             <strong>Live Content Version</strong>
                         </div>
                         <ShowLoading until={displayVersion !== null} thenRender={() => {
-                            return displayVersion !== null && updateState != ContentVersionUpdatingStatus.UPDATING &&
+                            return (
+                              displayVersion !== null &&
+                              updateState !=
+                                ContentVersionUpdatingStatus.UPDATING && (
                                 <RS.Form onSubmit={startVersionUpdate}>
-                                    <RS.InputGroup>
-                                        <RS.Input
-                                            aria-label="Live content commit SHA"
-                                            type="text" value={displayVersion}
-                                            onChange={e => setNewVersion(e.target.value)}
-                                            placeholder="Enter commit SHA"
-                                        />
-                                        <RS.InputGroupAddon addonType="append">
-                                            <a
-                                                className={classnames({
-                                                    "p-1 border-dark btn btn-secondary": true,
-                                                    "disabled": displayVersion === contentVersion.liveVersion
-                                                })}
-                                                href={`${EDITOR_COMPARE_URL}/${contentVersion?.liveVersion}/${displayVersion}`}
-                                                target="_blank" rel="noopener"
-                                            >
-                                                Preview Changes
-                                            </a>
-                                        </RS.InputGroupAddon>
-                                        <RS.InputGroupAddon addonType="append">
-                                            <RS.Button
-                                                type="button" className="p-0 border-dark"
-                                                onClick={startVersionUpdate}
-                                                disabled={!isAdmin(user) || displayVersion === contentVersion.liveVersion}
-                                            >
-                                                Set Version
-                                            </RS.Button>
-                                        </RS.InputGroupAddon>
-                                    </RS.InputGroup>
+                                  <RS.InputGroup>
+                                    <RS.Input
+                                      aria-label="Live content commit SHA"
+                                      type="text"
+                                      value={displayVersion}
+                                      onChange={(e) =>
+                                        setNewVersion(e.target.value)
+                                      }
+                                      placeholder="Enter commit SHA"
+                                    />
+                                    <div className="input-group-append">
+                                      <a
+                                        className={classnames({
+                                          "p-1 border-dark btn btn-secondary":
+                                            true,
+                                          disabled:
+                                            displayVersion ===
+                                            contentVersion.liveVersion,
+                                        })}
+                                        href={`${EDITOR_COMPARE_URL}/${contentVersion?.liveVersion}/${displayVersion}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                      >
+                                        Preview Changes
+                                      </a>
+                                    </div>
+                                    <div className="input-group-append">
+                                      <RS.Button
+                                        type="button"
+                                        className="p-0 border-dark"
+                                        onClick={startVersionUpdate}
+                                        disabled={
+                                          !isAdmin(user) ||
+                                          displayVersion ===
+                                            contentVersion.liveVersion
+                                        }
+                                      >
+                                        Set Version
+                                      </RS.Button>
+                                    </div>
+                                  </RS.InputGroup>
                                 </RS.Form>
+                              )
+                            );
                         }} />
                         {updateState == ContentVersionUpdatingStatus.UPDATING &&
                             <RS.Alert color="info">

@@ -10,19 +10,18 @@ import {
     useAppSelector
 } from "../../state";
 import {
-    Button,
-    Card,
-    CardBody,
-    Col,
-    Container,
-    CustomInput,
-    Form,
-    FormFeedback,
-    FormGroup,
-    Input,
-    Label,
-    Row,
-    UncontrolledTooltip
+  Button,
+  Card,
+  CardBody,
+  Col,
+  Container,
+  Form,
+  FormFeedback,
+  FormGroup,
+  Input,
+  Label,
+  Row,
+  UncontrolledTooltip,
 } from "reactstrap";
 import {history, PASSWORD_REQUIREMENTS, SITE_SUBJECT_TITLE, validatePassword} from "../../services";
 import {Redirect} from "react-router";
@@ -234,78 +233,106 @@ export const LogIn = () => {
 
     const metaDescriptionCS = "Log in to your account. Access free GCSE and A level Computer Science resources. Use our materials to learn and revise for your exams.";
 
-    return <Container id="login-page" className="my-4">
+    return (
+      <Container id="login-page" className="my-4">
         <MetaDescription description={metaDescriptionCS} />
         <Row>
-            <Col md={{offset: 1, size: 10}} lg={{offset: 2, size: 8}} xl={{offset: 3, size: 6}}>
-                <Card>
-                    <CardBody>
-                        <Form name="login" onSubmit={validateAndLogIn} noValidate>
+          <Col
+            md={{ offset: 1, size: 10 }}
+            lg={{ offset: 2, size: 8 }}
+            xl={{ offset: 3, size: 6 }}
+          >
+            <Card>
+              <CardBody>
+                <Form name="login" onSubmit={validateAndLogIn} noValidate>
+                  <h2 className="h-title mb-4" ref={headingRef} tabIndex={-1}>
+                    Log in or sign up:
+                  </h2>
+                  {totpChallengePending ? (
+                    <TFAInput ref={subHeadingRef} rememberMe={rememberMe} />
+                  ) : (
+                    <React.Fragment>
+                      <EmailPasswordInputs
+                        setEmail={setEmail}
+                        setPassword={setPassword}
+                        validEmail={isValidEmail}
+                        logInAttempted={logInAttempted}
+                        passwordResetAttempted={passwordResetAttempted}
+                        validPassword={isValidPassword}
+                        errorMessage={errorMessage}
+                        displayLabels={true}
+                      />
 
-                            <h2 className="h-title mb-4"  ref={headingRef} tabIndex={-1}>
-                                Log in or sign up:
-                            </h2>
-                            {totpChallengePending ?
-                                <TFAInput ref={subHeadingRef} rememberMe={rememberMe} />
-                                :
-                                <React.Fragment>
-                                    <EmailPasswordInputs
-                                        setEmail={setEmail} setPassword={setPassword}
-                                        validEmail={isValidEmail} logInAttempted={logInAttempted}
-                                        passwordResetAttempted={passwordResetAttempted} validPassword={isValidPassword}
-                                        errorMessage={errorMessage} displayLabels={true} />
+                      <Row className="mb-4">
+                        <Col className={"col-5 mt-1"}>
+                          <Input
+                            id="login-remember-me"
+                            type="checkbox"
+                            label="Remember me"
+                            onChange={(e) => setRememberMe(e.target.checked)}
+                          />
+                        </Col>
+                        <Col className="text-right">
+                          <div>
+                            <h4
+                              role="alert"
+                              className="text-danger text-right mb-0"
+                            >
+                              {errorMessage}
+                            </h4>
+                            <PasswordResetButton
+                              email={email}
+                              isValidEmail={isValidEmail}
+                              setPasswordResetAttempted={
+                                setPasswordResetAttempted
+                              }
+                            />
+                          </div>
+                        </Col>
+                      </Row>
 
-                                    <Row className="mb-4">
-                                        <Col className={"col-5 mt-1"}>
-                                            <CustomInput
-                                                id="login-remember-me"
-                                                type="checkbox"
-                                                label="Remember me"
-                                                onChange={e => setRememberMe(e.target.checked)}
-                                            />
-                                        </Col>
-                                        <Col className="text-right">
-                                            <div>
-                                                <h4 role="alert" className="text-danger text-right mb-0">
-                                                    {errorMessage}
-                                                </h4>
-                                                <PasswordResetButton email={email} isValidEmail={isValidEmail}
-                                                                     setPasswordResetAttempted={setPasswordResetAttempted}/>
-                                            </div>
-                                        </Col>
-                                    </Row>
+                      <Row className="mb-4">
+                        <Col sm={6}>
+                          <Button
+                            id="log-in"
+                            tag="input"
+                            value="Log in"
+                            color="secondary"
+                            type="submit"
+                            className="mb-2"
+                            block
+                            onClick={attemptLogIn}
+                            disabled={!!user?.requesting}
+                          />
+                        </Col>
+                        <Col sm={6}>
+                          <Button
+                            id="sign-up"
+                            color="primary"
+                            className="mb-2"
+                            onClick={signUp}
+                            outline
+                            block
+                          >
+                            Sign up
+                          </Button>
+                        </Col>
+                      </Row>
 
-                                    <Row className="mb-4">
-                                        <Col sm={6}>
-                                            <Button
-                                                id="log-in"
-                                                tag="input" value="Log in"
-                                                color="secondary" type="submit" className="mb-2" block
-                                                onClick={attemptLogIn}
-                                                disabled={!!user?.requesting}
-                                            />
-                                        </Col>
-                                        <Col sm={6}>
-                                            <Button id="sign-up" color="primary" className="mb-2" onClick={signUp}
-                                                    outline block>
-                                                Sign up
-                                            </Button>
-                                        </Col>
-                                    </Row>
+                      <hr className="text-center" />
 
-                                    <hr className="text-center"/>
-
-                                    <Row className="my-4 justify-content-center">
-                                        <Col sm={9}>
-                                            <GoogleSignInButton/>
-                                        </Col>
-                                    </Row>
-                                </React.Fragment>
-                            }
-                        </Form>
-                    </CardBody>
-                </Card>
-            </Col>
+                      <Row className="my-4 justify-content-center">
+                        <Col sm={9}>
+                          <GoogleSignInButton />
+                        </Col>
+                      </Row>
+                    </React.Fragment>
+                  )}
+                </Form>
+              </CardBody>
+            </Card>
+          </Col>
         </Row>
-    </Container>;
+      </Container>
+    );
 };

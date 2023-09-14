@@ -197,55 +197,105 @@ const IsaacSymbolicQuestion = ({doc, questionId, readonly}: IsaacQuestionProps<I
     const symbolList = parsePseudoSymbolicAvailableSymbols(doc.availableSymbols)?.map(str => str.trim().replace(/;/g, ',') ).sort().join(", ");
 
     return (
-        <div className="symbolic-question">
-            <div className="question-content">
-                <IsaacContentValueOrChildren value={doc.value} encoding={doc.encoding}>
-                    {doc.children}
-                </IsaacContentValueOrChildren>
-            </div>
-            {/* TODO Accessibility */}
-            {modalVisible && <InequalityModal
-                close={closeModal(window.scrollY)}
-                onEditorStateChange={updateState}
-                availableSymbols={doc.availableSymbols}
-                initialEditorSymbols={initialEditorSymbols.current}
-                editorSeed={editorSeed}
-                editorMode="maths"
-                questionDoc={doc}
-            />}
-            {!readonly && <div className="eqn-editor-input">
-                <div ref={hiddenEditorRef} className="equation-editor-text-entry" style={{height: 0, overflow: "hidden", visibility: "hidden"}} />
-                <RS.InputGroup className="my-2">
-                    <RS.Input type="text" onChange={updateEquation} value={textInput}
-                              placeholder="Type your formula here"/>
-                    <RS.InputGroupAddon addonType="append">
-                        <RS.Button type="button" className="eqn-editor-help" id={helpTooltipId} tag="a" href="/solving_problems#symbolic_text">?</RS.Button>
-                        <RS.UncontrolledTooltip placement="top" autohide={false} target={helpTooltipId}>
-                            Here are some examples of expressions you can type:<br />
-                            <br />
-                            a*x^2 + b x + c<br />
-                            (-b ± sqrt(b**2 - 4ac)) / (2a)<br />
-                            1/2 mv**2<br />
-                            log(x_a, 2) == log(x_a) / log(2)<br />
-                            <br />
-                            As you type, the box below will preview the result.
-                        </RS.UncontrolledTooltip>
-                    </RS.InputGroupAddon>
-                </RS.InputGroup>
-                {isDefined(errors) && Array.isArray(errors) && errors.length > 0 && <div className="eqn-editor-input-errors"><strong>Careful!</strong><ul>
-                    {errors.map(e => (<li key={e}>{e}</li>))}
-                </ul></div>}
-                {symbolList && <div className="eqn-editor-symbols">
-                    The following symbols may be useful: <pre>{symbolList}</pre>
-                </div>}
-            </div>}
-            <div
-                role={readonly ? undefined : "button"} className={`eqn-editor-preview rounded ${!previewText ? 'empty' : ''}`} tabIndex={readonly ? undefined : 0}
-                onClick={() => !readonly && setModalVisible(true)} onKeyDown={ifKeyIsEnter(() => !readonly && setModalVisible(true))}
-                dangerouslySetInnerHTML={{ __html: !inputState.valid ? "<small>or click to replace your typed answer</small>" :
-                    previewText ? katex.renderToString(previewText) : '<small>or click here to drag and drop your answer</small>' }}
-            />
+      <div className="symbolic-question">
+        <div className="question-content">
+          <IsaacContentValueOrChildren
+            value={doc.value}
+            encoding={doc.encoding}
+          >
+            {doc.children}
+          </IsaacContentValueOrChildren>
         </div>
+        {/* TODO Accessibility */}
+        {modalVisible && (
+          <InequalityModal
+            close={closeModal(window.scrollY)}
+            onEditorStateChange={updateState}
+            availableSymbols={doc.availableSymbols}
+            initialEditorSymbols={initialEditorSymbols.current}
+            editorSeed={editorSeed}
+            editorMode="maths"
+            questionDoc={doc}
+          />
+        )}
+        {!readonly && (
+          <div className="eqn-editor-input">
+            <div
+              ref={hiddenEditorRef}
+              className="equation-editor-text-entry"
+              style={{ height: 0, overflow: "hidden", visibility: "hidden" }}
+            />
+            <RS.InputGroup className="my-2">
+              <RS.Input
+                type="text"
+                onChange={updateEquation}
+                value={textInput}
+                placeholder="Type your formula here"
+              />
+              <RS.Button
+                type="button"
+                className="eqn-editor-help"
+                id={helpTooltipId}
+                tag="a"
+                href="/solving_problems#symbolic_text"
+              >
+                ?
+              </RS.Button>
+              <RS.UncontrolledTooltip
+                placement="top"
+                autohide={false}
+                target={helpTooltipId}
+              >
+                Here are some examples of expressions you can type:
+                <br />
+                <br />
+                a*x^2 + b x + c<br />
+                (-b ± sqrt(b**2 - 4ac)) / (2a)
+                <br />
+                1/2 mv**2
+                <br />
+                log(x_a, 2) == log(x_a) / log(2)
+                <br />
+                <br />
+                As you type, the box below will preview the result.
+              </RS.UncontrolledTooltip>
+            </RS.InputGroup>
+            {isDefined(errors) &&
+              Array.isArray(errors) &&
+              errors.length > 0 && (
+                <div className="eqn-editor-input-errors">
+                  <strong>Careful!</strong>
+                  <ul>
+                    {errors.map((e) => (
+                      <li key={e}>{e}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            {symbolList && (
+              <div className="eqn-editor-symbols">
+                The following symbols may be useful: <pre>{symbolList}</pre>
+              </div>
+            )}
+          </div>
+        )}
+        <div
+          role={readonly ? undefined : "button"}
+          className={`eqn-editor-preview rounded ${
+            !previewText ? "empty" : ""
+          }`}
+          tabIndex={readonly ? undefined : 0}
+          onClick={() => !readonly && setModalVisible(true)}
+          onKeyDown={ifKeyIsEnter(() => !readonly && setModalVisible(true))}
+          dangerouslySetInnerHTML={{
+            __html: !inputState.valid
+              ? "<small>or click to replace your typed answer</small>"
+              : previewText
+              ? katex.renderToString(previewText)
+              : "<small>or click here to drag and drop your answer</small>",
+          }}
+        />
+      </div>
     );
 };
 export default IsaacSymbolicQuestion;

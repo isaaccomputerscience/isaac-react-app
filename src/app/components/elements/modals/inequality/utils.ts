@@ -163,7 +163,7 @@ export function generateMathsDifferentialItem(parsedDifferential: string[]): Men
 
     const differentialSymbol: MenuItemProps = {type: 'Differential', properties: { letter: differentialLetter }, menu: { label: differentialLatex, texLabel: true, className: '' }};
 
-    if (differentialOrder > 1) {
+    if (differentialOrder as number > 1) {
         differentialSymbol.children = {
             ...differentialSymbol.children,
             order: {

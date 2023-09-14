@@ -11,7 +11,7 @@ import {
 } from "../../../state";
 import {sortBy} from "lodash";
 import {history, isTeacherOrAbove} from "../../../services";
-import {Jumbotron, Row, Col, Form, Input, Table, CustomInput, Alert} from "reactstrap";
+import { Row, Col, Form, Input, Table, Alert } from "reactstrap";
 import {Button} from "reactstrap";
 import {RegisteredUserDTO, UserSummaryWithEmailAddressDTO} from "../../../../IsaacApiTypes";
 import {AppGroup} from "../../../../IsaacAppTypes";
@@ -56,32 +56,52 @@ interface CurrentGroupInviteModalProps {
 }
 const CurrentGroupInviteModal = ({firstTime, group}: CurrentGroupInviteModalProps) => {
     const tokenQuery = isaacApi.endpoints.getGroupToken.useQuery(group.id as number);
-    return <>
+    return (
+      <>
         {firstTime && <h1>Invite users</h1>}
-        <p>Use one of the following methods to add users to your group. Students joining your group will be shown your name and account email and asked to confirm sharing data.</p>
-        <ShowLoadingQuery
-            query={tokenQuery}
-            defaultErrorTitle={"Error fetching group joining token"}
-            thenRender={token => <>
-                <Jumbotron>
-                    <h2>Option 1: Share link</h2>
-                    <p>Share the following link with your students to have them join your group:</p>
-                    <span className="text-center h4 overflow-auto user-select-all d-block border bg-light p-1" data-testid={"share-link"}>
-                        {location.origin}/account?authToken={token?.token}
-                    </span>
-                </Jumbotron>
-
-                <Jumbotron>
-                    <h2>Option 2: Share code</h2>
-                    <p>Ask your students to enter the following code into the Teacher Connections tab on their &lsquo;My account&rsquo; page:</p>
-                    <h3 className="text-center user-select-all d-block border bg-light p-1" data-testid={"share-code"}>{token?.token}</h3>
-                </Jumbotron>
-            </>}
-        />
         <p>
-            Now you&apos;ve made a group, you may want to:
+          Use one of the following methods to add users to your group. Students
+          joining your group will be shown your name and account email and asked
+          to confirm sharing data.
         </p>
-    </>;
+        <ShowLoadingQuery
+          query={tokenQuery}
+          defaultErrorTitle={"Error fetching group joining token"}
+          thenRender={(token) => (
+            <>
+              <div className="rounded px-3 px-sm-4 py-3 py-sm-5">
+                <h2>Option 1: Share link</h2>
+                <p>
+                  Share the following link with your students to have them join
+                  your group:
+                </p>
+                <span
+                  className="text-center h4 overflow-auto user-select-all d-block border bg-light p-1"
+                  data-testid={"share-link"}
+                >
+                  {location.origin}/account?authToken={token?.token}
+                </span>
+              </div>
+
+              <div className="rounded px-3 px-sm-4 py-3 py-sm-5">
+                <h2>Option 2: Share code</h2>
+                <p>
+                  Ask your students to enter the following code into the Teacher
+                  Connections tab on their &lsquo;My account&rsquo; page:
+                </p>
+                <h3
+                  className="text-center user-select-all d-block border bg-light p-1"
+                  data-testid={"share-code"}
+                >
+                  {token?.token}
+                </h3>
+              </div>
+            </>
+          )}
+        />
+        <p>Now you&apos;ve made a group, you may want to:</p>
+      </>
+    );
 };
 export const groupInvitationModal = (group: AppGroup, user: RegisteredUserDTO, firstTime: boolean) => ({
     closeAction: () => store.dispatch(closeActiveModal()),
@@ -180,105 +200,190 @@ const CurrentGroupManagersModal = ({groupId, archived, userIsOwner, user}: {grou
         }
     }
 
-    return !group ? <Loading/> : <div className={"mb-4"}>
+    return !group ? (
+      <Loading />
+    ) : (
+      <div className={"mb-4"}>
         <h2>Selected group: {group.groupName}</h2>
 
         <p>
-            Sharing this group lets other teachers add and remove students, set new assignments and view assignment progress.
-            It will not automatically let additional teachers see detailed mark data unless students give access to the new teacher.
+          Sharing this group lets other teachers add and remove students, set
+          new assignments and view assignment progress. It will not
+          automatically let additional teachers see detailed mark data unless
+          students give access to the new teacher.
         </p>
 
         <p>
-            {group.additionalManagerPrivileges
-                ? <>Additional managers have been allowed by the group owner to:
-                    <ul>
-                        <li>Modify and delete all assignments to the group</li>
-                        <li>Remove group members</li>
-                        <li>Archive the group</li>
-                        <li>Rename the group</li>
-                    </ul>
-                </>
-                : "Additional managers cannot modify or delete each others assignments by default, archive and rename the group, or remove group members, but these features can be enabled by the group owner."
-            }
+          {group.additionalManagerPrivileges ? (
+            <>
+              Additional managers have been allowed by the group owner to:
+              <ul>
+                <li>Modify and delete all assignments to the group</li>
+                <li>Remove group members</li>
+                <li>Archive the group</li>
+                <li>Rename the group</li>
+              </ul>
+            </>
+          ) : (
+            "Additional managers cannot modify or delete each others assignments by default, archive and rename the group, or remove group members, but these features can be enabled by the group owner."
+          )}
         </p>
 
-        {!userIsOwner && group.ownerSummary && <div>
+        {!userIsOwner && group.ownerSummary && (
+          <div>
             <h4>Group owner:</h4>
             <Table className="group-table">
-                <tbody>
-                    <tr key={group.ownerSummary.email} data-testid={"group-owner"}>
-                        <td><span className="group-table-person" />{group.ownerSummary.givenName} {group.ownerSummary.familyName} ({group.ownerSummary.email})
-                        </td>
-                    </tr>
-                </tbody>
+              <tbody>
+                <tr key={group.ownerSummary.email} data-testid={"group-owner"}>
+                  <td>
+                    <span className="group-table-person" />
+                    {group.ownerSummary.givenName}{" "}
+                    {group.ownerSummary.familyName} ({group.ownerSummary.email})
+                  </td>
+                </tr>
+              </tbody>
             </Table>
-        </div>}
+          </div>
+        )}
 
         <h4>Current group managers</h4>
 
-        {additionalManagers.length == 0 &&
-            <p>There are no additional group managers for this group.</p>}
-        {additionalManagers.length == 1 && user && additionalManagers[0].id == user.id &&
-            <p>You are the only additional manager for this group.</p>}
-        {!(additionalManagers.length == 0 || (additionalManagers.length == 1 && user && additionalManagers[0].id == user.id)) &&
-            <p>The users below have permission to manage this group.</p>}
+        {additionalManagers.length == 0 && (
+          <p>There are no additional group managers for this group.</p>
+        )}
+        {additionalManagers.length == 1 &&
+          user &&
+          additionalManagers[0].id == user.id && (
+            <p>You are the only additional manager for this group.</p>
+          )}
+        {!(
+          additionalManagers.length == 0 ||
+          (additionalManagers.length == 1 &&
+            user &&
+            additionalManagers[0].id == user.id)
+        ) && <p>The users below have permission to manage this group.</p>}
 
         <Table className="group-table">
-            <tbody>
-                {additionalManagers && additionalManagers.map(manager =>
-                    <tr key={manager.email} data-testid={"group-manager"}>
-                        <td><span className="icon-group-table-person" />{manager.givenName} {manager.familyName} {user.id === manager.id && <span className={"text-muted"}>(you)</span>} ({manager.email})</td>
-                        {userIsOwner && <td className={"text-center"}>
-                            <Button className="d-none d-sm-inline" size="sm" color="tertiary" onClick={() => promoteManager(manager)}>
-                                Make owner
-                            </Button>
-                        </td>}
-                        {(userIsOwner || user?.id === manager.id) && <td className={"text-center"}>
-                            <Button className="d-none d-sm-inline" size="sm" color="tertiary" onClick={() => userIsOwner ?
-                                removeManager(manager) : removeSelf(manager)}>
-                            Remove
-                        </Button></td>}
-                    </tr>
-                )}
-            </tbody>
+          <tbody>
+            {additionalManagers &&
+              additionalManagers.map((manager) => (
+                <tr key={manager.email} data-testid={"group-manager"}>
+                  <td>
+                    <span className="icon-group-table-person" />
+                    {manager.givenName} {manager.familyName}{" "}
+                    {user.id === manager.id && (
+                      <span className={"text-muted"}>(you)</span>
+                    )}{" "}
+                    ({manager.email})
+                  </td>
+                  {userIsOwner && (
+                    <td className={"text-center"}>
+                      <Button
+                        className="d-none d-sm-inline"
+                        size="sm"
+                        color="tertiary"
+                        onClick={() => promoteManager(manager)}
+                      >
+                        Make owner
+                      </Button>
+                    </td>
+                  )}
+                  {(userIsOwner || user?.id === manager.id) && (
+                    <td className={"text-center"}>
+                      <Button
+                        className="d-none d-sm-inline"
+                        size="sm"
+                        color="tertiary"
+                        onClick={() =>
+                          userIsOwner
+                            ? removeManager(manager)
+                            : removeSelf(manager)
+                        }
+                      >
+                        Remove
+                      </Button>
+                    </td>
+                  )}
+                </tr>
+              ))}
+          </tbody>
         </Table>
 
-        {userIsOwner && <Alert className={"px-2 py-2 mb-2"} color={group.additionalManagerPrivileges ? "danger" : "warning"}>
-            <CustomInput
-                id="additional-manager-privileges-check"
-                checked={group.additionalManagerPrivileges}
-                className={"mb-2"}
-                type="checkbox"
-                label={"Give additional managers extra privileges"}
-                onChange={e => setAdditionalManagerPrivileges(e.target.checked)}
+        {userIsOwner && (
+          <Alert
+            className={"px-2 py-2 mb-2"}
+            color={group.additionalManagerPrivileges ? "danger" : "warning"}
+          >
+            <Input
+              id="additional-manager-privileges-check"
+              checked={group.additionalManagerPrivileges}
+              className={"mb-2"}
+              type="checkbox"
+              label={"Give additional managers extra privileges"}
+              onChange={(e) => setAdditionalManagerPrivileges(e.target.checked)}
             />
-            {group.additionalManagerPrivileges
-                ? <>
-                    <span className={"font-weight-bold"}>Caution</span>: All other group managers are allowed delete
-                    and modify any assignments set to this group (by any other manager including the owner), remove
-                    group members, and archive and rename the group. <br/>
-                    Un-tick the above box if you would like to remove these additional privileges.
-                </>
-                : <>Enabling this allows other group managers to delete and modify <b>all assignments</b> set to this group
-                    (by any other manager, including the owner), remove group members, and archive and rename the group.
-                </>
-            }
-        </Alert>}
+            {group.additionalManagerPrivileges ? (
+              <>
+                <span className={"font-weight-bold"}>Caution</span>: All other
+                group managers are allowed delete and modify any assignments set
+                to this group (by any other manager including the owner), remove
+                group members, and archive and rename the group. <br />
+                Un-tick the above box if you would like to remove these
+                additional privileges.
+              </>
+            ) : (
+              <>
+                Enabling this allows other group managers to delete and modify{" "}
+                <b>all assignments</b> set to this group (by any other manager,
+                including the owner), remove group members, and archive and
+                rename the group.
+              </>
+            )}
+          </Alert>
+        )}
 
-        {userIsOwner && <>
+        {userIsOwner && (
+          <>
             <h4>Add additional managers</h4>
-            <p>Enter the email of another Isaac teacher account below to add them as a group manager. Note that this will share their email address with the students.</p>
+            <p>
+              Enter the email of another Isaac teacher account below to add them
+              as a group manager. Note that this will share their email address
+              with the students.
+            </p>
             <Form onSubmit={addManager}>
-                <Input type="text" value={newManagerEmail} placeholder="Enter email address here" onChange={event => setNewManagerEmail(event.target.value)}/>
-                <p>
-                    <small><strong>Remember:</strong> Students may need to reuse the <a
-                        onClick={() => dispatch(showGroupInvitationModal({group, user, firstTime: false}))}>group link</a> to approve access to their data for any new teachers.
-                    </small>
-                </p>
-                <Button block onClick={addManager}>Add group manager</Button>
+              <Input
+                type="text"
+                value={newManagerEmail}
+                placeholder="Enter email address here"
+                onChange={(event) => setNewManagerEmail(event.target.value)}
+              />
+              <p>
+                <small>
+                  <strong>Remember:</strong> Students may need to reuse the{" "}
+                  <a
+                    onClick={() =>
+                      dispatch(
+                        showGroupInvitationModal({
+                          group,
+                          user,
+                          firstTime: false,
+                        })
+                      )
+                    }
+                  >
+                    group link
+                  </a>{" "}
+                  to approve access to their data for any new teachers.
+                </small>
+              </p>
+              <Button block onClick={addManager}>
+                Add group manager
+              </Button>
             </Form>
-        </>}
-    </div>;
+          </>
+        )}
+      </div>
+    );
 };
 export const groupManagersModal = (group: AppGroup, user: RegisteredUserDTO) => {
     const userIsOwner = user?.id === group.ownerId;

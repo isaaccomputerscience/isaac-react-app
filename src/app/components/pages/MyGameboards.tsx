@@ -3,20 +3,19 @@ import {selectors, unlinkUserFromGameboard, useAppDispatch, useAppSelector} from
 import {ShowLoading} from "../handlers/ShowLoading";
 import * as RS from 'reactstrap';
 import {
-    Button,
-    Card,
-    CardBody,
-    CardSubtitle,
-    CardTitle,
-    Col,
-    Container,
-    CustomInput,
-    Input,
-    Label,
-    Row,
-    Spinner,
-    Table
-} from 'reactstrap';
+  Button,
+  Card,
+  CardBody,
+  CardSubtitle,
+  CardTitle,
+  Col,
+  Container,
+  Input,
+  Label,
+  Row,
+  Spinner,
+  Table,
+} from "reactstrap";
 import {BoardOrder, Boards} from "../../../IsaacAppTypes";
 import {GameboardDTO, RegisteredUserDTO} from "../../../IsaacApiTypes";
 import {TitleAndBreadcrumb} from "../elements/TitleAndBreadcrumb";
@@ -77,109 +76,169 @@ const Board = (props: BoardTableProps) => {
 
     const boardStagesAndDifficulties = determineGameboardStagesAndDifficulties(board);
 
-    return boardView == BoardViews.table ?
-        <tr className="board-card" data-testid={"my-gameboard-table-row"}>
-            <td>
-                <div className="board-subject-hexagon-container table-view">
-                    {(board.percentageCompleted == 100) ? <span className="board-subject-hexagon subject-complete"/> :
-                        <>
-                            <div className="board-subject-hexagon"/>
-                            <div className="board-percent-completed">{board.percentageCompleted}</div>
-                        </>
-                    }
+    return boardView == BoardViews.table ? (
+      <tr className="board-card" data-testid={"my-gameboard-table-row"}>
+        <td>
+          <div className="board-subject-hexagon-container table-view">
+            {board.percentageCompleted == 100 ? (
+              <span className="board-subject-hexagon subject-complete" />
+            ) : (
+              <>
+                <div className="board-subject-hexagon" />
+                <div className="board-percent-completed">
+                  {board.percentageCompleted}
                 </div>
-            </td>
-            <td className="align-middle"><a href={boardLink}>{board.title}</a></td>
-            <td className="text-center align-middle p-0" colSpan={2}>
-                {boardStagesAndDifficulties.length > 0 && <table className="w-100">
-                    <tbody>
-                        {boardStagesAndDifficulties.map(([stage,difficulties]) => {
-                            return <tr key={stage}>
-                                <td className="text-center align-middle border-top-0 p-1 w-50">
-                                    {stageLabelMap[stage]}
-                                </td>
-                                <td className="text-center align-middle border-top-0 p-1 w-50">
-                                    {difficulties.map(d => difficultyShortLabelMap[d]).join(", ")}
-                                </td>
-                            </tr>
-                        })}
-                    </tbody>
-                </table>}
-            </td>
-            <td className="text-center align-middle">{formatBoardOwner(user, board)}</td>
-            <td className="text-center align-middle">{formatDate(board.creationDate)}</td>
-            <td className="text-center align-middle">{formatDate(board.lastVisited)}</td>
-            <td className="text-center align-middle">
-                <div className="table-share-link">
-                    <ShareLink linkUrl={boardLink} gameboardId={board.id} />
+              </>
+            )}
+          </div>
+        </td>
+        <td className="align-middle">
+          <a href={boardLink}>{board.title}</a>
+        </td>
+        <td className="text-center align-middle p-0" colSpan={2}>
+          {boardStagesAndDifficulties.length > 0 && (
+            <table className="w-100">
+              <tbody>
+                {boardStagesAndDifficulties.map(([stage, difficulties]) => {
+                  return (
+                    <tr key={stage}>
+                      <td className="text-center align-middle border-top-0 p-1 w-50">
+                        {stageLabelMap[stage]}
+                      </td>
+                      <td className="text-center align-middle border-top-0 p-1 w-50">
+                        {difficulties
+                          .map((d) => difficultyShortLabelMap[d])
+                          .join(", ")}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
+        </td>
+        <td className="text-center align-middle">
+          {formatBoardOwner(user, board)}
+        </td>
+        <td className="text-center align-middle">
+          {formatDate(board.creationDate)}
+        </td>
+        <td className="text-center align-middle">
+          {formatDate(board.lastVisited)}
+        </td>
+        <td className="text-center align-middle">
+          <div className="table-share-link">
+            <ShareLink linkUrl={boardLink} gameboardId={board.id} />
+          </div>
+        </td>
+        <td>
+          <Input
+            id={`board-delete-${board.id}`}
+            type="checkbox"
+            checked={board && selectedBoards.some((e) => e.id === board.id)}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              board && updateBoardSelection(board, event.target.checked);
+            }}
+            aria-label="Delete gameboard"
+          />
+        </td>
+      </tr>
+    ) : (
+      <Card className="board-card card-neat" data-testid={"my-gameboard-card"}>
+        <CardBody className="pb-4 pt-4">
+          <button
+            className="close"
+            onClick={confirmCardDeleteBoard}
+            aria-label="Delete gameboard"
+          >
+            ×
+          </button>
+          <div className="board-subject-hexagon-container">
+            {board.percentageCompleted == 100 ? (
+              <span className="board-subject-hexagon subject-complete" />
+            ) : (
+              <>
+                <div className="board-subject-hexagon" />
+                <div className="board-percent-completed">
+                  {board.percentageCompleted}
                 </div>
-            </td>
-            <td>
-                <CustomInput id={`board-delete-${board.id}`} type="checkbox"
-                             checked={board && (selectedBoards.some(e => e.id === board.id))}
-                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                 board && updateBoardSelection(board, event.target.checked)
-                             }} aria-label="Delete gameboard"/>
-            </td>
-        </tr>
-        :
-        <Card className="board-card card-neat" data-testid={"my-gameboard-card"}>
-            <CardBody className="pb-4 pt-4">
-                <button className="close" onClick={confirmCardDeleteBoard} aria-label="Delete gameboard">×</button>
-                <div className="board-subject-hexagon-container">
-                    {(board.percentageCompleted == 100) ? <span className="board-subject-hexagon subject-complete"/> :
-                        <>
-                            <div className="board-subject-hexagon"/>
-                            <div className="board-percent-completed">{board.percentageCompleted}</div>
-                        </>
-                    }
-                </div>
-                <aside>
-                    <CardSubtitle>Created: <strong>{formatDate(board.creationDate)}</strong></CardSubtitle>
-                    <CardSubtitle>Last visited: <strong>{formatDate(board.lastVisited)}</strong></CardSubtitle>
-                    <table className="w-100">
-                        <thead>
-                        <tr>
-                            <th className="w-50 font-weight-light">
-                                {`Stage${boardStagesAndDifficulties.length > 1 ? "s" : ""}:`}
-                            </th>
-                            <th className="w-50 font-weight-light pl-1">
-                                {`Difficult${boardStagesAndDifficulties.some(([, ds]) => ds.length > 1) ? "ies" : "y"}`}
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            {boardStagesAndDifficulties.map(([stage, difficulties]) => <tr key={stage}>
-                                <td className="w-50 align-baseline text-lg-right">
-                                    <strong>{stageLabelMap[stage]}:</strong>
-                                </td>
-                                <td className="w-50 pl-1">
-                                    <strong>{difficulties.map((d) => difficultyShortLabelMap[d]).join(", ")}</strong>
-                                </td>
-                            </tr>)}
-                            {boardStagesAndDifficulties.length === 0 && <tr>
-                                <td className="w-50 align-baseline text-lg-right">
-                                    <strong>N/A:</strong>
-                                </td>
-                                <td className="w-50 pl-1">
-                                    <strong>-</strong>
-                                </td>
-                            </tr>}
-                        </tbody>
-                    </table>
-                </aside>
+              </>
+            )}
+          </div>
+          <aside>
+            <CardSubtitle>
+              Created: <strong>{formatDate(board.creationDate)}</strong>
+            </CardSubtitle>
+            <CardSubtitle>
+              Last visited: <strong>{formatDate(board.lastVisited)}</strong>
+            </CardSubtitle>
+            <table className="w-100">
+              <thead>
+                <tr>
+                  <th className="w-50 font-weight-light">
+                    {`Stage${
+                      boardStagesAndDifficulties.length > 1 ? "s" : ""
+                    }:`}
+                  </th>
+                  <th className="w-50 font-weight-light pl-1">
+                    {`Difficult${
+                      boardStagesAndDifficulties.some(([, ds]) => ds.length > 1)
+                        ? "ies"
+                        : "y"
+                    }`}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {boardStagesAndDifficulties.map(([stage, difficulties]) => (
+                  <tr key={stage}>
+                    <td className="w-50 align-baseline text-lg-right">
+                      <strong>{stageLabelMap[stage]}:</strong>
+                    </td>
+                    <td className="w-50 pl-1">
+                      <strong>
+                        {difficulties
+                          .map((d) => difficultyShortLabelMap[d])
+                          .join(", ")}
+                      </strong>
+                    </td>
+                  </tr>
+                ))}
+                {boardStagesAndDifficulties.length === 0 && (
+                  <tr>
+                    <td className="w-50 align-baseline text-lg-right">
+                      <strong>N/A:</strong>
+                    </td>
+                    <td className="w-50 pl-1">
+                      <strong>-</strong>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </aside>
 
-                <Row className="mt-1 mb-2">
-                    <Col>
-                        <CardTitle><Link to={boardLink}>{board.title}</Link></CardTitle>
-                        <CardSubtitle>By: <strong>{formatBoardOwner(user, board)}</strong></CardSubtitle>
-                    </Col>
-                    <Col className="card-share-link col-auto">
-                        <ShareLink linkUrl={boardLink} gameboardId={board.id} reducedWidthLink clickAwayClose />
-                    </Col>
-                </Row>
-            </CardBody>
-        </Card>;
+          <Row className="mt-1 mb-2">
+            <Col>
+              <CardTitle>
+                <Link to={boardLink}>{board.title}</Link>
+              </CardTitle>
+              <CardSubtitle>
+                By: <strong>{formatBoardOwner(user, board)}</strong>
+              </CardSubtitle>
+            </Col>
+            <Col className="card-share-link col-auto">
+              <ShareLink
+                linkUrl={boardLink}
+                gameboardId={board.id}
+                reducedWidthLink
+                clickAwayClose
+              />
+            </Col>
+          </Row>
+        </CardBody>
+      </Card>
+    );
 };
 
 export const MyGameboards = () => {

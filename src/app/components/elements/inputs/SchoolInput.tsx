@@ -79,46 +79,71 @@ export const SchoolInput = ({userToUpdate, setUserToUpdate, submissionAttempted,
     const randomNumber = Math.random();
 
     const isInvalid = submissionAttempted && required && !validateUserSchool(userToUpdate);
-    return <RS.FormGroup className={`school ${className}`}>
-        <RS.Label htmlFor={`school-input-${randomNumber}`} >My current school or college</RS.Label>
-        {userToUpdate.schoolOther !== NOT_APPLICABLE && <React.Fragment>
+    return (
+      <RS.FormGroup className={`school ${className}`}>
+        <RS.Label htmlFor={`school-input-${randomNumber}`}>
+          My current school or college
+        </RS.Label>
+        {userToUpdate.schoolOther !== NOT_APPLICABLE && (
+          <React.Fragment>
             <AsyncCreatableSelect
-                isClearable
-                isDisabled={disableInput}
-                inputId={`school-input-${randomNumber}`}
-                placeholder={"Type your school or college name"}
-                value={schoolValue}
-                className={(isInvalid ? "react-select-error " : "") + "basic-multi-select"}
-                classNamePrefix="select"
-                onChange={handleSetSchool}
-                loadOptions={throttledSchoolSearch}
-                filterOption={() => true}
-                formatCreateLabel={(input) => <span>Use &quot;{input}&quot; as your school name</span>}
+              isClearable
+              isDisabled={disableInput}
+              inputId={`school-input-${randomNumber}`}
+              placeholder={"Type your school or college name"}
+              value={schoolValue}
+              className={
+                (isInvalid ? "react-select-error " : "") + "basic-multi-select"
+              }
+              classNamePrefix="select"
+              onChange={handleSetSchool}
+              loadOptions={throttledSchoolSearch}
+              filterOption={() => true}
+              formatCreateLabel={(input) => (
+                <span>Use &quot;{input}&quot; as your school name</span>
+              )}
             />
-        </React.Fragment>}
+          </React.Fragment>
+        )}
 
-        {((userToUpdate.schoolOther == undefined && !(selectedSchoolObject && selectedSchoolObject.name)) || userToUpdate.schoolOther == NOT_APPLICABLE) && <div className={(userToUpdate.schoolOther === NOT_APPLICABLE ? "mt-1": "mt-3") + " d-flex"}>
-            <RS.CustomInput
-                type="checkbox" id={`${idPrefix}-not-associated-with-school`}
-                checked={userToUpdate.schoolOther === NOT_APPLICABLE}
-                invalid={isInvalid}
-                disabled={disableInput || !setUserToUpdate}
-                onChange={(e => {
-                    const {schoolId, schoolOther, ...userWithoutSchoolInfo} = userToUpdate;
-                    if (e.target.checked) {
-                        setUserToUpdate?.({...userWithoutSchoolInfo, schoolOther: NOT_APPLICABLE});
-                    } else {
-                        setUserToUpdate?.(userWithoutSchoolInfo);
-                    }
-                })}
-                label="I am not associated with a school or college"
-                className="larger-checkbox"
+        {((userToUpdate.schoolOther == undefined &&
+          !(selectedSchoolObject && selectedSchoolObject.name)) ||
+          userToUpdate.schoolOther == NOT_APPLICABLE) && (
+          <div
+            className={
+              (userToUpdate.schoolOther === NOT_APPLICABLE ? "mt-1" : "mt-3") +
+              " d-flex"
+            }
+          >
+            <RS.Input
+              type="checkbox"
+              id={`${idPrefix}-not-associated-with-school`}
+              checked={userToUpdate.schoolOther === NOT_APPLICABLE}
+              invalid={isInvalid}
+              disabled={disableInput || !setUserToUpdate}
+              onChange={(e) => {
+                const { schoolId, schoolOther, ...userWithoutSchoolInfo } =
+                  userToUpdate;
+                if (e.target.checked) {
+                  setUserToUpdate?.({
+                    ...userWithoutSchoolInfo,
+                    schoolOther: NOT_APPLICABLE,
+                  });
+                } else {
+                  setUserToUpdate?.(userWithoutSchoolInfo);
+                }
+              }}
+              label="I am not associated with a school or college"
+              className="larger-checkbox"
             />
-        </div>}
+          </div>
+        )}
 
         <div className="invalid-school">
-            {submissionAttempted && !validateUserSchool(userToUpdate) && "Please specify a school or college"}
+          {submissionAttempted &&
+            !validateUserSchool(userToUpdate) &&
+            "Please specify a school or college"}
         </div>
-
-    </RS.FormGroup>
+      </RS.FormGroup>
+    );
 };

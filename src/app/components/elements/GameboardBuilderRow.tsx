@@ -55,69 +55,118 @@ const GameboardBuilderRow = (
         AUDIENCE_DISPLAY_FIELDS
     );
 
-    return <tr
-        key={question.id} ref={provided && provided.innerRef}
-        className={classnames({selected: question.id && selectedQuestions.has(question.id)})}
-        {...(provided && provided.draggableProps)} {...(provided && provided.dragHandleProps)}
-    >
+    return (
+      <tr
+        key={question.id}
+        ref={provided && provided.innerRef}
+        className={classnames({
+          selected: question.id && selectedQuestions.has(question.id),
+        })}
+        {...(provided && provided.draggableProps)}
+        {...(provided && provided.dragHandleProps)}
+      >
         <td className="text-center align-middle w-5">
-            <RS.CustomInput
-                type="checkbox"
-                id={`${provided ? "gameboard-builder" : "question-search-modal"}-include-${question.id}`}
-                aria-label="Select question"
-                color="secondary"
-                checked={question.id !== undefined && selectedQuestions.has(question.id)}
-                onChange={() => {
-                    if (question.id) {
-                        const newSelectedQuestions = new Map(selectedQuestions);
-                        const newQuestionOrder = [...questionOrder];
-                        if (newSelectedQuestions.has(question.id)) {
-                            newSelectedQuestions.delete(question.id);
-                            newQuestionOrder.splice(newQuestionOrder.indexOf(question.id), 1);
-                        } else {
-                            newSelectedQuestions.set(question.id, {...question, creationContext});
-                            newQuestionOrder.push(question.id);
-                        }
-                        setSelectedQuestions(newSelectedQuestions);
-                        setQuestionOrder(newQuestionOrder);
-                    }
-                }}
-            />
+          <RS.Input
+            type="checkbox"
+            id={`${
+              provided ? "gameboard-builder" : "question-search-modal"
+            }-include-${question.id}`}
+            aria-label="Select question"
+            color="secondary"
+            checked={
+              question.id !== undefined && selectedQuestions.has(question.id)
+            }
+            onChange={() => {
+              if (question.id) {
+                const newSelectedQuestions = new Map(selectedQuestions);
+                const newQuestionOrder = [...questionOrder];
+                if (newSelectedQuestions.has(question.id)) {
+                  newSelectedQuestions.delete(question.id);
+                  newQuestionOrder.splice(
+                    newQuestionOrder.indexOf(question.id),
+                    1
+                  );
+                } else {
+                  newSelectedQuestions.set(question.id, {
+                    ...question,
+                    creationContext,
+                  });
+                  newQuestionOrder.push(question.id);
+                }
+                setSelectedQuestions(newSelectedQuestions);
+                setQuestionOrder(newQuestionOrder);
+              }
+            }}
+          />
         </td>
         <td className="w-40">
-            {provided && <img src="/assets/drag_indicator.svg" alt="Drag to reorder" className="mr-1 grab-cursor" />}
-            <a className="mr-2" href={`/questions/${question.id}`} target="_blank" rel="noopener noreferrer" title="Preview question in new tab">
-                {generateQuestionTitle(question)}
-            </a>
-            <input
-                type="image" src="/assets/new-tab.svg" alt="Preview question" title="Preview question in modal"
-                className="pointer-cursor align-middle new-tab" onClick={() => {question.id && openQuestionModal(question.id)}}
+          {provided && (
+            <img
+              src="/assets/drag_indicator.svg"
+              alt="Drag to reorder"
+              className="mr-1 grab-cursor"
             />
+          )}
+          <a
+            className="mr-2"
+            href={`/questions/${question.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Preview question in new tab"
+          >
+            {generateQuestionTitle(question)}
+          </a>
+          <input
+            type="image"
+            src="/assets/new-tab.svg"
+            alt="Preview question"
+            title="Preview question in modal"
+            className="pointer-cursor align-middle new-tab"
+            onClick={() => {
+              question.id && openQuestionModal(question.id);
+            }}
+          />
         </td>
-        <td className="w-25">
-            {topicTag()}
-        </td>
+        <td className="w-25">{topicTag()}</td>
         <td className="w-15">
-            {filteredAudienceViews.map(v => v.stage).map(stage => <div key={stage}>
+          {filteredAudienceViews
+            .map((v) => v.stage)
+            .map((stage) => (
+              <div key={stage}>
                 {stage && <span>{stageLabelMap[stage]}</span>}
-            </div>)}
+              </div>
+            ))}
         </td>
         <td className="w-10">
-            {filteredAudienceViews.map(v => v.difficulty).map((difficulty, i) => <div key={`${difficulty} ${i}`}>
+          {filteredAudienceViews
+            .map((v) => v.difficulty)
+            .map((difficulty, i) => (
+              <div key={`${difficulty} ${i}`}>
                 {difficulty && <DifficultyIcons difficulty={difficulty} />}
-            </div>)}
+              </div>
+            ))}
         </td>
         <td className="w-5">
-            {filteredAudienceViews.map((audienceView, i, collection) => <>
-                {findAudienceRecordsMatchingPartial(question.audience, audienceView)
-                    .map((audienceRecord) => audienceRecord.examBoard?.map((examBoard) => <div key={examBoard}>
-                        {examBoard && <span>{tagIcon(examBoardLabelMap[examBoard])}</span>}
-                    </div>))
-                }
-                {/* When this becomes more common we should solve separation via a new row and merge other columns */}
-                {i + 1 < collection.length && <hr className="text-center" />}
-            </>)}
+          {filteredAudienceViews.map((audienceView, i, collection) => (
+            <>
+              {findAudienceRecordsMatchingPartial(
+                question.audience,
+                audienceView
+              ).map((audienceRecord) =>
+                audienceRecord.examBoard?.map((examBoard) => (
+                  <div key={examBoard}>
+                    {examBoard && (
+                      <span>{tagIcon(examBoardLabelMap[examBoard])}</span>
+                    )}
+                  </div>
+                ))
+              )}
+              {/* When this becomes more common we should solve separation via a new row and merge other columns */}
+              {i + 1 < collection.length && <hr className="text-center" />}
+            </>
+          ))}
         </td>
-    </tr>
+      </tr>
+    );
 };
 export default GameboardBuilderRow;

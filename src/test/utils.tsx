@@ -130,7 +130,6 @@ export const followHeaderNavLink = async (
     );
   const link = await within(adminMenuSectionParent).findByRole("menuitem", {
     name: linkName,
-    exact: false,
   });
   await userEvent.click(link);
 };
