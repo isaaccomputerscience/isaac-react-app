@@ -20,7 +20,7 @@
     "he": "^1.2.0",
     "highlight.js": "^11.8",
     "history": "^4.10.1",
-    "html-to-text": "^8.2.0",
+    "html-to-text": "^9.0.5",
     "identity-obj-proxy": "3.0.0",
     "immer": "^9.0.15",
     "inequality": "1.0.1",
