@@ -22,7 +22,7 @@
     "history": "^4.10.1",
     "html-to-text": "^9.0.5",
     "identity-obj-proxy": "3.0.0",
-    "immer": "^9.0.15",
+    "immer": "^10.0.2",
     "inequality": "1.0.1",
     "inequality-grammar": "1.0.0",
     "js-cookie": "^3.0.1",

@@ -1,5 +1,5 @@
 import {screen} from "@testing-library/react";
-import produce from "immer";
+import { produce } from "immer";
 import {renderTestEnvironment} from "../utils";
 import { API_PATH } from "../../app/services";
 import {rest} from "msw";
