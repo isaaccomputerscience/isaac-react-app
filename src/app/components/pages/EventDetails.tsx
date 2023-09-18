@@ -135,11 +135,12 @@ const EventDetails = ({match: {params: {eventId}}, location: {pathname}}: EventD
         // _______
         // WARNING 2022-03-01 - This will need to be reconsidered when we upgrade the front-end dependencies
         // ¯¯¯¯¯¯¯
-        let icon = L.icon({
-            iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png').default,
-            iconUrl: require('leaflet/dist/images/marker-icon.png'),
-            shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
-            iconAnchor: [12, 41]
+        const icon = L.icon({
+          iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png")
+            .default,
+          iconUrl: require("leaflet/dist/images/marker-icon.png"),
+          shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
+          iconAnchor: [12, 41],
         });
 
         return (
