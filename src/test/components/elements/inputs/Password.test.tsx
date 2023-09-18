@@ -83,7 +83,7 @@ describe("Password Component", () => {
     test("does not show toggle icon when 'showToggleIcon' prop is not provided", () => {
       setupTest();
       const toggleIcon = screen.queryByTestId("show-password-icon");
-      expect(toggleIcon).toBe(null);
+      expect(toggleIcon).toBeNull();
     });
   });
 
@@ -91,19 +91,18 @@ describe("Password Component", () => {
     test("renders with invalid style when 'invalid' prop is true", () => {
       setupTest({ invalid: true });
       const passwordInput = findPasswordInput("New");
-      expect(passwordInput.classList.contains("is-invalid")).toBe(true);
+      expect(passwordInput).toHaveClass("is-invalid");
     });
 
-    test.each(passwordFieldTypes)(
-      "renders with correct name attribute for passwordFieldType: %s",
-      ({ type, expectedName }) => {
+    passwordFieldTypes.forEach(({ type, expectedName }) => {
+      test(`renders with correct name attribute for '${type}'`, () => {
         setupTest({
           passwordFieldType: type,
         });
         const passwordInput = findPasswordInput(type);
         expect(passwordInput.name).toBe(expectedName);
-      }
-    );
+      });
+    });
 
     test("renders with disabled attribute when 'disabled' prop is true", () => {
       setupTest({
