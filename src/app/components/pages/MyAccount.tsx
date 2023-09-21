@@ -215,6 +215,7 @@ const AccountPageComponent = ({user, getChosenUserAuthSettings, errorMessage, us
 
     // Form's submission method
     function updateAccount(event: React.FormEvent<HTMLFormElement>) {
+        console.log("updating acc");
         event.preventDefault();
         setAttemptedAccountUpdate(true);
         setSaving(true);
