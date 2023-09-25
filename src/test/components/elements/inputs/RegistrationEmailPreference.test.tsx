@@ -37,7 +37,7 @@ describe("RegistrationEmailPreference", () => {
       "Be the first to know about new topics, new platform features, and our fantastic competition giveaways."
     );
     const eventsDescription = screen.getByText(
-      "Get valuable updates on our free student workshops/teacher CPD events happening near you."
+      "Get valuable updates on our free student workshops happening near you."
     );
     expect(assignmentsDescription).toBeInTheDocument();
     expect(newsDescription).toBeInTheDocument();
@@ -54,7 +54,7 @@ describe("RegistrationEmailPreference", () => {
       "Be the first to know about new topics, new platform features, and our fantastic competition giveaways."
     );
     const eventsDescription = screen.getByText(
-      "Get valuable updates on our free student workshops/teacher CPD events happening near you."
+      "Get valuable updates on our free student workshops happening near you."
     );
     expect(newsDescription).toBeInTheDocument();
     expect(eventsDescription).toBeInTheDocument();
