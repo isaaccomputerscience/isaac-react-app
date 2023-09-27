@@ -14,7 +14,7 @@ export const PromoContent = ({ item }: { item: IsaacPodDTO }) => {
     : apiHelper.determineImageUrl(defaultImage);
 
   interface LinkOrAnchorProps {
-    url?: string;
+    url: string | undefined;
     internalLink: boolean;
     children: React.ReactNode;
   }
