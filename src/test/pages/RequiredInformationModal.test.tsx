@@ -19,6 +19,7 @@ describe("RequiredInformationModal", () => {
 
     it('should not show if the user has all required account information', async () => {
         renderTestEnvironment({role: "STUDENT"});
+        await screen.findByTestId("main");
         const modals = screen.queryAllByTestId("active-modal");
         if (modals.length > 0) {
             // If there is another modal, it shouldn't be the required info one

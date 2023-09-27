@@ -76,10 +76,11 @@ function isAxiosError(e: Error): e is AxiosError {
 }
 
 export function extractMessage(e: Error) {
-    if (isAxiosError(e) && e.response && e.response.data && e.response.data.errorMessage) {
-        return e.response.data.errorMessage;
-    }
-    return API_REQUEST_FAILURE_MESSAGE;
+  if (isAxiosError(e) && e.response?.data?.hasOwnProperty("errorMessage")) {
+    const responseData = e.response.data as any;
+    return responseData.errorMessage;
+  }
+  return API_REQUEST_FAILURE_MESSAGE;
 }
 
 export function showAxiosErrorToastIfNeeded(error: string, e: any) {
