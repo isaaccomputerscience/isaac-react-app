@@ -1935,10 +1935,10 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
 
-"@ts-morph/common@~0.20.0":
-  version "0.20.0"
-  resolved "https://registry.yarnpkg.com/@ts-morph/common/-/common-0.20.0.tgz#3f161996b085ba4519731e4d24c35f6cba5b80af"
-  integrity sha512-7uKjByfbPpwuzkstL3L5MQyuXPSKdoNG93Fmi2JoDcTf3pEP731JdRFAduRVkOs8oqxPsXKA+ScrWkdQ8t/I+Q==
+"@ts-morph/common@~0.21.0":
+  version "0.21.0"
+  resolved "https://registry.yarnpkg.com/@ts-morph/common/-/common-0.21.0.tgz#30272bde654127326d8b73643b9a8de280135fb4"
+  integrity sha512-ES110Mmne5Vi4ypUKrtVQfXFDtCsDXiUiGxF6ILVlE90dDD4fdpC1LSjydl/ml7xJWKSDZwUYD2zkOePMSrPBA==
   dependencies:
     fast-glob "^3.2.12"
     minimatch "^7.4.3"
@@ -7765,12 +7765,12 @@ react-redux@^8.1.2:
     react-is "^18.0.0"
     use-sync-external-store "^1.0.0"
 
-react-remove-props-loader@^1.1.8:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/react-remove-props-loader/-/react-remove-props-loader-1.2.1.tgz#f92fff1ccb36d951cb3ad5286f0496f273660ff4"
-  integrity sha512-d7CxppaUSEz4UqMS6aboTSJKMcsY6A9SYzCQXejPhgddBPrdzuKnXGXl+2LRC/KGHGGUC7NGCbNB/o/WhLhTHA==
+react-remove-props-loader@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/react-remove-props-loader/-/react-remove-props-loader-1.2.3.tgz#a414368f46322712615dacdc23fc16a203295267"
+  integrity sha512-tbVJzCQwM0tC3Jt6aTeboLgPAOXjOkuccYlL9M7gO1kLe2/kbfT+wMtfSmWtzmRAOwgSRmHv/O/4vbw2YN9mJQ==
   dependencies:
-    ts-morph "^19.0.0"
+    ts-morph "^20.0.0"
 
 react-router-dom@^5.3.0:
   version "5.3.4"
@@ -8701,7 +8701,7 @@ strip-json-comments@^3.1.1:
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-3.1.1.tgz#31f1281b3832630434831c310c01cccda8cbe006"
   integrity sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==
 
-style-loader@^3.3.1:
+style-loader@^3.3.3:
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/style-loader/-/style-loader-3.3.3.tgz#bba8daac19930169c0c9c96706749a597ae3acff"
   integrity sha512-53BiGLXAcll9maCYtZi2RCQZKa8NQQai5C4horqKyRmHj9H7QmcUyucrH+4KW/gBQbXM2AsB0axoEcFZPlfPcw==
@@ -8908,12 +8908,12 @@ ts-loader@^9.2.6:
     micromatch "^4.0.0"
     semver "^7.3.4"
 
-ts-morph@^19.0.0:
-  version "19.0.0"
-  resolved "https://registry.yarnpkg.com/ts-morph/-/ts-morph-19.0.0.tgz#43e95fb0156c3fe3c77c814ac26b7d0be2f93169"
-  integrity sha512-D6qcpiJdn46tUqV45vr5UGM2dnIEuTGNxVhg0sk5NX11orcouwj6i1bMqZIz2mZTZB1Hcgy7C3oEVhAT+f6mbQ==
+ts-morph@^20.0.0:
+  version "20.0.0"
+  resolved "https://registry.yarnpkg.com/ts-morph/-/ts-morph-20.0.0.tgz#c46b4c231dfc93347091901f1f9a3e13413230fd"
+  integrity sha512-JVmEJy2Wow5n/84I3igthL9sudQ8qzjh/6i4tmYCm6IqYyKFlNbJZi7oBdjyqcWSWYRu3CtL0xbT6fS03ESZIg==
   dependencies:
-    "@ts-morph/common" "~0.20.0"
+    "@ts-morph/common" "~0.21.0"
     code-block-writer "^12.0.0"
 
 tslib@^2.0.0, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.3.0:
