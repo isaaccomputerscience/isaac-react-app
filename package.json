@@ -140,7 +140,7 @@
     "bootstrap-block-grid": "^1.1.7",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^11.0.0",
-    "css-loader": "^6.5.1",
+    "css-loader": "^6.8.1",
     "dotenv": "^16.3.1",
     "eslint": "^8.50.0",
     "eslint-plugin-jsx-a11y": "^6.7.1",
