@@ -1,23 +1,23 @@
-import React, {useEffect} from "react";
+import React, { useEffect, useState } from "react";
 import * as RS from "reactstrap";
 import {
   AppState,
   getEvent,
-  getEventBookings,
   useAppDispatch,
   useAppSelector,
 } from "../../../state";
 import { Link } from "react-router-dom";
 import { DateString } from "../DateString";
 import { NOT_FOUND, zeroOrLess } from "../../../services";
-import { EventBookingDTO } from "../../../../IsaacApiTypes";
 
 export const SelectedEventDetails = ({ eventId }: { eventId: string }) => {
   const dispatch = useAppDispatch();
 
+  const [studentCount, setStudentCount] = useState(0);
+  const [teacherCount, setTeacherCount] = useState(0);
+
   useEffect(() => {
     dispatch(getEvent(eventId));
-    dispatch(getEventBookings(eventId));
   }, [dispatch, eventId]);
 
   const selectedEvent = useAppSelector((state: AppState) => {
@@ -27,23 +27,23 @@ export const SelectedEventDetails = ({ eventId }: { eventId: string }) => {
     (state: AppState) => (state && state.eventBookings) || []
   );
 
-  function rolesOfBookedUsers(eventBookings: EventBookingDTO[]) {
-    const roleCount = {
-      STUDENT: 0,
-      TEACHER: 0,
-    };
+  useEffect(() => {
+    console.log("running rolesOfBookedUsers");
+    let newStudentCount = 0;
+    let newTeacherCount = 0;
 
     eventBookings.forEach((booking) => {
       const role = booking.userBooked?.role;
       if (role === "STUDENT") {
-        roleCount.STUDENT++;
+        newStudentCount++;
       } else if (role === "TEACHER") {
-        roleCount.TEACHER++;
+        newTeacherCount++;
       }
     });
 
-    return roleCount;
-  }
+    setStudentCount(newStudentCount);
+    setTeacherCount(newTeacherCount);
+  }, [eventBookings]);
 
   return (
     <RS.Card>
@@ -100,18 +100,10 @@ export const SelectedEventDetails = ({ eventId }: { eventId: string }) => {
             </span>
             <br />
             <strong>Number of students: </strong>
-            {eventBookings.length < 1
-              ? "N/A"
-              : `${rolesOfBookedUsers(eventBookings).STUDENT} / ${
-                  selectedEvent.numberOfPlaces
-                }`}
+            {studentCount} / {selectedEvent.numberOfPlaces}
             <br />
             <strong>Number of teachers: </strong>
-            {eventBookings.length < 1
-              ? "N/A"
-              : `${rolesOfBookedUsers(eventBookings).TEACHER} / ${
-                  selectedEvent.numberOfPlaces
-                }`}
+            {teacherCount} / {selectedEvent.numberOfPlaces}
           </p>
         )}
       </RS.CardBody>
