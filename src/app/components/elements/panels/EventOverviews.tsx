@@ -27,84 +27,240 @@ export const EventOverviews = ({setSelectedEventId, user}: {user: PotentialUser;
         dispatch(getEventOverviews(overviewFilter));
     }, [dispatch, setSelectedEventId, overviewFilter]);
 
-    return <Accordion trustedTitle="Events overview" index={0}>
-        {isEventLeader(user) && <div className="bg-grey p-2 mb-4 text-center">
-            As an event leader, you are only able to see the details of events which you manage.
-        </div>}
+    function eventAttendancePercentage(
+      numberAttended: number,
+      numberAbsent: number
+    ) {
+      const percentage =
+        (numberAttended / (numberAttended + numberAbsent)) * 100;
+      if (isNaN(percentage)) return "-";
+      else return percentage.toFixed(1) + "%";
+    }
+
+    return (
+      <Accordion trustedTitle="Events overview" index={0}>
+        {isEventLeader(user) && (
+          <div className="bg-grey p-2 mb-4 text-center">
+            As an event leader, you are only able to see the details of events
+            which you manage.
+          </div>
+        )}
         <div className="clearfix">
-            {/* temporary removal during handover to STEM */}
-            {/* <div className="mb-3 float-left">
+          {/* temporary removal during handover to STEM */}
+          {/* <div className="mb-3 float-left">
                 <RS.Button color="primary" size="sm" tag={Link} to="/events_toolkit">Events toolkit</RS.Button>
             </div> */}
-            <div className="float-right mb-4">
-                <RS.Label>
-                    <RS.Input type="select" value={overviewFilter} onChange={e => {setOverviewFilter(e.target.value as EventOverviewFilter)}}>
-                        {Object.entries(EventOverviewFilter).map(([filterLabel, filterValue]) =>
-                            <option key={filterValue} value={filterValue}>{filterLabel}</option>
-                        )}
-                    </RS.Input>
-                </RS.Label>
-            </div>
-
+          <div className="float-right mb-4">
+            <RS.Label>
+              <RS.Input
+                type="select"
+                value={overviewFilter}
+                onChange={(e) => {
+                  setOverviewFilter(e.target.value as EventOverviewFilter);
+                }}
+              >
+                {Object.entries(EventOverviewFilter).map(
+                  ([filterLabel, filterValue]) => (
+                    <option key={filterValue} value={filterValue}>
+                      {filterLabel}
+                    </option>
+                  )
+                )}
+              </RS.Input>
+            </RS.Label>
+          </div>
         </div>
 
-        <ShowLoading until={eventOverviews} thenRender={eventOverviews => <React.Fragment>
-            {atLeastOne(eventOverviews.length) && <div className="overflow-auto">
-                <RS.Table bordered className="mb-0 bg-white">
+        <ShowLoading
+          until={eventOverviews}
+          thenRender={(eventOverviews) => (
+            <React.Fragment>
+              {atLeastOne(eventOverviews.length) && (
+                <div className="overflow-auto">
+                  <RS.Table
+                    bordered
+                    className="mb-0 bg-white"
+                    style={{ maxWidth: "100%" }}
+                  >
                     <thead>
-                        <tr>
-                            <th className="align-middle text-center">
-                                Actions
-                            </th>
-                            <th className="align-middle"><RS.Button color="link" onClick={() => {setSortPredicate('title'); setReverse(!reverse);}}>
-                                Title
-                            </RS.Button></th>
-                            <th className="align-middle"><RS.Button color="link" onClick={() => {setSortPredicate('date'); setReverse(!reverse);}}>
-                                Date
-                            </RS.Button></th>
-                            <th className="align-middle"><RS.Button color="link" onClick={() => {setSortPredicate('bookingDeadline'); setReverse(!reverse);}}>
-                                Booking deadline
-                            </RS.Button></th>
-                            <th className="align-middle"><RS.Button color="link" onClick={() => {setSortPredicate('location.address.town'); setReverse(!reverse);}}>
-                                Location
-                            </RS.Button></th>
-                            <th className="align-middle"><RS.Button color="link" onClick={() => {setSortPredicate('eventStatus'); setReverse(!reverse);}}>
-                                Status
-                            </RS.Button></th>
-                            <th className="align-middle"><RS.Button color="link" onClick={() => {setSortPredicate('numberOfConfirmedBookings'); setReverse(!reverse);}}>
-                                Number confirmed
-                            </RS.Button></th>
-                            <th className="align-middle"><RS.Button color="link" onClick={() => {setSortPredicate('numberOfWaitingListBookings'); setReverse(!reverse);}}>
-                                Number waiting
-                            </RS.Button></th>
-                            <th className="align-middle"><RS.Button color="link" onClick={() => {setSortPredicate('numberAttended'); setReverse(!reverse);}}>
-                                Number attended
-                            </RS.Button></th>
-                        </tr>
+                      <tr>
+                        <th className="align-middle text-center">Actions</th>
+                        <th className="align-middle">
+                          <RS.Button
+                            color="link"
+                            onClick={() => {
+                              setSortPredicate("title");
+                              setReverse(!reverse);
+                            }}
+                          >
+                            Title
+                          </RS.Button>
+                        </th>
+                        <th className="align-middle">
+                          <RS.Button
+                            color="link"
+                            onClick={() => {
+                              setSortPredicate("date");
+                              setReverse(!reverse);
+                            }}
+                          >
+                            Date
+                          </RS.Button>
+                        </th>
+                        <th className="align-middle">
+                          <RS.Button
+                            color="link"
+                            onClick={() => {
+                              setSortPredicate("bookingDeadline");
+                              setReverse(!reverse);
+                            }}
+                            style={{ wordWrap: "normal" }}
+                          >
+                            Booking deadline
+                          </RS.Button>
+                        </th>
+                        <th className="align-middle">
+                          <RS.Button
+                            color="link"
+                            onClick={() => {
+                              setSortPredicate("location.address.town");
+                              setReverse(!reverse);
+                            }}
+                          >
+                            Location
+                          </RS.Button>
+                        </th>
+                        <th className="align-middle">
+                          <RS.Button
+                            color="link"
+                            onClick={() => {
+                              setSortPredicate("eventStatus");
+                              setReverse(!reverse);
+                            }}
+                          >
+                            Status
+                          </RS.Button>
+                        </th>
+                        <th className="align-middle">
+                          <RS.Button
+                            color="link"
+                            onClick={() => {
+                              setSortPredicate("numberOfConfirmedBookings");
+                              setReverse(!reverse);
+                            }}
+                            style={{ wordWrap: "normal" }}
+                          >
+                            Number confirmed
+                          </RS.Button>
+                        </th>
+                        <th className="align-middle">
+                          <RS.Button
+                            color="link"
+                            onClick={() => {
+                              setSortPredicate("numberOfWaitingListBookings");
+                              setReverse(!reverse);
+                            }}
+                            style={{ wordWrap: "normal" }}
+                          >
+                            Number waiting
+                          </RS.Button>
+                        </th>
+                        <th className="align-middle">
+                          <RS.Button
+                            color="link"
+                            onClick={() => {
+                              setSortPredicate("numberAttended");
+                              setReverse(!reverse);
+                            }}
+                            style={{ wordWrap: "normal" }}
+                          >
+                            Number attended
+                          </RS.Button>
+                        </th>
+                        <th className="align-middle">
+                          <RS.Button
+                            color="link"
+                            onClick={() => {
+                              setSortPredicate("numberAbsent");
+                              setReverse(!reverse);
+                            }}
+                            style={{ wordWrap: "normal" }}
+                          >
+                            Number absent
+                          </RS.Button>
+                        </th>
+                        <th className="align-middle text-center">Attendance</th>
+                      </tr>
                     </thead>
                     <tbody>
-                        {eventOverviews
-                            .sort(sortOnPredicateAndReverse(sortPredicate, reverse))
-                            .map((event) => <tr key={event.id}>
-                                <td className="align-middle"><RS.Button color="primary" outline className="btn-sm" onClick={() => setSelectedEventId(event.id as string)}>
-                                    Manage
-                                </RS.Button></td>
-                                <td className="align-middle"><Link to={`/events/${event.id}`} target="_blank">{event.title} - {event.subtitle}</Link></td>
-                                <td className="align-middle"><DateString>{event.date}</DateString></td>
-                                <td className="align-middle"><DateString>{event.bookingDeadline}</DateString></td>
-                                <td className="align-middle">{event.location && event.location.address && event.location.address.town}</td>
-                                <td className="align-middle">{event.eventStatus}</td>
-                                <td className="align-middle">{event.numberOfConfirmedBookings} / {event.numberOfPlaces}</td>
-                                <td className="align-middle">{event.numberOfWaitingListBookings}</td>
-                                <td className="align-middle">{event.numberAttended}</td>
-                            </tr>)
-                        }
+                      {eventOverviews
+                        .sort(sortOnPredicateAndReverse(sortPredicate, reverse))
+                        .map((event) => (
+                          <tr key={event.id}>
+                            <td className="align-middle">
+                              <RS.Button
+                                color="primary"
+                                outline
+                                className="btn-sm"
+                                onClick={() =>
+                                  setSelectedEventId(event.id as string)
+                                }
+                              >
+                                Manage
+                              </RS.Button>
+                            </td>
+                            <td className="align-middle">
+                              <Link to={`/events/${event.id}`} target="_blank">
+                                {event.title} - {event.subtitle}
+                              </Link>
+                            </td>
+                            <td className="align-middle">
+                              <DateString>{event.date}</DateString>
+                            </td>
+                            <td className="align-middle">
+                              <DateString>{event.bookingDeadline}</DateString>
+                            </td>
+                            <td className="align-middle">
+                              {event.location &&
+                                event.location.address &&
+                                event.location.address.town}
+                            </td>
+                            <td className="align-middle">
+                              {event.eventStatus?.replace(/_/g, " ")}
+                            </td>
+                            <td className="align-middle">
+                              {event.numberOfConfirmedBookings} /{" "}
+                              {event.numberOfPlaces}
+                            </td>
+                            <td className="align-middle">
+                              {event.numberOfWaitingListBookings}
+                            </td>
+                            <td className="align-middle">
+                              {event.numberAttended}
+                            </td>
+                            <td className="align-middle">
+                              {event.numberAbsent}
+                            </td>
+                            <td className="align-middle">
+                              {eventAttendancePercentage(
+                                event.numberAttended,
+                                event.numberAbsent
+                              )}
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
-                </RS.Table>
-            </div>}
-            {zeroOrLess(eventOverviews.length) && <p className="text-center">
-                <strong>No events to display with this filter setting</strong>
-            </p>}
-        </React.Fragment>} />
-    </Accordion>
+                  </RS.Table>
+                </div>
+              )}
+              {zeroOrLess(eventOverviews.length) && (
+                <p className="text-center">
+                  <strong>No events to display with this filter setting</strong>
+                </p>
+              )}
+            </React.Fragment>
+          )}
+        />
+      </Accordion>
+    );
 };
