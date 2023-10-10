@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import * as RS from "reactstrap";
 import {
   AppState,
@@ -9,12 +9,55 @@ import {
 import { Link } from "react-router-dom";
 import { DateString } from "../DateString";
 import { NOT_FOUND, zeroOrLess } from "../../../services";
+import { EventBookingDTO, Location } from "../../../../IsaacApiTypes";
+
+const countStudentsAndTeachers = (eventBookings: EventBookingDTO[]) => {
+  let studentCount = 0;
+  let teacherCount = 0;
+
+  eventBookings.forEach((booking) => {
+    const role = booking.userBooked?.role;
+    if (role === "STUDENT") {
+      studentCount++;
+    } else if (role === "TEACHER") {
+      teacherCount++;
+    }
+  });
+
+  return {
+    studentCount,
+    teacherCount,
+  };
+};
+
+const Location = ({
+  isVirtual,
+  location,
+}: {
+  isVirtual?: boolean;
+  location?: Location;
+}) => {
+  function formatAddress(location: Location | undefined) {
+    if (!location) return "Unknown Location";
+    const addressLine1 = location.address?.addressLine1 || "";
+    const town = location.address?.town ? `, ${location.address.town}` : "";
+    const postalCode = location.address?.postalCode
+      ? `, ${location.address.postalCode}`
+      : "";
+    return addressLine1 + town + postalCode;
+  }
+
+  return (
+    <>
+      <strong>Location: </strong>
+      {isVirtual ? "Online" : formatAddress(location)}
+      <br />
+    </>
+  );
+};
 
 export const SelectedEventDetails = ({ eventId }: { eventId: string }) => {
   const dispatch = useAppDispatch();
-
-  const [studentCount, setStudentCount] = useState(0);
-  const [teacherCount, setTeacherCount] = useState(0);
 
   useEffect(() => {
     dispatch(getEvent(eventId));
@@ -27,23 +70,8 @@ export const SelectedEventDetails = ({ eventId }: { eventId: string }) => {
     (state: AppState) => (state && state.eventBookings) || []
   );
 
-  useEffect(() => {
-    console.log("running rolesOfBookedUsers");
-    let newStudentCount = 0;
-    let newTeacherCount = 0;
-
-    eventBookings.forEach((booking) => {
-      const role = booking.userBooked?.role;
-      if (role === "STUDENT") {
-        newStudentCount++;
-      } else if (role === "TEACHER") {
-        newTeacherCount++;
-      }
-    });
-
-    setStudentCount(newStudentCount);
-    setTeacherCount(newTeacherCount);
-  }, [eventBookings]);
+  const { studentCount, teacherCount } =
+    countStudentsAndTeachers(eventBookings);
 
   return (
     <RS.Card>
@@ -56,17 +84,10 @@ export const SelectedEventDetails = ({ eventId }: { eventId: string }) => {
               {selectedEvent.title} {selectedEvent.subtitle}
             </Link>
             <br />
-            {selectedEvent.location &&
-              selectedEvent.location.address &&
-              selectedEvent.location.address.addressLine1 && (
-                <React.Fragment>
-                  <strong>Location: </strong>
-                  {selectedEvent.isVirtual
-                    ? "Online"
-                    : `${selectedEvent.location.address.addressLine1}, ${selectedEvent.location.address.town}, ${selectedEvent.location.address.postalCode}`}
-                  <br />
-                </React.Fragment>
-              )}
+            <Location
+              isVirtual={selectedEvent.isVirtual}
+              location={selectedEvent.location}
+            />
             <strong>Event status: </strong>
             <span
               className={
