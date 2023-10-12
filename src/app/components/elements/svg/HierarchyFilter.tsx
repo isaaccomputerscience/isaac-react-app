@@ -74,7 +74,7 @@ function hexRowTranslation(
     const y =
       3 * hexagon.quarterHeight +
       hexagon.padding +
-      (hexagon.quarterHeight + hexagon.padding) /* xs y diff */;
+      (hexagon.quarterHeight + hexagon.padding); /* xs y diff */
     return `translate(${x},${y})`;
   }
 }

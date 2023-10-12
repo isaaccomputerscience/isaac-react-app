@@ -1,24 +1,27 @@
 /* eslint-disable */
-const path = require('path');
+const path = require("path");
 const BASE_DIRECTORY = path.resolve(__dirname, "..");
 const resolve = (p) => path.resolve(BASE_DIRECTORY, p);
-const configCS = require('./webpack.config.cs');
-const {merge} = require('webpack-merge');
+const configCS = require("./webpack.config.cs");
+const { merge } = require("webpack-merge");
 
-module.exports = env => {
-    let configCSrenderer = {
-        entry: {
-            'isaac-renderer': [resolve('src/index-renderer')],
-        },
+module.exports = (env) => {
+  let configCSrenderer = {
+    entry: {
+      "isaac-renderer": [resolve("src/index-renderer")],
+    },
 
-        output: {
-            path: resolve(`build-cs-renderer`),
-        }
-    };
+    output: {
+      path: resolve(`build-cs-renderer`),
+    },
+  };
 
-    const nearly = merge(configCS({...env, isRenderer: true}), configCSrenderer);
+  const nearly = merge(
+    configCS({ ...env, isRenderer: true }),
+    configCSrenderer,
+  );
 
-    nearly.entry = configCSrenderer.entry;
+  nearly.entry = configCSrenderer.entry;
 
-    return nearly;
+  return nearly;
 };

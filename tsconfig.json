@@ -23,7 +23,5 @@
     "jsx": "react",
     "sourceMap": true
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }
