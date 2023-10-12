@@ -25,7 +25,7 @@ export const EventManager = ({user}: {user: PotentialUser}) => {
           intermediateCrumbs={[ADMIN_CRUMB]}
           currentPageTitle="Event booking admin"
         />
-        <div className="my-5 mx-n5">
+        <div className="my-5 mx-n4 mx-sm-n5">
           <EventOverviews user={user} setSelectedEventId={setSelectedEventId} />
           {selectedEventId !== null && (
             <React.Fragment>
