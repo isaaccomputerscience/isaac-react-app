@@ -18,7 +18,7 @@ describe("RegistrationSubmit", () => {
   it("renders the component", () => {
     setupTest();
     expect(
-      screen.getByText(/by clicking 'register my account'/i)
+      screen.getByText(/by clicking 'register my account'/i),
     ).toBeInTheDocument();
     const { submitButton } = getFormFields();
     expect(submitButton()).toBeInTheDocument();

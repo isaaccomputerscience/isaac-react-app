@@ -14,7 +14,7 @@ const errorMessageSpy = jest.spyOn(actions, "showAxiosErrorToastIfNeeded");
 const downloadSpy = jest.spyOn(download, "downloadWorkbook");
 
 const renderWorkbookDownload = (
-  endpoints: RestHandler<MockedRequest<DefaultBodyType>>[]
+  endpoints: RestHandler<MockedRequest<DefaultBodyType>>[],
 ) => {
   renderTestEnvironment({
     role: "TEACHER",
@@ -50,7 +50,7 @@ describe("WorkbookDownload Component", () => {
       await waitFor(() => {
         expect(downloadSpy).toHaveBeenCalledWith(expect.any(Function), button);
       });
-    }
+    },
   );
 
   it("displays an error popup if handleDownload encounters an error", async () => {

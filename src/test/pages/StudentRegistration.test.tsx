@@ -67,7 +67,7 @@ describe("Student Registration", () => {
     expect(form).toHaveTextContent("I am studying");
     // student should not have the option to select all stages
     const allOption = Array.from(stage().options).find(
-      (option) => option.value === "all"
+      (option) => option.value === "all",
     );
     expect(allOption).toBeUndefined();
   });
@@ -79,7 +79,7 @@ describe("Student Registration", () => {
     const { submitButton } = formFields;
     await userEvent.click(submitButton());
     const pwErrorMessage = screen.getByText(
-      /Passwords must be at least 12 characters/i
+      /Passwords must be at least 12 characters/i,
     );
     expect(pwErrorMessage).toBeVisible();
     const generalError = screen.getByRole("heading", {
@@ -126,7 +126,7 @@ describe("Student Registration", () => {
           examBoard: "aqa",
         },
       ]),
-      "mocked-recaptcha-token"
+      "mocked-recaptcha-token",
     );
   });
 

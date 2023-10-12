@@ -39,19 +39,20 @@ describe("UserContextReconfirmationModal", () => {
         produce(user, (u) => {
           u.registeredContextsLastConfirmed =
             MOST_RECENT_AUGUST().valueOf() - 10000000;
-        })});
-    // wait for modal content to be loaded    
+        }),
+    });
+    // wait for modal content to be loaded
     await screen.findByTestId("active-modal");
     // find stage dropdown
-    const combobox = screen.getByRole('combobox', {
-        name: /stage/i 
-      });
+    const combobox = screen.getByRole("combobox", {
+      name: /stage/i,
+    });
     // Get all option elements within the stage dropdown
-    const options = Array.from(combobox.getElementsByTagName('option'));
+    const options = Array.from(combobox.getElementsByTagName("option"));
     // Check that the options with values "gcse" and "a_level" exist
-    const gcseOption = options.find(option => option.value === 'gcse');
-    const aLevelOption = options.find(option => option.value === 'a_level');
-    const allOption = options.find(option => option.value === 'all');
+    const gcseOption = options.find((option) => option.value === "gcse");
+    const aLevelOption = options.find((option) => option.value === "a_level");
+    const allOption = options.find((option) => option.value === "all");
     expect(gcseOption).not.toBeNull();
     expect(aLevelOption).not.toBeNull();
     expect(allOption).toBeUndefined();
@@ -64,16 +65,17 @@ describe("UserContextReconfirmationModal", () => {
         produce(user, (u) => {
           u.registeredContextsLastConfirmed =
             MOST_RECENT_AUGUST().valueOf() - 10000000;
-        })});
-    // wait for modal content to be loaded    
+        }),
+    });
+    // wait for modal content to be loaded
     await screen.findByTestId("active-modal");
     // find stage dropdown
-    const combobox = screen.getByRole('combobox', {
-        name: /stage/i 
-      });
+    const combobox = screen.getByRole("combobox", {
+      name: /stage/i,
+    });
     // Get all option elements within the stage dropdown and check that the option with value "all" exists
-    const options = Array.from(combobox.getElementsByTagName('option'));
-    const allOption = options.find(option => option.value === 'all');
+    const options = Array.from(combobox.getElementsByTagName("option"));
+    const allOption = options.find((option) => option.value === "all");
     expect(allOption).not.toBeNull();
   });
 });

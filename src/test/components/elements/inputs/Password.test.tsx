@@ -120,7 +120,7 @@ describe("Password Component", () => {
       const passwordInput = findPasswordInput("New");
       expect(passwordInput).toHaveAttribute(
         "aria-describedby",
-        ariaDescribedByValue
+        ariaDescribedByValue,
       );
     });
   });

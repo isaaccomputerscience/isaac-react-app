@@ -15,7 +15,6 @@ export const RegistrationNameInput = ({
   setUserToUpdate,
   attemptedSignUp,
 }: RegistrationNameProps) => {
-
   const nameFields = [
     {
       label: "First name",

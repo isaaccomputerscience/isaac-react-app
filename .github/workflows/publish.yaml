@@ -2,8 +2,8 @@ name: Publish Docker Image
 
 on:
   push:
-    branches: [ main ]
-    tags: [ 'v*' ]
+    branches: [main]
+    tags: ["v*"]
 
 env:
   REGISTRY: ghcr.io
@@ -64,4 +64,3 @@ jobs:
             BUILD_TARGET=build-cs-renderer
           tags: ${{ steps.meta-cs-renderer.outputs.tags }}
           labels: ${{ steps.meta-cs-renderer.outputs.labels }}
-  

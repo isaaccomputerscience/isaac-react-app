@@ -1,133 +1,189 @@
-import React, {useEffect, useState} from "react";
-import {Button, Card, CardBody, CardImg, Col, Container, Form, Input, Row, Table, Alert} from "reactstrap";
+import React, { useEffect, useState } from "react";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardImg,
+  Col,
+  Container,
+  Form,
+  Input,
+  Row,
+  Table,
+  Alert,
+} from "reactstrap";
 import dayjs from "dayjs";
-import {TitleAndBreadcrumb} from "../elements/TitleAndBreadcrumb";
+import { TitleAndBreadcrumb } from "../elements/TitleAndBreadcrumb";
 import {
-    addMyselfToWaitingList,
-    AppState,
-    bookMyselfOnEvent,
-    cancelMyBooking,
-    getEvent,
-    openActiveModal,
-    selectors,
-    showToast,
-    useAppDispatch,
-    useAppSelector
+  addMyselfToWaitingList,
+  AppState,
+  bookMyselfOnEvent,
+  cancelMyBooking,
+  getEvent,
+  openActiveModal,
+  selectors,
+  showToast,
+  useAppDispatch,
+  useAppSelector,
 } from "../../state";
-import {ShowLoading} from "../handlers/ShowLoading";
+import { ShowLoading } from "../handlers/ShowLoading";
 import {
-    persistence,
-    atLeastOne,
-    EVENTS_CRUMB,
-    formatAvailabilityMessage,
-    formatBookingModalConfirmMessage,
-    formatCancelBookingButtonMessage,
-    formatEventDetailsDate,
-    formatMakeBookingButtonMessage,
-    formatWaitingListBookingStatusMessage,
-    history,
-    isDefined,
-    isLoggedIn,
-    isStaff,
-    isTeacherOrAbove,
-    KEY,
-    NOT_FOUND,
-    SITE_SUBJECT_TITLE,
-    studentOnlyEventMessage,
-    userCanBeAddedToEventWaitingList,
-    userCanMakeEventBooking,
-    userCanReserveEventSpaces,
-    userSatisfiesStudentOnlyRestrictionForEvent,
-    validateBookingSubmission,
-    zeroOrLess,
-    isAdminOrEventManager,
-    isEventLeader,
+  persistence,
+  atLeastOne,
+  EVENTS_CRUMB,
+  formatAvailabilityMessage,
+  formatBookingModalConfirmMessage,
+  formatCancelBookingButtonMessage,
+  formatEventDetailsDate,
+  formatMakeBookingButtonMessage,
+  formatWaitingListBookingStatusMessage,
+  history,
+  isDefined,
+  isLoggedIn,
+  isStaff,
+  isTeacherOrAbove,
+  KEY,
+  NOT_FOUND,
+  SITE_SUBJECT_TITLE,
+  studentOnlyEventMessage,
+  userCanBeAddedToEventWaitingList,
+  userCanMakeEventBooking,
+  userCanReserveEventSpaces,
+  userSatisfiesStudentOnlyRestrictionForEvent,
+  validateBookingSubmission,
+  zeroOrLess,
+  isAdminOrEventManager,
+  isEventLeader,
 } from "../../services";
-import {AdditionalInformation} from "../../../IsaacAppTypes";
-import {DateString} from "../elements/DateString";
-import {Link} from "react-router-dom";
-import {EventBookingForm} from "../elements/EventBookingForm";
-import {reservationsModal} from "../elements/modals/ReservationsModal";
-import {IsaacContent} from "../content/IsaacContent";
-import {EditContentButton} from "../elements/EditContentButton";
+import { AdditionalInformation } from "../../../IsaacAppTypes";
+import { DateString } from "../elements/DateString";
+import { Link } from "react-router-dom";
+import { EventBookingForm } from "../elements/EventBookingForm";
+import { reservationsModal } from "../elements/modals/ReservationsModal";
+import { IsaacContent } from "../content/IsaacContent";
+import { EditContentButton } from "../elements/EditContentButton";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import * as L from "leaflet";
 
 function formatDate(date: Date | number) {
-    return dayjs(date).format("YYYYMMDD[T]HHmmss");
+  return dayjs(date).format("YYYYMMDD[T]HHmmss");
 }
 
 interface EventDetailsProps {
-    match: { params: { eventId: string } };
-    location: { pathname: string };
+  match: { params: { eventId: string } };
+  location: { pathname: string };
 }
 
-const EventDetails = ({match: {params: {eventId}}, location: {pathname}}: EventDetailsProps) => {
-    const dispatch = useAppDispatch();
-    const event = useAppSelector((state: AppState) => state && state.currentEvent);
-    const user = useAppSelector(selectors.user.orNull);
-    useEffect(() => {
-        dispatch(getEvent(eventId));
-    }, [dispatch, eventId]);
+const EventDetails = ({
+  match: {
+    params: { eventId },
+  },
+  location: { pathname },
+}: EventDetailsProps) => {
+  const dispatch = useAppDispatch();
+  const event = useAppSelector(
+    (state: AppState) => state && state.currentEvent,
+  );
+  const user = useAppSelector(selectors.user.orNull);
+  useEffect(() => {
+    dispatch(getEvent(eventId));
+  }, [dispatch, eventId]);
 
-    const [bookingFormOpen, setBookingFormOpen] = useState(false);
-    const [additionalInformation, setAdditionalInformation] = useState<AdditionalInformation>({});
+  const [bookingFormOpen, setBookingFormOpen] = useState(false);
+  const [additionalInformation, setAdditionalInformation] =
+    useState<AdditionalInformation>({});
 
-    function updateAdditionalInformation(update: AdditionalInformation) {
-        setAdditionalInformation(Object.assign({}, additionalInformation, update));
+  function updateAdditionalInformation(update: AdditionalInformation) {
+    setAdditionalInformation(Object.assign({}, additionalInformation, update));
+  }
+
+  function loginAndReturn() {
+    persistence.save(KEY.AFTER_AUTH_PATH, pathname);
+    history.push("/login");
+  }
+
+  function googleCalendarTemplate() {
+    if (event && event !== NOT_FOUND) {
+      // https://calendar.google.com/calendar/event?action=TEMPLATE&text=[event_name]&dates=[start_date as YYYYMMDDTHHMMSS or YYYYMMDD]/[end_date as YYYYMMDDTHHMMSS or YYYYMMDD]&details=[extra_info]&location=[full_address_here]
+      const address =
+        event.location && event.location.address
+          ? [
+              event.location.address.addressLine1,
+              event.location.address.addressLine2,
+              event.location.address.town,
+              event.location.address.county,
+              event.location.address.postalCode,
+              event.location.address.country,
+            ]
+          : [];
+
+      const calendarTemplateUrl = [
+        "https://calendar.google.com/calendar/event?action=TEMPLATE",
+        event.title && "text=" + encodeURI(event.title),
+        event.date &&
+          "dates=" +
+            encodeURI(formatDate(event.date)) +
+            (event.endDate ? "/" + encodeURI(formatDate(event.endDate)) : ""),
+        event.subtitle && "details=" + encodeURI(event.subtitle),
+        "location=" + encodeURI(address.filter((s) => !!s).join(", ")),
+      ];
+
+      window.open(calendarTemplateUrl.filter((s) => !!s).join("&"), "_blank");
     }
+  }
 
-    function loginAndReturn() {
-        persistence.save(KEY.AFTER_AUTH_PATH, pathname);
-        history.push("/login");
-    }
-
-    function googleCalendarTemplate() {
-        if (event && event !== NOT_FOUND) {
-            // https://calendar.google.com/calendar/event?action=TEMPLATE&text=[event_name]&dates=[start_date as YYYYMMDDTHHMMSS or YYYYMMDD]/[end_date as YYYYMMDDTHHMMSS or YYYYMMDD]&details=[extra_info]&location=[full_address_here]
-            const address = event.location && event.location.address ? [event.location.address.addressLine1, event.location.address.addressLine2, event.location.address.town, event.location.address.county, event.location.address.postalCode, event.location.address.country] : [];
-
-            const calendarTemplateUrl = [
-                "https://calendar.google.com/calendar/event?action=TEMPLATE",
-                event.title && "text=" + encodeURI(event.title),
-                event.date && "dates=" + encodeURI(formatDate(event.date)) + (event.endDate ? '/' + encodeURI(formatDate(event.endDate)) : ""),
-                event.subtitle && "details=" + encodeURI(event.subtitle),
-                "location=" + encodeURI(address.filter(s => !!s).join(', '))
-            ];
-
-            window.open(calendarTemplateUrl.filter(s => !!s).join('&'), '_blank');
-        }
-    }
-
-    return <ShowLoading until={event} thenRender={event => {
-        const studentOnlyRestrictionSatisfied = userSatisfiesStudentOnlyRestrictionForEvent(user, event);
+  return (
+    <ShowLoading
+      until={event}
+      thenRender={(event) => {
+        const studentOnlyRestrictionSatisfied =
+          userSatisfiesStudentOnlyRestrictionForEvent(user, event);
 
         const canMakeABooking = userCanMakeEventBooking(user, event);
-        const canBeAddedToWaitingList = userCanBeAddedToEventWaitingList(user, event);
+        const canBeAddedToWaitingList = userCanBeAddedToEventWaitingList(
+          user,
+          event,
+        );
         const canReserveSpaces = userCanReserveEventSpaces(user, event);
 
         const isVirtual = event.tags?.includes("virtual");
 
         function submitBooking(formEvent?: React.FormEvent<HTMLFormElement>) {
-            formEvent?.preventDefault();
+          formEvent?.preventDefault();
 
-            if (user && user.loggedIn) {
-                const failureToastOrTrue = validateBookingSubmission(event, user, additionalInformation);
+          if (user && user.loggedIn) {
+            const failureToastOrTrue = validateBookingSubmission(
+              event,
+              user,
+              additionalInformation,
+            );
 
-                if (failureToastOrTrue !== true) {
-                    dispatch(showToast(failureToastOrTrue));
-                } else if (canMakeABooking) {
-                    dispatch(bookMyselfOnEvent(event.id as string, additionalInformation));
-                } else if (canBeAddedToWaitingList) {
-                    dispatch(addMyselfToWaitingList(event.id as string, additionalInformation, event.isWaitingListOnly));
-                }
+            if (failureToastOrTrue !== true) {
+              dispatch(showToast(failureToastOrTrue));
+            } else if (canMakeABooking) {
+              dispatch(
+                bookMyselfOnEvent(event.id as string, additionalInformation),
+              );
+            } else if (canBeAddedToWaitingList) {
+              dispatch(
+                addMyselfToWaitingList(
+                  event.id as string,
+                  additionalInformation,
+                  event.isWaitingListOnly,
+                ),
+              );
             }
+          }
         }
 
         function openAndScrollToBookingForm() {
-            document.getElementById("open_booking_form_button")?.scrollIntoView({behavior: 'smooth'});
-            document.getElementById("booking_form")?.scrollIntoView({behavior: 'smooth'});
-            setBookingFormOpen(true);
+          document
+            .getElementById("open_booking_form_button")
+            ?.scrollIntoView({ behavior: "smooth" });
+          document
+            .getElementById("booking_form")
+            ?.scrollIntoView({ behavior: "smooth" });
+          setBookingFormOpen(true);
         }
 
         // This is UGLY but there's a weird issue between the leaflet.css file and how webpack loads url()s that makes everything go kaboom.
@@ -416,7 +472,7 @@ const EventDetails = ({match: {params: {eventId}}, location: {pathname}}: EventD
                                       type="submit"
                                       value={formatBookingModalConfirmMessage(
                                         event,
-                                        canMakeABooking
+                                        canMakeABooking,
                                       )}
                                       className="btn btn-xl btn-secondary border-0"
                                     />
@@ -448,7 +504,7 @@ const EventDetails = ({match: {params: {eventId}}, location: {pathname}}: EventD
                           {(canMakeABooking || canBeAddedToWaitingList) &&
                             !bookingFormOpen &&
                             !["CONFIRMED"].includes(
-                              event.userBookingStatus || ""
+                              event.userBookingStatus || "",
                             ) && (
                               <Button
                                 onClick={() => {
@@ -493,7 +549,8 @@ const EventDetails = ({match: {params: {eventId}}, location: {pathname}}: EventD
             </Card>
           </Container>
         );
-    }
-    }/>;
+      }}
+    />
+  );
 };
 export default EventDetails;

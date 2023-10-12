@@ -210,7 +210,7 @@ export const StudentRegistration = () => {
                       unverifiedPassword,
                       userContexts,
                       dobOver13CheckboxChecked,
-                      emailPreferences
+                      emailPreferences,
                     ) && <h5>Please fill out all fields</h5>}
                 </FormFeedback>
                 <h4 role="alert" className="text-danger text-center">

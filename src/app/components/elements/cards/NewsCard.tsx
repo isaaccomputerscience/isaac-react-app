@@ -1,13 +1,13 @@
 import React from "react";
-import {Link} from "react-router-dom";
-import {Card, CardBody, CardImg, CardText} from "reactstrap";
-import {IsaacPodDTO} from "../../../../IsaacApiTypes";
-import {apiHelper} from "../../../services";
+import { Link } from "react-router-dom";
+import { Card, CardBody, CardImg, CardText } from "reactstrap";
+import { IsaacPodDTO } from "../../../../IsaacApiTypes";
+import { apiHelper } from "../../../services";
 
 interface NewsCardProps {
-    newsItem: IsaacPodDTO;
-    showTitle?: boolean;
-    linkText?: string;
+  newsItem: IsaacPodDTO;
+  showTitle?: boolean;
+  linkText?: string;
 }
 
 export const NewsCard = ({

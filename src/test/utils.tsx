@@ -39,7 +39,7 @@ interface RenderTestEnvironmentOptions {
 // When called, the Redux store will be cleaned completely, and other the MSW server handlers will be reset to
 // defaults (those in handlers.ts).
 export const renderTestEnvironment = (
-  options?: RenderTestEnvironmentOptions
+  options?: RenderTestEnvironmentOptions,
 ) => {
   const {
     role,
@@ -63,7 +63,7 @@ export const renderTestEnvironment = (
               responseCodeType: "Unauthorized",
               errorMessage: "You must be logged in to access this resource.",
               bypassGenericSiteErrorPage: false,
-            })
+            }),
           );
         }
         const userWithRole = produce(mockUser, (user) => {
@@ -71,9 +71,9 @@ export const renderTestEnvironment = (
         });
         return res(
           ctx.status(200),
-          ctx.json(modifyUser ? modifyUser(userWithRole) : userWithRole)
+          ctx.json(modifyUser ? modifyUser(userWithRole) : userWithRole),
         );
-      })
+      }),
     );
   }
   if (extraEndpoints) {
@@ -91,7 +91,7 @@ export const renderTestEnvironment = (
       ) : (
         <IsaacApp />
       )}
-    </Provider>
+    </Provider>,
   );
 };
 
@@ -114,7 +114,7 @@ export const NAV_BAR_MENU_TITLE: { [menu in NavBarMenus]: string } = {
 // Clicks on the given navigation menu entry, allowing navigation around the app as a user would
 export const followHeaderNavLink = async (
   menu: NavBarMenus,
-  linkName: string
+  linkName: string,
 ) => {
   const header = await screen.findByTestId("header");
   const navLink = await within(header).findByRole("link", {
@@ -124,11 +124,11 @@ export const followHeaderNavLink = async (
   // This isn't strictly implementation agnostic, but I cannot work out a better way of getting the menu
   // related to a given title
   const adminMenuSectionParent = navLink.closest(
-    "li[class*='nav-item']"
+    "li[class*='nav-item']",
   ) as HTMLLIElement | null;
   if (!adminMenuSectionParent)
     fail(
-      `Missing NavigationSection parent - cannot locate entries in ${menu} navigation menu.`
+      `Missing NavigationSection parent - cannot locate entries in ${menu} navigation menu.`,
     );
   const link = await within(adminMenuSectionParent).findByRole("menuitem", {
     name: linkName,
@@ -164,7 +164,7 @@ export const getById = (id: string) => {
 
 export const fillTextField = async (
   field: HTMLElement,
-  value: string
+  value: string,
 ): Promise<void> => {
   await userEvent.click(field);
   await userEvent.type(field, value);
@@ -172,7 +172,7 @@ export const fillTextField = async (
 
 export const selectOption = async (
   selectElement: HTMLElement,
-  optionValue: string
+  optionValue: string,
 ): Promise<void> => {
   await userEvent.click(selectElement);
   await userEvent.selectOptions(selectElement, optionValue);
@@ -190,7 +190,7 @@ export const checkPasswordInputTypes = (expectedType: string) => {
   const passwordInput = formFields.password() as HTMLInputElement;
   const confirmPasswordInput = formFields.confirmPassword() as HTMLInputElement;
   [passwordInput, confirmPasswordInput].forEach((input) =>
-    expect(input.type).toBe(expectedType)
+    expect(input.type).toBe(expectedType),
   );
 };
 
@@ -241,7 +241,7 @@ export const getFormFields = () => {
 // helper for filling in registration forms
 export const fillFormCorrectly = async (
   correctly: boolean,
-  role: "teacher" | "student"
+  role: "teacher" | "student",
 ) => {
   const formFields = getFormFields();
 
@@ -268,7 +268,7 @@ export const fillFormCorrectly = async (
       await selectOption(gender(), registrationUserData.gender);
       await fillTextField(
         verificationInfo(),
-        registrationUserData.verificationInfo
+        registrationUserData.verificationInfo,
       );
 
       if (correctly) {
@@ -284,7 +284,7 @@ export const fillFormCorrectly = async (
         await fillTextField(password(), registrationUserData.wrongPassword);
         await fillTextField(
           confirmPassword(),
-          registrationUserData.wrongPassword
+          registrationUserData.wrongPassword,
         );
         await fillTextField(email(), registrationUserData.wrongEmail);
       }
@@ -323,7 +323,7 @@ export const fillFormCorrectly = async (
         await fillTextField(password(), registrationUserData.wrongPassword);
         await fillTextField(
           confirmPassword(),
-          registrationUserData.wrongPassword
+          registrationUserData.wrongPassword,
         );
       }
       await userEvent.click(recaptcha());
@@ -339,21 +339,21 @@ export const extraDownloadEndpoints = {
         `/documents/content/books/gcse_book_23/isaac_cs_gcse_book_2023.pdf`,
       (req, res, ctx) => {
         return res(ctx.status(200), ctx.json({ data: "this is a book" }));
-      }
+      },
     ),
     rest.get(
       API_PATH +
         `/documents/content/books/workbook_20_aqa/isaac_cs_aqa_book_2022.pdf`,
       (req, res, ctx) => {
         return res(ctx.status(200), ctx.json({ data: "this is a book" }));
-      }
+      },
     ),
     rest.get(
       API_PATH +
         `/documents/content/books/workbook_20_ocr/isaac_cs_ocr_book_2022.pdf`,
       (req, res, ctx) => {
         return res(ctx.status(200), ctx.json({ data: "this is a book" }));
-      }
+      },
     ),
   ],
   broken: [
@@ -369,9 +369,9 @@ export const extraDownloadEndpoints = {
             errorMessage:
               "Unable to locate the file: content/books/gcse_book_23/isaac_cs_gcse_book_2023.pdf.",
             bypassGenericSiteErrorPage: false,
-          })
+          }),
         );
-      }
+      },
     ),
     rest.get(
       API_PATH +
@@ -385,9 +385,9 @@ export const extraDownloadEndpoints = {
             errorMessage:
               "Unable to locate the file: content/books/workbook_20_ocr/isaac_cs_ocr_book_2022.pdf.",
             bypassGenericSiteErrorPage: false,
-          })
+          }),
         );
-      }
+      },
     ),
     rest.get(
       API_PATH +
@@ -401,9 +401,9 @@ export const extraDownloadEndpoints = {
             errorMessage:
               "Unable to locate the file: /content/books/workbook_20_ocr/isaac_cs_ocr_book_2022.",
             bypassGenericSiteErrorPage: false,
-          })
+          }),
         );
-      }
+      },
     ),
   ],
 };

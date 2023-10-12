@@ -28,7 +28,7 @@ interface RegisterProps {
   verificationDetails?: string | undefined;
   otherInformation?: string | undefined;
   school?: string | undefined;
-  recaptchaToken: string
+  recaptchaToken: string;
 }
 
 interface RegistrationOptions {
@@ -50,7 +50,7 @@ const useRegistration = ({ isTeacher }: RegistrationOptions) => {
     verificationDetails,
     otherInformation,
     school,
-    recaptchaToken
+    recaptchaToken,
   }: RegisterProps) => {
     setAttemptedSignUp(true);
 
@@ -59,7 +59,7 @@ const useRegistration = ({ isTeacher }: RegistrationOptions) => {
       unverifiedPassword,
       userContexts,
       dobOver13CheckboxChecked,
-      emailPreferences
+      emailPreferences,
     );
 
     const userPreferencesToUpdate = {
@@ -82,8 +82,8 @@ const useRegistration = ({ isTeacher }: RegistrationOptions) => {
             newUser,
             userPreferencesToUpdate,
             userContexts,
-            recaptchaToken
-          )
+            recaptchaToken,
+          ),
         );
         ReactGA.event({
           category: "user",
@@ -119,7 +119,7 @@ const useRegistration = ({ isTeacher }: RegistrationOptions) => {
             emailAddress,
             subject,
             message,
-          })
+          }),
         );
       }
     };
@@ -128,7 +128,7 @@ const useRegistration = ({ isTeacher }: RegistrationOptions) => {
       if (isValidForm) {
         persistence.session.save(
           KEY.FIRST_LOGIN,
-          FIRST_LOGIN_STATE.FIRST_LOGIN
+          FIRST_LOGIN_STATE.FIRST_LOGIN,
         );
 
         dispatch(
@@ -136,8 +136,8 @@ const useRegistration = ({ isTeacher }: RegistrationOptions) => {
             newUser,
             userPreferencesToUpdate,
             userContexts,
-            recaptchaToken
-          )
+            recaptchaToken,
+          ),
         );
         ReactGA.event({
           category: "user",

@@ -73,7 +73,7 @@ describe("Dashboard", () => {
       expect(promoTile).toBeNull();
       const featuredNewsTitle = screen.getByText(mockFeaturedNewsItem.title);
       expect(featuredNewsTitle).toBeInTheDocument();
-    }
+    },
   );
 
   roles = [
@@ -99,6 +99,6 @@ describe("Dashboard", () => {
         const loadingMessage = screen.getByTestId("loading-spinner");
         expect(loadingMessage).toBeVisible();
       });
-    }
+    },
   );
 });

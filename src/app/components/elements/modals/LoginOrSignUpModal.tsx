@@ -43,7 +43,7 @@ const LoginOrSignUpBody = () => {
   useEffect(() => {
     persistence.save(
       KEY.AFTER_AUTH_PATH,
-      location.pathname + location.search + location.hash
+      location.pathname + location.search + location.hash,
     );
   }, []);
 

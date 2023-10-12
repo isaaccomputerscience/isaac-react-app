@@ -1,0 +1,2 @@
+#Tip! If your project isn’t ready to format, say, HTML files yet, add *.html. - Otherwise, Prettier 3.0 ignores files ignored by .gitignore by default.
+

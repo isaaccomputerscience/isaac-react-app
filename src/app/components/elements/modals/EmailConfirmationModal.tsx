@@ -14,7 +14,7 @@ const EmailConfirmationModalBody = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectors.user.orNull);
   const status = (user?.loggedIn && user?.emailVerificationStatus) || null;
-  
+
   function clickVerify() {
     dispatch(requestEmailVerification());
     dispatch(closeActiveModal());
@@ -28,14 +28,12 @@ const EmailConfirmationModalBody = () => {
             Your email address needs to be verified - please find our email in
             your inbox and follow the verification link.
           </p>
-          <p>
-            You can request a new verification email if necessary:
-          </p>
+          <p>You can request a new verification email if necessary:</p>
           <div className="text-center pb-3">
             <Button
-            id="email-verification-request"
-            className="btn btn-secondary border-0 px-2 my-1"
-            onClick={clickVerify}
+              id="email-verification-request"
+              className="btn btn-secondary border-0 px-2 my-1"
+              onClick={clickVerify}
             >
               Re-send email
             </Button>

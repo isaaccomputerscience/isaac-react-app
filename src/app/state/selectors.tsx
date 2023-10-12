@@ -1,21 +1,27 @@
-import {anonymisationFunctions, anonymiseIfNeededWith, anonymiseListIfNeededWith, AppState, isaacApi} from "./index";
-import {KEY, persistence, NOT_FOUND, isDefined} from "../services";
-import {QuizAssignmentDTO} from "../../IsaacApiTypes";
-import {AppQuizAssignment, NOT_FOUND_TYPE} from "../../IsaacAppTypes";
+import {
+  anonymisationFunctions,
+  anonymiseIfNeededWith,
+  anonymiseListIfNeededWith,
+  AppState,
+  isaacApi,
+} from "./index";
+import { KEY, persistence, NOT_FOUND, isDefined } from "../services";
+import { QuizAssignmentDTO } from "../../IsaacApiTypes";
+import { AppQuizAssignment, NOT_FOUND_TYPE } from "../../IsaacAppTypes";
 import { createSelector } from "@reduxjs/toolkit";
 
 export const selectors = {
   notifications: {
     notifications: createSelector(
       [(state: AppState) => state?.notifications?.notifications || []],
-      (notifications) => notifications
+      (notifications) => notifications,
     ),
   },
 
   toasts: {
     toasts: createSelector(
       [(state: AppState) => state?.toasts || []],
-      (toasts) => toasts
+      (toasts) => toasts,
     ),
   },
 
@@ -27,7 +33,7 @@ export const selectors = {
           return currentTopic;
         }
         return null;
-      }
+      },
     ),
   },
 
@@ -45,13 +51,13 @@ export const selectors = {
       [(state: AppState) => state?.questions?.questions],
       (questions) => {
         return !!questions && questions.every((q) => !!q.currentAttempt);
-      }
+      },
     ),
     anyQuestionPreviouslyAttempted: createSelector(
       [(state: AppState) => state?.questions?.questions],
       (questions) => {
         return !!questions && questions.some((q) => !!q.bestAttempt);
-      }
+      },
     ),
   },
 
@@ -90,7 +96,7 @@ export const selectors = {
     userProgress: (state: AppState) =>
       state?.userProgress &&
       anonymiseIfNeededWith(anonymisationFunctions.userProgress)(
-        state.userProgress
+        state.userProgress,
       ),
     userAnsweredQuestionsByDate: (state: AppState) =>
       state?.userAnsweredQuestionsByDate,
@@ -105,17 +111,17 @@ export const selectors = {
     activeAuthorisations: (state: AppState) =>
       state?.activeAuthorisations &&
       anonymiseIfNeededWith(anonymisationFunctions.activeAuthorisations)(
-        state?.activeAuthorisations
+        state?.activeAuthorisations,
       ),
     otherUserAuthorisations: (state: AppState) =>
       state?.otherUserAuthorisations &&
       anonymiseIfNeededWith(anonymisationFunctions.otherUserAuthorisations)(
-        state?.otherUserAuthorisations
+        state?.otherUserAuthorisations,
       ),
     groupMemberships: (state: AppState) =>
       state?.groupMemberships &&
       anonymiseListIfNeededWith(anonymisationFunctions.groupMembershipDetail)(
-        state?.groupMemberships
+        state?.groupMemberships,
       ),
   },
 
@@ -138,7 +144,7 @@ export const selectors = {
         } else {
           return augmentWithGroupNameIfInCache(state, quizAssignments);
         }
-      }
+      },
     ),
     /* Retrieves the current users most recent attempt at the current quiz being viewed */
     currentQuizAttempt: (state: AppState) => state?.quizAttempt,
@@ -146,41 +152,47 @@ export const selectors = {
     currentStudentQuizAttempt: (state: AppState) =>
       state?.studentQuizAttempt && "studentAttempt" in state?.studentQuizAttempt
         ? anonymiseIfNeededWith(anonymisationFunctions.quizAttempt)(
-            state.studentQuizAttempt
+            state.studentQuizAttempt,
           )
         : state?.studentQuizAttempt,
     assignment: (state: AppState) =>
       state?.quizAssignment &&
       anonymiseIfNeededWith(anonymisationFunctions.assignment)(
-        state.quizAssignment
+        state.quizAssignment,
       ),
     attemptedFreelyByMe: (state: AppState) => state?.quizAttemptedFreelyByMe,
   },
 };
 
 // TODO make sure this works!!!
-function augmentWithGroupNameIfInCache(state: AppState, quizAssignments: QuizAssignmentDTO[] | NOT_FOUND_TYPE | null | undefined): AppQuizAssignment[] | NOT_FOUND_TYPE | undefined | null {
-    if (!isDefined(quizAssignments) || quizAssignments === NOT_FOUND) {
-        return quizAssignments;
-    }
-    const {data: activeGroups} = isaacApi.endpoints.getGroups.select(false)(state as any);
-    return quizAssignments.map(assignment => {
-        const groupName = activeGroups?.find(g => g.id === assignment.groupId)?.groupName;
-        return {
-            ...assignment,
-            groupName,
-        };
-    });
+function augmentWithGroupNameIfInCache(
+  state: AppState,
+  quizAssignments: QuizAssignmentDTO[] | NOT_FOUND_TYPE | null | undefined,
+): AppQuizAssignment[] | NOT_FOUND_TYPE | undefined | null {
+  if (!isDefined(quizAssignments) || quizAssignments === NOT_FOUND) {
+    return quizAssignments;
+  }
+  const { data: activeGroups } = isaacApi.endpoints.getGroups.select(false)(
+    state as any,
+  );
+  return quizAssignments.map((assignment) => {
+    const groupName = activeGroups?.find((g) => g.id === assignment.groupId)
+      ?.groupName;
+    return {
+      ...assignment,
+      groupName,
+    };
+  });
 }
 
 // Important type checking to avoid an awkward bug
 interface SelectorsWithNoPropArgs {
-    // It is important that the selectors do not use the component's props to filter the results as they can be
-    // out-of-date. In some cases this can lead to zombie children.
-    // A full explanation can be found here: https://react-redux.js.org/next/api/hooks#stale-props-and-zombie-children
-    // We avoid this problem by forcing the selectors to be simple, accepting only the app state as an argument.
-    // Filtering using the props can be safely done later during the component's render on useAppSelector(...)'s result.
-    [type: string]: {[name: string]: (state: AppState) => unknown};
+  // It is important that the selectors do not use the component's props to filter the results as they can be
+  // out-of-date. In some cases this can lead to zombie children.
+  // A full explanation can be found here: https://react-redux.js.org/next/api/hooks#stale-props-and-zombie-children
+  // We avoid this problem by forcing the selectors to be simple, accepting only the app state as an argument.
+  // Filtering using the props can be safely done later during the component's render on useAppSelector(...)'s result.
+  [type: string]: { [name: string]: (state: AppState) => unknown };
 }
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const selectorsWithoutZombies: SelectorsWithNoPropArgs = selectors; // lgtm[js/unused-local-variable] I don't want to lose selectors' type inference

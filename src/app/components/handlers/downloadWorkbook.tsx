@@ -3,7 +3,7 @@ import { AppDispatch, showAxiosErrorToastIfNeeded } from "../../state";
 
 export const downloadWorkbook = async (
   dispatch: AppDispatch,
-  workbookType: "GCSE" | "AQA" | "OCR"
+  workbookType: "GCSE" | "AQA" | "OCR",
 ) => {
   try {
     const pdfLocation = {
@@ -12,7 +12,7 @@ export const downloadWorkbook = async (
       OCR: "content/books/workbook_20_ocr/isaac_cs_ocr_book_2022.pdf",
     };
     const workbook = await api.documents.getWorkbooks(
-      pdfLocation[workbookType]
+      pdfLocation[workbookType],
     );
     const blob = new Blob([workbook.data], { type: "application/pdf" });
     const blobUrl = URL.createObjectURL(blob);

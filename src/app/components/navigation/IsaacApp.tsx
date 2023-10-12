@@ -105,23 +105,23 @@ export const IsaacApp = () => {
   const dispatch = useAppDispatch();
   const consistencyError = useAppSelector(
     (state: AppState) =>
-      (state && state.error && state.error.type == "consistencyError") || false
+      (state && state.error && state.error.type == "consistencyError") || false,
   );
   const serverError = useAppSelector(
     (state: AppState) =>
-      (state && state.error && state.error.type == "serverError") || false
+      (state && state.error && state.error.type == "serverError") || false,
   );
   const goneAwayError = useAppSelector(
     (state: AppState) =>
-      (state && state.error && state.error.type == "goneAwayError") || false
+      (state && state.error && state.error.type == "goneAwayError") || false,
   );
   const segueEnvironment = useAppSelector(
     (state: AppState) =>
       (state && state.constants && state.constants.segueEnvironment) ||
-      "unknown"
+      "unknown",
   );
   const notifications = useAppSelector(selectors.notifications.notifications);
-  
+
   const user = useAppSelector(selectors.user.orNull);
 
   // Run once on component mount

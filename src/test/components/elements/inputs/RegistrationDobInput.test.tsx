@@ -10,7 +10,7 @@ const getDateOfBirthInputs = () => {
   return ["day", "month", "year"].map((unit) =>
     screen.getByRole("combobox", {
       name: new RegExp(`${unit} of birth`, "i"),
-    })
+    }),
   );
 };
 
@@ -31,7 +31,7 @@ describe("RegistrationDobInput", () => {
 
   const setupTest = (
     path: "/register/student" | "/register/teacher",
-    props = {}
+    props = {},
   ) => {
     Object.defineProperty(window, "location", {
       value: {
@@ -82,7 +82,7 @@ describe("RegistrationDobInput", () => {
     expect(mockSetUserToUpdate).toHaveBeenCalledWith(
       expect.objectContaining({
         dateOfBirth: expectedDate,
-      })
+      }),
     );
   });
 
@@ -134,7 +134,7 @@ describe("RegistrationDobInput", () => {
     expect(over13Checkbox).toBeInvalid();
     const dobValidationFeedbackElement = getDobFeedbackElement();
     expect(dobValidationFeedbackElement.textContent).toContain(
-      "Please enter a valid date of birth"
+      "Please enter a valid date of birth",
     );
   });
 
@@ -154,7 +154,7 @@ describe("RegistrationDobInput", () => {
     expect(mockSetUserToUpdate).toHaveBeenCalledWith(
       expect.objectContaining({
         dateOfBirth: undefined,
-      })
+      }),
     );
     expect(mockSetDobOver13CheckboxChecked).toHaveBeenCalledTimes(1);
     expect(mockSetDobOver13CheckboxChecked).toHaveBeenCalledWith(false);
@@ -169,7 +169,7 @@ describe("RegistrationDobInput", () => {
     });
     const dobValidationFeedbackElement = getDobFeedbackElement();
     expect(dobValidationFeedbackElement.textContent).toContain(
-      "Please enter a valid date of birth"
+      "Please enter a valid date of birth",
     );
   });
 });

@@ -23,7 +23,7 @@ interface UserContextRowProps {
   existingUserContexts: UserContext[];
   setBooleanNotation: (bn: BooleanNotation) => void;
   setDisplaySettings: (
-    ds: DisplaySettings | ((oldDs?: DisplaySettings) => DisplaySettings)
+    ds: DisplaySettings | ((oldDs?: DisplaySettings) => DisplaySettings),
   ) => void;
 }
 interface RegistrationContextProps {
@@ -32,7 +32,7 @@ interface RegistrationContextProps {
   setBooleanNotation: (bn: BooleanNotation) => void;
   displaySettings: Nullable<DisplaySettings>;
   setDisplaySettings: (
-    ds: DisplaySettings | ((oldDs?: DisplaySettings) => DisplaySettings)
+    ds: DisplaySettings | ((oldDs?: DisplaySettings) => DisplaySettings),
   ) => void;
   submissionAttempted: boolean;
   userRole?: UserRole;
@@ -41,7 +41,7 @@ interface RegistrationContextProps {
 interface ShowOtherContentProps {
   displaySettings: Nullable<DisplaySettings>;
   setDisplaySettings: (
-    ds: DisplaySettings | ((oldDs?: DisplaySettings) => DisplaySettings)
+    ds: DisplaySettings | ((oldDs?: DisplaySettings) => DisplaySettings),
   ) => void;
   isStudent?: boolean;
 }
@@ -106,7 +106,7 @@ function UserContextRow({
                 !(
                   uc.stage === userContext.stage &&
                   uc.examBoard === userContext.examBoard
-                )
+                ),
             ),
             includeNullOptions: showNullStageOption,
             hideFurtherA: true,
@@ -128,7 +128,7 @@ function UserContextRow({
           invalid={
             submissionAttempted &&
             !Object.values(EXAM_BOARD).includes(
-              userContext.examBoard as EXAM_BOARD
+              userContext.examBoard as EXAM_BOARD,
             )
           }
           onChange={(e) => {
@@ -156,7 +156,7 @@ function UserContextRow({
                 !(
                   uc.stage === userContext.stage &&
                   uc.examBoard === userContext.examBoard
-                )
+                ),
             ),
           }).map((item) => (
             <option key={item.value} value={item.value}>
@@ -241,7 +241,7 @@ const TeacherContext = ({
             hideFurtherA: true,
           }).length > 0 &&
           userContexts.findIndex(
-            (p) => p.stage === STAGE.ALL && p.examBoard === EXAM_BOARD.ALL
+            (p) => p.stage === STAGE.ALL && p.examBoard === EXAM_BOARD.ALL,
           ) === -1;
 
         return (
@@ -253,7 +253,7 @@ const TeacherContext = ({
                 submissionAttempted={submissionAttempted}
                 setUserContext={(newUc) =>
                   setUserContexts(
-                    userContexts.map((uc, i) => (i === index ? newUc : uc))
+                    userContexts.map((uc, i) => (i === index ? newUc : uc)),
                   )
                 }
                 existingUserContexts={userContexts}
@@ -305,7 +305,7 @@ const TeacherContext = ({
 
             {index === userContexts.length - 1 &&
               userContexts.findIndex(
-                (p) => p.stage === STAGE.ALL && p.examBoard === EXAM_BOARD.ALL
+                (p) => p.stage === STAGE.ALL && p.examBoard === EXAM_BOARD.ALL,
               ) === -1 && (
                 <ShowOtherContent
                   displaySettings={displaySettings}
@@ -361,7 +361,7 @@ const StudentContext = ({
                   submissionAttempted={submissionAttempted}
                   setUserContext={(newUc) =>
                     setUserContexts(
-                      userContexts.map((uc, i) => (i === index ? newUc : uc))
+                      userContexts.map((uc, i) => (i === index ? newUc : uc)),
                     )
                   }
                   existingUserContexts={userContexts}
@@ -374,7 +374,8 @@ const StudentContext = ({
             <Col md={6} className="px-0 px-md-3">
               {index === userContexts.length - 1 &&
                 userContexts.findIndex(
-                  (p) => p.stage === STAGE.ALL && p.examBoard === EXAM_BOARD.ALL
+                  (p) =>
+                    p.stage === STAGE.ALL && p.examBoard === EXAM_BOARD.ALL,
                 ) === -1 && (
                   <ShowOtherContent
                     displaySettings={displaySettings}
