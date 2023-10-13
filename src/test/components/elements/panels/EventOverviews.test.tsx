@@ -1,30 +1,16 @@
-import { EventOverviews } from "../../../app/components/elements/panels/EventOverviews";
-import { TestUserRole, renderTestEnvironment } from "../../utils";
+import { EventOverviews } from "../../../../app/components/elements/panels/EventOverviews";
+import { TestUserRole, renderTestEnvironment } from "../../../utils";
 import { screen, within } from "@testing-library/react";
 import {
   mockUser,
   mockFutureEventOverviews,
   mockPastEventOverviews,
-} from "../../../mocks/data";
+} from "../../../../mocks/data";
 import { rest } from "msw";
-import { API_PATH } from "../../../app/services";
+import { API_PATH } from "../../../../app/services";
 import userEvent from "@testing-library/user-event";
 
-const headers = [
-  "Actions",
-  "Title",
-  "Date",
-  "Booking deadline",
-  "Location",
-  "Status",
-  "Number confirmed",
-  "Number waiting",
-  "Number attended",
-  "Number absent",
-  "Attendance",
-];
-
-const getEventDetails = () => {
+const getFirstEventDetails = () => {
   const table = screen.getByRole("table");
   const rows = screen.getAllByRole("row", table);
   const eventRow = rows[1];
@@ -108,13 +94,26 @@ describe("Admin Event Manager", () => {
 
   it("renders warning for Event Leader user", () => {
     setupTest("EVENT_LEADER");
-    const eventLeaderWarning = screen.queryByText(
+    const eventLeaderWarning = screen.getByText(
       "As an event leader, you are only able to see the details of events which you manage."
     );
     expect(eventLeaderWarning).toBeInTheDocument();
   });
 
   it("displays table with correct headers", async () => {
+    const headers = [
+      "Actions",
+      "Title",
+      "Date",
+      "Booking deadline",
+      "Location",
+      "Status",
+      "Number confirmed",
+      "Number waiting",
+      "Number attended",
+      "Number absent",
+      "Attendance",
+    ];
     setupTest("ADMIN");
     await screen.findByText("Actions");
     headers.forEach((header) => {
@@ -131,7 +130,7 @@ describe("Admin Event Manager", () => {
     await screen.findByText("Actions");
     const table = screen.getByRole("table");
     const rows = screen.getAllByRole("row", table);
-    expect(rows.length).toBe(2);
+    expect(rows).toHaveLength(2);
     const futureEvent = screen.getByText(
       `${mockFutureEventOverviews.results[0].title} - ${mockFutureEventOverviews.results[0].subtitle}`
     );
@@ -149,14 +148,14 @@ describe("Admin Event Manager", () => {
     expect(pastEvent).toBeInTheDocument();
     const table = screen.getByRole("table");
     const rows = screen.getAllByRole("row", table);
-    expect(rows.length).toBe(2);
+    expect(rows).toHaveLength(2);
   });
 
   it("correct details appear in each column for future events", async () => {
     setupTest("ADMIN");
     await screen.findByText("Actions");
     const event = mockFutureEventOverviews.results[0];
-    const { tableCells } = getEventDetails();
+    const { tableCells } = getFirstEventDetails();
     const expectedValues = getExpectedValues({ event, type: "Future" });
     tableCells.forEach((cell) => {
       const expectedValue = expectedValues.shift() as string;
@@ -171,7 +170,7 @@ describe("Admin Event Manager", () => {
     const filterSelection = screen.getByRole("combobox");
     await userEvent.selectOptions(filterSelection, ["PAST"]);
     const expectedValues = getExpectedValues({ event, type: "Past" });
-    const { tableCells } = getEventDetails();
+    const { tableCells } = getFirstEventDetails();
     tableCells.forEach((cell) => {
       const expectedValue = expectedValues.shift() as string;
       expect(cell).toHaveTextContent(expectedValue);
@@ -181,7 +180,7 @@ describe("Admin Event Manager", () => {
   it("pressing 'Manage' button on an event will correctly attempt to set the EventId", async () => {
     setupTest("ADMIN");
     await screen.findByText("Actions");
-    const { eventRow } = getEventDetails();
+    const { eventRow } = getFirstEventDetails();
     const manageButton = within(eventRow).getByRole("button", {
       name: "Manage",
     });
