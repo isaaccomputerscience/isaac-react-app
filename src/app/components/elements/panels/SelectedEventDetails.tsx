@@ -3,6 +3,7 @@ import * as RS from "reactstrap";
 import {
   AppState,
   getEvent,
+  selectors,
   useAppDispatch,
   useAppSelector,
 } from "../../../state";
@@ -11,7 +12,7 @@ import { DateString } from "../DateString";
 import { NOT_FOUND, zeroOrLess } from "../../../services";
 import { EventBookingDTO, Location } from "../../../../IsaacApiTypes";
 
-const countStudentsAndTeachers = (eventBookings: EventBookingDTO[]) => {
+export const countStudentsAndTeachers = (eventBookings: EventBookingDTO[]) => {
   let studentCount = 0;
   let teacherCount = 0;
 
@@ -30,23 +31,24 @@ const countStudentsAndTeachers = (eventBookings: EventBookingDTO[]) => {
   };
 };
 
-const Location = ({
+export const formatAddress = (location: Location | undefined) => {
+  if (!location) return "Unknown Location";
+  const addressLine1 = location.address?.addressLine1 || "";
+  const town = location.address?.town ? `, ${location.address.town}` : "";
+  const postalCode = location.address?.postalCode
+    ? `, ${location.address.postalCode}`
+    : "";
+  return addressLine1 + town + postalCode;
+};
+
+export const LocationDetails = ({
   isVirtual,
   location,
 }: {
   isVirtual?: boolean;
   location?: Location;
 }) => {
-  function formatAddress(location: Location | undefined) {
-    if (!location) return "Unknown Location";
-    const addressLine1 = location.address?.addressLine1 || "";
-    const town = location.address?.town ? `, ${location.address.town}` : "";
-    const postalCode = location.address?.postalCode
-      ? `, ${location.address.postalCode}`
-      : "";
-    return addressLine1 + town + postalCode;
-  }
-
+  formatAddress(location);
   return (
     <>
       <strong>Location: </strong>
@@ -66,9 +68,7 @@ export const SelectedEventDetails = ({ eventId }: { eventId: string }) => {
   const selectedEvent = useAppSelector((state: AppState) => {
     return state && state.currentEvent;
   });
-  const eventBookings = useAppSelector(
-    (state: AppState) => (state && state.eventBookings) || []
-  );
+  const eventBookings = useAppSelector(selectors.events.eventBookings);
 
   const { studentCount, teacherCount } =
     countStudentsAndTeachers(eventBookings);
@@ -78,13 +78,13 @@ export const SelectedEventDetails = ({ eventId }: { eventId: string }) => {
       <RS.CardBody>
         <h3 className="h-subtitle mb-1">Selected event details</h3>
         {selectedEvent && selectedEvent !== NOT_FOUND && (
-          <p className="m-0">
+          <p className="m-0" data-testid="event-details">
             <strong>Event: </strong>
             <Link to={`/events/${selectedEvent.id}`} target="_blank">
               {selectedEvent.title} {selectedEvent.subtitle}
             </Link>
             <br />
-            <Location
+            <LocationDetails
               isVirtual={selectedEvent.isVirtual}
               location={selectedEvent.location}
             />
@@ -97,16 +97,20 @@ export const SelectedEventDetails = ({ eventId }: { eventId: string }) => {
               {selectedEvent.eventStatus}
             </span>
             <br />
-            <strong>Event start: </strong>
+            <strong>Event Date & Time: </strong>
             <DateString>{selectedEvent.date}</DateString> -{" "}
             <DateString>{selectedEvent.endDate}</DateString>
             <br />
             <strong>Booking deadline: </strong>
             <DateString>{selectedEvent.bookingDeadline}</DateString>
             <br />
-            <strong>Prepwork deadline: </strong>
-            <DateString>{selectedEvent.prepWorkDeadline}</DateString>
-            <br />
+            {selectedEvent.prepWorkDeadline && (
+              <>
+                <strong>Prepwork deadline: </strong>
+                <DateString>{selectedEvent.prepWorkDeadline}</DateString>
+                <br />
+              </>
+            )}
             {/* Group token is currently JSON Ignored by the API */}
             {/*<strong>Group Auth Code:</strong>*/}
             {/*{selectedEvent.isaacGroupToken}*/}
@@ -125,6 +129,11 @@ export const SelectedEventDetails = ({ eventId }: { eventId: string }) => {
             <br />
             <strong>Number of teachers: </strong>
             {teacherCount} / {selectedEvent.numberOfPlaces}
+          </p>
+        )}
+        {selectedEvent && selectedEvent === NOT_FOUND && (
+          <p className="m-0" data-testid="event-details">
+            Event details not found.
           </p>
         )}
       </RS.CardBody>
