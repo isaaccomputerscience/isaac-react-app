@@ -645,6 +645,7 @@ export interface AugmentedEvent extends ApiTypes.IsaacEventPageDTO {
   isNotClosed?: boolean;
   isCancelled?: boolean;
   userBookingStatus?: ApiTypes.BookingStatus;
+  isPrivateEvent?: boolean;
 }
 
 export interface EventOverview {

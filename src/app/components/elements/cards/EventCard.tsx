@@ -7,8 +7,19 @@ import { DateString } from "../DateString";
 import { formatEventCardDate } from "../../../services";
 
 export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?: boolean }) => {
-  const { id, title, subtitle, eventThumbnail, location, hasExpired, date, numberOfPlaces, eventStatus, isCancelled } =
-    event;
+  const {
+    id,
+    title,
+    subtitle,
+    eventThumbnail,
+    location,
+    hasExpired,
+    date,
+    numberOfPlaces,
+    eventStatus,
+    isCancelled,
+    isPrivateEvent,
+  } = event;
 
   return (
     <RS.Card
@@ -32,17 +43,23 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
         {title && (
           <RS.CardTitle tag="h3">
             {title}
+            {isPrivateEvent && (
+              <>
+                <br />
+                <RS.Badge color="primary">Private Event</RS.Badge>
+              </>
+            )}
             {isCancelled ? (
               <>
-                {"  "}
-                <RS.Badge color={"danger"}>Cancelled</RS.Badge>
+                <RS.Badge color={"danger"} className="ml-1">
+                  Cancelled
+                </RS.Badge>
               </>
             ) : (
               eventStatus !== "WAITING_LIST_ONLY" &&
               numberOfPlaces == 0 && (
                 <>
-                  {"  "}
-                  <RS.Badge>Full</RS.Badge>
+                  <RS.Badge className="ml-1">Full</RS.Badge>
                 </>
               )
             )}

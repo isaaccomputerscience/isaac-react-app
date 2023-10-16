@@ -190,6 +190,10 @@ const EventDetails = ({
                         />
                         <div className="border px-2 py-1 mt-3 bg-light">
                           <strong>{event.title}</strong>
+                          <br />
+                          <Badge color="primary" className="mr-1">
+                            Private Event
+                          </Badge>
                         </div>
                         {isDefined(event.location) &&
                           isDefined(event.location?.latitude) &&

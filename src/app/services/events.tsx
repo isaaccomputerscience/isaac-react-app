@@ -55,6 +55,10 @@ export const augmentEvent = (event: IsaacEventPageDTO): AugmentedEvent => {
     augmentedEvent.eventThumbnail.src = "http://placehold.it/500x276";
   }
 
+  if (event.privateEvent) {
+    augmentedEvent.isPrivateEvent = true;
+  }
+
   return augmentedEvent;
 };
 
