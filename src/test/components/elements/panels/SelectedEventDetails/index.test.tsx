@@ -3,14 +3,21 @@ import {
   SelectedEventDetails,
   countStudentsAndTeachers,
   formatAddress,
-} from "../../../../app/components/elements/panels/SelectedEventDetails";
-import { ACTION_TYPE, API_PATH, augmentEvent } from "../../../../app/services";
-import { renderTestEnvironment } from "../../../utils";
-import { mockEvent, mockEventBookings } from "../../../../mocks/data";
-import { AugmentedEvent } from "../../../../IsaacAppTypes";
-import { EventBookingDTO, IsaacEventPageDTO } from "../../../../IsaacApiTypes";
-import { FRIENDLY_DATE_AND_TIME } from "../../../../app/components/elements/DateString";
-import { store } from "../../../../app/state";
+} from "../../../../../app/components/elements/panels/SelectedEventDetails";
+import {
+  ACTION_TYPE,
+  API_PATH,
+  augmentEvent,
+} from "../../../../../app/services";
+import { renderTestEnvironment } from "../../../../utils";
+import { mockEvent, mockEventBookings } from "../../../../../mocks/data";
+import { AugmentedEvent } from "../../../../../IsaacAppTypes";
+import {
+  EventBookingDTO,
+  IsaacEventPageDTO,
+} from "../../../../../IsaacApiTypes";
+import { FRIENDLY_DATE_AND_TIME } from "../../../../../app/components/elements/DateString";
+import { store } from "../../../../../app/state";
 import { rest } from "msw";
 
 describe("SelectedEventDetails", () => {

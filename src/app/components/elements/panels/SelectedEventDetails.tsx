@@ -34,11 +34,10 @@ export const countStudentsAndTeachers = (eventBookings: EventBookingDTO[]) => {
 export const formatAddress = (location: Location | undefined) => {
   if (!location) return "Unknown Location";
   const addressLine1 = location.address?.addressLine1 || "";
-  const town = location.address?.town ? `, ${location.address.town}` : "";
-  const postalCode = location.address?.postalCode
-    ? `, ${location.address.postalCode}`
-    : "";
-  return addressLine1 + town + postalCode;
+  const town = location.address?.town || "";
+  const postalCode = location.address?.postalCode || "";
+  const addressComponents = [addressLine1, town, postalCode].filter(Boolean);
+  return addressComponents.join(", ");
 };
 
 export const LocationDetails = ({

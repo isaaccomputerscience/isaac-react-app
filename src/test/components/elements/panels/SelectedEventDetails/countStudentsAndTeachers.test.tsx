@@ -1,5 +1,5 @@
-import { countStudentsAndTeachers } from "../../app/components/elements/panels/SelectedEventDetails";
-import { mockEventBookings } from "../../mocks/data";
+import { countStudentsAndTeachers } from "../../../../../app/components/elements/panels/SelectedEventDetails";
+import { mockEventBookings } from "../../../../../mocks/data";
 
 describe("countStudentsAndTeachers", () => {
   it("returns an object with studentCount and teacherCount both set to 0 when passed an empty array", () => {

@@ -1,4 +1,4 @@
-import { formatAddress } from "../../app/components/elements/panels/SelectedEventDetails";
+import { formatAddress } from "../../../../../app/components/elements/panels/SelectedEventDetails";
 
 describe("formatAddress", () => {
   it('should return "Unknown Location" if location is undefined', () => {
@@ -43,5 +43,15 @@ describe("formatAddress", () => {
       },
     };
     expect(formatAddress(location)).toBe("123 Main St");
+  });
+
+  it("should return the formatted address without addressline1 if not defined", () => {
+    const location = {
+      address: {
+        town: "Anytown",
+        postalCode: "12345",
+      },
+    };
+    expect(formatAddress(location)).toBe("Anytown, 12345");
   });
 });

@@ -1,5 +1,5 @@
-import { LocationDetails } from "../../../../app/components/elements/panels/SelectedEventDetails";
-import { renderTestEnvironment } from "../../../utils";
+import { LocationDetails } from "../../../../../app/components/elements/panels/SelectedEventDetails";
+import { renderTestEnvironment } from "../../../../utils";
 import { screen } from "@testing-library/react";
 
 describe("LocationDetails", () => {
