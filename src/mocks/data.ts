@@ -235,6 +235,7 @@ export const mockEvent = {
   endDate: 1698854400000 as unknown as Date,
   eventStatus: "OPEN",
   placesAvailable: 195,
+  privateEvent: false,
 };
 
 export const mockFutureEventOverviews = {

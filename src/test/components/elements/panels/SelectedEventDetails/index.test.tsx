@@ -95,6 +95,18 @@ describe("SelectedEventDetails", () => {
     expect(eventInfo.textContent).not.toContain("Prepwork deadline");
   });
 
+  it("shows private event badge if event is private", async () => {
+    setupTest({ ...mockEvent, privateEvent: true } as IsaacEventPageDTO);
+    const eventInfo = await screen.findByTestId("event-details");
+    expect(eventInfo.textContent).toContain("Private Event");
+  });
+
+  it("does not show private event badge if event is not private", async () => {
+    setupTest(mockEvent as IsaacEventPageDTO);
+    const eventInfo = await screen.findByTestId("event-details");
+    expect(eventInfo.textContent).not.toContain("Private Event");
+  });
+
   it("shows message if event details are not found", async () => {
     renderTestEnvironment({
       PageComponent: SelectedEventDetails,
