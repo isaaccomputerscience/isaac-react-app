@@ -74,6 +74,7 @@ export const SelectedEventDetails = ({ eventId }: { eventId: string }) => {
             <Link to={`/events/${selectedEvent.id}`} target="_blank">
               {selectedEvent.title} {selectedEvent.subtitle}
             </Link>
+            {selectedEvent.isPrivateEvent && <RS.Badge color="primary">Private Event</RS.Badge>}
             <br />
             <LocationDetails isVirtual={selectedEvent.isVirtual} location={selectedEvent.location} />
             <strong>Event status: </strong>
