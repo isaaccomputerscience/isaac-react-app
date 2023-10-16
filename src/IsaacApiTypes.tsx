@@ -101,6 +101,7 @@ export interface IsaacEventPageDTO extends ContentDTO {
   eventStatus?: EventStatus;
   placesAvailable?: number;
   endDate?: Date;
+  privateEvent?: boolean;
 }
 
 export interface IsaacFastTrackQuestionPageDTO extends IsaacQuestionPageDTO {}
