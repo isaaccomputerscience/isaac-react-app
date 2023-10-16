@@ -71,7 +71,8 @@
       "eslint:recommended",
       "plugin:react/recommended",
       "plugin:@typescript-eslint/recommended",
-      "plugin:jsx-a11y/strict"
+      "plugin:jsx-a11y/strict",
+      "prettier"
     ],
     "plugins": [
       "react-hooks",
