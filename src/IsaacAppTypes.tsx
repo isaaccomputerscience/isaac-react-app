@@ -661,6 +661,7 @@ export interface EventOverview {
   numberAttended: number;
   numberAbsent: number;
   numberOfPlaces: number;
+  privateEvent?: boolean;
 }
 
 export interface EventMapData {

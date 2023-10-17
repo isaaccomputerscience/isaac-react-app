@@ -154,6 +154,8 @@ describe("Admin Event Manager", () => {
       const expectedValue = expectedValues.shift() as string;
       expect(cell).toHaveTextContent(expectedValue);
     });
+    const eventStatusCell = tableCells[5];
+    expect(eventStatusCell).not.toHaveTextContent("Private Event");
   });
 
   it("correct details appear in each column for past events", async () => {
@@ -198,5 +200,29 @@ describe("Admin Event Manager", () => {
     });
     const noEventsMessage = await screen.findByText("No events to display with this filter setting");
     expect(noEventsMessage).toBeInTheDocument();
+  });
+
+  it("private event button to show if event is marked as private", async () => {
+    renderTestEnvironment({
+      role: "ADMIN",
+      PageComponent: EventOverviews,
+      componentProps: {
+        setSelectedEventId: mockSetSelectedEventId,
+        user: { ...mockUser, loggedIn: true, role: "ADMIN" },
+      },
+      initialRouteEntries: ["/admin/events"],
+      extraEndpoints: [
+        rest.get(API_PATH + "/events/overview", (req, res, ctx) => {
+          return res(ctx.status(200), ctx.json({ ...mockFutureEventOverviews, results: [{ ...mockFutureEventOverviews.results[0], privateEvent: true }] }));
+        }),
+      ],
+    });
+    await screen.findByText("Actions");
+    const event = {...mockFutureEventOverviews.results[0], privateEvent: true}
+    const { tableCells } = getFirstEventDetails();
+    const privateEventButton = screen.getByText("Private Event");
+    const eventStatusCell = tableCells[5];
+    expect(eventStatusCell).toContainElement(privateEventButton);
+    expect(eventStatusCell).toHaveTextContent(event.eventStatus);
   });
 });
