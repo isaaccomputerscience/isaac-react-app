@@ -50,6 +50,7 @@ export function generatePolygon<T>(props: SVGShapeProps<T>, points: string, peri
   };
   // @ts-ignore Remove invalid polygon element properties to stop loads of console errors
   delete polygonAttributes.quarterHeight;
+  // @ts-ignore Remove invalid polygon element properties to stop loads of console errors
   delete polygonAttributes.halfWidth;
   return <polygon {...polygonAttributes}>{props.children}</polygon>;
 }

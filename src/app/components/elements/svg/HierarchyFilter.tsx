@@ -50,7 +50,7 @@ function hexRowTranslation(deviceSize: DeviceSize, hexagon: HexagonProportions, 
     return `translate(0,${i * (6 * hexagon.quarterHeight + 2 * hexagon.padding)})`;
   } else {
     const x = (i * 2 - 1) * (hexagon.halfWidth + hexagon.padding);
-    const y = 3 * hexagon.quarterHeight + hexagon.padding + (hexagon.quarterHeight + hexagon.padding) /* xs y diff */;
+    const y = 3 * hexagon.quarterHeight + hexagon.padding + (hexagon.quarterHeight + hexagon.padding); /* xs y diff */
     return `translate(${x},${y})`;
   }
 }

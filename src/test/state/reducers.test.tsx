@@ -46,8 +46,8 @@ describe("root reducer", () => {
     actualInitialState.user = { loggedIn: false };
     const previousStates = [{ questions: q([{ id: "a_toboggan" }]) }, { questions: null }, undefined];
     previousStates.map((previousState) => {
-      // @ts-ignore initial state so that we don't need to keep updating the test unnecessarily
       const actualNextState = removeRTKProperties(
+        // @ts-ignore initial state so that we don't need to keep updating the test unnecessarily
         rootReducer(previousState, { type: ACTION_TYPE.USER_LOG_OUT_RESPONSE_SUCCESS }),
       );
       expect(actualNextState).toEqual(actualInitialState);

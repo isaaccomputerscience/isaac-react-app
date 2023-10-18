@@ -412,6 +412,7 @@ const isaacApi = createApi({
             resetOptimisticUpdates: () => {
               // @ts-ignore These ".undo()"s definitely exist: https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#optimistic-updates
               allAssignmentsPromise.undo();
+              // @ts-ignore These ".undo()"s definitely exist: https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#optimistic-updates
               groupAssignmentsPromise.undo();
             },
           };
