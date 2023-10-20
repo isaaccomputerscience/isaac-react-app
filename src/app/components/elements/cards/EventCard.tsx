@@ -14,8 +14,9 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
     eventThumbnail,
     location,
     hasExpired,
+    endDate,
     date,
-    numberOfPlaces,
+    placesAvailable,
     eventStatus,
     isCancelled,
     isPrivateEvent,
@@ -32,6 +33,7 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
       {eventThumbnail && (
         <div className={"event-card-image text-center"}>
           <RS.CardImg
+            data-testid="event-card-image"
             aria-hidden={true}
             top
             src={eventThumbnail.src}
@@ -41,7 +43,7 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
       )}
       <RS.CardBody className="d-flex flex-column">
         {title && (
-          <RS.CardTitle tag="h3">
+          <RS.CardTitle tag="h3" data-testid="event-card-title">
             {title}
             {isPrivateEvent && (
               <>
@@ -57,7 +59,7 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
               </>
             ) : (
               eventStatus !== "WAITING_LIST_ONLY" &&
-              numberOfPlaces == 0 && (
+              placesAvailable == 0 && (
                 <>
                   <RS.Badge className="ml-1">Full</RS.Badge>
                 </>
@@ -65,27 +67,35 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
             )}
           </RS.CardTitle>
         )}
-        {subtitle && <RS.CardText className="m-0 my-auto card-date-time">{subtitle}</RS.CardText>}
+        {subtitle && (
+          <RS.CardText className="m-0 my-auto card-date-time" data-testid="event-card-subtitle">
+            {subtitle}
+          </RS.CardText>
+        )}
         <RS.CardText className="m-0 my-auto card-date-time">
-          <span className="d-block my-2">
-            <span className="font-weight-bold">When:</span>
-            <span className="d-block">{formatEventCardDate(event, pod)}</span>
-          </span>
-          {location && location.address && (
+          {date && endDate && (
             <span className="d-block my-2">
+              <span className="font-weight-bold">When:</span>
+              <span className="d-block" data-testid="event-card-date">
+                {formatEventCardDate(event, pod)}
+              </span>
+            </span>
+          )}
+          {(location?.address?.addressLine1 || event.isVirtual) && (
+            <span className="d-block my-2" data-testid="event-card-location">
               <span className="font-weight-bold">Location:</span>{" "}
-              {!event.isVirtual ? (
-                <span>
-                  {location.address.addressLine1}
-                  {location.address.town && `, ${location.address.town}`}
-                </span>
-              ) : (
+              {event.isVirtual ? (
                 <span>Online</span>
+              ) : (
+                <span>
+                  {location?.address?.addressLine1}
+                  {location?.address?.town && `, ${location.address.town}`}
+                </span>
               )}
             </span>
           )}
         </RS.CardText>
-        <RS.CardText className="d-flex">
+        <RS.CardText className="d-flex" data-testid="event-card-details">
           <Link className="focus-target" to={`/events/${id}`}>
             View details
             <span className="sr-only">

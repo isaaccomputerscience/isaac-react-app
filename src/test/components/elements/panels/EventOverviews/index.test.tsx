@@ -213,12 +213,18 @@ describe("Admin Event Manager", () => {
       initialRouteEntries: ["/admin/events"],
       extraEndpoints: [
         rest.get(API_PATH + "/events/overview", (req, res, ctx) => {
-          return res(ctx.status(200), ctx.json({ ...mockFutureEventOverviews, results: [{ ...mockFutureEventOverviews.results[0], privateEvent: true }] }));
+          return res(
+            ctx.status(200),
+            ctx.json({
+              ...mockFutureEventOverviews,
+              results: [{ ...mockFutureEventOverviews.results[0], privateEvent: true }],
+            }),
+          );
         }),
       ],
     });
     await screen.findByText("Actions");
-    const event = {...mockFutureEventOverviews.results[0], privateEvent: true}
+    const event = { ...mockFutureEventOverviews.results[0], privateEvent: true };
     const { tableCells } = getFirstEventDetails();
     const privateEventButton = screen.getByText("Private Event");
     const eventStatusCell = tableCells[5];
