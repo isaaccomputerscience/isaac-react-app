@@ -5,6 +5,7 @@ import { mockUser, mockFutureEventOverviews, mockPastEventOverviews } from "../.
 import { rest } from "msw";
 import { API_PATH } from "../../../../../app/services";
 import userEvent from "@testing-library/user-event";
+import { FRIENDLY_DATE_AND_TIME } from "../../../../../app/components/elements/DateString";
 
 const getFirstEventDetails = () => {
   const table = screen.getByRole("table");
@@ -21,37 +22,21 @@ const getExpectedValues = ({
   event: (typeof mockFutureEventOverviews.results)[0];
   type: "Past" | "Future";
 }) => {
-  switch (type) {
-    case "Past":
-      return [
-        "Manage",
-        `${event.title} - ${event.subtitle}`,
-        "Tue, 12 Sept 2023, 16:30",
-        "Mon, 11 Sept 2023, 16:30",
-        event.location?.address?.town,
-        event.eventStatus,
-        `${event.numberOfConfirmedBookings} / ${event.numberOfPlaces}`,
-        event.numberOfWaitingListBookings,
-        event.numberAttended,
-        event.numberAbsent,
-        `${(event.numberAttended / (event.numberAttended + event.numberAbsent)) * 100}%`,
-      ];
-    case "Future":
-    default:
-      return [
-        "Manage",
-        `${event.title} - ${event.subtitle}`,
-        "Thu, 9 Sept 9999, 20:00",
-        "Thu, 9 Sept 9999, 20:00",
-        event.location?.address?.town,
-        event.eventStatus,
-        `${event.numberOfConfirmedBookings} / ${event.numberOfPlaces}`,
-        event.numberOfWaitingListBookings,
-        event.numberAttended,
-        event.numberAbsent,
-        "-",
-      ];
-  }
+  const attended =
+    type === "Future" ? "-" : `${(event.numberAttended / (event.numberAttended + event.numberAbsent)) * 100}%`;
+  return [
+    "Manage",
+    `${event.title} - ${event.subtitle}`,
+    FRIENDLY_DATE_AND_TIME.format(new Date(event.date)),
+    FRIENDLY_DATE_AND_TIME.format(new Date(event.bookingDeadline)),
+    event.location?.address?.town,
+    event.eventStatus,
+    `${event.numberOfConfirmedBookings} / ${event.numberOfPlaces}`,
+    event.numberOfWaitingListBookings,
+    event.numberAttended,
+    event.numberAbsent,
+    attended,
+  ];
 };
 
 describe("Admin Event Manager", () => {
