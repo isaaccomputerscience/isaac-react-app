@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, CardBody, CardImg, Col, Container, Form, Input, Row, Table, Alert } from "reactstrap";
+import { Badge, Button, Card, CardBody, CardImg, Col, Container, Form, Input, Row, Table, Alert } from "reactstrap";
 import dayjs from "dayjs";
 import { TitleAndBreadcrumb } from "../elements/TitleAndBreadcrumb";
 import {
