@@ -1,10 +1,12 @@
-import { apiHelper, atLeastOne, isTeacherOrAbove, STAGE, STAGES_CS, zeroOrLess } from "./";
+import { apiHelper, atLeastOne, isTeacherOrAbove, NOT_FOUND, STAGE, STAGES_CS, zeroOrLess } from "./";
 import { IsaacEventPageDTO } from "../../IsaacApiTypes";
 import { AugmentedEvent, PotentialUser } from "../../IsaacAppTypes";
 import { DateString, FRIENDLY_DATE, TIME_ONLY } from "../components/elements/DateString";
 import React from "react";
 import { Link } from "react-router-dom";
 import { Immutable } from "immer";
+import { CurrentEventState } from "../state";
+import dayjs from "dayjs";
 
 export const studentOnlyEventMessage = (eventId?: string) => (
   <React.Fragment>
@@ -227,3 +229,37 @@ export const userCanReserveEventSpaces = (user: Immutable<PotentialUser> | null,
     isTeacherOrAbove(user)
   );
 };
+
+export function googleCalendarTemplate(event: CurrentEventState | undefined) {
+  function formatDate(date: Date | number) {
+    return dayjs(date).format("YYYYMMDD[T]HHmmss");
+  }
+
+  if (event && event !== NOT_FOUND) {
+    // https://calendar.google.com/calendar/event?action=TEMPLATE&text=[event_name]&dates=[start_date as YYYYMMDDTHHMMSS or YYYYMMDD]/[end_date as YYYYMMDDTHHMMSS or YYYYMMDD]&details=[extra_info]&location=[full_address_here]
+    const address =
+      event.location && event.location.address
+        ? [
+            event.location.address.addressLine1,
+            event.location.address.addressLine2,
+            event.location.address.town,
+            event.location.address.county,
+            event.location.address.postalCode,
+            event.location.address.country,
+          ]
+        : [];
+
+    const calendarTemplateUrl = [
+      "https://calendar.google.com/calendar/event?action=TEMPLATE",
+      event.title && "text=" + encodeURI(event.title),
+      event.date &&
+        "dates=" +
+          encodeURI(formatDate(event.date)) +
+          (event.endDate ? "/" + encodeURI(formatDate(event.endDate)) : ""),
+      event.subtitle && "details=" + encodeURI(event.subtitle),
+      "location=" + encodeURI(address.filter((s) => !!s).join(", ")),
+    ];
+
+    window.open(calendarTemplateUrl.filter((s) => !!s).join("&"), "_blank");
+  }
+}

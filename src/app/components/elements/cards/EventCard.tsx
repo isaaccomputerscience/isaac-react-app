@@ -24,6 +24,7 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
 
   return (
     <RS.Card
+      data-testid="event-card"
       className={classnames("card-neat", {
         "disabled text-muted": hasExpired || isCancelled,
         "m-4": pod,
