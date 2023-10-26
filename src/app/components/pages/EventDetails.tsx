@@ -41,6 +41,7 @@ import {
   isAdminOrEventManager,
   isEventLeader,
   googleCalendarTemplate,
+  formatAddress,
 } from "../../services";
 import { AdditionalInformation } from "../../../IsaacAppTypes";
 import { DateString } from "../elements/DateString";
@@ -51,22 +52,11 @@ import { IsaacContent } from "../content/IsaacContent";
 import { EditContentButton } from "../elements/EditContentButton";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import * as L from "leaflet";
-import { Location } from "../../../IsaacApiTypes";
 
 interface EventDetailsProps {
   match: { params: { eventId: string } };
   location: { pathname: string };
 }
-
-export const formatAddress = (location: Location | undefined) => {
-  if (!location || !location.address) return "Unknown Location";
-  const addressLine1 = location.address?.addressLine1 || "";
-  const addressLine2 = location.address?.addressLine2 || "";
-  const town = location.address?.town || "";
-  const postalCode = location.address?.postalCode || "";
-  const addressComponents = [addressLine1, addressLine2, town, postalCode].filter(Boolean);
-  return addressComponents.join(", ");
-};
 
 const EventDetails = ({
   match: {
@@ -168,12 +158,11 @@ const EventDetails = ({
                         <div className="border px-2 py-1 mt-3 bg-light" data-testid="event-details-title">
                           <strong>{event.title}</strong>
                           {event.isPrivateEvent && (
-                            <>
-                              <br />
+                            <Row className="mx-0 mt-2">
                               <Badge color="primary" className="mr-1">
                                 Private Event
                               </Badge>
-                            </>
+                            </Row>
                           )}
                         </div>
                         {isDefined(event.location) &&

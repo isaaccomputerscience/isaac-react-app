@@ -46,25 +46,17 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
         {title && (
           <RS.CardTitle tag="h3" data-testid="event-card-title">
             {title}
-            {isPrivateEvent && (
-              <>
-                <br />
-                <RS.Badge color="primary">Private Event</RS.Badge>
-              </>
-            )}
             {isCancelled ? (
-              <>
-                <RS.Badge color={"danger"} className="ml-1">
-                  Cancelled
-                </RS.Badge>
-              </>
+              <RS.Badge color={"danger"} className="ml-1">
+                Cancelled
+              </RS.Badge>
             ) : (
-              eventStatus !== "WAITING_LIST_ONLY" &&
-              placesAvailable == 0 && (
-                <>
-                  <RS.Badge className="ml-1">Full</RS.Badge>
-                </>
-              )
+              eventStatus !== "WAITING_LIST_ONLY" && placesAvailable == 0 && <RS.Badge className="ml-1">Full</RS.Badge>
+            )}
+            {isPrivateEvent && (
+              <RS.Row className="mx-0 mt-2">
+                <RS.Badge color="primary">Private Event</RS.Badge>
+              </RS.Row>
             )}
           </RS.CardTitle>
         )}

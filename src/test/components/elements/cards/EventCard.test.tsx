@@ -3,8 +3,8 @@ import { renderTestEnvironment } from "../../../utils";
 import { EventCard } from "../../../../app/components/elements/cards/EventCard";
 import { mockEvent } from "../../../../mocks/data";
 import { augmentEvent } from "../../../../app/services";
-import { IsaacEventPageDTO } from "../../../../IsaacApiTypes";
 import { FRIENDLY_DATE } from "../../../../app/components/elements/DateString";
+import { EventStatus } from "../../../../IsaacApiTypes";
 
 describe("EventCard", () => {
   const setupTest = (props = {}) => {
@@ -18,7 +18,7 @@ describe("EventCard", () => {
     });
   };
 
-  const mockAugmentedEvent = augmentEvent(mockEvent as IsaacEventPageDTO);
+  const mockAugmentedEvent = augmentEvent(mockEvent);
 
   it("renders without crashing", () => {
     setupTest({ event: mockAugmentedEvent });
@@ -32,10 +32,10 @@ describe("EventCard", () => {
     const subtitle = screen.getByTestId("event-card-subtitle");
     const dateText = screen.getByTestId("event-card-date");
     const image = screen.getByTestId("event-card-image");
-    expect(title).toHaveTextContent(new RegExp(mockEvent.title, "i"));
-    expect(subtitle).toHaveTextContent(mockEvent.subtitle);
+    expect(title).toHaveTextContent(new RegExp(mockEvent.title!, "i"));
+    expect(subtitle).toHaveTextContent(mockEvent.subtitle!);
     expect(dateText).toHaveTextContent(new RegExp(FRIENDLY_DATE.format(mockEvent.date), "i"));
-    expect(image).toHaveAttribute("src", mockEvent.eventThumbnail.src);
+    expect(image).toHaveAttribute("src", mockEvent.eventThumbnail!.src);
   });
 
   it("does not display title, subtitle, date, image if not provided", () => {
@@ -62,7 +62,7 @@ describe("EventCard", () => {
     {
       badge: "CANCELLED",
       status: "Cancelled",
-      options: { eventStatus: "CANCELLED" },
+      options: { eventStatus: "CANCELLED" as EventStatus },
     },
     {
       badge: "PRIVATE",
@@ -76,7 +76,7 @@ describe("EventCard", () => {
       const event = augmentEvent({
         ...mockEvent,
         ...options,
-      } as IsaacEventPageDTO);
+      });
       setupTest({ event });
       const badgeElement = screen.getByText(status);
       expect(badgeElement).toBeInTheDocument();
@@ -110,7 +110,7 @@ describe("EventCard", () => {
       ...mockEvent,
       tags: ["student", "booster"],
       location: location,
-    } as IsaacEventPageDTO);
+    });
     setupTest({ event });
     const eventLocation = screen.getByTestId("event-card-location");
     expect(eventLocation).toHaveTextContent(`${location.address.addressLine1}, ${location.address.town}`);
@@ -121,7 +121,7 @@ describe("EventCard", () => {
       ...mockEvent,
       tags: ["student", "booster"],
       location: undefined,
-    } as IsaacEventPageDTO);
+    });
     setupTest({ event });
     const eventLocation = screen.queryByTestId("event-card-location");
     expect(eventLocation).not.toBeInTheDocument();
