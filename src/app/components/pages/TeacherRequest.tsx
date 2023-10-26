@@ -4,7 +4,7 @@ import {
   isaacApi,
   requestEmailVerification,
   selectors,
-  submitMessage,
+  upgradeAccount,
   useAppDispatch,
   useAppSelector,
 } from "../../state";
@@ -43,34 +43,16 @@ export const TeacherRequest = () => {
   const errorMessage = useAppSelector((state: AppState) => (state && state.error) || null);
   const { data: warningFragment } = isaacApi.endpoints.getPageFragment.useQuery(warningFragmentId);
 
-  const [firstName, setFirstName] = useState((user?.loggedIn && user.givenName) || "");
-  const [lastName, setLastName] = useState((user?.loggedIn && user.familyName) || "");
-  const [emailAddress, setEmailAddress] = useState((user?.loggedIn && user.email) || "");
+  const emailAddress = (user?.loggedIn && user.email) || "";
   const [school, setSchool] = useState<string>();
   const [otherInformation, setOtherInformation] = useState("");
   const [verificationDetails, setVerificationDetails] = useState<string>();
   const [messageSent, setMessageSent] = useState(false);
-  const [emailVerified, setEmailVerified] = useState(user?.loggedIn && user.emailVerificationStatus === "VERIFIED");
+  const emailVerified = user?.loggedIn && user.emailVerificationStatus === "VERIFIED";
   const [allowedDomain, setAllowedDomain] = useState<boolean>();
 
   const urn = (user?.loggedIn && user.schoolId) || "";
-  const subject = "Teacher Account Request";
-  const message =
-    "Hello,\n\n" +
-    "Please could you convert my Isaac account into a teacher account.\n\n" +
-    "My school is: " +
-    school +
-    "\n" +
-    "A link to my school website with a staff list showing my name and email (or a phone number to contact the school) is: " +
-    verificationDetails +
-    "\n\n\n" +
-    "Any other information: " +
-    otherInformation +
-    "\n\n" +
-    "Thanks, \n\n" +
-    firstName +
-    " " +
-    lastName;
+
   const isValidEmail = validateEmail(emailAddress);
 
   function isEmailDomainAllowed(email: string) {
@@ -94,10 +76,6 @@ export const TeacherRequest = () => {
   }
 
   useEffect(() => {
-    setFirstName((user?.loggedIn && user.givenName) || "");
-    setLastName((user?.loggedIn && user.familyName) || "");
-    setEmailAddress((user?.loggedIn && user.email) || "");
-    setEmailVerified(user?.loggedIn && user.emailVerificationStatus === "VERIFIED");
     fetchSchool(urn);
     isEmailDomainAllowed(emailAddress);
   }, [user]);
@@ -140,8 +118,10 @@ export const TeacherRequest = () => {
                     name="contact"
                     onSubmit={(e) => {
                       e.preventDefault();
-                      dispatch(submitMessage({ firstName, lastName, emailAddress, subject, message }));
-                      setMessageSent(true);
+                      if (verificationDetails) {
+                        dispatch(upgradeAccount({ verificationDetails, otherInformation }));
+                        setMessageSent(true);
+                      }
                     }}
                   >
                     <CardBody>
@@ -165,7 +145,6 @@ export const TeacherRequest = () => {
                               type="text"
                               name="first-name"
                               defaultValue={user?.loggedIn ? user.givenName : ""}
-                              onChange={(e) => setFirstName(e.target.value)}
                               required
                             />
                           </FormGroup>
@@ -181,7 +160,6 @@ export const TeacherRequest = () => {
                               type="text"
                               name="last-name"
                               defaultValue={user?.loggedIn ? user.familyName : ""}
-                              onChange={(e) => setLastName(e.target.value)}
                               required
                             />
                           </FormGroup>
@@ -200,7 +178,6 @@ export const TeacherRequest = () => {
                               type="email"
                               name="email"
                               defaultValue={user?.loggedIn ? user.email : ""}
-                              onChange={(e) => setEmailAddress(e.target.value)}
                               aria-describedby="emailValidationMessage"
                               required
                             />
@@ -218,7 +195,6 @@ export const TeacherRequest = () => {
                               name="school"
                               defaultValue={school}
                               invalid={typeof school == "undefined"}
-                              onChange={(e) => setSchool(e.target.value)}
                               required
                             />
                           </FormGroup>
