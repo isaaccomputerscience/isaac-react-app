@@ -1,11 +1,10 @@
-import { apiHelper, atLeastOne, isTeacherOrAbove, NOT_FOUND, STAGE, STAGES_CS, zeroOrLess } from "./";
+import { apiHelper, atLeastOne, isTeacherOrAbove, STAGE, STAGES_CS, zeroOrLess } from "./";
 import { IsaacEventPageDTO } from "../../IsaacApiTypes";
 import { AugmentedEvent, PotentialUser } from "../../IsaacAppTypes";
 import { DateString, FRIENDLY_DATE, TIME_ONLY } from "../components/elements/DateString";
 import React from "react";
 import { Link } from "react-router-dom";
 import { Immutable } from "immer";
-import { CurrentEventState } from "../state";
 import dayjs from "dayjs";
 import { Location } from "../../IsaacApiTypes";
 
