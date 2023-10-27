@@ -88,13 +88,13 @@ export const TeacherRequest = () => {
         <Row>
           <Col size={9}>
             {warningFragment && (
-              <Alert color="warning">
+              <Alert data-testid="teacher-upgrade-warning" color="warning">
                 <IsaacContent doc={warningFragment} />
               </Alert>
             )}
             <Card>
               {isTeacherOrAbove(user) && (
-                <Row>
+                <Row data-testid="already-teacher-account">
                   <Col className="text-center pt-3">
                     <span className="h3">You already have a teacher account</span>
                     <p className="mt-3">
@@ -104,7 +104,7 @@ export const TeacherRequest = () => {
                 </Row>
               )}
               {isTeacherPending(user) && !messageSent && (
-                <Row>
+                <Row data-testid="teacher-pending-account">
                   <Col className="text-center pt-3">
                     <span className="h3">You already have a teacher upgrade request pending</span>
                     <p className="mt-3">
@@ -118,7 +118,7 @@ export const TeacherRequest = () => {
               )}
               {!isTeacherOrAbove(user) &&
                 (messageSent && !errorMessage ? (
-                  <Row>
+                  <Row data-testid="submit-success">
                     <Col className="text-center">
                       <p className="mt-3">Thank you for submitting a teacher account request.</p>
                       <p>
@@ -244,7 +244,7 @@ export const TeacherRequest = () => {
                           </Col>
                         </Row>
                         {!emailVerified && (
-                          <Row>
+                          <Row data-testid="email-unverified">
                             <Col>
                               <small className="text-danger text-left">
                                 Your email address is not verified — please click on the link in the verification email
@@ -261,7 +261,7 @@ export const TeacherRequest = () => {
                           </Row>
                         )}
                         {typeof school == "undefined" && (
-                          <Row>
+                          <Row data-testid="no-school-selected">
                             <Col>
                               <small className="text-danger text-left">
                                 You have not provided your school — please add your school on your{" "}
@@ -277,7 +277,7 @@ export const TeacherRequest = () => {
                           </Row>
                         )}
                         {allowedDomain == false && (
-                          <Row>
+                          <Row data-testid="invalid-email">
                             <Col>
                               <small className="text-danger text-left">
                                 You have not used your school email address — please change your email address on your{" "}

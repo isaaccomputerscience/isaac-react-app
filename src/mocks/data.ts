@@ -1,6 +1,6 @@
 import { FEATURED_NEWS_TAG } from "../app/services";
 import { DAYS_AGO } from "../test/utils";
-import { IsaacEventPageDTO, UserSummaryWithGroupMembershipDTO } from "../IsaacApiTypes";
+import { RegisteredUserDTO, IsaacEventPageDTO, UserSummaryWithGroupMembershipDTO } from "../IsaacApiTypes";
 import { EventBookingDTO } from "../IsaacApiTypes";
 
 export const mockEventBookings: EventBookingDTO[] = [
@@ -305,13 +305,13 @@ export const registrationUserData = {
   verificationInfo: "www.website.com",
 };
 
-export const mockUser = {
+export const mockUser: RegisteredUserDTO = {
   givenName: "Test",
   familyName: "Admin",
   email: "test-admin@test.com",
-  dateOfBirth: 777777777777,
+  dateOfBirth: 777777777777 as unknown as Date,
   gender: "MALE",
-  registrationDate: DAYS_AGO(100),
+  registrationDate: DAYS_AGO(100) as unknown as Date,
   role: "ADMIN",
   schoolOther: "N/A",
   registeredContexts: [
@@ -320,10 +320,10 @@ export const mockUser = {
       examBoard: "all",
     },
   ],
-  registeredContextsLastConfirmed: DAYS_AGO(0),
+  registeredContextsLastConfirmed: DAYS_AGO(0) as unknown as Date,
   firstLogin: false,
-  lastUpdated: DAYS_AGO(1),
-  lastSeen: DAYS_AGO(1),
+  lastUpdated: DAYS_AGO(1) as unknown as Date,
+  lastSeen: DAYS_AGO(1) as unknown as Date,
   emailVerificationStatus: "VERIFIED",
   teacherPending: false,
   id: 1 as const,
@@ -349,7 +349,7 @@ export const registrationMockUser = {
   lastUpdated: DAYS_AGO(0),
   lastSeen: DAYS_AGO(0),
   emailVerificationStatus: "UNVERIFIED",
-  id: 1 as const,
+  id: 1,
 };
 
 export const mockUserToUpdate = {
@@ -363,17 +363,17 @@ export const mockUserToUpdate = {
   schoolOther: undefined,
 };
 
-export const buildMockStudent = <T extends number>(
-  id: T extends typeof mockUser.id ? `Student ID cannot be the same as the mockUser: ${typeof mockUser.id}` : T,
-) => {
-  if (id === mockUser.id) throw Error("A mock student cannot have the same ID as the mockUser");
+export const buildMockStudent = <T>(id: T) => {
+  if (typeof id === "number" && id === mockUser.id) {
+    throw Error("A mock student cannot have the same ID as the mockUser");
+  }
   return {
     givenName: "Test",
     familyName: `Student ${id}`,
     email: `test-student-${id}@test.com`,
-    dateOfBirth: 888888888888,
-    gender: id % 2 === 0 ? "MALE" : "FEMALE",
-    registrationDate: DAYS_AGO(50),
+    dateOfBirth: 888888888888 as unknown as Date,
+    gender: Math.random() < 0.5 ? "MALE" : "FEMALE",
+    registrationDate: DAYS_AGO(50) as unknown as Date,
     role: "STUDENT",
     schoolOther: "N/A",
     registeredContexts: [
@@ -382,26 +382,25 @@ export const buildMockStudent = <T extends number>(
         examBoard: "all",
       },
     ],
-    registeredContextsLastConfirmed: DAYS_AGO(0),
+    registeredContextsLastConfirmed: DAYS_AGO(0) as unknown as Date,
     firstLogin: false,
-    lastUpdated: DAYS_AGO(1),
-    lastSeen: DAYS_AGO(1),
+    lastUpdated: DAYS_AGO(1) as unknown as Date,
+    lastSeen: DAYS_AGO(1) as unknown as Date,
     emailVerificationStatus: "VERIFIED",
     id: id,
   };
 };
 
-export const buildMockTeacher = <T extends number>(
-  id: T extends typeof mockUser.id ? `Teacher ID cannot be the same as the mockUser: ${typeof mockUser.id}` : T,
-) => {
-  if (id === mockUser.id) throw Error("A mock teacher cannot have the same ID as the mockUser");
+export const buildMockTeacher = <T>(id: T) => {
+  if (typeof id === "number" && id === mockUser.id)
+    throw Error("A mock teacher cannot have the same ID as the mockUser");
   return {
     givenName: "Test",
     familyName: `Teacher ${id}`,
     email: `test-teacher-${id}@test.com`,
-    dateOfBirth: 888888888888,
-    gender: id % 2 === 0 ? "MALE" : "FEMALE",
-    registrationDate: DAYS_AGO(50),
+    dateOfBirth: 888888888888 as unknown as Date,
+    gender: Math.random() < 0.5 ? "MALE" : "FEMALE",
+    registrationDate: DAYS_AGO(50) as unknown as Date,
     role: "TEACHER",
     schoolOther: "N/A",
     registeredContexts: [
@@ -410,10 +409,10 @@ export const buildMockTeacher = <T extends number>(
         examBoard: "all",
       },
     ],
-    registeredContextsLastConfirmed: DAYS_AGO(0),
+    registeredContextsLastConfirmed: DAYS_AGO(0) as unknown as Date,
     firstLogin: false,
-    lastUpdated: DAYS_AGO(1),
-    lastSeen: DAYS_AGO(1),
+    lastUpdated: DAYS_AGO(1) as unknown as Date,
+    lastSeen: DAYS_AGO(1) as unknown as Date,
     emailVerificationStatus: "VERIFIED",
     id: id,
   };
