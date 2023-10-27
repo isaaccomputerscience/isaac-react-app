@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import * as RS from "reactstrap";
+import { Badge, Card, CardBody, CardTitle, ListGroup, ListGroupItem, UncontrolledTooltip } from "reactstrap";
 import { AppState, getEvent, selectors, useAppDispatch, useAppSelector } from "../../../state";
 import { Link } from "react-router-dom";
 import { DateString } from "../DateString";
-import { NOT_FOUND, formatAddress, zeroOrLess } from "../../../services";
+import { NOT_FOUND, formatAddress, asPercentage, zeroOrLess } from "../../../services";
 import { EventBookingDTO, Location } from "../../../../IsaacApiTypes";
 
 export const countStudentsAndTeachers = (eventBookings: EventBookingDTO[]) => {
@@ -30,6 +30,32 @@ export const countStudentsAndTeachers = (eventBookings: EventBookingDTO[]) => {
   };
 };
 
+export const countGenders = (eventBookings: EventBookingDTO[]) => {
+  const genders = {
+    male: 0,
+    female: 0,
+    other: 0,
+    preferNotToSay: 0,
+    unknown: 0,
+  };
+
+  eventBookings.forEach((booking) => {
+    const gender = booking.userBooked?.gender;
+    const bookingStatus = booking.bookingStatus;
+
+    if (gender && bookingStatus) {
+      const validStatus = ["CONFIRMED", "ATTENDED"].includes(bookingStatus);
+
+      if (gender === "MALE" && validStatus) genders.male++;
+      else if (gender === "FEMALE" && validStatus) genders.female++;
+      else if (gender === "OTHER") genders.other++;
+      else if (gender === "PREFER_NOT_TO_SAY") genders.preferNotToSay++;
+      else if (gender === "UNKNOWN") genders.unknown++;
+    }
+  });
+  return genders;
+};
+
 export const LocationDetails = ({ isVirtual, location }: { isVirtual?: boolean; location?: Location }) => {
   return (
     <>
@@ -51,23 +77,26 @@ export const SelectedEventDetails = ({ eventId }: { eventId: string }) => {
     return state && state.currentEvent;
   });
   const eventBookings = useAppSelector(selectors.events.eventBookings);
-
   const { studentCount, teacherCount } = countStudentsAndTeachers(eventBookings);
+  const { male, female, other, preferNotToSay, unknown } = countGenders(eventBookings);
+  const numberOfConfirmedOrAttendedBookings = eventBookings.filter((eventBooking) => {
+    return eventBooking.bookingStatus === "CONFIRMED" || eventBooking.bookingStatus === "ATTENDED";
+  }).length;
 
   return (
-    <RS.Card>
-      <RS.CardBody>
-        <h3 className="h-subtitle mb-1">Selected event details</h3>
+    <Card>
+      <CardBody>
+        <CardTitle tag="h3">Selected event details</CardTitle>
         {selectedEvent && selectedEvent !== NOT_FOUND && (
-          <p className="m-0" data-testid="event-details">
+          <div className="m-0" data-testid="event-details">
             <strong>Event: </strong>
             <Link to={`/events/${selectedEvent.id}`} target="_blank">
-              {selectedEvent.title} {selectedEvent.subtitle}
+              {selectedEvent.title} - {selectedEvent.subtitle}
             </Link>
             {selectedEvent.isPrivateEvent && (
-              <RS.Badge className="ml-2" color="primary">
+              <Badge className="ml-2" color="primary">
                 Private Event
-              </RS.Badge>
+              </Badge>
             )}
             <br />
             <LocationDetails isVirtual={selectedEvent.isVirtual} location={selectedEvent.location} />
@@ -79,9 +108,13 @@ export const SelectedEventDetails = ({ eventId }: { eventId: string }) => {
             <strong>Event Date & Time: </strong>
             <DateString>{selectedEvent.date}</DateString> - <DateString>{selectedEvent.endDate}</DateString>
             <br />
-            <strong>Booking deadline: </strong>
-            <DateString>{selectedEvent.bookingDeadline}</DateString>
-            <br />
+            {selectedEvent.bookingDeadline && (
+              <>
+                <strong>Booking deadline: </strong>
+                <DateString>{selectedEvent.bookingDeadline}</DateString>
+                <br />
+              </>
+            )}
             {selectedEvent.prepWorkDeadline && (
               <>
                 <strong>Prepwork deadline: </strong>
@@ -103,14 +136,43 @@ export const SelectedEventDetails = ({ eventId }: { eventId: string }) => {
             <br />
             <strong>Number of teachers: </strong>
             {teacherCount} / {selectedEvent.numberOfPlaces}
-          </p>
+            <br />
+            <strong>Gender:</strong>
+            <span id={`gender-stats-tooltip`} className="icon-help ml-1" />
+            <UncontrolledTooltip className="text-nowrap" target={`gender-stats-tooltip`} placement="right">
+              User gender of CONFIRMED or ATTENDED bookings
+            </UncontrolledTooltip>
+            <br />
+            <ListGroup>
+              <ListGroupItem className="py-0">{`Male: ${male} (${asPercentage(
+                male,
+                numberOfConfirmedOrAttendedBookings,
+              )}%)`}</ListGroupItem>
+              <ListGroupItem className="py-0">{`Female: ${female} (${asPercentage(
+                female,
+                numberOfConfirmedOrAttendedBookings,
+              )}%)`}</ListGroupItem>
+              <ListGroupItem className="py-0">{`Other: ${other} (${asPercentage(
+                other,
+                numberOfConfirmedOrAttendedBookings,
+              )}%)`}</ListGroupItem>
+              <ListGroupItem className="py-0">{`Prefer not to say: ${preferNotToSay} (${asPercentage(
+                preferNotToSay,
+                numberOfConfirmedOrAttendedBookings,
+              )}%)`}</ListGroupItem>
+              <ListGroupItem className="py-0">{`Unknown: ${unknown} (${asPercentage(
+                unknown,
+                numberOfConfirmedOrAttendedBookings,
+              )}%)`}</ListGroupItem>
+            </ListGroup>
+          </div>
         )}
         {selectedEvent && selectedEvent === NOT_FOUND && (
-          <p className="m-0" data-testid="event-details">
+          <p className="m-0" data-testid="event-details-not-found">
             Event details not found.
           </p>
         )}
-      </RS.CardBody>
-    </RS.Card>
+      </CardBody>
+    </Card>
   );
 };

@@ -1,9 +1,10 @@
 import { screen } from "@testing-library/react";
 import {
   SelectedEventDetails,
+  countGenders,
   countStudentsAndTeachers,
 } from "../../../../../app/components/elements/panels/SelectedEventDetails";
-import { ACTION_TYPE, API_PATH, augmentEvent, formatAddress } from "../../../../../app/services";
+import { ACTION_TYPE, API_PATH, asPercentage, augmentEvent, formatAddress } from "../../../../../app/services";
 import { renderTestEnvironment } from "../../../../utils";
 import { mockEvent, mockEventBookings } from "../../../../../mocks/data";
 import { AugmentedEvent } from "../../../../../IsaacAppTypes";
@@ -33,7 +34,11 @@ describe("SelectedEventDetails", () => {
   };
 
   const findExpectedValues = (event: AugmentedEvent, eventBookings: EventBookingDTO[]) => {
-    const title = `${event.title as string} ${event.subtitle as string}`;
+    const { male, female, other, preferNotToSay, unknown } = countGenders(eventBookings);
+    const numberOfConfirmedOrAttendedBookings = eventBookings.filter((eventBooking) => {
+      return eventBooking.bookingStatus === "CONFIRMED" || eventBooking.bookingStatus === "ATTENDED";
+    }).length;
+    const title = `${event.title as string} - ${event.subtitle as string}`;
     const location = event.isVirtual ? "Online" : formatAddress(event.location);
     const status = event.eventStatus as string;
     const date = `${FRIENDLY_DATE_AND_TIME.format(event.date)} - ${FRIENDLY_DATE_AND_TIME.format(event.endDate)}`;
@@ -42,8 +47,30 @@ describe("SelectedEventDetails", () => {
     const placesAvailable = `${event.placesAvailable} / ${event.numberOfPlaces}`;
     const numberOfStudents = `${studentCount} / ${event.numberOfPlaces}`;
     const numberOfTeachers = `${teacherCount} / ${event.numberOfPlaces}`;
+    const maleGender = `Male: ${male} (${asPercentage(male, numberOfConfirmedOrAttendedBookings)}%)`;
+    const femaleGender = `Female: ${female} (${asPercentage(female, numberOfConfirmedOrAttendedBookings)}%)`;
+    const otherGender = `Other: ${other} (${asPercentage(other, numberOfConfirmedOrAttendedBookings)}%)`;
+    const preferNotToSayGender = `Prefer not to say: ${preferNotToSay} (${asPercentage(
+      preferNotToSay,
+      numberOfConfirmedOrAttendedBookings,
+    )}%)`;
+    const unknownGender = `Unknown: ${unknown} (${asPercentage(unknown, numberOfConfirmedOrAttendedBookings)}%)`;
 
-    return [title, location, status, date, bookingDeadline, placesAvailable, numberOfStudents, numberOfTeachers];
+    return [
+      title,
+      location,
+      status,
+      date,
+      bookingDeadline,
+      placesAvailable,
+      numberOfStudents,
+      numberOfTeachers,
+      maleGender,
+      femaleGender,
+      otherGender,
+      preferNotToSayGender,
+      unknownGender,
+    ];
   };
 
   it("renders all event details when event is selected", async () => {
@@ -106,6 +133,12 @@ describe("SelectedEventDetails", () => {
     expect(eventInfo.textContent).not.toContain("Private Event");
   });
 
+  it("does not show booking deadline if not present in the event details", async () => {
+    setupTest({ ...mockEvent, bookingDeadline: undefined } as IsaacEventPageDTO);
+    const eventInfo = await screen.findByTestId("event-details");
+    expect(eventInfo.textContent).not.toContain("Booking deadline");
+  });
+
   it("shows message if event details are not found", async () => {
     renderTestEnvironment({
       PageComponent: SelectedEventDetails,
@@ -119,7 +152,7 @@ describe("SelectedEventDetails", () => {
         }),
       ],
     });
-    const eventInfo = await screen.findByTestId("event-details");
+    const eventInfo = await screen.findByTestId("event-details-not-found");
     expect(eventInfo.textContent).toContain("Event details not found");
   });
 });
