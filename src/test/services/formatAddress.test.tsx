@@ -1,4 +1,4 @@
-import { formatAddress } from "../../../../../app/services";
+import { formatAddress } from "../../app/services";
 
 describe("formatAddress", () => {
   it('should return "Unknown Location" if location is undefined', () => {
