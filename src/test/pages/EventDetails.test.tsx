@@ -2,7 +2,7 @@ import { TestUserRole, checkPageTitle, renderTestEnvironment } from "../utils";
 import { mockEvent } from "../../mocks/data";
 import { rest } from "msw";
 import { API_PATH, formatAddress } from "../../app/services";
-import { EventStatus, IsaacEventPageDTO } from "../../IsaacApiTypes";
+import { EventStatus, IsaacEventPageDTO, UserRole } from "../../IsaacApiTypes";
 import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as eventServices from "../../app/services/events";
@@ -13,17 +13,14 @@ const getButton = (buttonText: string) => {
   return eventButton;
 };
 
-const getFields = () => {
-  const image = () => screen.getByTestId("event-details-image");
-  const title = () => screen.getByTestId("event-details-title");
-  const map = () => screen.queryByTestId("event-map");
-  const location = () => screen.getByTestId("event-location");
-  const googleCalendarButton = () => screen.queryByText("Add to Calendar");
-  const eventDate = () => screen.getByTestId("event-date");
-  const placesAvailable = () => screen.queryByTestId("event-availability");
-  const privateBadge = () => screen.queryByText("Private Event");
-  return { image, title, map, location, googleCalendarButton, eventDate, placesAvailable, privateBadge };
-};
+const image = () => screen.getByTestId("event-details-image");
+const title = () => screen.getByTestId("event-details-title");
+const map = () => screen.queryByTestId("event-map");
+const location = () => screen.getByTestId("event-location");
+const googleCalendarButton = () => screen.queryByText("Add to Calendar");
+const eventDate = () => screen.getByTestId("event-date");
+const placesAvailable = () => screen.queryByTestId("event-availability");
+const privateBadge = () => screen.queryByText("Private Event");
 
 describe("EventDetails", () => {
   const setupTest = async ({ role, event }: { role: TestUserRole; event: IsaacEventPageDTO }) => {
@@ -50,14 +47,12 @@ describe("EventDetails", () => {
 
   it("displays event title a second time with image, if image is defined", async () => {
     await setupTest({ role: "STUDENT", event: mockEvent });
-    const { title, image } = getFields();
     expect(title()).toBeInTheDocument();
     expect(image()).toHaveAttribute("src", mockEvent.eventThumbnail!.src);
   });
 
   it("uses a placeholder image if no image is specified", async () => {
     await setupTest({ role: "STUDENT", event: { ...mockEvent, eventThumbnail: undefined } });
-    const { image } = getFields();
     expect(image()).toHaveAttribute("src", "http://placehold.it/500x276");
   });
 
@@ -71,45 +66,40 @@ describe("EventDetails", () => {
       role: "STUDENT",
       event: { ...mockEvent, tags: ["booster", "student"], location: mapLocation },
     });
-    const { map, location } = getFields();
     expect(map()).toBeInTheDocument();
     expect(location()).toHaveTextContent(formatAddress(mapLocation));
   });
 
   it("shows location as online if event is tagged as virtual", async () => {
     await setupTest({ role: "STUDENT", event: { ...mockEvent, tags: ["virtual"] } });
-    const { location } = getFields();
     expect(location()).toHaveTextContent("Online");
   });
 
   it("shows private event badge if event is private", async () => {
     await setupTest({ role: "STUDENT", event: { ...mockEvent, privateEvent: true } });
-    const { privateBadge } = getFields();
     expect(privateBadge()).toBeVisible();
   });
 
   it("does not show private event badge if even is not private", async () => {
     await setupTest({ role: "STUDENT", event: { ...mockEvent, privateEvent: false } });
-    const { privateBadge } = getFields();
     expect(privateBadge()).not.toBeInTheDocument();
   });
 
-  it.each(["ADMIN", "EVENT_MANAGER", "CONTENT_EDITOR"] as TestUserRole[])(
+  it.each(["ADMIN", "EVENT_MANAGER", "CONTENT_EDITOR"] as UserRole[])(
     "if user is %s, a google calendar button shows and can be clicked",
     async (role) => {
       const mockGoogleCalendarTemplate = jest.fn();
       jest.spyOn(eventServices, "googleCalendarTemplate").mockImplementation(mockGoogleCalendarTemplate);
       await setupTest({ role: role, event: mockEvent });
-      const { googleCalendarButton } = getFields();
-      expect(googleCalendarButton()).toBeVisible();
-      await userEvent.click(googleCalendarButton() as HTMLElement);
+      const calendarButton = googleCalendarButton();
+      expect(calendarButton).toBeVisible();
+      await userEvent.click(calendarButton as HTMLElement);
       expect(mockGoogleCalendarTemplate).toHaveBeenCalled();
     },
   );
 
   it("if user is STUDENT, a google calendar button does not show", async () => {
     await setupTest({ role: "STUDENT", event: mockEvent });
-    const { googleCalendarButton } = getFields();
     expect(googleCalendarButton()).not.toBeInTheDocument();
   });
 
@@ -121,10 +111,10 @@ describe("EventDetails", () => {
       role: "STUDENT",
       event: pastEvent,
     });
-    const { eventDate } = getFields();
     const eventDateText = `${FRIENDLY_DATE_AND_TIME.format(startDate)} — ${TIME_ONLY.format(endDate)}`;
-    expect(eventDate()).toHaveTextContent(eventDateText);
-    expect(eventDate()).toHaveTextContent("This event is in the past.");
+    const date = eventDate();
+    expect(date).toHaveTextContent(eventDateText);
+    expect(date).toHaveTextContent("This event is in the past.");
   });
 
   it("if event is in the future, no past event warning shows", async () => {
@@ -135,14 +125,12 @@ describe("EventDetails", () => {
       role: "STUDENT",
       event: futureEvent,
     });
-    const { eventDate } = getFields();
     expect(eventDate()).not.toHaveTextContent("This event is in the past.");
   });
 
   it("if event has available places, number of available spaces is shown, and `book a place` button is shown for logged in users", async () => {
     const event = { ...mockEvent, placesAvailable: 10 };
     await setupTest({ role: "STUDENT", event });
-    const { placesAvailable } = getFields();
     expect(placesAvailable()).toHaveTextContent("10 spaces");
     expect(getButton("Book a place")).toBeInTheDocument();
   });
@@ -150,7 +138,6 @@ describe("EventDetails", () => {
   it("if event has no available places, Full badge and `join waiting list` button is shown for logged in users", async () => {
     const event = { ...mockEvent, placesAvailable: 0 };
     await setupTest({ role: "STUDENT", event });
-    const { placesAvailable } = getFields();
     expect(placesAvailable()).toHaveTextContent("Full");
     expect(getButton("Join waiting list")).toBeInTheDocument();
   });
@@ -158,7 +145,6 @@ describe("EventDetails", () => {
   it("if event has no available places and is WAITING_LIST_ONLY, `request a place` button is shown for logged in users", async () => {
     const event = { ...mockEvent, placesAvailable: 0, eventStatus: "WAITING_LIST_ONLY" as EventStatus };
     await setupTest({ role: "STUDENT", event });
-    const { placesAvailable } = getFields();
     expect(placesAvailable()).toHaveTextContent("Full");
     expect(getButton("Request a place")).toBeInTheDocument();
   });
@@ -171,11 +157,11 @@ describe("EventDetails", () => {
       userBookingStatus: "RESERVED",
     };
     await setupTest({ role: "STUDENT", event });
-    const { placesAvailable } = getFields();
-    expect(placesAvailable()).toHaveTextContent("Full");
+    const availability = placesAvailable();
+    expect(availability).toHaveTextContent("Full");
     expect(getButton("Cancel your reservation")).toBeInTheDocument();
     const confirmBookingButton = screen.getByRole("button", { name: /Complete your registration below/i });
-    expect(placesAvailable()).toContainElement(confirmBookingButton);
+    expect(availability).toContainElement(confirmBookingButton);
   });
 
   it("if not logged in and places available, `login to book` button is shown", async () => {
