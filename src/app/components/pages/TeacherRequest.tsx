@@ -25,6 +25,7 @@ import {
 import {
   api,
   isTeacherOrAbove,
+  isTeacherPending,
   schoolNameWithPostcode,
   SITE_SUBJECT_TITLE,
   validateEmail,
@@ -55,30 +56,30 @@ export const TeacherRequest = () => {
 
   const isValidEmail = validateEmail(emailAddress);
 
-  function isEmailDomainAllowed(email: string) {
-    for (const domain in nonSchoolDomains) {
-      if (email.includes(nonSchoolDomains[domain])) {
-        setAllowedDomain(false);
+  useEffect(() => {
+    function isEmailDomainAllowed(email: string) {
+      for (const domain in nonSchoolDomains) {
+        if (email.includes(nonSchoolDomains[domain])) {
+          setAllowedDomain(false);
+        }
       }
     }
-  }
 
-  function fetchSchool(urn: string) {
-    if (urn !== "") {
-      api.schools.getByUrn(urn).then(({ data }) => {
-        setSchool(schoolNameWithPostcode(data[0]));
-      });
-    } else if (user?.loggedIn && user.schoolOther) {
-      setSchool(user.schoolOther);
-    } else {
-      setSchool(undefined);
+    function fetchSchool(urn: string) {
+      if (urn !== "") {
+        api.schools.getByUrn(urn).then(({ data }) => {
+          setSchool(schoolNameWithPostcode(data[0]));
+        });
+      } else if (user?.loggedIn && user.schoolOther) {
+        setSchool(user.schoolOther);
+      } else {
+        setSchool(undefined);
+      }
     }
-  }
 
-  useEffect(() => {
     fetchSchool(urn);
     isEmailDomainAllowed(emailAddress);
-  }, [user]);
+  }, [urn, emailAddress, user]);
 
   return (
     <Container id="contact-page" className="pb-5">
@@ -102,6 +103,19 @@ export const TeacherRequest = () => {
                   </Col>
                 </Row>
               )}
+              {isTeacherPending(user) && !messageSent && (
+                <Row>
+                  <Col className="text-center pt-3">
+                    <span className="h3">You already have a teacher upgrade request pending</span>
+                    <p className="mt-3">
+                      {
+                        "Account verification is a manual process, but if you have been waiting more than 1 week please "
+                      }
+                      <Link to="/contact">{"contact us"}</Link>.
+                    </p>
+                  </Col>
+                </Row>
+              )}
               {!isTeacherOrAbove(user) &&
                 (messageSent && !errorMessage ? (
                   <Row>
@@ -114,190 +128,192 @@ export const TeacherRequest = () => {
                     </Col>
                   </Row>
                 ) : (
-                  <Form
-                    name="contact"
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      if (verificationDetails) {
-                        dispatch(upgradeAccount({ verificationDetails, otherInformation }));
-                        setMessageSent(true);
-                      }
-                    }}
-                  >
-                    <CardBody>
-                      <p>
-                        {`To request a teacher account on Isaac ${SITE_SUBJECT_TITLE}, please fill in this form. `}
-                        {"You must use the email address that was assigned to you by your school, and the "}
-                        {"name of your school should be shown in the 'School' field. If any of the "}
-                        {"information is incorrect or missing, you can amend it on your "}
-                        <Link to="/account">My account</Link>
-                        {" page."}
-                      </p>
-                      <Row>
-                        <Col size={12} md={6}>
-                          <FormGroup>
-                            <Label htmlFor="first-name-input" className="form-required">
-                              First name
-                            </Label>
-                            <Input
-                              disabled
-                              id="first-name-input"
-                              type="text"
-                              name="first-name"
-                              defaultValue={user?.loggedIn ? user.givenName : ""}
-                              required
-                            />
-                          </FormGroup>
-                        </Col>
-                        <Col size={12} md={6}>
-                          <FormGroup>
-                            <Label htmlFor="last-name-input" className="form-required">
-                              Last name
-                            </Label>
-                            <Input
-                              disabled
-                              id="last-name-input"
-                              type="text"
-                              name="last-name"
-                              defaultValue={user?.loggedIn ? user.familyName : ""}
-                              required
-                            />
-                          </FormGroup>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col size={12} md={6}>
-                          <FormGroup>
-                            <Label htmlFor="email-input" className="form-required">
-                              Email address
-                            </Label>
-                            <Input
-                              disabled
-                              invalid={!isValidEmail || !emailVerified || allowedDomain == false}
-                              id="email-input"
-                              type="email"
-                              name="email"
-                              defaultValue={user?.loggedIn ? user.email : ""}
-                              aria-describedby="emailValidationMessage"
-                              required
-                            />
-                          </FormGroup>
-                        </Col>
-                        <Col size={12} md={6}>
-                          <FormGroup>
-                            <Label htmlFor="school-input" className="form-required">
-                              School
-                            </Label>
-                            <Input
-                              disabled
-                              id="school-input"
-                              type="text"
-                              name="school"
-                              defaultValue={school}
-                              invalid={typeof school == "undefined"}
-                              required
-                            />
-                          </FormGroup>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col size={12} md={6}>
-                          <FormGroup>
-                            <Label htmlFor="user-verification-input" className="form-required">
-                              URL of a page on your school website which shows your name and email address, or your
-                              school phone number
-                            </Label>
-                            <Input
-                              id="user-verification-input"
-                              type="text"
-                              name="user-verification"
-                              onChange={(e) => setVerificationDetails(e.target.value)}
-                              required
-                            />
-                          </FormGroup>
-                        </Col>
-                        <Col size={12} md={6}>
-                          <FormGroup>
-                            <Label htmlFor="other-info-input">Any other information</Label>
-                            <Input
-                              id="other-info-input"
-                              type="textarea"
-                              name="other-info"
-                              onChange={(e) => setOtherInformation(e.target.value)}
-                            />
-                          </FormGroup>
-                        </Col>
-                      </Row>
-                      {!emailVerified && (
+                  !isTeacherPending(user) && (
+                    <Form
+                      name="contact"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        if (verificationDetails) {
+                          dispatch(upgradeAccount({ verificationDetails, otherInformation }));
+                          setMessageSent(true);
+                        }
+                      }}
+                    >
+                      <CardBody>
+                        <p>
+                          {`To request a teacher account on Isaac ${SITE_SUBJECT_TITLE}, please fill in this form. `}
+                          {"You must use the email address that was assigned to you by your school, and the "}
+                          {"name of your school should be shown in the 'School' field. If any of the "}
+                          {"information is incorrect or missing, you can amend it on your "}
+                          <Link to="/account">My account</Link>
+                          {" page."}
+                        </p>
                         <Row>
-                          <Col>
-                            <small className="text-danger text-left">
-                              Your email address is not verified — please click on the link in the verification email to
-                              confirm your email address. You can{" "}
-                              <Button
-                                color="link primary-font-link"
-                                onClick={() => dispatch(requestEmailVerification())}
-                              >
-                                request a new verification email
-                              </Button>{" "}
-                              if necessary.
-                            </small>
+                          <Col size={12} md={6}>
+                            <FormGroup>
+                              <Label htmlFor="first-name-input" className="form-required">
+                                First name
+                              </Label>
+                              <Input
+                                disabled
+                                id="first-name-input"
+                                type="text"
+                                name="first-name"
+                                defaultValue={user?.loggedIn ? user.givenName : ""}
+                                required
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col size={12} md={6}>
+                            <FormGroup>
+                              <Label htmlFor="last-name-input" className="form-required">
+                                Last name
+                              </Label>
+                              <Input
+                                disabled
+                                id="last-name-input"
+                                type="text"
+                                name="last-name"
+                                defaultValue={user?.loggedIn ? user.familyName : ""}
+                                required
+                              />
+                            </FormGroup>
                           </Col>
                         </Row>
-                      )}
-                      {typeof school == "undefined" && (
                         <Row>
-                          <Col>
-                            <small className="text-danger text-left">
-                              You have not provided your school — please add your school on your{" "}
-                              <Link to="/account">My Account</Link> page.
-                              {/*   REMOVED UNTIL TUTOR ROLE IS AVAILABLE
+                          <Col size={12} md={6}>
+                            <FormGroup>
+                              <Label htmlFor="email-input" className="form-required">
+                                Email address
+                              </Label>
+                              <Input
+                                disabled
+                                invalid={!isValidEmail || !emailVerified || allowedDomain == false}
+                                id="email-input"
+                                type="email"
+                                name="email"
+                                defaultValue={user?.loggedIn ? user.email : ""}
+                                aria-describedby="emailValidationMessage"
+                                required
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col size={12} md={6}>
+                            <FormGroup>
+                              <Label htmlFor="school-input" className="form-required">
+                                School
+                              </Label>
+                              <Input
+                                disabled
+                                id="school-input"
+                                type="text"
+                                name="school"
+                                defaultValue={school}
+                                invalid={typeof school == "undefined"}
+                                required
+                              />
+                            </FormGroup>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col size={12} md={6}>
+                            <FormGroup>
+                              <Label htmlFor="user-verification-input" className="form-required">
+                                URL of a page on your school website which shows your name and email address, or your
+                                school phone number
+                              </Label>
+                              <Input
+                                id="user-verification-input"
+                                type="text"
+                                name="user-verification"
+                                onChange={(e) => setVerificationDetails(e.target.value)}
+                                required
+                              />
+                            </FormGroup>
+                          </Col>
+                          <Col size={12} md={6}>
+                            <FormGroup>
+                              <Label htmlFor="other-info-input">Any other information</Label>
+                              <Input
+                                id="other-info-input"
+                                type="textarea"
+                                name="other-info"
+                                onChange={(e) => setOtherInformation(e.target.value)}
+                              />
+                            </FormGroup>
+                          </Col>
+                        </Row>
+                        {!emailVerified && (
+                          <Row>
+                            <Col>
+                              <small className="text-danger text-left">
+                                Your email address is not verified — please click on the link in the verification email
+                                to confirm your email address. You can{" "}
+                                <Button
+                                  color="link primary-font-link"
+                                  onClick={() => dispatch(requestEmailVerification())}
+                                >
+                                  request a new verification email
+                                </Button>{" "}
+                                if necessary.
+                              </small>
+                            </Col>
+                          </Row>
+                        )}
+                        {typeof school == "undefined" && (
+                          <Row>
+                            <Col>
+                              <small className="text-danger text-left">
+                                You have not provided your school — please add your school on your{" "}
+                                <Link to="/account">My Account</Link> page.
+                                {/*   REMOVED UNTIL TUTOR ROLE IS AVAILABLE
                                If you are a private tutor or parent, you can{" "}
                               <Link to="/tutor_account_request">
                                 request an Isaac {SITE_SUBJECT_TITLE} Tutor account
                               </Link>
                               . */}
-                            </small>
-                          </Col>
-                        </Row>
-                      )}
-                      {allowedDomain == false && (
+                              </small>
+                            </Col>
+                          </Row>
+                        )}
+                        {allowedDomain == false && (
+                          <Row>
+                            <Col>
+                              <small className="text-danger text-left">
+                                You have not used your school email address — please change your email address on your{" "}
+                                <Link to="/account">My Account</Link> page.
+                              </small>
+                            </Col>
+                          </Row>
+                        )}
+                      </CardBody>
+                      <CardFooter>
+                        <div>
+                          <Alert color="danger" isOpen={!!errorMessage}>
+                            <>
+                              {errorMessage} You can contact us at{" "}
+                              <a href={`mailto:${WEBMASTER_EMAIL}`}>{WEBMASTER_EMAIL}</a>
+                            </>
+                          </Alert>
+                        </div>
                         <Row>
-                          <Col>
-                            <small className="text-danger text-left">
-                              You have not used your school email address — please change your email address on your{" "}
-                              <Link to="/account">My Account</Link> page.
-                            </small>
+                          <Col size={12} md={6}>
+                            <span className="d-block pb-3 pb-md-0 text-right text-md-left form-required">
+                              Required field
+                            </span>
+                          </Col>
+                          <Col size={12} md={6} className="text-right">
+                            <Input
+                              type="submit"
+                              value="Submit"
+                              disabled={!emailVerified || typeof school == "undefined" || allowedDomain == false}
+                              className="btn btn-block btn-secondary border-0"
+                            />
                           </Col>
                         </Row>
-                      )}
-                    </CardBody>
-                    <CardFooter>
-                      <div>
-                        <Alert color="danger" isOpen={!!errorMessage}>
-                          <>
-                            {errorMessage} You can contact us at{" "}
-                            <a href={`mailto:${WEBMASTER_EMAIL}`}>{WEBMASTER_EMAIL}</a>
-                          </>
-                        </Alert>
-                      </div>
-                      <Row>
-                        <Col size={12} md={6}>
-                          <span className="d-block pb-3 pb-md-0 text-right text-md-left form-required">
-                            Required field
-                          </span>
-                        </Col>
-                        <Col size={12} md={6} className="text-right">
-                          <Input
-                            type="submit"
-                            value="Submit"
-                            disabled={!emailVerified || typeof school == "undefined" || allowedDomain == false}
-                            className="btn btn-block btn-secondary border-0"
-                          />
-                        </Col>
-                      </Row>
-                    </CardFooter>
-                  </Form>
+                      </CardFooter>
+                    </Form>
+                  )
                 ))}
             </Card>
           </Col>
