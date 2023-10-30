@@ -42,18 +42,18 @@ export const TeacherRequest = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectors.user.orNull);
   const errorMessage = useAppSelector((state: AppState) => (state && state.error) || null);
+  const errorText = errorMessage?.type === "generalError" ? errorMessage?.generalError : `${errorMessage?.type}.`;
   const { data: warningFragment } = isaacApi.endpoints.getPageFragment.useQuery(warningFragmentId);
 
-  const emailAddress = (user?.loggedIn && user.email) || "";
   const [school, setSchool] = useState<string>();
   const [otherInformation, setOtherInformation] = useState("");
   const [verificationDetails, setVerificationDetails] = useState<string>();
   const [messageSent, setMessageSent] = useState(false);
-  const emailVerified = user?.loggedIn && user.emailVerificationStatus === "VERIFIED";
   const [allowedDomain, setAllowedDomain] = useState<boolean>();
 
   const urn = (user?.loggedIn && user.schoolId) || "";
-
+  const emailAddress = (user?.loggedIn && user.email) || "";
+  const emailVerified = user?.loggedIn && user.emailVerificationStatus === "VERIFIED";
   const isValidEmail = validateEmail(emailAddress);
 
   useEffect(() => {
@@ -98,7 +98,8 @@ export const TeacherRequest = () => {
                   <Col className="text-center pt-3">
                     <span className="h3">You already have a teacher account</span>
                     <p className="mt-3">
-                      Go to the <Link to="/teachers">Teacher tools page</Link> to start using your new account features.
+                      Go to the&nbsp;<Link to="/teachers">Teacher tools page</Link>&nbsp;to start using your new account
+                      features.
                     </p>
                   </Col>
                 </Row>
@@ -108,10 +109,9 @@ export const TeacherRequest = () => {
                   <Col className="text-center pt-3">
                     <span className="h3">You already have a teacher upgrade request pending</span>
                     <p className="mt-3">
-                      {
-                        "Account verification is a manual process, but if you have been waiting more than 1 week please "
-                      }
-                      <Link to="/contact">{"contact us"}</Link>.
+                      Account verification is a manual process, but if you have been waiting more than 1 week
+                      please&nbsp;
+                      <Link to="/contact">contact us</Link>
                     </p>
                   </Col>
                 </Row>
@@ -141,12 +141,11 @@ export const TeacherRequest = () => {
                     >
                       <CardBody>
                         <p>
-                          {`To request a teacher account on Isaac ${SITE_SUBJECT_TITLE}, please fill in this form. `}
-                          {"You must use the email address that was assigned to you by your school, and the "}
-                          {"name of your school should be shown in the 'School' field. If any of the "}
-                          {"information is incorrect or missing, you can amend it on your "}
-                          <Link to="/account">My account</Link>
-                          {" page."}
+                          To request a teacher account on Isaac {SITE_SUBJECT_TITLE}, please fill in this form. You must
+                          use the email address that was assigned to you by your school, and the name of your school
+                          should be shown in the &lsquo;School&rsquo; field. If any of the information is incorrect or
+                          missing, you can amend it on your&nbsp;
+                          <Link to="/account">My account</Link> page.
                         </p>
                         <Row>
                           <Col size={12} md={6}>
@@ -248,14 +247,14 @@ export const TeacherRequest = () => {
                             <Col>
                               <small className="text-danger text-left">
                                 Your email address is not verified — please click on the link in the verification email
-                                to confirm your email address. You can{" "}
+                                to confirm your email address. You can&nbsp;
                                 <Button
                                   color="link primary-font-link"
                                   onClick={() => dispatch(requestEmailVerification())}
                                 >
                                   request a new verification email
-                                </Button>{" "}
-                                if necessary.
+                                </Button>
+                                &nbsp;if necessary.
                               </small>
                             </Col>
                           </Row>
@@ -264,14 +263,11 @@ export const TeacherRequest = () => {
                           <Row data-testid="no-school-selected">
                             <Col>
                               <small className="text-danger text-left">
-                                You have not provided your school — please add your school on your{" "}
-                                <Link to="/account">My Account</Link> page.
+                                You have not provided your school — please add your school on your&nbsp;
+                                <Link to="/account">My Account</Link>&nbsp;page.
                                 {/*   REMOVED UNTIL TUTOR ROLE IS AVAILABLE
-                               If you are a private tutor or parent, you can{" "}
-                              <Link to="/tutor_account_request">
-                                request an Isaac {SITE_SUBJECT_TITLE} Tutor account
-                              </Link>
-                              . */}
+                               If you are a private tutor or parent, you can&nbsp;
+                               <Link to="/tutor_account_request">request an Isaac {SITE_SUBJECT_TITLE} Tutor account</Link>. */}
                               </small>
                             </Col>
                           </Row>
@@ -280,8 +276,9 @@ export const TeacherRequest = () => {
                           <Row data-testid="invalid-email">
                             <Col>
                               <small className="text-danger text-left">
-                                You have not used your school email address — please change your email address on your{" "}
-                                <Link to="/account">My Account</Link> page.
+                                You have not used your school email address — please change your email address on
+                                your&nbsp;
+                                <Link to="/account">My Account</Link>&nbsp;page.
                               </small>
                             </Col>
                           </Row>
@@ -290,10 +287,8 @@ export const TeacherRequest = () => {
                       <CardFooter>
                         <div>
                           <Alert color="danger" isOpen={!!errorMessage}>
-                            <>
-                              {errorMessage} You can contact us at{" "}
-                              <a href={`mailto:${WEBMASTER_EMAIL}`}>{WEBMASTER_EMAIL}</a>
-                            </>
+                            {`An error has occurred: ${errorText} You can contact us at `}
+                            <a href={`mailto:${WEBMASTER_EMAIL}`}>{WEBMASTER_EMAIL}</a>
                           </Alert>
                         </div>
                         <Row>

@@ -1,4 +1,4 @@
-import { TestUserRole, checkPageTitle, renderTestEnvironment } from "../utils";
+import { checkPageTitle, renderTestEnvironment } from "../utils";
 import { TeacherRequest } from "../../app/components/pages/TeacherRequest";
 import { RestHandler, rest } from "msw";
 import { API_PATH } from "../../app/services";
@@ -7,6 +7,7 @@ import { produce } from "immer";
 import { mockUser } from "../../mocks/data";
 import userEvent from "@testing-library/user-event";
 import * as actions from "../../app/state/actions";
+import { RegisteredUserDTO } from "../../IsaacApiTypes";
 
 function checkDisabledAndCorrectValue(input: HTMLElement, expectedValue: string) {
   expect(input).toHaveValue(expectedValue);
@@ -21,9 +22,9 @@ describe("TeacherRequest", () => {
     extraEndpoints,
     modifyUser,
   }: {
-    role: TestUserRole;
+    role: "TEACHER" | "STUDENT";
     extraEndpoints?: RestHandler<never>[];
-    modifyUser?: (u: typeof mockUser) => typeof mockUser;
+    modifyUser?: (u: RegisteredUserDTO) => RegisteredUserDTO;
   }) => {
     renderTestEnvironment({
       role: role,
@@ -96,7 +97,7 @@ describe("TeacherRequest", () => {
   });
 
   it("displays a message, and no form, if the user already has a pending request", async () => {
-    const modifyUser = (user: typeof mockUser) =>
+    const modifyUser = (user: RegisteredUserDTO) =>
       produce(user, (u) => {
         u.teacherPending = true;
       });
@@ -136,7 +137,7 @@ describe("TeacherRequest", () => {
   const warningTestCases = [
     {
       name: "displays a warning if the email address is unverified, and Submit is disabled",
-      modifyUser: (user: typeof mockUser) =>
+      modifyUser: (user: RegisteredUserDTO) =>
         produce(user, (u) => {
           u.emailVerificationStatus = "NOT_VERIFIED";
         }),
@@ -144,7 +145,7 @@ describe("TeacherRequest", () => {
     },
     {
       name: "displays a warning if the email address is invalid for a teacher account, and Submit is disabled",
-      modifyUser: (user: typeof mockUser) =>
+      modifyUser: (user: RegisteredUserDTO) =>
         produce(user, (u) => {
           u.email = "exampleteacher@gmail.com";
         }),
@@ -152,7 +153,7 @@ describe("TeacherRequest", () => {
     },
     {
       name: "displays a warning if no school is selected, and Submit is disabled",
-      modifyUser: (user: typeof mockUser) =>
+      modifyUser: (user: RegisteredUserDTO) =>
         produce(user, (u) => {
           u.schoolOther = undefined;
         }),
@@ -172,8 +173,7 @@ describe("TeacherRequest", () => {
 
   it("if no Verification Details are specified, form does not submit", async () => {
     setupTest({ role: "STUDENT" });
-    await screen.findByRole("form");
-    const submitButton = screen.getByRole("button", { name: "Submit" });
+    const submitButton = await screen.findByRole("button", { name: "Submit" });
     await userEvent.click(submitButton);
     expect(upgradeAccountSpy).not.toHaveBeenCalled();
   });
@@ -185,8 +185,7 @@ describe("TeacherRequest", () => {
       }),
     ];
     setupTest({ role: "STUDENT", extraEndpoints });
-    await screen.findByRole("form");
-    const submitButton = screen.getByRole("button", { name: "Submit" });
+    const submitButton = await screen.findByRole("button", { name: "Submit" });
     const verificationDetailsInput = screen.getByLabelText(/URL of a page on your school website/);
     const otherInformationInput = screen.getByLabelText(/Any other information/);
     await userEvent.type(verificationDetailsInput, "https://example.com");

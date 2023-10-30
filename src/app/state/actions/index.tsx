@@ -385,8 +385,8 @@ export const upgradeAccount =
     try {
       const pendingAccountUpgrade = await api.users.upgradeAccount(params);
       dispatch({ type: ACTION_TYPE.ACCOUNT_UPGRADE_SEND_RESPONSE_SUCCESS, user: pendingAccountUpgrade.data });
-    } catch (e: any) {
-      const errorMessage = extractMessage(e);
+    } catch (e) {
+      const errorMessage = extractMessage(e as Error);
       dispatch({ type: ACTION_TYPE.ACCOUNT_UPGRADE_SEND_RESPONSE_FAILURE, errorMessage: errorMessage });
       dispatch(showAxiosErrorToastIfNeeded(errorMessage, e));
     }

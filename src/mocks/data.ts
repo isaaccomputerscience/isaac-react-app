@@ -25,14 +25,14 @@ export const mockEventBookings: EventBookingDTO[] = [
     reservedById: 0,
     eventId: "example_event",
     eventTitle: "Example Event",
-    eventDate: 1698850800000 as unknown as Date,
+    eventDate: 1698850800000,
     bookingStatus: "CONFIRMED",
-    bookingDate: 1695897589235 as unknown as Date,
+    bookingDate: 1695897589235,
     additionalInformation: {
       experienceLevel: "Lots of teaching experience",
       jobTitle: "Teacher of Computer Science",
     },
-    updated: 1695897589235 as unknown as Date,
+    updated: 1695897589235,
   },
   {
     bookingId: 1001,
@@ -55,13 +55,13 @@ export const mockEventBookings: EventBookingDTO[] = [
     reservedById: 0,
     eventId: "example_event",
     eventTitle: "Example Event",
-    eventDate: 1698850800000 as unknown as Date,
+    eventDate: 1698850800000,
     bookingStatus: "CONFIRMED",
-    bookingDate: 1695900107575 as unknown as Date,
+    bookingDate: 1695900107575,
     additionalInformation: {
       yearGroup: "12",
     },
-    updated: 1695900107575 as unknown as Date,
+    updated: 1695900107575,
   },
   {
     bookingId: 1002,
@@ -84,13 +84,13 @@ export const mockEventBookings: EventBookingDTO[] = [
     reservedById: 0,
     eventId: "example_event",
     eventTitle: "Example Event",
-    eventDate: 1698850800000 as unknown as Date,
+    eventDate: 1698850800000,
     bookingStatus: "CONFIRMED",
-    bookingDate: 1695935815666 as unknown as Date,
+    bookingDate: 1695935815666,
     additionalInformation: {
       yearGroup: "12",
     },
-    updated: 1695935815666 as unknown as Date,
+    updated: 1695935815666,
   },
   {
     bookingId: 1003,
@@ -113,14 +113,14 @@ export const mockEventBookings: EventBookingDTO[] = [
     reservedById: 0,
     eventId: "example_event",
     eventTitle: "Example Event",
-    eventDate: 1698850800000 as unknown as Date,
+    eventDate: 1698850800000,
     bookingStatus: "CONFIRMED",
-    bookingDate: 1695889960207 as unknown as Date,
+    bookingDate: 1695889960207,
     additionalInformation: {
       experienceLevel: "GCSE and A Level",
       jobTitle: "Head of CS",
     },
-    updated: 1695889960207 as unknown as Date,
+    updated: 1695889960207,
   },
   {
     bookingId: 1004,
@@ -143,13 +143,13 @@ export const mockEventBookings: EventBookingDTO[] = [
     reservedById: 0,
     eventId: "example_event",
     eventTitle: "Example Event",
-    eventDate: 1698850800000 as unknown as Date,
+    eventDate: 1698850800000,
     bookingStatus: "CONFIRMED",
-    bookingDate: 1695892050721 as unknown as Date,
+    bookingDate: 1695892050721,
     additionalInformation: {
       yearGroup: "13",
     },
-    updated: 1695892050721 as unknown as Date,
+    updated: 1695892050721,
   },
 ];
 
@@ -174,9 +174,9 @@ export const mockCancelledEventBooking = {
   reservedById: 0,
   eventId: "example_event",
   eventTitle: "Example Event",
-  eventDate: 1698850800000 as unknown as Date,
+  eventDate: 1698850800000,
   bookingStatus: "CANCELLED",
-  bookingDate: 1695897589235 as unknown as Date,
+  bookingDate: 1695897589235,
   additionalInformation: {
     experienceLevel: "teacher",
     jobTitle: "CS Teacher",
@@ -311,7 +311,7 @@ export const mockUser: RegisteredUserDTO = {
   email: "test-admin@test.com",
   dateOfBirth: 777777777777 as unknown as Date,
   gender: "MALE",
-  registrationDate: DAYS_AGO(100) as unknown as Date,
+  registrationDate: DAYS_AGO(100),
   role: "ADMIN",
   schoolOther: "N/A",
   registeredContexts: [
@@ -322,8 +322,8 @@ export const mockUser: RegisteredUserDTO = {
   ],
   registeredContextsLastConfirmed: DAYS_AGO(0) as unknown as Date,
   firstLogin: false,
-  lastUpdated: DAYS_AGO(1) as unknown as Date,
-  lastSeen: DAYS_AGO(1) as unknown as Date,
+  lastUpdated: DAYS_AGO(1),
+  lastSeen: DAYS_AGO(1),
   emailVerificationStatus: "VERIFIED",
   teacherPending: false,
   id: 1 as const,
@@ -363,8 +363,8 @@ export const mockUserToUpdate = {
   schoolOther: undefined,
 };
 
-export const buildMockStudent = <T>(id: T) => {
-  if (typeof id === "number" && id === mockUser.id) {
+export const buildMockStudent = (id: number) => {
+  if (id === mockUser.id) {
     throw Error("A mock student cannot have the same ID as the mockUser");
   }
   return {
@@ -372,8 +372,8 @@ export const buildMockStudent = <T>(id: T) => {
     familyName: `Student ${id}`,
     email: `test-student-${id}@test.com`,
     dateOfBirth: 888888888888 as unknown as Date,
-    gender: Math.random() < 0.5 ? "MALE" : "FEMALE",
-    registrationDate: DAYS_AGO(50) as unknown as Date,
+    gender: id % 2 === 0 ? "MALE" : "FEMALE",
+    registrationDate: DAYS_AGO(50),
     role: "STUDENT",
     schoolOther: "N/A",
     registeredContexts: [
@@ -384,23 +384,22 @@ export const buildMockStudent = <T>(id: T) => {
     ],
     registeredContextsLastConfirmed: DAYS_AGO(0) as unknown as Date,
     firstLogin: false,
-    lastUpdated: DAYS_AGO(1) as unknown as Date,
-    lastSeen: DAYS_AGO(1) as unknown as Date,
+    lastUpdated: DAYS_AGO(1),
+    lastSeen: DAYS_AGO(1),
     emailVerificationStatus: "VERIFIED",
     id: id,
   };
 };
 
-export const buildMockTeacher = <T>(id: T) => {
-  if (typeof id === "number" && id === mockUser.id)
-    throw Error("A mock teacher cannot have the same ID as the mockUser");
+export const buildMockTeacher = (id: number) => {
+  if (id === mockUser.id) throw Error("A mock teacher cannot have the same ID as the mockUser");
   return {
     givenName: "Test",
     familyName: `Teacher ${id}`,
     email: `test-teacher-${id}@test.com`,
     dateOfBirth: 888888888888 as unknown as Date,
-    gender: Math.random() < 0.5 ? "MALE" : "FEMALE",
-    registrationDate: DAYS_AGO(50) as unknown as Date,
+    gender: id % 2 === 0 ? "MALE" : "FEMALE",
+    registrationDate: DAYS_AGO(50),
     role: "TEACHER",
     schoolOther: "N/A",
     registeredContexts: [
@@ -411,8 +410,8 @@ export const buildMockTeacher = <T>(id: T) => {
     ],
     registeredContextsLastConfirmed: DAYS_AGO(0) as unknown as Date,
     firstLogin: false,
-    lastUpdated: DAYS_AGO(1) as unknown as Date,
-    lastSeen: DAYS_AGO(1) as unknown as Date,
+    lastUpdated: DAYS_AGO(1),
+    lastSeen: DAYS_AGO(1),
     emailVerificationStatus: "VERIFIED",
     id: id,
   };
