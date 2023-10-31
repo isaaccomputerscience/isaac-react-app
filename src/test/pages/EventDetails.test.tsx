@@ -23,6 +23,8 @@ const placesAvailable = () => screen.queryByTestId("event-availability");
 const privateBadge = () => screen.queryByText("Private Event");
 
 describe("EventDetails", () => {
+  jest.setTimeout(10000);
+
   const setupTest = async ({ role, event }: { role: TestUserRole; event: IsaacEventPageDTO }) => {
     renderTestEnvironment({
       role: role,

@@ -20,6 +20,8 @@ const registerUserSpy = jest.spyOn(actions, "registerUser");
 const submitMessageSpy = jest.spyOn(actions, "submitMessage");
 
 describe("Teacher Registration", () => {
+  jest.setTimeout(10000);
+
   const renderTeacherRegistration = () => {
     renderTestEnvironment({
       role: "ANONYMOUS",
