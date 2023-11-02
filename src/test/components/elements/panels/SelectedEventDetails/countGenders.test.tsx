@@ -32,4 +32,14 @@ describe("countGenders", () => {
     const results = countGenders([...bookingsWithGenderAndStatus, cancelledBooking]);
     expect(results).toEqual({ male: 1, female: 1, other: 1, preferNotToSay: 1, unknown: 1 });
   });
+
+  it("user bookings without a gender are counted as Unknown gender", () => {
+    const bookingWithUndefinedGender: EventBookingDTO = {
+      ...mockEventBooking,
+      bookingStatus: "CONFIRMED",
+      userBooked: { ...mockEventBooking.userBooked, gender: undefined },
+    };
+    const results = countGenders([...bookingsWithGenderAndStatus, bookingWithUndefinedGender]);
+    expect(results).toEqual({ male: 1, female: 1, other: 1, preferNotToSay: 1, unknown: 2 });
+  });
 });
