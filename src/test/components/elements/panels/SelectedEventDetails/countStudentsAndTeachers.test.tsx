@@ -17,25 +17,9 @@ describe("countStudentsAndTeachers", () => {
     const results = countStudentsAndTeachers([
       ...mockEventBookings,
       {
-        userBooked: {
-          givenName: "Test",
-          familyName: "Event Leader",
-          role: "EVENT_LEADER",
-          authorisedFullAccess: false,
-          emailVerificationStatus: "VERIFIED",
-          teacherPending: false,
-          registeredContexts: [
-            {
-              stage: "all",
-              examBoard: "ocr",
-            },
-          ],
-          email: "test_eventleader@test.com",
-          id: 300,
-        },
-        eventId: "example_event",
-        eventTitle: "Example Event",
+        ...mockEventBooking,
         bookingStatus: "CONFIRMED",
+        userBooked: { ...mockEventBooking.userBooked, role: "EVENT_LEADER" },
       },
     ]);
     expect(results).toEqual({ studentCount: 3, teacherCount: 2 });

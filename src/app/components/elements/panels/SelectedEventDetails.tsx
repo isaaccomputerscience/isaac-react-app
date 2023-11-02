@@ -58,10 +58,43 @@ export const countGenders = (eventBookings: EventBookingDTO[]) => {
 
 export const LocationDetails = ({ isVirtual, location }: { isVirtual?: boolean; location?: Location }) => {
   return (
-    <>
+    <p className="mb-0">
       <strong>Location: </strong>
       {isVirtual ? "Online" : formatAddress(location)}
-      <br />
+    </p>
+  );
+};
+
+export const GenderDetails = ({ eventBookings }: { eventBookings: EventBookingDTO[] }) => {
+  const { male, female, other, preferNotToSay, unknown } = countGenders(eventBookings);
+  const numberOfConfirmedOrAttendedBookings = eventBookings.filter((eventBooking) => {
+    return eventBooking.bookingStatus === "CONFIRMED" || eventBooking.bookingStatus === "ATTENDED";
+  }).length;
+
+  const genderData = [
+    { label: "Male", value: male },
+    { label: "Female", value: female },
+    { label: "Other", value: other },
+    { label: "Prefer not to say", value: preferNotToSay },
+    { label: "Unknown", value: unknown },
+  ];
+
+  return (
+    <>
+      <p className="mb-0" data-testid="event-genders">
+        <strong>Gender:</strong>
+        <span id={`gender-stats-tooltip`} className="icon-help ml-1" />
+        <UncontrolledTooltip className="text-nowrap" target={`gender-stats-tooltip`} placement="right">
+          User gender of CONFIRMED or ATTENDED bookings
+        </UncontrolledTooltip>
+      </p>
+      <ListGroup>
+        {genderData.map(({ label, value }) => (
+          <ListGroupItem key={label} className="py-0">
+            {`${label}: ${value} (${asPercentage(value, numberOfConfirmedOrAttendedBookings)}%)`}
+          </ListGroupItem>
+        ))}
+      </ListGroup>
     </>
   );
 };
@@ -78,10 +111,6 @@ export const SelectedEventDetails = ({ eventId }: { eventId: string }) => {
   });
   const eventBookings = useAppSelector(selectors.events.eventBookings);
   const { studentCount, teacherCount } = countStudentsAndTeachers(eventBookings);
-  const { male, female, other, preferNotToSay, unknown } = countGenders(eventBookings);
-  const numberOfConfirmedOrAttendedBookings = eventBookings.filter((eventBooking) => {
-    return eventBooking.bookingStatus === "CONFIRMED" || eventBooking.bookingStatus === "ATTENDED";
-  }).length;
 
   return (
     <Card>
@@ -89,82 +118,58 @@ export const SelectedEventDetails = ({ eventId }: { eventId: string }) => {
         <CardTitle tag="h3">Selected event details</CardTitle>
         {selectedEvent && selectedEvent !== NOT_FOUND && (
           <div className="m-0" data-testid="event-details">
-            <strong>Event: </strong>
-            <Link to={`/events/${selectedEvent.id}`} target="_blank">
-              {selectedEvent.title} - {selectedEvent.subtitle}
-            </Link>
-            {selectedEvent.isPrivateEvent && (
-              <Badge className="ml-2" color="primary">
-                Private Event
-              </Badge>
-            )}
-            <br />
+            <p className="mb-0">
+              <strong>Event: </strong>
+              <Link to={`/events/${selectedEvent.id}`} target="_blank">
+                {selectedEvent.title} - {selectedEvent.subtitle}
+              </Link>
+              {selectedEvent.isPrivateEvent && (
+                <Badge className="ml-2" color="primary">
+                  Private Event
+                </Badge>
+              )}
+            </p>
             <LocationDetails isVirtual={selectedEvent.isVirtual} location={selectedEvent.location} />
-            <strong>Event status: </strong>
-            <span className={selectedEvent.isCancelled ? "text-danger font-weight-bold" : ""}>
-              {selectedEvent.eventStatus}
-            </span>
-            <br />
-            <strong>Event Date & Time: </strong>
-            <DateString>{selectedEvent.date}</DateString> - <DateString>{selectedEvent.endDate}</DateString>
-            <br />
+            <p className="mb-0">
+              <strong>Event status: </strong>
+              <span className={selectedEvent.isCancelled ? "text-danger font-weight-bold" : ""}>
+                {selectedEvent.eventStatus}
+              </span>
+            </p>
+            <p className="mb-0">
+              <strong>Event Date & Time: </strong>
+              <DateString>{selectedEvent.date}</DateString> - <DateString>{selectedEvent.endDate}</DateString>
+            </p>
             {selectedEvent.bookingDeadline && (
-              <>
+              <p className="mb-0">
                 <strong>Booking deadline: </strong>
                 <DateString>{selectedEvent.bookingDeadline}</DateString>
                 <br />
-              </>
+              </p>
             )}
             {selectedEvent.prepWorkDeadline && (
-              <>
+              <p className="mb-0">
                 <strong>Prepwork deadline: </strong>
                 <DateString>{selectedEvent.prepWorkDeadline}</DateString>
-                <br />
-              </>
+              </p>
             )}
             {/* Group token is currently JSON Ignored by the API */}
             {/*<strong>Group Auth Code:</strong>*/}
             {/*{selectedEvent.isaacGroupToken}*/}
             {/*<br />*/}
-            <span className={zeroOrLess(selectedEvent.placesAvailable) ? "text-danger" : ""}>
+            <p className={zeroOrLess(selectedEvent.placesAvailable) ? "text-danger mb-0" : "mb-0"}>
               <strong>Number of places available: </strong>
               {selectedEvent.placesAvailable} / {selectedEvent.numberOfPlaces}
-            </span>
-            <br />
-            <strong>Number of students: </strong>
-            {studentCount} / {selectedEvent.numberOfPlaces}
-            <br />
-            <strong>Number of teachers: </strong>
-            {teacherCount} / {selectedEvent.numberOfPlaces}
-            <br />
-            <strong>Gender:</strong>
-            <span id={`gender-stats-tooltip`} className="icon-help ml-1" />
-            <UncontrolledTooltip className="text-nowrap" target={`gender-stats-tooltip`} placement="right">
-              User gender of CONFIRMED or ATTENDED bookings
-            </UncontrolledTooltip>
-            <br />
-            <ListGroup>
-              <ListGroupItem className="py-0">{`Male: ${male} (${asPercentage(
-                male,
-                numberOfConfirmedOrAttendedBookings,
-              )}%)`}</ListGroupItem>
-              <ListGroupItem className="py-0">{`Female: ${female} (${asPercentage(
-                female,
-                numberOfConfirmedOrAttendedBookings,
-              )}%)`}</ListGroupItem>
-              <ListGroupItem className="py-0">{`Other: ${other} (${asPercentage(
-                other,
-                numberOfConfirmedOrAttendedBookings,
-              )}%)`}</ListGroupItem>
-              <ListGroupItem className="py-0">{`Prefer not to say: ${preferNotToSay} (${asPercentage(
-                preferNotToSay,
-                numberOfConfirmedOrAttendedBookings,
-              )}%)`}</ListGroupItem>
-              <ListGroupItem className="py-0">{`Unknown: ${unknown} (${asPercentage(
-                unknown,
-                numberOfConfirmedOrAttendedBookings,
-              )}%)`}</ListGroupItem>
-            </ListGroup>
+            </p>
+            <p className="mb-0">
+              <strong>Number of students: </strong>
+              {studentCount} / {selectedEvent.numberOfPlaces}
+            </p>
+            <p className="mb-0">
+              <strong>Number of teachers: </strong>
+              {teacherCount} / {selectedEvent.numberOfPlaces}
+            </p>
+            <GenderDetails eventBookings={eventBookings} />
           </div>
         )}
         {selectedEvent && selectedEvent === NOT_FOUND && (
