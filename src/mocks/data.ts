@@ -158,7 +158,7 @@ export const mockEventBookings: EventBookingDTO[] = [
   },
 ];
 
-export const mockCancelledEventBooking: EventBookingDTO = {
+export const mockEventBooking: EventBookingDTO = {
   bookingId: 1005,
   userBooked: {
     givenName: "Cancelled",
