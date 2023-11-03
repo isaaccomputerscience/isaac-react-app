@@ -556,8 +556,7 @@ export interface UserSummaryWithEmailAddressDTO extends UserSummaryDTO {
   email?: string;
 }
 
-export interface UserSummaryWithEmailAddressAndGenderDTO extends UserSummaryDTO {
-  email?: string;
+export interface UserSummaryWithEmailAddressAndGenderDTO extends UserSummaryWithEmailAddressDTO {
   gender?: Gender;
 }
 
