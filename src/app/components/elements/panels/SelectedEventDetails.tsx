@@ -43,14 +43,27 @@ export const countGenders = (eventBookings: EventBookingDTO[]) => {
     const gender = booking.userBooked?.gender;
     const bookingStatus = booking.bookingStatus;
 
-    if (booking.userBooked && bookingStatus) {
-      const validStatus = ["CONFIRMED", "ATTENDED"].includes(bookingStatus);
-
-      if (gender === "MALE" && validStatus) genders.male++;
-      else if (gender === "FEMALE" && validStatus) genders.female++;
-      else if (gender === "OTHER" && validStatus) genders.other++;
-      else if (gender === "PREFER_NOT_TO_SAY" && validStatus) genders.preferNotToSay++;
-      else if ((gender === "UNKNOWN" || !gender) && validStatus) genders.unknown++;
+    if (booking.userBooked && bookingStatus && ["CONFIRMED", "ATTENDED"].includes(bookingStatus)) {
+      switch (gender) {
+        case "MALE":
+          genders.male++;
+          break;
+        case "FEMALE":
+          genders.female++;
+          break;
+        case "OTHER":
+          genders.other++;
+          break;
+        case "PREFER_NOT_TO_SAY":
+          genders.preferNotToSay++;
+          break;
+        case "UNKNOWN":
+        case undefined:
+          genders.unknown++;
+          break;
+        default:
+          break;
+      }
     }
   });
   return genders;

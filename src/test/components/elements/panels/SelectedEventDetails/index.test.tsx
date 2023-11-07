@@ -79,7 +79,7 @@ describe("SelectedEventDetails", () => {
     setupTest(eventDetails);
     const eventInfo = await screen.findByTestId("event-details");
     const expectedValues = findExpectedValues(augmentedEvent, mockEventBookings);
-    expectedValues.forEach((each) => expect(eventInfo.textContent).toContain(each));
+    expectedValues.forEach((each) => expect(eventInfo).toHaveTextContent(each));
     const title = screen.getByText("Selected event details");
     expect(title).toBeInTheDocument();
   });
@@ -100,7 +100,7 @@ describe("SelectedEventDetails", () => {
     setupTest(eventDetails);
     const eventInfo = await screen.findByTestId("event-details");
     const location = findExpectedValues(augmentedEvent, mockEventBookings)[1];
-    expect(eventInfo.textContent).toContain(location);
+    expect(eventInfo).toHaveTextContent(location);
   });
 
   it("shows Prepwork deadline if present in the event details", async () => {
@@ -111,32 +111,32 @@ describe("SelectedEventDetails", () => {
     setupTest(eventDetails);
     const eventInfo = await screen.findByTestId("event-details");
     const prepWorkDeadline = FRIENDLY_DATE_AND_TIME.format(eventDetails.prepWorkDeadline);
-    expect(eventInfo.textContent).toContain(prepWorkDeadline);
-    expect(eventInfo.textContent).toContain("Prepwork deadline");
+    expect(eventInfo).toHaveTextContent(prepWorkDeadline);
+    expect(eventInfo).toHaveTextContent("Prepwork deadline");
   });
 
   it("does not show Prepwork deadline if not present in the event details", async () => {
     setupTest(mockEvent);
     const eventInfo = await screen.findByTestId("event-details");
-    expect(eventInfo.textContent).not.toContain("Prepwork deadline");
+    expect(eventInfo).not.toHaveTextContent("Prepwork deadline");
   });
 
   it("shows private event badge if event is private", async () => {
     setupTest({ ...mockEvent, privateEvent: true });
     const eventInfo = await screen.findByTestId("event-details");
-    expect(eventInfo.textContent).toContain("Private Event");
+    expect(eventInfo).toHaveTextContent("Private Event");
   });
 
   it("does not show private event badge if event is not private", async () => {
     setupTest(mockEvent);
     const eventInfo = await screen.findByTestId("event-details");
-    expect(eventInfo.textContent).not.toContain("Private Event");
+    expect(eventInfo).not.toHaveTextContent("Private Event");
   });
 
   it("does not show booking deadline if not present in the event details", async () => {
-    setupTest({ ...mockEvent, bookingDeadline: undefined } as IsaacEventPageDTO);
+    setupTest({ ...mockEvent, bookingDeadline: undefined });
     const eventInfo = await screen.findByTestId("event-details");
-    expect(eventInfo.textContent).not.toContain("Booking deadline");
+    expect(eventInfo).not.toHaveTextContent("Booking deadline");
   });
 
   it("shows message if event details are not found", async () => {
@@ -153,6 +153,6 @@ describe("SelectedEventDetails", () => {
       ],
     });
     const eventInfo = await screen.findByTestId("event-details-not-found");
-    expect(eventInfo.textContent).toContain("Event details not found");
+    expect(eventInfo).toHaveTextContent("Event details not found.");
   });
 });
