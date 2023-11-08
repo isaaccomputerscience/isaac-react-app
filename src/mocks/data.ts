@@ -153,7 +153,7 @@ export const mockEventBookings: EventBookingDTO[] = [
   },
 ];
 
-export const mockCancelledEventBooking = {
+export const mockCancelledEventBooking: EventBookingDTO = {
   bookingId: 1005,
   userBooked: {
     givenName: "Cancelled",
@@ -181,7 +181,7 @@ export const mockCancelledEventBooking = {
     experienceLevel: "teacher",
     jobTitle: "CS Teacher",
   },
-  updated: 1695897589235 as unknown as Date,
+  updated: 1695897589235,
 };
 
 export const mockEvent: IsaacEventPageDTO = {
