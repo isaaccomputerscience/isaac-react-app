@@ -63,7 +63,7 @@ describe("EventBookingForm", () => {
 
   it("has first name, last name , email address, context and school inputs, all disabled", async () => {
     setupTest({ role: "STUDENT", user: mockUser });
-    await screen.findByDisplayValue(mockUser.givenName);
+    await screen.findByDisplayValue(mockUser.givenName!);
     const inputFields = [
       "First name",
       "Last name",
@@ -80,25 +80,25 @@ describe("EventBookingForm", () => {
   });
 
   it("if email address is unverified, warning message is displayed", async () => {
-    const user = { ...mockUser, emailVerificationStatus: "NOT_VERIFIED" };
+    const user = { ...mockUser, emailVerificationStatus: "NOT_VERIFIED" as EmailVerificationStatus };
     setupTest({ role: "STUDENT", user: user });
-    await screen.findByDisplayValue(user.givenName);
+    await screen.findByDisplayValue(user.givenName!);
     const warningMessage = screen.getByTestId("email-feedback");
     expect(warningMessage).toBeVisible();
   });
 
   it("if user is booking for themselves and email is unverified, link to verify is provided", async () => {
-    const user = { ...mockUser, emailVerificationStatus: "NOT_VERIFIED" };
+    const user = { ...mockUser, emailVerificationStatus: "NOT_VERIFIED" as EmailVerificationStatus };
     setupTest({ role: "STUDENT", user: user });
-    await screen.findByDisplayValue(user.givenName);
+    await screen.findByDisplayValue(user.givenName!);
     const verifyEmailLink = screen.getByRole("button", { name: /verify your email before booking/i });
     expect(verifyEmailLink).toBeInTheDocument();
   });
 
   it("if the button to verify email is clicked, a confirmation message is displayed and verification email is sent", async () => {
-    const user = { ...mockUser, emailVerificationStatus: "NOT_VERIFIED" };
+    const user = { ...mockUser, emailVerificationStatus: "NOT_VERIFIED" as EmailVerificationStatus };
     setupTest({ role: "STUDENT", user: user });
-    await screen.findByDisplayValue(user.givenName);
+    await screen.findByDisplayValue(user.givenName!);
     const verifyEmailLink = screen.getByRole("button", { name: /verify your email before booking/i });
     await userEvent.click(verifyEmailLink);
     const verifyEmailMessage = screen.getByText(/we have sent an email/i);
