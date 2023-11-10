@@ -76,27 +76,27 @@ export const AccessibilityAndMedicalRequirements = ({
   additionalInformation: AdditionalInformation;
   updateAdditionalInformation: (update: AdditionalInformation) => void;
 }) => {
-  const data = [
+  const requirementsList = [
     {
       label: "Accessibility requirements",
       id: "access",
       popover:
         "For example, please let us know if you need wheelchair access, hearing loop or if we can help with any special adjustments.",
-      type: "accessibilityRequirements",
+      type: "accessibilityRequirements" as keyof AdditionalInformation,
     },
     {
       label: "Dietary requirements or relevant medical conditions",
       id: "medical",
       popover:
-        "For example, please let us know if you need wheelchair access, hearing loop or if we can help with any special adjustments.",
-      type: "medicalRequirements",
+        "For example, it is important for us to know if you have a severe allergy and/or carry an EpiPen, are prone to fainting, suffer from epilepsy...",
+      type: "medicalRequirements" as keyof AdditionalInformation,
     },
   ];
 
   return (
     <div>
-      {data.map((each) => {
-        const { label, id, popover, type } = each;
+      {requirementsList.map((requirement) => {
+        const { label, id, popover, type } = requirement;
         return (
           <div key={id}>
             <RS.Label htmlFor={`${id}-reqs`}>
@@ -110,7 +110,7 @@ export const AccessibilityAndMedicalRequirements = ({
               id={`${id}-reqs`}
               name={`${id}-reqs`}
               type="text"
-              value={additionalInformation[type as keyof AdditionalInformation] || ""}
+              value={additionalInformation[type] || ""}
               onChange={(event) => updateAdditionalInformation({ [`${type}`]: event.target.value })}
             />
           </div>
@@ -131,6 +131,7 @@ export const EventBookingForm = ({
   const editingSelf = user && user.loggedIn && targetUser.id === user.id;
 
   const [verifyEmailRequestSent, setVerifyEmailRequestSent] = useState(false);
+  const notVerifiedEmail = targetUser.emailVerificationStatus !== "VERIFIED";
 
   const InputWithLabel = ({ type }: { type: "emergencyNumber" | "emergencyName" | "experienceLevel" | "jobTitle" }) => {
     const fields = {
@@ -151,7 +152,7 @@ export const EventBookingForm = ({
           id={id}
           name={id}
           type="text"
-          value={additionalInformation[type as keyof AdditionalInformation] || ""}
+          value={additionalInformation[type] || ""}
           onChange={(event) => updateAdditionalInformation({ [`${type}`]: event.target.value })}
         />
       </>
@@ -172,7 +173,6 @@ export const EventBookingForm = ({
         label: "Email address",
         id: "account-email",
         value: targetUser.email || "",
-        invalid: targetUser.emailVerificationStatus != "VERIFIED",
       },
       stage: {
         label: "Stage",
@@ -259,8 +259,8 @@ export const EventBookingForm = ({
           <div>
             <RS.Row>
               <RS.Col md={12}>
-                <DisabledInputWithLabel type="email" invalid={targetUser.emailVerificationStatus !== "VERIFIED"} />
-                {targetUser.emailVerificationStatus != "VERIFIED" && <EmailVerification />}
+                <DisabledInputWithLabel type="email" invalid={notVerifiedEmail} />
+                {notVerifiedEmail && <EmailVerification />}
               </RS.Col>
               <RS.Col md={6}>
                 <DisabledInputWithLabel type="stage" />

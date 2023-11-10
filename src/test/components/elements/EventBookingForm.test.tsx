@@ -1,7 +1,13 @@
 import { EventBookingForm } from "../../../app/components/elements/EventBookingForm";
 import { renderTestEnvironment } from "../../utils";
 import { mockEvent, mockUser } from "../../../mocks/data";
-import { EmailVerificationStatus, UserContext, UserRole, UserSummaryWithEmailAddressDTO } from "../../../IsaacApiTypes";
+import {
+  EmailVerificationStatus,
+  RegisteredUserDTO,
+  UserContext,
+  UserRole,
+  UserSummaryWithEmailAddressDTO,
+} from "../../../IsaacApiTypes";
 import { API_PATH, augmentEvent } from "../../../app/services";
 import { AdditionalInformation, AugmentedEvent } from "../../../IsaacAppTypes";
 import { Immutable } from "immer";
@@ -22,7 +28,7 @@ describe("EventBookingForm", () => {
   }: {
     role: UserRole;
     event?: AugmentedEvent;
-    user: typeof mockUser;
+    user: RegisteredUserDTO;
     additionalInformation?: AdditionalInformation;
   }) => {
     const mockUserSummary: Immutable<UserSummaryWithEmailAddressDTO> = {
@@ -61,7 +67,7 @@ describe("EventBookingForm", () => {
     expect(eventBookingDetails).toBeInTheDocument();
   });
 
-  it("has first name, last name , email address, context and school inputs, all disabled", async () => {
+  it("has first name, last name, email address, context and school inputs, all disabled", async () => {
     setupTest({ role: "STUDENT", user: mockUser });
     await screen.findByDisplayValue(mockUser.givenName!);
     const inputFields = [
@@ -79,10 +85,9 @@ describe("EventBookingForm", () => {
     });
   });
 
-  it("if email address is unverified, warning message is displayed", async () => {
+  it("if email address is unverified, warning message is displayed", () => {
     const user = { ...mockUser, emailVerificationStatus: "NOT_VERIFIED" as EmailVerificationStatus };
     setupTest({ role: "STUDENT", user: user });
-    await screen.findByDisplayValue(user.givenName!);
     const warningMessage = screen.getByTestId("email-feedback");
     expect(warningMessage).toBeVisible();
   });
@@ -90,16 +95,14 @@ describe("EventBookingForm", () => {
   it("if user is booking for themselves and email is unverified, link to verify is provided", async () => {
     const user = { ...mockUser, emailVerificationStatus: "NOT_VERIFIED" as EmailVerificationStatus };
     setupTest({ role: "STUDENT", user: user });
-    await screen.findByDisplayValue(user.givenName!);
-    const verifyEmailLink = screen.getByRole("button", { name: /verify your email before booking/i });
+    const verifyEmailLink = await screen.findByRole("button", { name: /verify your email before booking/i });
     expect(verifyEmailLink).toBeInTheDocument();
   });
 
   it("if the button to verify email is clicked, a confirmation message is displayed and verification email is sent", async () => {
     const user = { ...mockUser, emailVerificationStatus: "NOT_VERIFIED" as EmailVerificationStatus };
     setupTest({ role: "STUDENT", user: user });
-    await screen.findByDisplayValue(user.givenName!);
-    const verifyEmailLink = screen.getByRole("button", { name: /verify your email before booking/i });
+    const verifyEmailLink = await screen.findByRole("button", { name: /verify your email before booking/i });
     await userEvent.click(verifyEmailLink);
     const verifyEmailMessage = screen.getByText(/we have sent an email/i);
     expect(verifyEmailMessage).toBeInTheDocument();
@@ -111,10 +114,10 @@ describe("EventBookingForm", () => {
     const schoolYearGroup = screen.getByLabelText("School year group");
     expect(schoolYearGroup).toBeEnabled();
     const options = schoolYearGroup.querySelectorAll("option");
-    expect(options.length).toBe(8);
+    expect(options).toHaveLength(8);
     const yearGroups = ["", "9", "10", "11", "12", "13", "TEACHER", "OTHER"];
     options.forEach((option, index) => {
-      expect(option.value).toBe(yearGroups[index]);
+      expect(option).toHaveValue(yearGroups[index]);
     });
   });
 
@@ -159,27 +162,33 @@ describe("EventBookingForm", () => {
     expect(updateAdditionalInformation).toHaveBeenCalledWith({ accessibilityRequirements: "Wheelchair access" });
   });
 
-  it("if user is not a teacher and event is not virtual, emergency contact name and telephone number is requested", async () => {
-    const event = augmentEvent(mockEvent);
-    setupTest({ role: "STUDENT", user: mockUser, event: { ...event, isVirtual: false } });
-    const emergencyContactDetails = screen.getByRole("heading", { name: /emergency contact details/i });
-    expect(emergencyContactDetails).toBeInTheDocument();
-    const contactDetails = [
-      {
-        element: screen.getByLabelText(/contact name/i),
-        value: "John Smith",
-        expected: { emergencyName: "John Smith" },
-      },
-      {
-        element: screen.getByLabelText(/contact telephone number/i),
-        value: "0123456789",
-        expected: { emergencyNumber: "0123456789" },
-      },
-    ];
-    contactDetails.forEach(({ element, value, expected }) => {
+  const emergencyDetails = [
+    {
+      testCase: "contact name",
+      label: /contact name/i,
+      value: "John Smith",
+      expected: { emergencyName: "John Smith" },
+    },
+    {
+      testCase: "telephone number",
+      label: /contact telephone number/i,
+      value: "0123456789",
+      expected: { emergencyNumber: "0123456789" },
+    },
+  ];
+
+  emergencyDetails.forEach(({ testCase, label, value, expected }) => {
+    it(`if user is not a teacher and event is not virtual, emergency ${testCase} is requested`, () => {
+      const event = augmentEvent(mockEvent);
+      setupTest({ role: "STUDENT", user: mockUser, event: { ...event, isVirtual: false } });
+
+      const emergencyContactDetailsHeading = screen.getByRole("heading", { name: /emergency contact details/i });
+      expect(emergencyContactDetailsHeading).toBeInTheDocument();
+
+      const element = screen.getByLabelText(label);
       expect(element).toBeInTheDocument();
       expect(element).toBeEnabled();
-      fireEvent.change(element, { target: { value: value } });
+      fireEvent.change(element, { target: { value } });
       expect(updateAdditionalInformation).toHaveBeenCalledWith(expected);
     });
   });
