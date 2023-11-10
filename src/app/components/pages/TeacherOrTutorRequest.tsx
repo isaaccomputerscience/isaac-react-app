@@ -5,6 +5,8 @@ import { TitleAndBreadcrumb } from "../elements/TitleAndBreadcrumb";
 import { Link } from "react-router-dom";
 import { RegisteredUserDTO } from "../../../IsaacApiTypes";
 
+// NOTE: This component is not in use while Tutor accounts are not available.
+
 export const TeacherOrTutorRequest = ({ user }: { user: RegisteredUserDTO }) => {
   return (
     <Container id="contact-page" className="pb-5">

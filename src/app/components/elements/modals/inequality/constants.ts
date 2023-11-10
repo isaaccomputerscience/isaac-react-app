@@ -1,4 +1,4 @@
-export type EditorMode = "maths" | "logic" | "chemistry";
+export type EditorMode = "maths" | "logic";
 export type LogicSyntax = "binary" | "logic";
 
 export interface MenuItemProps {
@@ -19,12 +19,6 @@ export interface MenuItems {
   mathsHypFunctions: MenuItemProps[];
   mathsLogFunctions: MenuItemProps[];
   mathsDerivatives: MenuItemProps[];
-  chemicalElements: MenuItemProps[];
-  chemicalParticles: MenuItemProps[];
-  // The following is for the pseudo-text-entry menu on /equality
-  parsedChemicalElements: MenuItemProps[];
-  chemicalStates: MenuItemProps[];
-  chemicalOperations: MenuItemProps[];
   // The following are reduced versions in case there are available symbols and should replace their respective sub-sub-menus.
   letters: MenuItemProps[];
   otherFunctions: MenuItemProps[];
