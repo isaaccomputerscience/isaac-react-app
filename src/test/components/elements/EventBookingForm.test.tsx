@@ -4,7 +4,6 @@ import { mockEvent, mockUser } from "../../../mocks/data";
 import {
   EmailVerificationStatus,
   RegisteredUserDTO,
-  UserContext,
   UserRole,
   UserSummaryWithEmailAddressDTO,
 } from "../../../IsaacApiTypes";
@@ -35,8 +34,8 @@ describe("EventBookingForm", () => {
       givenName: user.givenName,
       familyName: user.familyName,
       role: role,
-      emailVerificationStatus: user.emailVerificationStatus as EmailVerificationStatus,
-      registeredContexts: user.registeredContexts as UserContext[],
+      emailVerificationStatus: user.emailVerificationStatus,
+      registeredContexts: user.registeredContexts,
       id: user.id,
       teacherPending: user.teacherPending,
     };
@@ -67,22 +66,21 @@ describe("EventBookingForm", () => {
     expect(eventBookingDetails).toBeInTheDocument();
   });
 
-  it("has first name, last name, email address, context and school inputs, all disabled", async () => {
+  const inputFields = [
+    "First name",
+    "Last name",
+    "Email address",
+    "Stage",
+    "Exam board",
+    "My current school or college",
+  ];
+  it.each(inputFields)("%s input field renders and is disabled", async (input) => {
     setupTest({ role: "STUDENT", user: mockUser });
     await screen.findByDisplayValue(mockUser.givenName!);
-    const inputFields = [
-      "First name",
-      "Last name",
-      "Email address",
-      "Stage",
-      "Exam board",
-      "My current school or college",
-    ];
-    inputFields.forEach((input) => {
-      const inputField = screen.getByLabelText(input);
-      expect(inputField).toBeInTheDocument();
-      expect(inputField).toBeDisabled();
-    });
+
+    const inputField = screen.getByLabelText(input);
+    expect(inputField).toBeInTheDocument();
+    expect(inputField).toBeDisabled();
   });
 
   it("if email address is unverified, warning message is displayed", () => {
@@ -162,23 +160,13 @@ describe("EventBookingForm", () => {
     expect(updateAdditionalInformation).toHaveBeenCalledWith({ accessibilityRequirements: "Wheelchair access" });
   });
 
-  const emergencyDetails = [
-    {
-      testCase: "contact name",
-      label: /contact name/i,
-      value: "John Smith",
-      expected: { emergencyName: "John Smith" },
-    },
-    {
-      testCase: "telephone number",
-      label: /contact telephone number/i,
-      value: "0123456789",
-      expected: { emergencyNumber: "0123456789" },
-    },
-  ];
-
-  emergencyDetails.forEach(({ testCase, label, value, expected }) => {
-    it(`if user is not a teacher and event is not virtual, emergency ${testCase} is requested`, () => {
+  it.each`
+    testCase              | label                          | value           | expected
+    ${"contact name"}     | ${/contact name/i}             | ${"John Smith"} | ${{ emergencyName: "John Smith" }}
+    ${"telephone number"} | ${/contact telephone number/i} | ${"0123456789"} | ${{ emergencyNumber: "0123456789" }}
+  `(
+    "if user is not a teacher and event is not virtual, emergency $testCase is requested",
+    ({ label, value, expected }) => {
       const event = augmentEvent(mockEvent);
       setupTest({ role: "STUDENT", user: mockUser, event: { ...event, isVirtual: false } });
 
@@ -190,8 +178,8 @@ describe("EventBookingForm", () => {
       expect(element).toBeEnabled();
       fireEvent.change(element, { target: { value } });
       expect(updateAdditionalInformation).toHaveBeenCalledWith(expected);
-    });
-  });
+    },
+  );
 
   it("if event is not virtual, it displays a message to advise PII information will be deleted after 30 days", () => {
     const event = augmentEvent(mockEvent);
