@@ -4,7 +4,7 @@ import { IsaacCardDeckDTO } from "../../../IsaacApiTypes";
 import { CardDeck, Col, Container, Row } from "reactstrap";
 import classNames from "classnames";
 
-// NOTE: Currently not in use by CS. To be updated
+// NOTE: Currently not in use by CS. See ticket #212 for more details.
 interface IsaacCardDeckProps {
   doc: IsaacCardDeckDTO;
   className?: string;

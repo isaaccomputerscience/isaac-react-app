@@ -381,6 +381,10 @@ const Equality = withRouter(
               <Col md={{ size: 8, offset: 2 }} className="py-4 inequality-results">
                 <h4>LaTeX</h4>
                 <pre>${currentAttemptValue?.result?.tex}$</pre>
+                <h4>Python</h4>
+                <pre>{currentAttemptValue?.result?.python}</pre>
+                <h4>MathML</h4>
+                <pre>{currentAttemptValue?.result?.mathml}</pre>
                 <h4>Available symbols</h4>
                 <pre>{currentAttemptValue?.result?.uniqueSymbols}</pre>
                 {(segueEnvironment === "DEV" || isStaff(user)) && (

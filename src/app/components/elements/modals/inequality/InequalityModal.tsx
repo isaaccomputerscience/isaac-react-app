@@ -399,7 +399,7 @@ const InequalityMenu = React.forwardRef<HTMLDivElement, InequalityMenuProps>(
           </div>
           <div id="inequality-menu-tabs" className="menu-tabs">
             <ul>
-              {["maths"].includes(editorMode) && <InequalityMenuTab menu={"numbers"} latexTitle={"1\\, 2\\, 3"} />}
+              {editorMode === "maths" && <InequalityMenuTab menu={"numbers"} latexTitle={"1\\, 2\\, 3"} />}
               {["maths", "logic"].includes(editorMode) && (
                 <>
                   {!disableLetters && (
