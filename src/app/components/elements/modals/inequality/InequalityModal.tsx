@@ -400,18 +400,14 @@ const InequalityMenu = React.forwardRef<HTMLDivElement, InequalityMenuProps>(
           <div id="inequality-menu-tabs" className="menu-tabs">
             <ul>
               {editorMode === "maths" && <InequalityMenuTab menu={"numbers"} latexTitle={"1\\, 2\\, 3"} />}
-              {["maths", "logic"].includes(editorMode) && (
-                <>
-                  {!disableLetters && (
-                    <InequalityMenuTab
-                      menu={"letters"}
-                      subMenu={editorMode === "logic" ? "upperCaseLetters" : "lowerCaseLetters"}
-                      latexTitle={"Ab\\ \\Delta \\gamma"}
-                    />
-                  )}
-                  <InequalityMenuTab menu={"basicFunctions"} latexTitle={functionsTabLabel} />
-                </>
+              {!disableLetters && (
+                <InequalityMenuTab
+                  menu={"letters"}
+                  subMenu={editorMode === "logic" ? "upperCaseLetters" : "lowerCaseLetters"}
+                  latexTitle={"Ab\\ \\Delta \\gamma"}
+                />
               )}
+              <InequalityMenuTab menu={"basicFunctions"} latexTitle={functionsTabLabel} />
               {editorMode === "maths" && (
                 <InequalityMenuTab
                   menu={"mathsOtherFunctions"}
