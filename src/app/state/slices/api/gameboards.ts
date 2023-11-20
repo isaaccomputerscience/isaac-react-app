@@ -30,8 +30,8 @@ import { Immutable } from "immer";
 export interface AssignmentSpec {
   boardId: string;
   groups: Item<number>[];
-  dueDate?: Date;
-  scheduledStartDate?: Date;
+  dueDate?: EpochTimeStamp;
+  scheduledStartDate?: EpochTimeStamp;
   notes?: string;
 }
 
@@ -48,7 +48,7 @@ export const assignGameboard = createAsyncThunk(
 
     // TODO think about whether this can be done in the back-end too?
     if (dueDate !== undefined) {
-      dueDate?.setHours(0, 0, 0, 0);
+      new Date(dueDate).setHours(0, 0, 0, 0);
       if (dueDate.valueOf() - today.valueOf() < 0) {
         appDispatch(
           showToast({
@@ -114,9 +114,9 @@ export const assignGameboard = createAsyncThunk(
           // FIXME we *really* need to make sure that we only expect objects in Redux to contain timestamps and not
           //  full-blown Date objects, because these are what the API returns, and also serializable.
           //  Will require a medium-sized refactor.
-          creationDate: new Date().valueOf() as unknown as Date,
-          dueDate: dueDate?.valueOf() as unknown as Date | undefined,
-          scheduledStartDate: scheduledStartDate?.valueOf() as unknown as Date | undefined,
+          creationDate: new Date().valueOf(),
+          dueDate: dueDate?.valueOf(),
+          scheduledStartDate: scheduledStartDate?.valueOf(),
           notes,
         }));
       const successfulIds = newAssignments.map((a) => a.groupId);

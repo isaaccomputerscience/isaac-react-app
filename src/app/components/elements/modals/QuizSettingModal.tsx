@@ -43,7 +43,7 @@ type ControlName = "group" | "dueDate" | "feedbackMode";
 
 interface QuizSettingModalProps {
   quiz: ContentSummaryDTO | IsaacQuizDTO;
-  dueDate?: Date | null;
+  dueDate?: EpochTimeStamp | null;
   feedbackMode?: QuizFeedbackMode | null;
 }
 
@@ -58,7 +58,7 @@ export function QuizSettingModal({
   const [validated, setValidated] = useState<Set<ControlName>>(new Set());
   const [submitting, setSubmitting] = useState(false);
   const [selectedGroups, setSelectedGroups] = useState<Item<number>[]>([]);
-  const [dueDate, setDueDate] = useState<Date | null>(initialDueDate ?? null);
+  const [dueDate, setDueDate] = useState<EpochTimeStamp | null>(initialDueDate ?? null);
   const [feedbackMode, setFeedbackMode] = useState<QuizFeedbackMode | null>(initialFeedbackMode ?? null);
 
   const yearRange = range(currentYear, currentYear + 5);
@@ -71,7 +71,7 @@ export function QuizSettingModal({
   }
 
   const groupInvalid = validated.has("group") && selectedGroups.length === 0;
-  const dueDateInvalid = isDefined(dueDate) && dueDate.getTime() < now.getTime();
+  const dueDateInvalid = isDefined(dueDate) && new Date(dueDate).getTime() < now.getTime();
   const feedbackModeInvalid = validated.has("feedbackMode") && feedbackMode === null;
 
   return (
@@ -118,7 +118,7 @@ export function QuizSettingModal({
           invalid={dueDateInvalid || undefined}
           value={dueDate ?? undefined}
           yearRange={yearRange}
-          onChange={(e) => setDueDate(e.target.valueAsDate)}
+          onChange={(e) => setDueDate(e.target.valueAsNumber)}
         />
         {dueDateInvalid && <small className={"pt-2 text-danger"}>Due date must be after today.</small>}
       </RS.Label>

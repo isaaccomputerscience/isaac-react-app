@@ -18,9 +18,9 @@ export const DobInput = ({ userToUpdate, setUserToUpdate, editingOtherUser }: Do
         invalid={isDefined(userToUpdate.dateOfBirth) && !isDobOverThirteen(userToUpdate.dateOfBirth)}
         id="dob-input"
         name="date-of-birth"
-        defaultValue={userToUpdate.dateOfBirth as unknown as string}
+        defaultValue={userToUpdate.dateOfBirth}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-          setUserToUpdate(Object.assign({}, userToUpdate, { dateOfBirth: event.target.valueAsDate }));
+          setUserToUpdate(Object.assign({}, userToUpdate, { dateOfBirth: parseInt(event.target.value, 10) }));
         }}
         disableDefaults
         aria-describedby="age-validation-message"

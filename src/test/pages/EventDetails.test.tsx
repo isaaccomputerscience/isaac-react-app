@@ -105,8 +105,8 @@ describe("EventDetails", () => {
   });
 
   it("shows event date and time, and message if event was in the past", async () => {
-    const startDate = new Date(new Date().setMonth(new Date().getMonth() - 2));
-    const endDate = new Date(startDate.getTime() + 2 * 60 * 60 * 1000);
+    const startDate = new Date().setMonth(new Date().getMonth() - 2);
+    const endDate = startDate + 2 * 60 * 60 * 1000;
     const pastEvent = { ...mockEvent, date: startDate, endDate: endDate };
     await setupTest({
       role: "STUDENT",
@@ -119,8 +119,8 @@ describe("EventDetails", () => {
   });
 
   it("if event is in the future, no past event warning shows", async () => {
-    const startDate = new Date(new Date().setMonth(new Date().getMonth() + 2));
-    const endDate = new Date(startDate.getTime() + 2 * 60 * 60 * 1000);
+    const startDate = new Date().setMonth(new Date().getMonth() + 2);
+    const endDate = startDate + 2 * 60 * 60 * 1000;
     const futureEvent = { ...mockEvent, date: startDate, endDate: endDate };
     await setupTest({
       role: "STUDENT",
@@ -130,7 +130,7 @@ describe("EventDetails", () => {
   });
 
   it("if booking deadline has passed, message is shown", async () => {
-    const date = new Date(new Date().setMonth(new Date().getMonth() - 2));
+    const date = new Date().setMonth(new Date().getMonth() - 2);
     const pastBookingDeadlineEvent = { ...mockEvent, bookingDeadline: date };
     await setupTest({
       role: "STUDENT",
