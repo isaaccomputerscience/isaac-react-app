@@ -115,8 +115,8 @@ export const assignGameboard = createAsyncThunk(
           //  full-blown Date objects, because these are what the API returns, and also serializable.
           //  Will require a medium-sized refactor.
           creationDate: new Date().valueOf(),
-          dueDate: dueDate?.valueOf(),
-          scheduledStartDate: scheduledStartDate?.valueOf(),
+          dueDate: dueDate,
+          scheduledStartDate: scheduledStartDate,
           notes,
         }));
       const successfulIds = newAssignments.map((a) => a.groupId);
