@@ -36,10 +36,9 @@ export const RegistrationDobInput = ({
           invalid={dobTooYoung || (attemptedSignUp && !confirmedOverThirteen)}
           disableDefaults
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            console.log(event.target.value);
             setUserToUpdate({
               ...userToUpdate,
-              dateOfBirth: event.target.value !== null ? parseInt(event.target.value, 10) : undefined,
+              dateOfBirth: event.target.value ? parseInt(event.target.value, 10) : undefined,
             });
             // DOB takes priority over age confirmation
             setDobOver13CheckboxChecked(false);

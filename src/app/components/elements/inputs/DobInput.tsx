@@ -20,7 +20,11 @@ export const DobInput = ({ userToUpdate, setUserToUpdate, editingOtherUser }: Do
         name="date-of-birth"
         defaultValue={userToUpdate.dateOfBirth}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-          setUserToUpdate(Object.assign({}, userToUpdate, { dateOfBirth: parseInt(event.target.value, 10) }));
+          setUserToUpdate(
+            Object.assign({}, userToUpdate, {
+              dateOfBirth: event.target.value ? parseInt(event.target.value, 10) : undefined,
+            }),
+          );
         }}
         disableDefaults
         aria-describedby="age-validation-message"

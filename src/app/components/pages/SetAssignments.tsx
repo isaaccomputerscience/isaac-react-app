@@ -144,9 +144,8 @@ const AssignGroup = ({ groups, board, allowScheduling }: AssignGroupProps) => {
           value={dueDate}
           placeholder="Select your due date..."
           yearRange={yearRange}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => setDueDate(e.target.valueAsNumber)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setDueDate(parseInt(e.target.value, 10))}
         />{" "}
-        {/* DANGER here with force-casting Date|null to Date */}
         {dueDateInvalid && <small className={"pt-2 text-danger"}>Due date must be on or after start date.</small>}
       </Label>
       {isStaff(user) && (
