@@ -48,8 +48,8 @@ export const assignGameboard = createAsyncThunk(
 
     // TODO think about whether this can be done in the back-end too?
     if (dueDate !== undefined) {
-      new Date(dueDate).setHours(0, 0, 0, 0);
-      if (dueDate.valueOf() - today.valueOf() < 0) {
+      const modifiedDueDate = new Date(dueDate).setHours(0, 0, 0, 0);
+      if (modifiedDueDate - today.valueOf() < 0) {
         appDispatch(
           showToast({
             color: "danger",
@@ -78,7 +78,7 @@ export const assignGameboard = createAsyncThunk(
     }
 
     if (dueDate !== undefined && scheduledStartDate !== undefined) {
-      if (nthHourOf(0, scheduledStartDate).valueOf() > dueDate.valueOf()) {
+      if (nthHourOf(0, scheduledStartDate).valueOf() > dueDate) {
         appDispatch(
           showToast({
             color: "danger",
