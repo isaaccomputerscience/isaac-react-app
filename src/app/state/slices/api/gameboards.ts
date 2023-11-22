@@ -111,9 +111,6 @@ export const assignGameboard = createAsyncThunk(
           groupId: a.groupId,
           gameboardId: boardId,
           groupName: groupLookUp.get(a.groupId),
-          // FIXME we *really* need to make sure that we only expect objects in Redux to contain timestamps and not
-          //  full-blown Date objects, because these are what the API returns, and also serializable.
-          //  Will require a medium-sized refactor.
           creationDate: new Date().valueOf(),
           dueDate: dueDate,
           scheduledStartDate: scheduledStartDate,
