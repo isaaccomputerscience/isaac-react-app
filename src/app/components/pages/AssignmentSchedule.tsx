@@ -430,7 +430,9 @@ const AssignmentModal = ({ user, showAssignmentModal, toggleAssignModal, assignm
             value={scheduledStartDate}
             placeholder="Select your scheduled start date..."
             yearRange={yearRange}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setScheduledStartDate(parseInt(e.target.value, 10))}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              e.target.value && setScheduledStartDate(parseInt(e.target.value, 10))
+            }
           />
         </Label>
         <Label className="w-100 pb-2">
@@ -439,7 +441,7 @@ const AssignmentModal = ({ user, showAssignmentModal, toggleAssignModal, assignm
             value={dueDate}
             placeholder="Select your due date..."
             yearRange={yearRange}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setDueDate(parseInt(e.target.value, 10))}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => e.target.value && setDueDate(parseInt(e.target.value, 10))}
           />
           {dueDateInvalid && <small className={"pt-2 text-danger"}>Due date must be on or after start date.</small>}
         </Label>

@@ -118,7 +118,7 @@ export function QuizSettingModal({
           invalid={dueDateInvalid || undefined}
           value={dueDate ?? undefined}
           yearRange={yearRange}
-          onChange={(e) => setDueDate(parseInt(e.target.value, 10))}
+          onChange={(e) => (e.target.value ? setDueDate(parseInt(e.target.value, 10)) : setDueDate(null))}
         />
         {dueDateInvalid && <small className={"pt-2 text-danger"}>Due date must be after today.</small>}
       </RS.Label>

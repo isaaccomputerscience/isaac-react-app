@@ -154,7 +154,7 @@ export const QuizTeacherFeedback = ({ user }: { user: RegisteredUserDTO }) => {
                       invalid={dueDate ? dueDate < assignment.dueDate : undefined}
                       yearRange={yearRange}
                       noClear
-                      onChange={(e) => setDueDate(parseInt(e.target.value, 10))}
+                      onChange={(e) => e.target.value && setDueDate(parseInt(e.target.value, 10))}
                     />
                   </Label>
                   <div className={"mt-2 w-100 text-center mb-2"}>
