@@ -44,12 +44,11 @@ export const assignGameboard = createAsyncThunk(
       return rejectWithValue(null);
     }
 
-    const today = TODAY();
-
     // TODO think about whether this can be done in the back-end too?
     if (dueDate !== undefined) {
-      const modifiedDueDate = new Date(dueDate).setHours(0, 0, 0, 0);
-      if (modifiedDueDate - today.valueOf() < 0) {
+      const startOfDayDueDate = new Date(dueDate).setHours(0, 0, 0, 0);
+      const dueDateInPast = startOfDayDueDate - TODAY().valueOf() < 0;
+      if (dueDateInPast) {
         appDispatch(
           showToast({
             color: "danger",
