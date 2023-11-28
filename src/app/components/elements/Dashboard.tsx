@@ -6,6 +6,7 @@ import { TeacherPromoItem } from "./TeacherPromoItem";
 import { FeaturedNewsItem } from "./FeaturedNewsItem";
 import { IsaacPodDTO } from "../../../IsaacApiTypes";
 import { defaultPlaceholder } from "../handlers/ShowLoading";
+import QuestionCard from "./cards/QuestionCard";
 
 export const Dashboard = ({
   featuredNewsItem,
@@ -15,7 +16,7 @@ export const Dashboard = ({
   promoItem?: IsaacPodDTO | undefined;
 }) => {
   const user = useAppSelector(selectors.user.orNull);
-
+  const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -69,15 +70,20 @@ export const Dashboard = ({
   );
 
   const loggedInContent = (
-    <Row className="pt-4">
-      <Col md="12" lg="5" className={"pt-lg-4"}>
-        <Container className={"mb-4"}>
-          <h1 id="homepageName">Welcome {user?.loggedIn && user.givenName}</h1>
-        </Container>
-        <ShowMeButtons className={"pt-xl-2"} />
-        {/*<img id="homepageHeroImg" className="img-fluid" alt="Three Computer Science students studying with two laptops, one with code on the screen" src="/assets/ics_hero.svg" />*/}
+    <Row className="py-4">
+      {!expanded && (
+        <Col md="12" lg="5" className={"pt-lg-4"}>
+          <Container className={"mb-4"}>
+            <h1 id="homepageName">Welcome {user?.loggedIn && user.givenName}</h1>
+          </Container>
+          <ShowMeButtons className={"pt-xl-2"} />
+          {/*<img id="homepageHeroImg" className="img-fluid" alt="Three Computer Science students studying with two laptops, one with code on the screen" src="/assets/ics_hero.svg" />*/}
+        </Col>
+      )}
+      {/* <PromoOrFeaturedNews contentType={user?.loggedIn && user.role === "TEACHER" && promoItem ? "promo" : "news"} /> */}
+      <Col>
+        <QuestionCard setExpanded={setExpanded} />
       </Col>
-      <PromoOrFeaturedNews contentType={user?.loggedIn && user.role === "TEACHER" && promoItem ? "promo" : "news"} />
     </Row>
   );
 

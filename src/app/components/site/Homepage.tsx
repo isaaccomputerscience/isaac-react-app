@@ -88,11 +88,11 @@ export const Homepage = () => {
         <section id="news">
           <Container
             className={classNames("pt-4 pb-5", {
-              "mt-lg-n5 pt-lg-0": user?.loggedIn ?? false,
+              "mt-n5 pt-lg-0": user?.loggedIn ?? false,
             })}
           >
-            <div data-testid={"news-carousel"} className="eventList pt-5 pattern-03-reverse">
-              <h2 className="h-title mb-4">News</h2>
+            <div data-testid={"news-carousel"} className="eventList pt-3 pt-md-5 pattern-03-reverse">
+              <h2 className="h-title mb-4 pt-lg-3">News</h2>
               {user?.loggedIn && user.role !== "TEACHER" && (
                 <div className="d-block d-lg-none mb-4 mb-lg-0">
                   <FeaturedNewsItem item={featuredNewsItem} />
