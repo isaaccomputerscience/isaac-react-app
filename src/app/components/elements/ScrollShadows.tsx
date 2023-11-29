@@ -47,10 +47,12 @@ export const ScrollShadows = <T extends HTMLElement>({ element }: { element: T |
   useEffect(() => {
     if (!element) return;
     const resizeObserver = new ResizeObserver((entries) => {
-      const element = entries[0].target;
-      setClientWidth(element.clientWidth);
-      setScrollWidth(element.scrollWidth);
-      setScrollLeft(element.scrollLeft);
+      setTimeout(() => {
+        const element = entries[0].target;
+        setClientWidth(element.clientWidth);
+        setScrollWidth(element.scrollWidth);
+        setScrollLeft(element.scrollLeft);
+      }, 0);
     });
     resizeObserver.observe(element);
     return () => resizeObserver.disconnect();
