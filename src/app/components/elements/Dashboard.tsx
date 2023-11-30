@@ -7,6 +7,7 @@ import { FeaturedNewsItem } from "./FeaturedNewsItem";
 import { IsaacPodDTO } from "../../../IsaacApiTypes";
 import { defaultPlaceholder } from "../handlers/ShowLoading";
 import QuestionCard from "./cards/QuestionCard";
+import { isTeacherOrAbove } from "../../services";
 
 export const Dashboard = ({
   featuredNewsItem,
@@ -77,13 +78,15 @@ export const Dashboard = ({
             <h1 id="homepageName">Welcome {user?.loggedIn && user.givenName}</h1>
           </Container>
           <ShowMeButtons className={"pt-xl-2"} />
-          {/*<img id="homepageHeroImg" className="img-fluid" alt="Three Computer Science students studying with two laptops, one with code on the screen" src="/assets/ics_hero.svg" />*/}
         </Col>
       )}
-      {/* <PromoOrFeaturedNews contentType={user?.loggedIn && user.role === "TEACHER" && promoItem ? "promo" : "news"} /> */}
-      <Col>
-        <QuestionCard setExpanded={setExpanded} />
-      </Col>
+      {isTeacherOrAbove(user) ? (
+        <PromoOrFeaturedNews contentType={promoItem ? "promo" : "news"} />
+      ) : (
+        <Col>
+          <QuestionCard setExpanded={setExpanded} />
+        </Col>
+      )}
     </Row>
   );
 
