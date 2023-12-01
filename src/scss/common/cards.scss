@@ -73,6 +73,10 @@
   font-family: $secondary-font !important;
 }
 
+.random-question-panel.isaac-expand-bg {
+  overflow: hidden;
+}
+
 .random-question-panel {
   @include media-breakpoint-up(sm) {
     max-width: 750px;

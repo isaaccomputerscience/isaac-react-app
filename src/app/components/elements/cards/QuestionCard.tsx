@@ -643,12 +643,12 @@ const QuestionCard = ({ setExpanded }: { setExpanded: (expanded: boolean) => voi
         )}
       </Row>
       <Card
-        ref={updateExpandRef}
         className={classnames(outerClasses, expanded ? "random-question-panel" : "mt-2 pb-2")}
         style={expanded ? { maxHeight: "560px" } : { maxHeight: "450px" }}
       >
         <CardBody className="p-3">
           <div
+            ref={updateExpandRef}
             style={expanded ? { maxHeight: "500px" } : { maxHeight: "400px" }}
             className="overflow-auto hidden-scrollbar"
           >
