@@ -9,13 +9,11 @@ import { ManageExistingBookings } from "../elements/panels/ManageExistingBooking
 import { AddUsersToBooking } from "../elements/panels/AddUsersToBooking";
 import { EventAttendance } from "../elements/panels/EventAttendance";
 
-const EventButton = ({ link, text }: { link: string; text: string }) => {
-  return (
-    <RS.Button color="primary" size="md" href={link} className="mx-3" target="_blank" rel="noopener noreferrer">
-      {text}
-    </RS.Button>
-  );
-};
+const EventButton = ({ link, text }: { link: string; text: string }) => (
+  <RS.Button color="primary" size="md" href={link} className="mx-3" target="_blank" rel="noopener noreferrer">
+    {text}
+  </RS.Button>
+);
 
 export const EventManager = ({ user }: { user: PotentialUser }) => {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);

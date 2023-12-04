@@ -7,9 +7,9 @@ import { UserRole } from "../../IsaacApiTypes";
 import { screen } from "@testing-library/react";
 
 describe("Event Manager", () => {
-  const renderEventManager = ({ role }: { role?: UserRole } = {}) => {
+  const renderEventManager = ({ role = "EVENT_MANAGER" }: { role?: UserRole } = {}) => {
     renderTestEnvironment({
-      role: role || "EVENT_MANAGER",
+      role: role,
       PageComponent: EventManager,
       initialRouteEntries: ["/admin/events"],
       extraEndpoints: [
@@ -17,7 +17,7 @@ describe("Event Manager", () => {
           return res(ctx.status(200), ctx.json(mockFutureEventOverviews));
         }),
       ],
-      componentProps: { user: { ...mockUser, role: role || "EVENT_MANAGER" } },
+      componentProps: { user: { ...mockUser, role: role } },
     });
   };
 
