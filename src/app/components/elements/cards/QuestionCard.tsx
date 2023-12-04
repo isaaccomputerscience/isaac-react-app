@@ -648,6 +648,7 @@ const QuestionCard = ({ setExpanded }: { setExpanded: (expanded: boolean) => voi
       >
         <CardBody className="p-3">
           <div
+            id="question-content"
             ref={updateExpandRef}
             style={expanded ? { maxHeight: "500px" } : { maxHeight: "400px" }}
             className="overflow-auto hidden-scrollbar"
