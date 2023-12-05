@@ -19,8 +19,8 @@ import { registrationMockUser, registrationUserData } from "../../mocks/data";
 const registerUserSpy = jest.spyOn(actions, "registerUser");
 const upgradeAccountSpy = jest.spyOn(actions, "upgradeAccount");
 
-const clickThroughOptions = async () => {
-  await clickButton("Yes I am a teacher");
+const confirmTeacherAndAcceptTerms = async () => {
+  await clickButton("Yes, I am a teacher");
   await clickButton("Continue to a teacher account");
 };
 
@@ -33,10 +33,10 @@ describe("Teacher Registration", () => {
     });
   };
 
-  it("it displays teacher confirmation screen, then teacher conditions, then registration form", async () => {
+  it("should display teacher confirmation screen, then teacher conditions, then registration form", async () => {
     renderTeacherRegistration();
     checkPageTitle("Are you a teacher?");
-    await clickButton("Yes I am a teacher");
+    await clickButton("Yes, I am a teacher");
     checkPageTitle("Conditions for Teacher accounts");
     await clickButton("Continue to a teacher account");
     checkPageTitle("Register as a teacher");
@@ -51,14 +51,14 @@ describe("Teacher Registration", () => {
     await userEvent.click(radioButton);
     await clickButton("Continue");
     checkPageTitle("Are you a teacher?");
-    const notTeacherButton = screen.getByRole("link", { name: /no I am a student/i });
+    const notTeacherButton = screen.getByRole("link", { name: /no, I am a student/i });
     await userEvent.click(notTeacherButton);
     checkPageTitle("Register as a student");
   });
 
-  it("On teacher registration page all expected fields are present and only teacher options are available", async () => {
+  it("displays all expected fields and only teacher options are available", async () => {
     renderTeacherRegistration();
-    await clickThroughOptions();
+    await confirmTeacherAndAcceptTerms();
     const form = await screen.findByRole("form");
     const formFields = getFormFields();
     const {
@@ -111,9 +111,9 @@ describe("Teacher Registration", () => {
     expect(allOption).toBeInTheDocument();
   });
 
-  it("If fields are filled in wrong, various error messages are displayed", async () => {
+  it("displays error messages if fields are filled in wrong", async () => {
     renderTeacherRegistration();
-    await clickThroughOptions();
+    await confirmTeacherAndAcceptTerms();
     await fillFormCorrectly(false, "teacher");
     const formFields = getFormFields();
     const { password, confirmPassword, submitButton, stage, noSchool, email } = formFields;
@@ -143,7 +143,7 @@ describe("Teacher Registration", () => {
     expect(generalError).toBeVisible();
   });
 
-  it("If fields are filled in correctly, pressing submit will attempt to create a user, and submit an account upgrade request", async () => {
+  it("attempts to create a user and submits an account upgrade request if fields are filled in correctly and submit button is pressed", async () => {
     renderTestEnvironment({
       role: "ANONYMOUS",
       PageComponent: TeacherRegistration,
@@ -157,7 +157,7 @@ describe("Teacher Registration", () => {
         }),
       ],
     });
-    await clickThroughOptions();
+    await confirmTeacherAndAcceptTerms();
     await fillFormCorrectly(true, "teacher");
     const formFields = getFormFields();
     const { submitButton } = formFields;

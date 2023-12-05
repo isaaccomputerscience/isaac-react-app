@@ -42,10 +42,10 @@ const AreYouATeacher = ({ onTeacherConfirmed }: { onTeacherConfirmed: () => void
         </p>
         <div className="text-center mb-1 mt-4">
           <Button onClick={() => onTeacherConfirmed()} className="m-2 m-lg-4 btn btn-success border-0">
-            Yes I am a teacher
+            Yes, I am a teacher
           </Button>
           <Link to="/register/student">
-            <Button className="m-2 m-lg-4 btn btn-danger border-0">No I am a student</Button>
+            <Button className="m-2 m-lg-4 btn btn-danger border-0">No, I am a student</Button>
           </Link>
         </div>
       </Col>
@@ -136,7 +136,7 @@ const TeacherRegistrationTerms = ({ acceptConditions }: { acceptConditions: () =
 };
 
 // TODO: useLocation hook to retrieve email/password when upgrading react router to v6+
-export const TeacherRegistrationForm = () => {
+const TeacherRegistrationForm = () => {
   const user = useAppSelector(selectors.user.orNull);
   const errorMessage = useAppSelector(selectors.error.general);
   const { register, attemptedSignUp } = useRegistration({ isTeacher: true });
