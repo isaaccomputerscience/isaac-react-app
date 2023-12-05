@@ -328,16 +328,14 @@ export const TeacherRegistrationBody = () => {
 };
 
 export const TeacherRegistration = () => {
-  const [confirmTeacher, setConfirmTeacher] = useState(false);
-  const [conditionsAccepted, setConditionsAccepted] = useState(false);
+  const [registrationStep, setRegistrationStep] = useState(0);
 
-  return confirmTeacher ? (
-    conditionsAccepted ? (
-      <TeacherRegistrationBody />
-    ) : (
-      <TeacherRegistrationTerms acceptConditions={setConditionsAccepted} />
-    )
-  ) : (
-    <AreYouATeacher confirmTeacher={setConfirmTeacher} />
-  );
+  switch (registrationStep) {
+    case 1:
+      return <TeacherRegistrationTerms acceptConditions={() => setRegistrationStep(2)} />;
+    case 2:
+      return <TeacherRegistrationBody />;
+    default:
+      return <AreYouATeacher confirmTeacher={() => setRegistrationStep(1)} />;
+  }
 };
