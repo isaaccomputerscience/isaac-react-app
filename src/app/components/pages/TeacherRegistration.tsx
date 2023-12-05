@@ -21,9 +21,37 @@ import useRegistration from "../hooks/useRegistration";
 import { RegistrationSubmit } from "../elements/inputs/RegistrationSubmit";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Recaptcha } from "../elements/inputs/Recaptcha";
+import { Link } from "react-router-dom";
 
 const metaDescriptionCS =
   "Sign up for a free account and get powerful GCSE and A Level Computer Science resources and questions. For classwork, homework, and revision.";
+
+export const AreYouATeacher = ({ confirmTeacher }: { confirmTeacher: (arg0: boolean) => void }) => {
+  return (
+    <Container id="confirm-teacher" className="mb-5">
+      <TitleAndBreadcrumb
+        currentPageTitle="Are you a Teacher?"
+        breadcrumbTitleOverride="Teacher"
+        intermediateCrumbs={[REGISTER_CRUMB]}
+        className="mb-4"
+      />
+      <Col>
+        <p className="mt-5 mx-auto col-lg-10">
+          You will be required to provide evidence of being a teacher before your teacher account will be activated. If
+          you are not listed on your school&apos;s website we will be required to contact your school directly.
+        </p>
+        <div className="text-center mb-1 mt-4">
+          <Button onClick={() => confirmTeacher(true)} className="m-2 m-lg-4 btn btn-success border-0">
+            Yes I am a teacher
+          </Button>
+          <Link to="/register/student">
+            <Button className="m-2 m-lg-4 btn btn-danger border-0">No I am a student</Button>
+          </Link>
+        </div>
+      </Col>
+    </Container>
+  );
+};
 
 export const TeacherRegistrationTerms = ({ acceptConditions }: { acceptConditions: (arg0: boolean) => void }) => {
   return (
@@ -300,11 +328,16 @@ export const TeacherRegistrationBody = () => {
 };
 
 export const TeacherRegistration = () => {
+  const [confirmTeacher, setConfirmTeacher] = useState(false);
   const [conditionsAccepted, setConditionsAccepted] = useState(false);
 
-  return conditionsAccepted ? (
-    <TeacherRegistrationBody />
+  return confirmTeacher ? (
+    conditionsAccepted ? (
+      <TeacherRegistrationBody />
+    ) : (
+      <TeacherRegistrationTerms acceptConditions={setConditionsAccepted} />
+    )
   ) : (
-    <TeacherRegistrationTerms acceptConditions={setConditionsAccepted} />
+    <AreYouATeacher confirmTeacher={setConfirmTeacher} />
   );
 };
