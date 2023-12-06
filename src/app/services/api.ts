@@ -303,6 +303,9 @@ export const api = {
     testFreeTextQuestion: (userDefinedChoices: Choice[], testCases: TestCaseDTO[]) => {
       return endpoint.post("/questions/test?type=isaacFreeTextQuestion", { userDefinedChoices, testCases });
     },
+    randomQuestions: (): AxiosPromise<{ results: ApiTypes.IsaacQuestionPageDTO[]; totalResults: number }> => {
+      return endpoint.get("/questions/randomQuestions");
+    },
   },
   concepts: {
     list: (conceptIds?: string, tagIds?: string): AxiosPromise<Concepts> => {

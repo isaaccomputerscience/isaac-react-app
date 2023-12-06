@@ -83,7 +83,7 @@ export const Dashboard = ({
       {isTeacherOrAbove(user) ? (
         <PromoOrFeaturedNews contentType={promoItem ? "promo" : "news"} />
       ) : (
-        <Col>
+        <Col md="12" lg="7">
           <QuestionCard setExpanded={setExpanded} />
         </Col>
       )}
