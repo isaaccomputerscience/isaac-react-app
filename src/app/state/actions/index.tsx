@@ -1020,7 +1020,7 @@ export const getRandomQuestions = () => async (dispatch: Dispatch<Action>) => {
     const randomQuestions = await api.questions.randomQuestions();
     dispatch({
       type: ACTION_TYPE.QUESTION_RANDOM_QUESTIONS_RESPONSE_SUCCESS,
-      randomQuestions: randomQuestions.data.results,
+      randomQuestions: randomQuestions.data,
     });
   } catch (e) {
     dispatch({ type: ACTION_TYPE.QUESTION_RANDOM_QUESTIONS_RESPONSE_FAILURE });

@@ -4,9 +4,9 @@ import { useStatefulElementRef } from "../markup/portals/utils";
 import { Button, Card, CardBody, Row } from "reactstrap";
 import classnames from "classnames";
 import { IsaacContent } from "../../content/IsaacContent";
-import { getRandomQuestions, selectors, useAppDispatch, useAppSelector } from "../../../state";
+import { IsaacQuestionPageDTO } from "../../../../IsaacApiTypes";
 
-const goToQuestionFinder = (
+const GoToQuestionFinder = () => (
   <>
     <h2>All done! Want more questions?</h2>
     <Row className="w-75 mx-auto mt-5 mb-3">
@@ -16,26 +16,20 @@ const goToQuestionFinder = (
     </Row>
   </>
 );
+interface QuestionCardProps {
+  setExpanded: (expanded: boolean) => void;
+  questionData: IsaacQuestionPageDTO[];
+}
 
-const QuestionCard = ({ setExpanded }: { setExpanded: (expanded: boolean) => void }) => {
+const QuestionCard = ({ setExpanded, questionData }: QuestionCardProps) => {
   const [expandRef, updateExpandRef] = useStatefulElementRef<HTMLDivElement>();
   const { expandButton, outerClasses, expanded } = useExpandContent(true, expandRef);
   const [question, setQuestion] = useState<number>(0);
-  const questionData = useAppSelector(selectors.questions.randomQuestions);
-  const isMoreQuestions = question < 5 && questionData != null;
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(getRandomQuestions());
-  }, [dispatch]);
+  const isMoreQuestions = question < 5;
 
   useEffect(() => {
     setExpanded(expanded);
   }, [expanded, setExpanded]);
-
-  useEffect(() => {
-    console.log(questionData);
-  }, [questionData]);
 
   return (
     <div className={!expanded ? "question-tile" : ""}>
@@ -58,7 +52,7 @@ const QuestionCard = ({ setExpanded }: { setExpanded: (expanded: boolean) => voi
             style={expanded ? { maxHeight: "500px" } : { maxHeight: "400px" }}
             className="overflow-auto hidden-scrollbar"
           >
-            {isMoreQuestions ? <IsaacContent doc={questionData[question]} /> : goToQuestionFinder}
+            {isMoreQuestions ? <IsaacContent doc={questionData[question]} /> : <GoToQuestionFinder />}
           </div>
           {expanded ? expandButton : isMoreQuestions && expandButton}
         </CardBody>

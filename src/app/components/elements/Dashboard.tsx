@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button, Col, Container, Row } from "reactstrap";
-import { selectors, useAppSelector } from "../../state";
+import { getRandomQuestions, selectors, useAppDispatch, useAppSelector } from "../../state";
 import { TeacherPromoItem } from "./TeacherPromoItem";
 import { FeaturedNewsItem } from "./FeaturedNewsItem";
 import { IsaacPodDTO } from "../../../IsaacApiTypes";
-import { defaultPlaceholder } from "../handlers/ShowLoading";
+import { ShowLoading, defaultPlaceholder } from "../handlers/ShowLoading";
 import QuestionCard from "./cards/QuestionCard";
-import { isTeacherOrAbove } from "../../services";
+import { isStudent, isTeacherOrAbove } from "../../services";
 
 export const Dashboard = ({
   featuredNewsItem,
@@ -20,11 +20,17 @@ export const Dashboard = ({
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const dispatch = useAppDispatch();
+  const questionData = useAppSelector(selectors.questions.randomQuestions);
+
   useEffect(() => {
     if (user !== null) {
       setLoading(false);
     }
-  }, [user]);
+    if (isStudent(user)) {
+      dispatch(getRandomQuestions());
+    }
+  }, [dispatch, user]);
 
   const PromoOrFeaturedNews = ({ contentType }: { contentType: "promo" | "news" }) => {
     const { dataTestId, className, content } = {
@@ -83,9 +89,15 @@ export const Dashboard = ({
       {isTeacherOrAbove(user) ? (
         <PromoOrFeaturedNews contentType={promoItem ? "promo" : "news"} />
       ) : (
-        <Col md="12" lg="7">
-          <QuestionCard setExpanded={setExpanded} />
-        </Col>
+        <ShowLoading
+          until={questionData}
+          thenRender={(questionData) => (
+            <Col md="12" lg={expanded ? "12" : "7"}>
+              <QuestionCard setExpanded={setExpanded} questionData={questionData} />
+            </Col>
+          )}
+          placeholder={<PromoOrFeaturedNews contentType="news" />}
+        />
       )}
     </Row>
   );
