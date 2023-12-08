@@ -86,7 +86,7 @@ const TeacherRegistrationTerms = ({ acceptConditions }: { acceptConditions: () =
         <li>
           If your school&apos;s website does not feature a staff list, we will ask your school to confirm that you are a
           staff member by sending an email to{" "}
-          <a href="mailto:contact@isaaccomputerscience.org">contact@isaaccomputerscience.org</a>
+          <a href="mailto:contact@isaaccomputerscience.org">contact@isaaccomputerscience.org</a>.
         </li>
       </ul>
       <p>
