@@ -24,6 +24,7 @@ import {
 } from "../../services";
 import { RenderNothing } from "../elements/RenderNothing";
 import { MetaDescription } from "../elements/MetaDescription";
+import { FeaturedContentTabs } from "../elements/FeaturedContentTabs";
 
 interface EventsPageQueryParams {
   show_booked_only?: boolean;
@@ -67,7 +68,7 @@ export const Events = withRouter(({ history, location }: RouteComponentProps) =>
   return (
     <div>
       <RS.Container>
-        <TitleAndBreadcrumb currentPageTitle={"Events"} help={pageHelp} />
+        <TitleAndBreadcrumb currentPageTitle={"Events"} subTitle="Student Events" help={pageHelp} />
         <MetaDescription description={metaDescriptionCS} />
         <div className="my-4">
           {/* Filters */}
@@ -189,6 +190,13 @@ export const Events = withRouter(({ history, location }: RouteComponentProps) =>
           />
           <div className="mb-5">
             <PageFragment fragmentId="event_type_descriptions" ifNotFound={RenderNothing} />
+          </div>
+          <div className="mb-5">
+            <section id="teacher-courses" className="row bg-primary pattern-05">
+              <RS.Col className="py-5 pb-md-0">
+                <FeaturedContentTabs />
+              </RS.Col>
+            </section>
           </div>
         </div>
       </RS.Container>
