@@ -93,7 +93,7 @@ export const Dashboard = ({
           until={questionData}
           thenRender={(questionData) => (
             <Col md="12" lg={expanded ? "12" : "7"}>
-              <QuestionCard setExpanded={setExpanded} questionData={questionData} />
+              {questionData && <QuestionCard setExpanded={setExpanded} questionData={questionData} />}
             </Col>
           )}
           ifNotFound={<PromoOrFeaturedNews contentType="news" />}
