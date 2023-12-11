@@ -7,7 +7,6 @@ import { WhySignUpTabs } from "../elements/WhySignUpTabs";
 import { NewsCarousel } from "../elements/NewsCarousel";
 import { FeaturedContentTabs } from "../elements/FeaturedContentTabs";
 import { EventsCarousel } from "../elements/EventsCarousel";
-import { FeaturedNewsItem } from "../elements/FeaturedNewsItem";
 import classNames from "classnames";
 import { PromoContent } from "../elements/PromoContent";
 import { ShowLoading } from "../handlers/ShowLoading";
@@ -84,11 +83,6 @@ export const Homepage = () => {
           >
             <div data-testid={"news-carousel"} className="eventList pt-3 pt-md-5 pattern-03-reverse">
               <h2 className="h-title mb-4 pt-lg-3">News</h2>
-              {user?.loggedIn && user.role !== "TEACHER" && (
-                <div className="d-block d-lg-none mb-4 mb-lg-0">
-                  <FeaturedNewsItem item={featuredNewsItem} />
-                </div>
-              )}
               <NewsCarousel items={carouselNewsItems} />
             </div>
           </Container>

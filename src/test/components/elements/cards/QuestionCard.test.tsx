@@ -55,12 +55,14 @@ describe("QuestionCard", () => {
     expect(question).toBeInTheDocument();
   });
 
-  it("offers a link to the question finder if next question button has been pressed 5 times", async () => {
+  it("shows link to the question finder if next question button has been pressed 5 times, and next question button is then gone", async () => {
     await setupTest();
     for (let i = 0; i < 5; i++) {
       await clickButton("Next question");
     }
     const questionFinder = screen.getByRole("link", { name: "Go to Question Finder" });
     expect(questionFinder).toHaveAttribute("href", "/gameboards/new");
+    const nextQuestion = screen.queryByText("Next question");
+    expect(nextQuestion).toBeNull();
   });
 });
