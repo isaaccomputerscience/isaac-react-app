@@ -62,7 +62,7 @@ export const useExpandContent = (expandable: boolean, el?: HTMLElement, unexpand
   const expandableParent = useContext(ExpandableParentContext);
   const deviceSize = useDeviceSize();
 
-  const shouldNotApplyExpandBgClass = el?.id.includes("question-content");
+  const shouldNotApplyExpandBgClass = el?.id.includes("question-body");
 
   const show = expandable && !isMobile() && above["sm"](deviceSize) && !expandableParent;
 

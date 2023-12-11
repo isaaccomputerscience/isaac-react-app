@@ -96,7 +96,7 @@ export const Dashboard = ({
               <QuestionCard setExpanded={setExpanded} questionData={questionData} />
             </Col>
           )}
-          placeholder={<PromoOrFeaturedNews contentType="news" />}
+          ifNotFound={<PromoOrFeaturedNews contentType="news" />}
         />
       )}
     </Row>

@@ -20,7 +20,7 @@ describe("Dashboard", () => {
     });
   };
 
-  it("if no user is logged in, logged out content is shown", async () => {
+  it("shows logged out content if no user is logged in", async () => {
     setupTest("ANONYMOUS");
     const loggedOutTitle = await screen.findByRole("heading", {
       name: /computer science learning/i,
@@ -32,18 +32,23 @@ describe("Dashboard", () => {
     expect(promoTile).toBeNull();
   });
 
-  it("if TEACHER user is logged in and promo item is available, the promo tile is visible, and featured news tile is not", async () => {
-    setupTest("TEACHER");
-    const promoTile = await screen.findByTestId("promo-tile");
-    const featuredNewsTile = screen.queryByTestId("featured-news-item");
-    expect(promoTile).toBeInTheDocument();
-    expect(featuredNewsTile).toBeNull();
-    const promoTitle = screen.getByText(mockPromoItem.title);
-    expect(promoTitle).toBeInTheDocument();
-  });
+  let roles: TestUserRole[] = ["TEACHER", "EVENT_LEADER", "CONTENT_EDITOR", "EVENT_MANAGER", "ADMIN"];
 
-  it("if TEACHER user is logged in, but promo item is not available, featured news will appear instead", async () => {
-    setupTest("TEACHER", {
+  it.each(roles)(
+    "promo tile is visible, and featured news tile is not, if %s user is logged in and promo item is available",
+    async (role) => {
+      setupTest(role);
+      const promoTile = await screen.findByTestId("promo-tile");
+      const featuredNewsTile = screen.queryByTestId("featured-news-item");
+      expect(promoTile).toBeInTheDocument();
+      expect(featuredNewsTile).toBeNull();
+      const promoTitle = screen.getByText(mockPromoItem.title);
+      expect(promoTitle).toBeInTheDocument();
+    },
+  );
+
+  it.each(roles)("featured news will appear instead if promo item is not available, for %s user", async (role) => {
+    setupTest(role, {
       promoItem: null,
     });
     const featuredNewsTile = await screen.findByTestId("featured-news-item");
@@ -54,22 +59,22 @@ describe("Dashboard", () => {
     expect(featuredNewsTitle).toBeInTheDocument();
   });
 
-  let roles: TestUserRole[] = ["STUDENT", "TUTOR", "EVENT_LEADER", "CONTENT_EDITOR", "EVENT_MANAGER", "ADMIN"];
-
-  it.each(roles)("if %s user is logged in, featured news tile is displayed, and no promo", async (role) => {
+  it.each(roles)("displays promo tile for %s user, not featured news or question tile", async (role) => {
     setupTest(role);
-    const featuredNewsTile = await screen.findByTestId("featured-news-item");
-    const promoTile = screen.queryByTestId("promo-tile");
-    expect(featuredNewsTile).toBeInTheDocument();
-    expect(promoTile).toBeNull();
-    const featuredNewsTitle = screen.getByText(mockFeaturedNewsItem.title);
-    expect(featuredNewsTitle).toBeInTheDocument();
+    const promoTile = await screen.findByTestId("promo-tile");
+    const featuredNewsTile = screen.queryByTestId("featured-news-item");
+    const questionTile = screen.queryByTestId("question-tile");
+    expect(promoTile).toBeInTheDocument();
+    expect(featuredNewsTile).toBeNull();
+    expect(questionTile).toBeNull();
+    const promoTitle = screen.getByText(mockPromoItem.title);
+    expect(promoTitle).toBeInTheDocument();
   });
 
-  roles = ["STUDENT", "TEACHER", "TUTOR", "EVENT_LEADER", "CONTENT_EDITOR", "EVENT_MANAGER", "ADMIN"];
+  roles = ["TEACHER", "EVENT_LEADER", "CONTENT_EDITOR", "EVENT_MANAGER", "ADMIN"];
 
   it.each(roles)(
-    "if neither promo item nor featured news item are provided, loading spinner will appear for %s users",
+    "shows loading spinner for %s users, if neither promo item nor featured news item are provided",
     async (role) => {
       setupTest(role, {
         promoItem: null,
@@ -83,4 +88,14 @@ describe("Dashboard", () => {
       });
     },
   );
+
+  it("shows question tile for students if logged in", async () => {
+    setupTest("STUDENT");
+    const questionTile = await screen.findByTestId("question-tile");
+    const promoTile = screen.queryByTestId("promo-tile");
+    const featuredNewsTile = screen.queryByTestId("featured-news-item");
+    expect(questionTile).toBeInTheDocument();
+    expect(promoTile).toBeNull();
+    expect(featuredNewsTile).toBeNull();
+  });
 });

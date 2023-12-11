@@ -32,7 +32,7 @@ const QuestionCard = ({ setExpanded, questionData }: QuestionCardProps) => {
   }, [expanded, setExpanded]);
 
   return (
-    <div className={!expanded ? "question-tile" : ""}>
+    <div className={!expanded ? "question-tile" : ""} data-testid="question-tile">
       <Row className="m-0 d-flex justify-content-between">
         <h3 className="font-weight-normal m-0 align-self-baseline">Quick question!</h3>
         {isMoreQuestions && (
@@ -43,11 +43,12 @@ const QuestionCard = ({ setExpanded, questionData }: QuestionCardProps) => {
       </Row>
       <Card
         className={classnames(outerClasses, expanded ? "random-question-panel" : "mt-2 pb-2")}
+        data-testid="question-content-card"
         style={expanded ? { maxHeight: "560px" } : { maxHeight: "450px" }}
       >
         <CardBody className="p-3">
           <div
-            id="question-content"
+            id="question-body"
             ref={updateExpandRef}
             style={expanded ? { maxHeight: "500px" } : { maxHeight: "400px" }}
             className="overflow-auto hidden-scrollbar"

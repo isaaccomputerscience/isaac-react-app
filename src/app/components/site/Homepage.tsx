@@ -12,7 +12,6 @@ import classNames from "classnames";
 import { PromoContent } from "../elements/PromoContent";
 import { ShowLoading } from "../handlers/ShowLoading";
 import { Dashboard } from "../elements/Dashboard";
-import { IsaacPodDTO } from "../../../IsaacApiTypes";
 
 export const Homepage = () => {
   useEffect(() => {
@@ -40,15 +39,7 @@ export const Homepage = () => {
 
   const featuredNewsItem = news && user?.loggedIn ? news[0] : undefined;
 
-  let carouselNewsItems: IsaacPodDTO[] = [];
-
-  if (news) {
-    if ((user?.loggedIn && user?.role === "TEACHER" && teacherPromoItem) || user?.loggedIn === false) {
-      carouselNewsItems = news;
-    } else {
-      carouselNewsItems = news.slice(1);
-    }
-  }
+  const carouselNewsItems = news;
 
   return (
     <>
