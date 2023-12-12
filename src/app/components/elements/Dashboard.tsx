@@ -6,6 +6,7 @@ import { TeacherPromoItem } from "./TeacherPromoItem";
 import { FeaturedNewsItem } from "./FeaturedNewsItem";
 import { IsaacPodDTO } from "../../../IsaacApiTypes";
 import { defaultPlaceholder } from "../handlers/ShowLoading";
+import { isTeacher } from "../../services";
 
 export const Dashboard = ({
   featuredNewsItem,
@@ -45,28 +46,59 @@ export const Dashboard = ({
     );
   };
 
-  const ShowMeButtons = ({ className }: { className?: string }) => (
-    <Container id="homepageButtons" className={`${className} ${!user?.loggedIn ? "pt-0 px-lg-0" : ""}`}>
-      <h3>Show me</h3>
-      <Row>
-        <Col xs={12} lg={user?.loggedIn ? 12 : 4} className="py-1">
-          <Button size="lg" tag={Link} to={"/topics/gcse"} color="secondary" block>
-            GCSE resources
-          </Button>
-        </Col>
-        <Col xs={12} lg={user?.loggedIn ? 12 : 4} className="py-1">
-          <Button size="lg" tag={Link} to={"/topics/a_level"} color="secondary" block>
-            A Level resources
-          </Button>
-        </Col>
-        <Col xs={12} lg={user?.loggedIn ? 12 : 4} className="py-1">
-          <Button size="lg" tag={Link} to={"/events"} color="secondary" block>
-            Events
-          </Button>
-        </Col>
-      </Row>
-    </Container>
-  );
+  const ShowMeButtons = ({ className }: { className?: string }) => {
+    const allUsersButtons = [
+      { to: "/topics/gcse", label: "GCSE resources" },
+      { to: "/topics/a_level", label: "A Level resources" },
+      { to: "/events", label: "Events" },
+    ];
+
+    const teacherButtons = [
+      { to: "https://teachcomputing.org/courses?level=Key+stage+3", label: "Key stage 3 courses" },
+      { to: "https://teachcomputing.org/courses?level=Key+stage+4", label: "Key stage 4 courses" },
+      { to: "https://teachcomputing.org/courses?level=Post+16", label: "A level courses" },
+    ];
+
+    return (
+      <Container id="homepageButtons" className={`${className} ${!user?.loggedIn ? "pt-0 px-lg-0" : ""}`}>
+        <h3>{isTeacher(user) ? "For your students" : "Show me"}</h3>
+        <Row>
+          {allUsersButtons.map(({ to, label }) => (
+            <Col xs={12} lg={user?.loggedIn ? 12 : 4} className="py-1" key={to}>
+              <Button size="lg" tag={Link} to={to} color="secondary" block>
+                {label}
+              </Button>
+            </Col>
+          ))}
+        </Row>
+        {isTeacher(user) && (
+          <div className="py-3">
+            <h3>For you</h3>
+            <p>
+              Browse our National Centre for Computing Education courses to help you teach computing across the
+              secondary curriculum.
+            </p>
+            <Row>
+              {teacherButtons.map(({ to, label }) => (
+                <Col xs={12} className="py-1" key={to}>
+                  <Button
+                    size="lg"
+                    href={to}
+                    className="teacher-button"
+                    block
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {label}
+                  </Button>
+                </Col>
+              ))}
+            </Row>
+          </div>
+        )}
+      </Container>
+    );
+  };
 
   const loggedInContent = (
     <Row className="pt-4">
@@ -75,7 +107,6 @@ export const Dashboard = ({
           <h1 id="homepageName">Welcome {user?.loggedIn && user.givenName}</h1>
         </Container>
         <ShowMeButtons className={"pt-xl-2"} />
-        {/*<img id="homepageHeroImg" className="img-fluid" alt="Three Computer Science students studying with two laptops, one with code on the screen" src="/assets/ics_hero.svg" />*/}
       </Col>
       <PromoOrFeaturedNews contentType={user?.loggedIn && user.role === "TEACHER" && promoItem ? "promo" : "news"} />
     </Row>
