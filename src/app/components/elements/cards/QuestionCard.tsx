@@ -24,8 +24,8 @@ interface QuestionCardProps {
 const QuestionCard = ({ setExpanded, questionData }: QuestionCardProps) => {
   const [expandRef, updateExpandRef] = useStatefulElementRef<HTMLDivElement>();
   const { expandButton, outerClasses, expanded } = useExpandContent(true, expandRef);
-  const [question, setQuestion] = useState<number>(0);
-  const isMoreQuestions = question < 5;
+  const [questionIndex, setQuestionIndex] = useState<number>(0);
+  const moreQuestionsAvailable = questionIndex < 5;
 
   useEffect(() => {
     setExpanded(expanded);
@@ -35,8 +35,11 @@ const QuestionCard = ({ setExpanded, questionData }: QuestionCardProps) => {
     <div className={!expanded ? "question-tile" : ""} data-testid="question-tile">
       <Row className="m-0 d-flex justify-content-between">
         <h3 className="font-weight-normal m-0 align-self-baseline">Quick question!</h3>
-        {isMoreQuestions && (
-          <Button className="next-question bg-transparent border-0 btn-link" onClick={() => setQuestion(question + 1)}>
+        {moreQuestionsAvailable && (
+          <Button
+            className="next-question bg-transparent border-0 btn-link"
+            onClick={() => setQuestionIndex(questionIndex + 1)}
+          >
             Next question
           </Button>
         )}
@@ -44,7 +47,7 @@ const QuestionCard = ({ setExpanded, questionData }: QuestionCardProps) => {
       <Card
         className={classnames(outerClasses, expanded ? "random-question-panel" : "mt-2 pb-2")}
         data-testid="question-content-card"
-        style={expanded ? { maxHeight: "560px" } : { maxHeight: "450px" }}
+        style={{ maxHeight: expanded ? "560px" : "450px" }}
       >
         <CardBody className="p-3">
           <div
@@ -53,9 +56,9 @@ const QuestionCard = ({ setExpanded, questionData }: QuestionCardProps) => {
             style={expanded ? { maxHeight: "500px" } : { maxHeight: "400px" }}
             className="overflow-auto hidden-scrollbar"
           >
-            {isMoreQuestions ? <IsaacContent doc={questionData[question]} /> : <GoToQuestionFinder />}
+            {moreQuestionsAvailable ? <IsaacContent doc={questionData[questionIndex]} /> : <GoToQuestionFinder />}
           </div>
-          {expanded ? expandButton : isMoreQuestions && expandButton}
+          {(expanded || moreQuestionsAvailable) && expandButton}
         </CardBody>
       </Card>
     </div>

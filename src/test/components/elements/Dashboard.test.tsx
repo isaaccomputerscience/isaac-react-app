@@ -2,6 +2,7 @@ import { mockNewsPods, mockPromoPods } from "../../../mocks/data";
 import { Dashboard } from "../../../app/components/elements/Dashboard";
 import { TestUserRole, renderTestEnvironment } from "../../utils";
 import { screen, waitFor } from "@testing-library/react";
+import { UserRole } from "../../../IsaacApiTypes";
 
 const mockPromoItem = mockPromoPods.results[0];
 const mockFeaturedNewsItem = mockNewsPods.results[1];
@@ -32,7 +33,7 @@ describe("Dashboard", () => {
     expect(promoTile).toBeNull();
   });
 
-  let roles: TestUserRole[] = ["TEACHER", "EVENT_LEADER", "CONTENT_EDITOR", "EVENT_MANAGER", "ADMIN"];
+  let roles: UserRole[] = ["TEACHER", "EVENT_LEADER", "CONTENT_EDITOR", "EVENT_MANAGER", "ADMIN"];
 
   it.each(roles)(
     "promo tile is visible, and featured news tile is not, if %s user is logged in and promo item is available",

@@ -48,6 +48,7 @@ export const ScrollShadows = <T extends HTMLElement>({ element }: { element: T |
     if (!element) return;
     const resizeObserver = new ResizeObserver((entries) => {
       setTimeout(() => {
+        // 0 timeout added here to avoid "ResizeObserver loop limit" errors - may no longer be an issue in React 18
         const element = entries[0].target;
         setClientWidth(element.clientWidth);
         setScrollWidth(element.scrollWidth);

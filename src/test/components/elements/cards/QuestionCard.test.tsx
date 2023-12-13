@@ -50,12 +50,16 @@ describe("QuestionCard", () => {
 
   it("renders the next question if next question button is pressed", async () => {
     await setupTest();
+    const firstQuestion = () => screen.queryByText(mockRandomQuestions[0].children[0].value!);
+    const secondQuestion = () => screen.queryByText(mockRandomQuestions[1].children[0].value!);
+    expect(firstQuestion()).toBeInTheDocument();
+    expect(secondQuestion()).toBeNull();
     await clickButton("Next question");
-    const question = screen.getByText(mockRandomQuestions[1].children[0].value!);
-    expect(question).toBeInTheDocument();
+    expect(secondQuestion()).toBeInTheDocument();
+    expect(firstQuestion()).toBeNull();
   });
 
-  it("shows link to the question finder if next question button has been pressed 5 times, and next question button is then gone", async () => {
+  it("shows link to the question finder if next question button has been pressed 5 times, and next question and expand buttons are then gone", async () => {
     await setupTest();
     for (let i = 0; i < 5; i++) {
       await clickButton("Next question");

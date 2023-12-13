@@ -4,7 +4,7 @@ import { Button, Col, Container, Row } from "reactstrap";
 import { getRandomQuestions, selectors, useAppDispatch, useAppSelector } from "../../state";
 import { TeacherPromoItem } from "./TeacherPromoItem";
 import { FeaturedNewsItem } from "./FeaturedNewsItem";
-import { IsaacPodDTO } from "../../../IsaacApiTypes";
+import { IsaacPodDTO, IsaacQuestionPageDTO } from "../../../IsaacApiTypes";
 import { ShowLoading, defaultPlaceholder } from "../handlers/ShowLoading";
 import QuestionCard from "./cards/QuestionCard";
 import { isStudent, isTeacherOrAbove } from "../../services";
@@ -91,9 +91,9 @@ export const Dashboard = ({
       ) : (
         <ShowLoading
           until={questionData}
-          thenRender={(questionData) => (
+          thenRender={(questionData: IsaacQuestionPageDTO[]) => (
             <Col md="12" lg={expanded ? "12" : "7"}>
-              {questionData && <QuestionCard setExpanded={setExpanded} questionData={questionData} />}
+              <QuestionCard setExpanded={setExpanded} questionData={questionData} />
             </Col>
           )}
           ifNotFound={<PromoOrFeaturedNews contentType="news" />}
