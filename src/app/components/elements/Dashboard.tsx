@@ -84,12 +84,13 @@ export const Dashboard = ({
                   <Button
                     size="lg"
                     href={to}
-                    className="teacher-button"
+                    className="teacher-button d-flex justify-content-center align-items-center px-2"
                     block
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {label}
+                    <span className="flex-grow-1">{label}</span>
+                    <img src="/assets/new-tab-icon.png" alt="new tab icon" style={{ width: "25px" }} />
                   </Button>
                 </Col>
               ))}
