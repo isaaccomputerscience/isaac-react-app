@@ -134,7 +134,7 @@ export const handlers = [
   rest.get(API_PATH + "/quiz/available/0", (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(mockAvailableQuiz));
   }),
-  rest.get(API_PATH + "/questions/randomQuestions", (req, res, ctx) => {
+  rest.get(API_PATH + "/questions/random", (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(mockRandomQuestions));
   }),
   rest.get(API_PATH + "/glossary/terms", (req, res, ctx) => {

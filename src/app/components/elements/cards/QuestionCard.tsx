@@ -7,14 +7,16 @@ import { IsaacContent } from "../../content/IsaacContent";
 import { IsaacQuestionPageDTO } from "../../../../IsaacApiTypes";
 
 const GoToQuestionFinder = () => (
-  <>
-    <h2>All done! Want more questions?</h2>
-    <Row className="w-75 mx-auto mt-5 mb-3">
+  <div className="p-2 text-center">
+    <h3>
+      <strong>All done! Want more questions?</strong>
+    </h3>
+    <Row className="w-75 mx-auto mt-4 mb-3">
       <Button href="/gameboards/new" className="btn-block btn-lg btn-primary">
         Go to Question Finder
       </Button>
     </Row>
-  </>
+  </div>
 );
 interface QuestionCardProps {
   setExpanded: (expanded: boolean) => void;
@@ -25,7 +27,7 @@ const QuestionCard = ({ setExpanded, questionData }: QuestionCardProps) => {
   const [expandRef, updateExpandRef] = useStatefulElementRef<HTMLDivElement>();
   const { expandButton, outerClasses, expanded } = useExpandContent(true, expandRef);
   const [questionIndex, setQuestionIndex] = useState<number>(0);
-  const moreQuestionsAvailable = questionIndex < 5;
+  const moreQuestionsAvailable = questionIndex < questionData.length;
 
   useEffect(() => {
     setExpanded(expanded);

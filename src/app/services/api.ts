@@ -304,7 +304,7 @@ export const api = {
       return endpoint.post("/questions/test?type=isaacFreeTextQuestion", { userDefinedChoices, testCases });
     },
     randomQuestions: (): AxiosPromise<ApiTypes.IsaacQuestionPageDTO[]> => {
-      return endpoint.get("/questions/randomQuestions");
+      return endpoint.get("/questions/random");
     },
   },
   concepts: {

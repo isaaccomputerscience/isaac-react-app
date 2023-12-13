@@ -59,9 +59,9 @@ describe("QuestionCard", () => {
     expect(firstQuestion()).toBeNull();
   });
 
-  it("shows link to the question finder if next question button has been pressed 5 times, and next question and expand buttons are then gone", async () => {
+  it("shows link to the question finder if next question button has been pressed until no more questions are available, then next question and expand buttons are gone", async () => {
     await setupTest();
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < mockRandomQuestions.length; i++) {
       await clickButton("Next question");
     }
     const questionFinder = screen.getByRole("link", { name: "Go to Question Finder" });

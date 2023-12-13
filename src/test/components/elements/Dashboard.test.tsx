@@ -2,13 +2,19 @@ import { mockNewsPods, mockPromoPods } from "../../../mocks/data";
 import { Dashboard } from "../../../app/components/elements/Dashboard";
 import { TestUserRole, renderTestEnvironment } from "../../utils";
 import { screen, waitFor } from "@testing-library/react";
-import { UserRole } from "../../../IsaacApiTypes";
+import { IsaacQuestionPageDTO, UserRole } from "../../../IsaacApiTypes";
+import { MockedRequest, RestHandler, rest } from "msw";
+import { API_PATH } from "../../../app/services";
 
 const mockPromoItem = mockPromoPods.results[0];
 const mockFeaturedNewsItem = mockNewsPods.results[1];
 
 describe("Dashboard", () => {
-  const setupTest = (role: TestUserRole, props = {}) => {
+  const setupTest = (
+    role: TestUserRole,
+    props = {},
+    extraEndpoints?: RestHandler<MockedRequest<IsaacQuestionPageDTO[]>>[] | undefined,
+  ) => {
     renderTestEnvironment({
       role: role,
       PageComponent: Dashboard,
@@ -18,6 +24,7 @@ describe("Dashboard", () => {
         ...props,
       },
       initialRouteEntries: ["/"],
+      extraEndpoints: extraEndpoints,
     });
   };
 
@@ -90,7 +97,7 @@ describe("Dashboard", () => {
     },
   );
 
-  it("shows question tile for students if logged in", async () => {
+  it("shows question tile for students if logged in and question data is available", async () => {
     setupTest("STUDENT");
     const questionTile = await screen.findByTestId("question-tile");
     const promoTile = screen.queryByTestId("promo-tile");
@@ -98,5 +105,17 @@ describe("Dashboard", () => {
     expect(questionTile).toBeInTheDocument();
     expect(promoTile).toBeNull();
     expect(featuredNewsTile).toBeNull();
+  });
+
+  it("does not show the question tile empty array comes back from the API", async () => {
+    setupTest("STUDENT", {}, [
+      rest.get(API_PATH + "/questions/random", (req, res, ctx) => {
+        return res(ctx.status(200), ctx.json([]));
+      }),
+    ]);
+    const featuredNewsTile = await screen.findByTestId("featured-news-item");
+    expect(featuredNewsTile).toBeInTheDocument();
+    const questionTile = screen.queryByTestId("question-tile");
+    expect(questionTile).toBeNull();
   });
 });
