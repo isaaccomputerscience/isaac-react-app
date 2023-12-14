@@ -62,7 +62,7 @@ export const Dashboard = ({
     return (
       <Container id="homepageButtons" className={`${className} ${!user?.loggedIn ? "pt-0 px-lg-0" : ""}`}>
         <h3>{isTeacher(user) ? "For your students" : "Show me"}</h3>
-        <Row>
+        <Row data-testid="dashboard-buttons">
           {allUsersButtons.map(({ to, label }) => (
             <Col xs={12} lg={user?.loggedIn ? 12 : 4} className="py-1" key={to}>
               <Button size="lg" tag={Link} to={to} color="secondary" block>
@@ -78,7 +78,7 @@ export const Dashboard = ({
               Browse our National Centre for Computing Education courses to help you teach computing across the
               secondary curriculum.
             </p>
-            <Row>
+            <Row data-testid="teacher-dashboard-buttons">
               {teacherButtons.map(({ to, label }) => (
                 <Col xs={12} className="py-1" key={to}>
                   <Button

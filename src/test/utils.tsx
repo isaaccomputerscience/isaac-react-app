@@ -348,3 +348,52 @@ export const getDownloadButtons = () => {
     });
   return { gcseButton, aqaButton, ocrButton };
 };
+
+const findDashboardButtons = () => {
+  const allUserButtons = screen.getByTestId("dashboard-buttons");
+  const dashboardButtons = within(allUserButtons).getAllByRole("link");
+  const teacherButtons = screen.queryByTestId("teacher-dashboard-buttons");
+  const teacherDashboardButtons = teacherButtons ? within(teacherButtons).getAllByRole("link") : null;
+  return { dashboardButtons, teacherDashboardButtons };
+};
+
+export const checkDashboardButtons = (role?: "TEACHER") => {
+  const { dashboardButtons, teacherDashboardButtons } = findDashboardButtons();
+
+  const expectCommonButtons = () => {
+    const commonButtonDetails = [
+      { text: "GCSE resources", href: "/topics/gcse" },
+      { text: "A Level resources", href: "/topics/a_level" },
+      { text: "Events", href: "/events" },
+    ];
+
+    commonButtonDetails.forEach(({ text, href }, index) => {
+      expect(dashboardButtons[index]).toHaveTextContent(text);
+      expect(dashboardButtons[index]).toHaveAttribute("href", href);
+    });
+  };
+
+  const expectTeacherButtons = () => {
+    expect(teacherDashboardButtons!.length).toBe(3);
+    const teacherButtonDetails = [
+      { text: "Key stage 3 courses", href: "https://teachcomputing.org/courses?level=Key+stage+3" },
+      { text: "Key stage 4 courses", href: "https://teachcomputing.org/courses?level=Key+stage+4" },
+      { text: "A level courses", href: "https://teachcomputing.org/courses?level=Post+16" },
+    ];
+
+    teacherButtonDetails.forEach(({ text, href }, index) => {
+      expect(teacherDashboardButtons![index]).toHaveTextContent(text);
+      expect(teacherDashboardButtons![index]).toHaveAttribute("href", href);
+      const buttonIcon = within(teacherDashboardButtons![index]).getByRole("img");
+      expect(buttonIcon).toBeVisible();
+    });
+  };
+
+  expectCommonButtons();
+
+  if (role === "TEACHER") {
+    expectTeacherButtons();
+  } else {
+    expect(teacherDashboardButtons).toBeNull();
+  }
+};
