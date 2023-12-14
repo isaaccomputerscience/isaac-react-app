@@ -43,34 +43,34 @@ const EventTableRow = ({ eventData, onClick }: { eventData: EventOverview; onCli
 
   return (
     <tr>
-      <td className="align-middle">
+      <td>
         <RS.Button color="secondary" className="btn-sm mx-2" onClick={() => onClick(id as string)}>
           Manage
         </RS.Button>
       </td>
-      <td className="align-middle small">
+      <td className="text-left">
         <Link to={`/events/${id}`} target="_blank">
           {eventData.title} - {subtitle}
         </Link>
       </td>
-      <td className="small-centered-td">
+      <td>
         <DateString>{date}</DateString>
       </td>
-      <td className="small-centered-td">
+      <td>
         <DateString>{bookingDeadline}</DateString>
       </td>
-      <td className="small-centered-td">{location && location.address && location.address.town}</td>
-      <td className="small-centered-td">
+      <td>{location && location.address && location.address.town}</td>
+      <td>
         {privateEvent && <RS.Badge color="primary">Private Event</RS.Badge>}
         {eventStatus?.replace(/_/g, " ")}
       </td>
-      <td className="small-centered-td">
+      <td>
         {numberOfConfirmedBookings} / {numberOfPlaces}
       </td>
-      <td className="small-centered-td">{numberOfWaitingListBookings}</td>
-      <td className="small-centered-td">{numberAttended}</td>
-      <td className="small-centered-td">{numberAbsent}</td>
-      <td className="small-centered-td">{eventAttendancePercentage(numberAttended, numberAbsent)}</td>
+      <td>{numberOfWaitingListBookings}</td>
+      <td>{numberAttended}</td>
+      <td>{numberAbsent}</td>
+      <td>{eventAttendancePercentage(numberAttended, numberAbsent)}</td>
     </tr>
   );
 };
@@ -96,7 +96,7 @@ export const EventOverviews = ({
 
   const EventTableButton = ({ sort, text }: { sort: string; text: string }) => {
     return (
-      <th className="align-middle">
+      <th>
         <RS.Button
           color="link"
           onClick={() => {
@@ -112,7 +112,6 @@ export const EventOverviews = ({
   };
 
   const eventTableHeaderButtons = [
-    { sort: "title", text: "Title" },
     { sort: "date", text: "Date" },
     { sort: "bookingDeadline", text: "Booking deadline" },
     { sort: "location.address.town", text: "Location" },
@@ -159,15 +158,22 @@ export const EventOverviews = ({
                 <RS.Table bordered className="mb-0 bg-white table-hover table-sm" style={{ maxWidth: "100%" }}>
                   <thead>
                     <tr>
-                      <th className="align-middle text-center" style={{ minWidth: "80px" }}>
-                        Actions
+                      <th style={{ minWidth: "80px" }}>Actions</th>
+                      <th style={{ minWidth: "150px" }}>
+                        <RS.Button
+                          color="link"
+                          onClick={() => {
+                            setSortPredicate("title");
+                            setReverse(!reverse);
+                          }}
+                        >
+                          Title
+                        </RS.Button>
                       </th>
                       {eventTableHeaderButtons.map((button) => (
                         <EventTableButton key={button.text} sort={button.sort} text={button.text} />
                       ))}
-                      <th className="align-middle text-center" style={{ minWidth: "80px" }}>
-                        Attendance
-                      </th>
+                      <th style={{ minWidth: "80px" }}>Attendance</th>
                     </tr>
                   </thead>
                   <tbody>

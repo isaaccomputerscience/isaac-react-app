@@ -35,7 +35,7 @@ export const EventManager = ({ user }: { user: PotentialUser }) => {
           text="Events toolkit"
         />
       </div>
-      <div className="mt-5 mb-5 mx-n4 mx-sm-n5 pt-5">
+      <div className="mt-5 mb-5 mx-n4 mx-sm-n5 pt-5" id="event-admin">
         <EventOverviews user={user} setSelectedEventId={setSelectedEventId} />
         {selectedEventId !== null && (
           <React.Fragment>
