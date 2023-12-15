@@ -55,7 +55,7 @@ const QuestionCard = ({ setExpanded, questionData }: QuestionCardProps) => {
           <div
             id="question-body"
             ref={updateExpandRef}
-            style={expanded ? { maxHeight: "500px" } : { maxHeight: "400px" }}
+            style={{ maxHeight: expanded ? "500px" : "400px" }}
             className="overflow-auto hidden-scrollbar"
           >
             {moreQuestionsAvailable ? <IsaacContent doc={questionData[questionIndex]} /> : <GoToQuestionFinder />}
