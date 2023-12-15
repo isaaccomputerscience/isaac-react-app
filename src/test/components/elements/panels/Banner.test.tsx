@@ -1,18 +1,18 @@
-import React from "react";
-import { Banner } from "../../../../app/components/elements/panels/Banner";
-import { renderTestEnvironment } from "../../../utils";
+import React, { PropsWithChildren } from "react";
+import { Banner, BannerProps } from "../../../../app/components/elements/panels/Banner";
+import { getById, renderTestEnvironment } from "../../../utils";
 import { screen, within } from "@testing-library/react";
 
-const testBannerDescription = <div className="text-left">This is a test description.</div>;
+const testBannerDescription = <div>This is a test description.</div>;
 
-const mockBannerProps = {
+const mockBannerProps: PropsWithChildren<BannerProps> = {
   id: "test-banner",
   title: "Test Banner",
   subtitle: "Here is a test subtitle",
   src: "testimage.png",
   link: "https://examplelink.com",
   alt: "description of image",
-  content: testBannerDescription,
+  children: testBannerDescription,
 };
 
 describe("Banner", () => {
@@ -28,13 +28,13 @@ describe("Banner", () => {
 
   it("renders title, subtitle, image, link and description with expected attributes", () => {
     setupTest(mockBannerProps);
-    const banner = screen.getByTestId(`${mockBannerProps.id}-banner`);
+    const banner = getById(mockBannerProps.id);
     const title = screen.getByRole("button", { name: mockBannerProps.title });
     const subtitle = screen.getByText(mockBannerProps.subtitle);
     const image = within(banner).getByRole("img");
     const link = screen.getByRole("link", { name: mockBannerProps.subtitle });
     const description = screen.getByTestId("banner-description");
-    [banner, title, subtitle, link, description].forEach((element) => {
+    [banner, title, subtitle, link, description, image].forEach((element) => {
       expect(element).toBeInTheDocument();
     });
     expect(image).toHaveAttribute("src", mockBannerProps.src);

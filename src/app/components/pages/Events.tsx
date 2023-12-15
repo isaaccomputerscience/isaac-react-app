@@ -214,8 +214,9 @@ export const Events = withRouter(({ history, location }: RouteComponentProps) =>
         src="/assets/ncce-teachers.png"
         link="https://teachcomputing.org/courses"
         alt="teachers on a course"
-        content={teacherEventsDescription}
-      />
+      >
+        {teacherEventsDescription}
+      </Banner>
     </>
   );
 });

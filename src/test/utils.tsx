@@ -350,7 +350,7 @@ export const getDownloadButtons = () => {
 };
 
 const findDashboardButtons = () => {
-  const allUserButtons = screen.getByTestId("dashboard-buttons");
+  const allUserButtons = screen.getByTestId("show-me-buttons");
   const dashboardButtons = within(allUserButtons).getAllByRole("link");
   const teacherButtons = screen.queryByTestId("teacher-dashboard-buttons");
   const teacherDashboardButtons = teacherButtons ? within(teacherButtons).getAllByRole("link") : null;

@@ -1,19 +1,18 @@
-import React, { ReactNode } from "react";
+import React, { PropsWithChildren } from "react";
 import { Col, Container, Row } from "reactstrap";
 
-interface BannerProps {
+export interface BannerProps {
   id: string;
   title: string;
   subtitle: string;
   link: string;
   src: string;
   alt?: string;
-  content: ReactNode;
 }
 
-export const Banner = ({ id, title, subtitle, link, src, alt, content }: BannerProps) => {
+export const Banner = ({ id, title, subtitle, link, src, alt, children }: PropsWithChildren<BannerProps>) => {
   return (
-    <section id={id} className="bg-primary pattern-05 p-5" data-testid={`${id}-banner`}>
+    <section id={id} className="bg-primary pattern-05 p-5">
       <Container>
         <Row className="d-flex align-items-center justify-content-center">
           <button className="button-header btn-lg">{title}</button>
@@ -28,7 +27,7 @@ export const Banner = ({ id, title, subtitle, link, src, alt, content }: BannerP
                 <strong>{subtitle}</strong>
               </a>
             </h5>
-            {content}
+            {children}
           </Col>
         </Row>
       </Container>

@@ -8,6 +8,61 @@ import { IsaacPodDTO } from "../../../IsaacApiTypes";
 import { defaultPlaceholder } from "../handlers/ShowLoading";
 import { isTeacher } from "../../services";
 
+const ShowMeButtons = ({ loggedIn }: { loggedIn: boolean | undefined }) => {
+  const showMeButtons = [
+    { to: "/topics/gcse", label: "GCSE resources" },
+    { to: "/topics/a_level", label: "A Level resources" },
+    { to: "/events", label: "Events" },
+  ];
+
+  return (
+    <Row data-testid="show-me-buttons">
+      {showMeButtons.map(({ to, label }) => (
+        <Col xs={12} lg={loggedIn ? 12 : 4} className="py-1" key={to}>
+          <Button size="lg" tag={Link} to={to} color="secondary" block>
+            {label}
+          </Button>
+        </Col>
+      ))}
+    </Row>
+  );
+};
+
+const TeacherButtons = () => {
+  const teacherButtons = [
+    { to: "https://teachcomputing.org/courses?level=Key+stage+3", label: "Key stage 3 courses" },
+    { to: "https://teachcomputing.org/courses?level=Key+stage+4", label: "Key stage 4 courses" },
+    { to: "https://teachcomputing.org/courses?level=Post+16", label: "A level courses" },
+  ];
+
+  return (
+    <div className="py-3">
+      <h3>For you</h3>
+      <p>
+        Browse our National Centre for Computing Education courses to help you teach computing across the secondary
+        curriculum.
+      </p>
+      <Row data-testid="teacher-dashboard-buttons">
+        {teacherButtons.map(({ to, label }) => (
+          <Col xs={12} className="py-1" key={to}>
+            <Button
+              size="lg"
+              href={to}
+              className="teacher-button d-flex justify-content-center align-items-center px-2"
+              block
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span className="flex-grow-1">{label}</span>
+              <img src="/assets/new-tab-icon.png" alt="new tab icon" style={{ width: "25px" }} />
+            </Button>
+          </Col>
+        ))}
+      </Row>
+    </div>
+  );
+};
+
 export const Dashboard = ({
   featuredNewsItem,
   promoItem,
@@ -46,57 +101,12 @@ export const Dashboard = ({
     );
   };
 
-  const ShowMeButtons = ({ className }: { className?: string }) => {
-    const allUsersButtons = [
-      { to: "/topics/gcse", label: "GCSE resources" },
-      { to: "/topics/a_level", label: "A Level resources" },
-      { to: "/events", label: "Events" },
-    ];
-
-    const teacherButtons = [
-      { to: "https://teachcomputing.org/courses?level=Key+stage+3", label: "Key stage 3 courses" },
-      { to: "https://teachcomputing.org/courses?level=Key+stage+4", label: "Key stage 4 courses" },
-      { to: "https://teachcomputing.org/courses?level=Post+16", label: "A level courses" },
-    ];
-
+  const DashboardButtons = ({ className }: { className?: string }) => {
     return (
       <Container id="homepageButtons" className={`${className} ${!user?.loggedIn ? "pt-0 px-lg-0" : ""}`}>
         <h3>{isTeacher(user) ? "For your students" : "Show me"}</h3>
-        <Row data-testid="dashboard-buttons">
-          {allUsersButtons.map(({ to, label }) => (
-            <Col xs={12} lg={user?.loggedIn ? 12 : 4} className="py-1" key={to}>
-              <Button size="lg" tag={Link} to={to} color="secondary" block>
-                {label}
-              </Button>
-            </Col>
-          ))}
-        </Row>
-        {isTeacher(user) && (
-          <div className="py-3">
-            <h3>For you</h3>
-            <p>
-              Browse our National Centre for Computing Education courses to help you teach computing across the
-              secondary curriculum.
-            </p>
-            <Row data-testid="teacher-dashboard-buttons">
-              {teacherButtons.map(({ to, label }) => (
-                <Col xs={12} className="py-1" key={to}>
-                  <Button
-                    size="lg"
-                    href={to}
-                    className="teacher-button d-flex justify-content-center align-items-center px-2"
-                    block
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <span className="flex-grow-1">{label}</span>
-                    <img src="/assets/new-tab-icon.png" alt="new tab icon" style={{ width: "25px" }} />
-                  </Button>
-                </Col>
-              ))}
-            </Row>
-          </div>
-        )}
+        <ShowMeButtons loggedIn={user?.loggedIn} />
+        {isTeacher(user) && <TeacherButtons />}
       </Container>
     );
   };
@@ -107,7 +117,7 @@ export const Dashboard = ({
         <Container className={"mb-4"}>
           <h1 id="homepageName">Welcome {user?.loggedIn && user.givenName}</h1>
         </Container>
-        <ShowMeButtons className={"pt-xl-2"} />
+        <DashboardButtons className={"pt-xl-2"} />
       </Col>
       <PromoOrFeaturedNews contentType={user?.loggedIn && user.role === "TEACHER" && promoItem ? "promo" : "news"} />
     </Row>
@@ -154,7 +164,7 @@ export const Dashboard = ({
         />
       </Col>
       <Col className="order-lg-last pb-5 pb-lg-3">
-        <ShowMeButtons />
+        <DashboardButtons />
       </Col>
     </Row>
   );
