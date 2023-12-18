@@ -10,7 +10,7 @@ import { API_PATH } from "../../app/services";
 const errorMessageSpy = jest.spyOn(actions, "showAxiosErrorToastIfNeeded");
 const downloadSpy = jest.spyOn(download, "downloadWorkbook");
 
-export const getDownloadButtons = () => {
+const getDownloadButtons = () => {
   const gcseButton = () =>
     screen.getByRole("button", {
       name: /download gcse workbook/i,
@@ -26,7 +26,7 @@ export const getDownloadButtons = () => {
   return { gcseButton, aqaButton, ocrButton };
 };
 
-export const extraDownloadEndpoints = {
+const extraDownloadEndpoints = {
   working: [
     rest.get(API_PATH + `/documents/content/books/gcse_book_23/isaac_cs_gcse_book_2023.pdf`, (req, res, ctx) => {
       return res(ctx.status(200), ctx.json({ data: "this is a book" }));

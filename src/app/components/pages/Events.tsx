@@ -36,6 +36,16 @@ interface EventsPageQueryParams {
 
 const EVENTS_PER_PAGE = 6;
 
+const TeacherEventsDescription = () => (
+  <div className="text-left">
+    The National Centre for Computing Education offers professional development courses to help you teacher computer
+    science at GCSE and A Level, free to teachers in state-funded education. Discover the full list on the{" "}
+    <a href="https://teachcomputing.org/courses" target="_blank" rel="noopener noreferrer">
+      Teach Computing website.
+    </a>
+  </div>
+);
+
 export const Events = withRouter(({ history, location }: RouteComponentProps) => {
   const query: EventsPageQueryParams = queryString.parse(location.search);
 
@@ -64,16 +74,6 @@ export const Events = withRouter(({ history, location }: RouteComponentProps) =>
 
   const metaDescriptionCS =
     "A level and GCSE Computer Science live online training. Revision and extension workshops for students.";
-
-  const teacherEventsDescription = (
-    <div className="text-left">
-      The National Centre for Computing Education offers professional development courses to help you teacher computer
-      science at GCSE and A Level, free to teachers in state-funded education. Discover the full list on the{" "}
-      <a href="https://teachcomputing.org/courses" target="_blank" rel="noopener noreferrer">
-        Teach Computing website.
-      </a>
-    </div>
-  );
 
   return (
     <>
@@ -215,7 +215,7 @@ export const Events = withRouter(({ history, location }: RouteComponentProps) =>
         link="https://teachcomputing.org/courses"
         alt="teachers on a course"
       >
-        {teacherEventsDescription}
+        <TeacherEventsDescription />
       </Banner>
     </>
   );

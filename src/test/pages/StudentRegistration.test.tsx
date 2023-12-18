@@ -9,7 +9,7 @@ import { registrationMockUser, registrationUserData } from "../../mocks/data";
 
 const registerUserSpy = jest.spyOn(actions, "registerUser");
 
-export const checkPasswordInputTypes = (expectedType: string) => {
+const checkPasswordInputTypes = (expectedType: string) => {
   const formFields = getFormFields();
   const passwordInput = formFields.password() as HTMLInputElement;
   const confirmPasswordInput = formFields.confirmPassword() as HTMLInputElement;

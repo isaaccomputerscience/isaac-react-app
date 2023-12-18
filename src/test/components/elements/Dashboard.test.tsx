@@ -11,11 +11,11 @@ const findDashboardButtons = () => {
   const allUserButtons = screen.getByTestId("show-me-buttons");
   const dashboardButtons = within(allUserButtons).getAllByRole("link");
   const teacherButtons = screen.queryByTestId("teacher-dashboard-buttons");
-  const teacherDashboardButtons = teacherButtons ? within(teacherButtons).getAllByRole("link") : null;
+  const teacherDashboardButtons = teacherButtons ? within(teacherButtons).getAllByRole("link") : [];
   return { dashboardButtons, teacherDashboardButtons };
 };
 
-export const checkDashboardButtons = (role?: "TEACHER") => {
+const checkDashboardButtons = (role?: "TEACHER") => {
   const { dashboardButtons, teacherDashboardButtons } = findDashboardButtons();
 
   const expectCommonButtons = () => {
@@ -32,7 +32,7 @@ export const checkDashboardButtons = (role?: "TEACHER") => {
   };
 
   const expectTeacherButtons = () => {
-    expect(teacherDashboardButtons!.length).toBe(3);
+    expect(teacherDashboardButtons).toHaveLength(3);
     const teacherButtonDetails = [
       { text: "Key stage 3 courses", href: "https://teachcomputing.org/courses?level=Key+stage+3" },
       { text: "Key stage 4 courses", href: "https://teachcomputing.org/courses?level=Key+stage+4" },
@@ -40,9 +40,9 @@ export const checkDashboardButtons = (role?: "TEACHER") => {
     ];
 
     teacherButtonDetails.forEach(({ text, href }, index) => {
-      expect(teacherDashboardButtons![index]).toHaveTextContent(text);
-      expect(teacherDashboardButtons![index]).toHaveAttribute("href", href);
-      const buttonIcon = within(teacherDashboardButtons![index]).getByRole("img");
+      expect(teacherDashboardButtons[index]).toHaveTextContent(text);
+      expect(teacherDashboardButtons[index]).toHaveAttribute("href", href);
+      const buttonIcon = within(teacherDashboardButtons[index]).getByRole("img");
       expect(buttonIcon).toBeVisible();
     });
   };
@@ -52,7 +52,7 @@ export const checkDashboardButtons = (role?: "TEACHER") => {
   if (role === "TEACHER") {
     expectTeacherButtons();
   } else {
-    expect(teacherDashboardButtons).toBeNull();
+    expect(teacherDashboardButtons).toHaveLength(0);
   }
 };
 
@@ -88,14 +88,8 @@ describe("Dashboard", () => {
     await screen.findByRole("heading", {
       name: /welcome/i,
     });
-    switch (role) {
-      case "TEACHER":
-        checkDashboardButtons("TEACHER");
-        break;
-      default:
-        checkDashboardButtons();
-        break;
-    }
+    if (role === "TEACHER") checkDashboardButtons("TEACHER");
+    else checkDashboardButtons();
   });
 
   it("shows promo tile and not featured news tile if TEACHER user is logged in and promo item is available", async () => {

@@ -1,5 +1,6 @@
 import { USER_ROLES, UserRole } from "../../IsaacApiTypes";
 import {
+  UserRoleAndLoggedInStatus,
   extractTeacherName,
   isAdmin,
   isAdminOrEventManager,
@@ -16,44 +17,37 @@ import {
   isTutorOrAbove,
   roleRequirements,
   schoolNameWithPostcode,
-} from "../../app/services/user";
+} from "../../app/services/";
 import { School } from "../../IsaacAppTypes";
 import { mockUser } from "../../mocks/data";
 
-const generateTestCases = (functionName: string) => {
-  const roleRequirements: Record<UserRole, string[]> = {
-    STUDENT: ["isStudent"],
-    TUTOR: ["isTutorOrAbove", "isTutor"],
-    TEACHER: ["isTeacherOrAbove", "isTeacher", "isTutorOrAbove"],
-    EVENT_LEADER: ["isEventLeader", "isTeacherOrAbove", "isTutorOrAbove", "isEventLeaderOrStaff"],
-    CONTENT_EDITOR: ["isStaff", "isTeacherOrAbove", "isTutorOrAbove", "isEventLeaderOrStaff"],
+const generateTestCases = (userCheck: (user?: UserRoleAndLoggedInStatus | null) => boolean) => {
+  const roleRequirements = {
+    STUDENT: [isStudent],
+    TUTOR: [isTutorOrAbove, isTutor],
+    TEACHER: [isTeacherOrAbove, isTeacher, isTutorOrAbove],
+    EVENT_LEADER: [isEventLeader, isTeacherOrAbove, isTutorOrAbove, isEventLeaderOrStaff],
+    CONTENT_EDITOR: [isStaff, isTeacherOrAbove, isTutorOrAbove, isEventLeaderOrStaff],
     EVENT_MANAGER: [
-      "isEventManager",
-      "isStaff",
-      "isTeacherOrAbove",
-      "isTutorOrAbove",
-      "isEventLeaderOrStaff",
-      "isAdminOrEventManager",
+      isEventManager,
+      isStaff,
+      isTeacherOrAbove,
+      isTutorOrAbove,
+      isEventLeaderOrStaff,
+      isAdminOrEventManager,
     ],
-    ADMIN: [
-      "isAdmin",
-      "isStaff",
-      "isTeacherOrAbove",
-      "isTutorOrAbove",
-      "isEventLeaderOrStaff",
-      "isAdminOrEventManager",
-    ],
+    ADMIN: [isAdmin, isStaff, isTeacherOrAbove, isTutorOrAbove, isEventLeaderOrStaff, isAdminOrEventManager],
   };
 
   const generateTestCase = (
     role: UserRole,
   ): {
     role: UserRole | undefined | null;
-    value: { role: UserRole; loggedIn: boolean } | undefined | null;
+    value: UserRoleAndLoggedInStatus | undefined | null;
     expected: boolean;
   } => {
     const value = { role, loggedIn: true };
-    const expected = roleRequirements[role].includes(functionName);
+    const expected = roleRequirements[role].includes(userCheck);
     return { role, value, expected };
   };
 
@@ -64,80 +58,26 @@ const generateTestCases = (functionName: string) => {
 };
 
 describe("User Checks", () => {
-  describe("isStudent function", () => {
-    const testCases = generateTestCases("isStudent");
-    it.each(testCases)(`returns $expected for $role`, ({ value, expected }) => {
-      expect(isStudent(value)).toBe(expected);
-    });
-  });
+  const functionNames = [
+    isStudent,
+    isTutor,
+    isTeacher,
+    isEventLeader,
+    isEventManager,
+    isAdmin,
+    isTutorOrAbove,
+    isTeacherOrAbove,
+    isStaff,
+    isEventLeaderOrStaff,
+    isAdminOrEventManager,
+  ];
 
-  describe("isTutor function", () => {
-    const testCases = generateTestCases("isTutor");
-    it.each(testCases)(`returns $expected for $role`, ({ value, expected }) => {
-      expect(isTutor(value)).toBe(expected);
-    });
-  });
-
-  describe("isTeacher function", () => {
-    const testCases = generateTestCases("isTeacher");
-    it.each(testCases)(`returns $expected for $role`, ({ value, expected }) => {
-      expect(isTeacher(value)).toBe(expected);
-    });
-  });
-
-  describe("isEventLeader function", () => {
-    const testCases = generateTestCases("isEventLeader");
-    it.each(testCases)(`returns $expected for $role`, ({ value, expected }) => {
-      expect(isEventLeader(value)).toBe(expected);
-    });
-  });
-
-  describe("isEventManager function", () => {
-    const testCases = generateTestCases("isEventManager");
-    it.each(testCases)(`returns $expected for $role`, ({ value, expected }) => {
-      expect(isEventManager(value)).toBe(expected);
-    });
-  });
-
-  describe("isAdmin function", () => {
-    const testCases = generateTestCases("isAdmin");
-    it.each(testCases)(`returns $expected for $role`, ({ value, expected }) => {
-      expect(isAdmin(value)).toBe(expected);
-    });
-  });
-
-  describe("isTutorOrAbove function", () => {
-    const testCases = generateTestCases("isTutorOrAbove");
-    it.each(testCases)(`returns $expected for $role`, ({ value, expected }) => {
-      expect(isTutorOrAbove(value)).toBe(expected);
-    });
-  });
-
-  describe("isTeacherOrAbove function", () => {
-    const testCases = generateTestCases("isTeacherOrAbove");
-    it.each(testCases)(`returns $expected for $role`, ({ value, expected }) => {
-      expect(isTeacherOrAbove(value)).toBe(expected);
-    });
-  });
-
-  describe("isStaff function", () => {
-    const testCases = generateTestCases("isStaff");
-    it.each(testCases)(`returns $expected for $role`, ({ value, expected }) => {
-      expect(isStaff(value)).toBe(expected);
-    });
-  });
-
-  describe("isEventLeaderOrStaff function", () => {
-    const testCases = generateTestCases("isEventLeaderOrStaff");
-    it.each(testCases)(`returns $expected for $role`, ({ value, expected }) => {
-      expect(isEventLeaderOrStaff(value)).toBe(expected);
-    });
-  });
-
-  describe("isAdminOrEventManager function", () => {
-    const testCases = generateTestCases("isAdminOrEventManager");
-    it.each(testCases)(`returns $expected for $role`, ({ value, expected }) => {
-      expect(isAdminOrEventManager(value)).toBe(expected);
+  functionNames.forEach((userCheck) => {
+    describe(`${userCheck.name} function`, () => {
+      const testCases = generateTestCases(userCheck);
+      it.each(testCases)(`returns $expected for $role`, ({ value, expected }) => {
+        expect(userCheck(value)).toBe(expected);
+      });
     });
   });
 
@@ -160,12 +100,12 @@ describe("User Checks", () => {
   describe("extractTeacherName function", () => {
     it("should return null for null input", () => {
       const result = extractTeacherName(null);
-      expect(result).toBe(null);
+      expect(result).toBeNull();
     });
 
     it("should return null for undefined input", () => {
       const result = extractTeacherName(undefined);
-      expect(result).toBe(null);
+      expect(result).toBeNull();
     });
 
     it("should return the formatted teacher name (e.g. `J. Doe`) when given both givenName and familyName", () => {
@@ -215,32 +155,36 @@ describe("User Checks", () => {
       expect(resultWithUser).toBe(false);
     });
 
-    it("should return false for null or undefined user", () => {
-      const resultNull = isLoggedIn(null);
-      const resultUndefined = isLoggedIn(undefined);
-
-      expect(resultNull).toBe(false);
-      expect(resultUndefined).toBe(false);
+    it("should return false for null user", () => {
+      const result = isLoggedIn(null);
+      expect(result).toBe(false);
     });
   });
 
-  describe("isTeacherPending function", () => {
-    it("should return true for a logged-in user with teacherPending true", () => {
-      const result = isTeacherPending({ ...mockUser, teacherPending: true, loggedIn: true });
-      expect(result).toBe(true);
-    });
+  it("should return false for undefined user", () => {
+    const result = isLoggedIn(undefined);
+    expect(result).toBe(false);
+  });
+});
 
-    it("should return false for a logged-in user with teacherPending false", () => {
-      const result = isTeacherPending({ ...mockUser, loggedIn: true });
-      expect(result).toBe(false);
-    });
+describe("isTeacherPending function", () => {
+  it("should return true for a logged-in user with teacherPending true", () => {
+    const result = isTeacherPending({ ...mockUser, teacherPending: true, loggedIn: true });
+    expect(result).toBe(true);
+  });
 
-    it("should return false for null or undefined user", () => {
-      const resultNull = isTeacherPending(null);
-      const resultUndefined = isTeacherPending(undefined);
+  it("should return false for a logged-in user with teacherPending false", () => {
+    const result = isTeacherPending({ ...mockUser, loggedIn: true });
+    expect(result).toBe(false);
+  });
 
-      expect(resultNull).toBe(false);
-      expect(resultUndefined).toBe(false);
-    });
+  it("should return false for null  user", () => {
+    const result = isTeacherPending(null);
+    expect(result).toBe(false);
+  });
+
+  it("should return false for undefined user", () => {
+    const result = isTeacherPending(undefined);
+    expect(result).toBe(false);
   });
 });

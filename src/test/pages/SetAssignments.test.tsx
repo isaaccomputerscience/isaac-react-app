@@ -160,6 +160,7 @@ describe("SetAssignments", () => {
     const allAssignments = currentAssignments.concat(pendingAssignments);
     expect(allAssignments).toHaveLength(1);
     expect(allAssignments[0].textContent).toContain(mockActiveGroups[0].groupName);
+
     await clickButton("Assign to group");
 
     // Expect request to be sent off with expected parameters
