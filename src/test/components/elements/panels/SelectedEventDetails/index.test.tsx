@@ -1,7 +1,6 @@
 import { screen } from "@testing-library/react";
 import {
   SelectedEventDetails,
-  countGenders,
   countStudentsAndTeachers,
 } from "../../../../../app/components/elements/panels/SelectedEventDetails";
 import { ACTION_TYPE, API_PATH, asPercentage, augmentEvent, formatAddress } from "../../../../../app/services";
@@ -12,6 +11,7 @@ import { EventBookingDTO, IsaacEventPageDTO } from "../../../../../IsaacApiTypes
 import { FRIENDLY_DATE_AND_TIME } from "../../../../../app/components/elements/DateString";
 import { store } from "../../../../../app/state";
 import { rest } from "msw";
+import { countEventDetailsByRole } from "../../../../../app/components/elements/panels/EventGenderDetails";
 
 describe("SelectedEventDetails", () => {
   const setupTest = (eventPage: IsaacEventPageDTO) => {
@@ -34,10 +34,10 @@ describe("SelectedEventDetails", () => {
   };
 
   const findExpectedValues = (event: AugmentedEvent, eventBookings: EventBookingDTO[]) => {
-    const { male, female, other, preferNotToSay, unknown } = countGenders(eventBookings);
-    const numberOfConfirmedOrAttendedBookings = eventBookings.filter((eventBooking) => {
-      return eventBooking.bookingStatus === "CONFIRMED" || eventBooking.bookingStatus === "ATTENDED";
-    }).length;
+    const { genders: studentGenders, numberOfConfirmedOrAttendedBookings: studentBookingsCount } =
+      countEventDetailsByRole("STUDENT", eventBookings);
+    const { genders: teacherGenders, numberOfConfirmedOrAttendedBookings: teacherBookingsCount } =
+      countEventDetailsByRole("TEACHER", eventBookings);
     const title = `${event.title as string} - ${event.subtitle as string}`;
     const location = event.isVirtual ? "Online" : formatAddress(event.location);
     const status = event.eventStatus as string;
@@ -47,14 +47,34 @@ describe("SelectedEventDetails", () => {
     const placesAvailable = `${event.placesAvailable} / ${event.numberOfPlaces}`;
     const numberOfStudents = `${studentCount} / ${event.numberOfPlaces}`;
     const numberOfTeachers = `${teacherCount} / ${event.numberOfPlaces}`;
-    const maleGender = `Male: ${male} (${asPercentage(male, numberOfConfirmedOrAttendedBookings)}%)`;
-    const femaleGender = `Female: ${female} (${asPercentage(female, numberOfConfirmedOrAttendedBookings)}%)`;
-    const otherGender = `Other: ${other} (${asPercentage(other, numberOfConfirmedOrAttendedBookings)}%)`;
-    const preferNotToSayGender = `Prefer not to say: ${preferNotToSay} (${asPercentage(
-      preferNotToSay,
-      numberOfConfirmedOrAttendedBookings,
+    const studentMaleGender = `${studentGenders.male} (${asPercentage(studentGenders.male, studentBookingsCount)}%)`;
+    const studentFemaleGender = `${studentGenders.female} (${asPercentage(
+      studentGenders.female,
+      studentBookingsCount,
     )}%)`;
-    const unknownGender = `Unknown: ${unknown} (${asPercentage(unknown, numberOfConfirmedOrAttendedBookings)}%)`;
+    const studentOtherGender = `${studentGenders.other} (${asPercentage(studentGenders.other, studentBookingsCount)}%)`;
+    const studentPreferNotToSayGender = `${studentGenders.preferNotToSay} (${asPercentage(
+      studentGenders.preferNotToSay,
+      studentBookingsCount,
+    )}%)`;
+    const studentUnknownGender = `${studentGenders.unknown} (${asPercentage(
+      studentGenders.unknown,
+      studentBookingsCount,
+    )}%)`;
+    const teacherMaleGender = `${teacherGenders.male} (${asPercentage(teacherGenders.male, teacherBookingsCount)}%)`;
+    const teacherFemaleGender = `${teacherGenders.female} (${asPercentage(
+      teacherGenders.female,
+      teacherBookingsCount,
+    )}%)`;
+    const teacherOtherGender = `${teacherGenders.other} (${asPercentage(teacherGenders.other, teacherBookingsCount)}%)`;
+    const teacherPreferNotToSayGender = `${teacherGenders.preferNotToSay} (${asPercentage(
+      teacherGenders.preferNotToSay,
+      teacherBookingsCount,
+    )}%)`;
+    const teacherUnknownGender = `${teacherGenders.unknown} (${asPercentage(
+      teacherGenders.unknown,
+      teacherBookingsCount,
+    )}%)`;
 
     return [
       title,
@@ -65,11 +85,16 @@ describe("SelectedEventDetails", () => {
       placesAvailable,
       numberOfStudents,
       numberOfTeachers,
-      maleGender,
-      femaleGender,
-      otherGender,
-      preferNotToSayGender,
-      unknownGender,
+      studentMaleGender,
+      studentFemaleGender,
+      studentOtherGender,
+      studentPreferNotToSayGender,
+      studentUnknownGender,
+      teacherMaleGender,
+      teacherFemaleGender,
+      teacherOtherGender,
+      teacherPreferNotToSayGender,
+      teacherUnknownGender,
     ];
   };
 

@@ -44,7 +44,7 @@ const EventTableRow = ({ eventData, onClick }: { eventData: EventOverview; onCli
   return (
     <tr>
       <td>
-        <RS.Button color="secondary" className="btn-sm mx-2" onClick={() => onClick(id as string)}>
+        <RS.Button color="secondary" className="btn-sm" onClick={() => onClick(id as string)}>
           Manage
         </RS.Button>
       </td>
@@ -60,7 +60,7 @@ const EventTableRow = ({ eventData, onClick }: { eventData: EventOverview; onCli
         <DateString>{bookingDeadline}</DateString>
       </td>
       <td>{location && location.address && location.address.town}</td>
-      <td>
+      <td style={{ width: "95px" }}>
         {privateEvent && <RS.Badge color="primary">Private Event</RS.Badge>}
         {eventStatus?.replace(/_/g, " ")}
       </td>
