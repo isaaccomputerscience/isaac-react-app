@@ -7,11 +7,51 @@ import { ACTION_TYPE, API_PATH, asPercentage, augmentEvent, formatAddress } from
 import { renderTestEnvironment } from "../../../../utils";
 import { mockEvent, mockEventBookings } from "../../../../../mocks/data";
 import { AugmentedEvent } from "../../../../../IsaacAppTypes";
-import { EventBookingDTO, IsaacEventPageDTO } from "../../../../../IsaacApiTypes";
+import { EventBookingDTO, IsaacEventPageDTO, UserRole } from "../../../../../IsaacApiTypes";
 import { FRIENDLY_DATE_AND_TIME } from "../../../../../app/components/elements/DateString";
 import { store } from "../../../../../app/state";
 import { rest } from "msw";
 import { countEventDetailsByRole } from "../../../../../app/components/elements/panels/EventGenderDetails";
+
+const formatGenderDetails = (role: UserRole, eventBookings: EventBookingDTO[]) => {
+  const { genders, numberOfConfirmedOrAttendedBookings } = countEventDetailsByRole(role, eventBookings);
+
+  return [
+    `${genders.male} (${asPercentage(genders.male, numberOfConfirmedOrAttendedBookings)}%)`,
+    `${genders.female} (${asPercentage(genders.female, numberOfConfirmedOrAttendedBookings)}%)`,
+    `${genders.other} (${asPercentage(genders.other, numberOfConfirmedOrAttendedBookings)}%)`,
+    `${genders.preferNotToSay} (${asPercentage(genders.preferNotToSay, numberOfConfirmedOrAttendedBookings)}%)`,
+    `${genders.unknown} (${asPercentage(genders.unknown, numberOfConfirmedOrAttendedBookings)}%)`,
+  ];
+};
+
+const findExpectedValues = (event: AugmentedEvent, eventBookings: EventBookingDTO[]) => {
+  const studentGenderDetails = formatGenderDetails("STUDENT", eventBookings);
+  const teacherGenderDetails = formatGenderDetails("TEACHER", eventBookings);
+
+  const title = `${event.title as string} - ${event.subtitle as string}`;
+  const location = event.isVirtual ? "Online" : formatAddress(event.location);
+  const status = event.eventStatus as string;
+  const date = `${FRIENDLY_DATE_AND_TIME.format(event.date)} - ${FRIENDLY_DATE_AND_TIME.format(event.endDate)}`;
+  const bookingDeadline = FRIENDLY_DATE_AND_TIME.format(event.bookingDeadline);
+  const { studentCount, teacherCount } = countStudentsAndTeachers(eventBookings);
+  const placesAvailable = `${event.placesAvailable} / ${event.numberOfPlaces}`;
+  const numberOfStudents = `${studentCount} / ${event.numberOfPlaces}`;
+  const numberOfTeachers = `${teacherCount} / ${event.numberOfPlaces}`;
+
+  return [
+    title,
+    location,
+    status,
+    date,
+    bookingDeadline,
+    placesAvailable,
+    numberOfStudents,
+    numberOfTeachers,
+    ...studentGenderDetails,
+    ...teacherGenderDetails,
+  ];
+};
 
 describe("SelectedEventDetails", () => {
   const setupTest = (eventPage: IsaacEventPageDTO) => {
@@ -31,71 +71,6 @@ describe("SelectedEventDetails", () => {
       type: ACTION_TYPE.EVENT_BOOKINGS_RESPONSE_SUCCESS,
       eventBookings: mockEventBookings,
     });
-  };
-
-  const findExpectedValues = (event: AugmentedEvent, eventBookings: EventBookingDTO[]) => {
-    const { genders: studentGenders, numberOfConfirmedOrAttendedBookings: studentBookingsCount } =
-      countEventDetailsByRole("STUDENT", eventBookings);
-    const { genders: teacherGenders, numberOfConfirmedOrAttendedBookings: teacherBookingsCount } =
-      countEventDetailsByRole("TEACHER", eventBookings);
-    const title = `${event.title as string} - ${event.subtitle as string}`;
-    const location = event.isVirtual ? "Online" : formatAddress(event.location);
-    const status = event.eventStatus as string;
-    const date = `${FRIENDLY_DATE_AND_TIME.format(event.date)} - ${FRIENDLY_DATE_AND_TIME.format(event.endDate)}`;
-    const bookingDeadline = FRIENDLY_DATE_AND_TIME.format(event.bookingDeadline);
-    const { studentCount, teacherCount } = countStudentsAndTeachers(eventBookings);
-    const placesAvailable = `${event.placesAvailable} / ${event.numberOfPlaces}`;
-    const numberOfStudents = `${studentCount} / ${event.numberOfPlaces}`;
-    const numberOfTeachers = `${teacherCount} / ${event.numberOfPlaces}`;
-    const studentMaleGender = `${studentGenders.male} (${asPercentage(studentGenders.male, studentBookingsCount)}%)`;
-    const studentFemaleGender = `${studentGenders.female} (${asPercentage(
-      studentGenders.female,
-      studentBookingsCount,
-    )}%)`;
-    const studentOtherGender = `${studentGenders.other} (${asPercentage(studentGenders.other, studentBookingsCount)}%)`;
-    const studentPreferNotToSayGender = `${studentGenders.preferNotToSay} (${asPercentage(
-      studentGenders.preferNotToSay,
-      studentBookingsCount,
-    )}%)`;
-    const studentUnknownGender = `${studentGenders.unknown} (${asPercentage(
-      studentGenders.unknown,
-      studentBookingsCount,
-    )}%)`;
-    const teacherMaleGender = `${teacherGenders.male} (${asPercentage(teacherGenders.male, teacherBookingsCount)}%)`;
-    const teacherFemaleGender = `${teacherGenders.female} (${asPercentage(
-      teacherGenders.female,
-      teacherBookingsCount,
-    )}%)`;
-    const teacherOtherGender = `${teacherGenders.other} (${asPercentage(teacherGenders.other, teacherBookingsCount)}%)`;
-    const teacherPreferNotToSayGender = `${teacherGenders.preferNotToSay} (${asPercentage(
-      teacherGenders.preferNotToSay,
-      teacherBookingsCount,
-    )}%)`;
-    const teacherUnknownGender = `${teacherGenders.unknown} (${asPercentage(
-      teacherGenders.unknown,
-      teacherBookingsCount,
-    )}%)`;
-
-    return [
-      title,
-      location,
-      status,
-      date,
-      bookingDeadline,
-      placesAvailable,
-      numberOfStudents,
-      numberOfTeachers,
-      studentMaleGender,
-      studentFemaleGender,
-      studentOtherGender,
-      studentPreferNotToSayGender,
-      studentUnknownGender,
-      teacherMaleGender,
-      teacherFemaleGender,
-      teacherOtherGender,
-      teacherPreferNotToSayGender,
-      teacherUnknownGender,
-    ];
   };
 
   it("renders all event details when event is selected", async () => {
