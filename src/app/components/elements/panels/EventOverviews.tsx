@@ -1,5 +1,5 @@
 import { AppState, getEventOverviews, useAppDispatch, useAppSelector } from "../../../state";
-import React, { useEffect, useState } from "react";
+import React, { PropsWithChildren, useEffect, useState } from "react";
 import { Accordion } from "../Accordion";
 import * as RS from "reactstrap";
 import { ShowLoading } from "../../handlers/ShowLoading";
@@ -94,7 +94,7 @@ export const EventOverviews = ({
     dispatch(getEventOverviews(overviewFilter));
   }, [dispatch, setSelectedEventId, overviewFilter]);
 
-  const EventTableButton = ({ sort, text }: { sort: string; text: string }) => {
+  const EventTableButton = ({ sort, children }: PropsWithChildren<{ sort: string }>) => {
     return (
       <th>
         <RS.Button
@@ -105,7 +105,7 @@ export const EventOverviews = ({
           }}
           style={{ wordWrap: "normal", minWidth: "80px" }}
         >
-          {text}
+          {children}
         </RS.Button>
       </th>
     );
@@ -171,7 +171,9 @@ export const EventOverviews = ({
                         </RS.Button>
                       </th>
                       {eventTableHeaderButtons.map((button) => (
-                        <EventTableButton key={button.text} sort={button.sort} text={button.text} />
+                        <EventTableButton key={button.text} sort={button.sort}>
+                          {button.text}
+                        </EventTableButton>
                       ))}
                       <th style={{ minWidth: "80px" }}>Attendance</th>
                     </tr>

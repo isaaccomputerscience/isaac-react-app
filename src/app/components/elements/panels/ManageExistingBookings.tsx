@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { PropsWithChildren, useEffect, useState } from "react";
 import * as RS from "reactstrap";
 import { Accordion } from "../Accordion";
 import {
-  AppState,
   cancelUserBooking,
   deleteUserBooking,
   getEventBookingCSV,
@@ -31,10 +30,12 @@ import { DateString } from "../DateString";
 
 export const ManageExistingBookings = ({ user, eventBookingId }: { user: PotentialUser; eventBookingId: string }) => {
   const dispatch = useAppDispatch();
+
   useEffect(() => {
     dispatch(getEventBookings(eventBookingId));
-  }, [eventBookingId]);
-  const eventBookings = useAppSelector((state: AppState) => (state && state.eventBookings) || []);
+  }, [dispatch, eventBookingId]);
+
+  const eventBookings = useAppSelector(selectors.events.eventBookings);
   const userIdToSchoolMapping = useAppSelector(selectors.admin.userSchoolLookup) || {};
 
   const [sortPredicate, setSortPredicate] = useState("date");
@@ -66,6 +67,16 @@ export const ManageExistingBookings = ({ user, eventBookingId }: { user: Potenti
     return idsToReturn;
   }
 
+  const BookingHeaderButton = ({ sort, children }: PropsWithChildren<{ sort: string }>) => {
+    return (
+      <th>
+        <RS.Button color="link" onClick={setSortPredicateAndDirection(sort)}>
+          {children}
+        </RS.Button>
+      </th>
+    );
+  };
+
   return (
     <Accordion trustedTitle="Manage current bookings">
       {isEventLeader(user) && (
@@ -81,52 +92,20 @@ export const ManageExistingBookings = ({ user, eventBookingId }: { user: Potenti
               <thead>
                 <tr>
                   <th>Actions</th>
-                  <th>
-                    <RS.Button color="link" onClick={setSortPredicateAndDirection("userBooked.familyName")}>
-                      Name
-                    </RS.Button>
-                  </th>
-                  <th>
-                    <RS.Button color="link" onClick={setSortPredicateAndDirection("userBooked.email")}>
-                      Email
-                    </RS.Button>
-                  </th>
-                  <th>
-                    <RS.Button color="link" onClick={setSortPredicateAndDirection("userBooked.role")}>
-                      Account type
-                    </RS.Button>
-                  </th>
-                  <th>
-                    <RS.Button color="link" onClick={setSortPredicateAndDirection("schoolName")}>
-                      School
-                    </RS.Button>
-                  </th>
+                  <BookingHeaderButton sort="userBooked.familyName">Name</BookingHeaderButton>
+                  <BookingHeaderButton sort="userBooked.email">Email</BookingHeaderButton>
+                  <BookingHeaderButton sort="userBooked.role">Account type</BookingHeaderButton>
+                  <BookingHeaderButton sort="schoolName">School</BookingHeaderButton>
                   <th>
                     Job / <span className="text-nowrap">Year Group</span>
                   </th>
-                  <th>
-                    <RS.Button color="link" onClick={setSortPredicateAndDirection("bookingStatus")}>
-                      Booking status
-                    </RS.Button>
-                  </th>
+                  <BookingHeaderButton sort="bookingStatus">Booking status</BookingHeaderButton>
                   <th>Gender</th>
-                  <th>
-                    <RS.Button color="link" onClick={setSortPredicateAndDirection("bookingDate")}>
-                      Booking created
-                    </RS.Button>
-                  </th>
-                  <th>
-                    <RS.Button color="link" onClick={setSortPredicateAndDirection("updated")}>
-                      Booking updated
-                    </RS.Button>
-                  </th>
+                  <BookingHeaderButton sort="bookingDate">Booking created</BookingHeaderButton>
+                  <BookingHeaderButton sort="updated">Booking updated</BookingHeaderButton>
                   <th style={{ minWidth: "70px" }}>Stage</th>
                   <th style={{ minWidth: "100px" }}>Exam board</th>
-                  <th>
-                    <RS.Button color="link" onClick={setSortPredicateAndDirection("reservedById")}>
-                      Reserved by ID
-                    </RS.Button>
-                  </th>
+                  <BookingHeaderButton sort="reservedById">Reserved by ID</BookingHeaderButton>
                   <th>Accessibility requirements</th>
                   <th style={{ minWidth: "120px" }}>Medical / Dietary</th>
                   <th>Emergency name</th>

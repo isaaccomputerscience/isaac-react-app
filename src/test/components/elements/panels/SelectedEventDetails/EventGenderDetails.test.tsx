@@ -22,8 +22,6 @@ const checkGenderCounts = (genders: HTMLTableCellElement[], expectedCounts: stri
   });
 };
 
-const genders = ["Male", "Female", "Other", "Prefer not to say", "Unknown"];
-
 describe("EventGenderDetails", () => {
   const setupTest = (props = {}) => {
     renderTestEnvironment({
@@ -43,6 +41,7 @@ describe("EventGenderDetails", () => {
     expect(genderStatsTable).toBeInTheDocument();
     const tableHeader = within(genderStatsTable).getAllByRole("columnheader");
     expect(tableHeader).toHaveLength(6);
+    const genders = ["Male", "Female", "Other", "Prefer not to say", "Unknown"];
     tableHeader.slice(1).forEach((columnHeader, index) => expect(columnHeader).toHaveTextContent(genders[index]));
   });
 

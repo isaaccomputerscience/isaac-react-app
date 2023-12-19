@@ -3,7 +3,7 @@ import { EventBookingDTO, UserRole } from "../../../../IsaacApiTypes";
 import { Col, Table, UncontrolledTooltip } from "reactstrap";
 import { asPercentage } from "../../../services";
 
-export const countEventDetailsByRole = (role: UserRole | undefined, eventBookings: EventBookingDTO[]) => {
+export const countEventDetailsByRole = (role: UserRole, eventBookings: EventBookingDTO[]) => {
   const countByRole = {
     genders: {
       male: 0,
@@ -20,9 +20,14 @@ export const countEventDetailsByRole = (role: UserRole | undefined, eventBooking
     const bookingStatus = booking.bookingStatus;
     const userRole = booking.userBooked?.role;
 
-    const roleFilter = role === undefined || userRole === role;
+    const meetsRoleRequirements = userRole === role;
 
-    if (booking.userBooked && bookingStatus && ["CONFIRMED", "ATTENDED"].includes(bookingStatus) && roleFilter) {
+    if (
+      booking.userBooked &&
+      bookingStatus &&
+      ["CONFIRMED", "ATTENDED"].includes(bookingStatus) &&
+      meetsRoleRequirements
+    ) {
       countByRole.numberOfConfirmedOrAttendedBookings++;
 
       switch (gender) {
@@ -40,9 +45,8 @@ export const countEventDetailsByRole = (role: UserRole | undefined, eventBooking
           break;
         case "UNKNOWN":
         case undefined:
-          countByRole.genders.unknown++;
-          break;
         default:
+          countByRole.genders.unknown++;
           break;
       }
     }
