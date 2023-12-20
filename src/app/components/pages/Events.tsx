@@ -40,7 +40,7 @@ const TeacherEventsDescription = () => (
   <div className="text-left">
     The National Centre for Computing Education offers professional development courses to help you teacher computer
     science at GCSE and A Level, free to teachers in state-funded education. Discover the full list on the{" "}
-    <a href="https://teachcomputing.org/courses" target="_blank" rel="noopener noreferrer">
+    <a href="https://teachcomputing.org/courses" target="_blank" rel="noopener noreferrer" className="text-white">
       Teach Computing website.
     </a>
   </div>
@@ -214,6 +214,7 @@ export const Events = withRouter(({ history, location }: RouteComponentProps) =>
         src="/assets/ncce-teachers.png"
         link="https://teachcomputing.org/courses"
         alt="teachers on a course"
+        secondary={true}
       >
         <TeacherEventsDescription />
       </Banner>

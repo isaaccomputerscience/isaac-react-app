@@ -48,4 +48,9 @@ describe("Banner", () => {
     const image = screen.getByRole("img");
     expect(image).toHaveAttribute("alt", "banner image");
   });
+  it("changes the background colour to dark blue if the secondary prop is true", () => {
+    setupTest({ ...mockBannerProps, secondary: true });
+    const banner = getById(mockBannerProps.id);
+    expect(banner).toHaveStyle({ backgroundColor: "#07174f" });
+  });
 });
