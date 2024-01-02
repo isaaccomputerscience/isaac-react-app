@@ -1,13 +1,62 @@
 import { mockNewsPods, mockPromoPods } from "../../../mocks/data";
 import { Dashboard } from "../../../app/components/elements/Dashboard";
 import { TestUserRole, renderTestEnvironment } from "../../utils";
-import { screen, waitFor } from "@testing-library/react";
-import { IsaacQuestionPageDTO, UserRole } from "../../../IsaacApiTypes";
+import { screen, waitFor, within } from "@testing-library/react";
+import { IsaacQuestionPageDTO, UserRole, USER_ROLES } from "../../../IsaacApiTypes";
 import { MockedRequest, RestHandler, rest } from "msw";
 import { API_PATH } from "../../../app/services";
 
 const mockPromoItem = mockPromoPods.results[0];
 const mockFeaturedNewsItem = mockNewsPods.results[1];
+
+const findDashboardButtons = () => {
+  const allUserButtons = screen.getByTestId("show-me-buttons");
+  const dashboardButtons = within(allUserButtons).getAllByRole("link");
+  const teacherButtons = screen.queryByTestId("teacher-dashboard-buttons");
+  const teacherDashboardButtons = teacherButtons ? within(teacherButtons).getAllByRole("link") : [];
+  return { dashboardButtons, teacherDashboardButtons };
+};
+
+const checkDashboardButtons = (role?: "TEACHER") => {
+  const { dashboardButtons, teacherDashboardButtons } = findDashboardButtons();
+
+  const expectCommonButtons = () => {
+    const commonButtonDetails = [
+      { text: "GCSE resources", href: "/topics/gcse" },
+      { text: "A Level resources", href: "/topics/a_level" },
+      { text: "Events", href: "/events" },
+    ];
+
+    commonButtonDetails.forEach(({ text, href }, index) => {
+      expect(dashboardButtons[index]).toHaveTextContent(text);
+      expect(dashboardButtons[index]).toHaveAttribute("href", href);
+    });
+  };
+
+  const expectTeacherButtons = () => {
+    expect(teacherDashboardButtons).toHaveLength(3);
+    const teacherButtonDetails = [
+      { text: "Key stage 3 courses", href: "https://teachcomputing.org/courses?level=Key+stage+3" },
+      { text: "Key stage 4 courses", href: "https://teachcomputing.org/courses?level=Key+stage+4" },
+      { text: "A level courses", href: "https://teachcomputing.org/courses?level=Post+16" },
+    ];
+
+    teacherButtonDetails.forEach(({ text, href }, index) => {
+      expect(teacherDashboardButtons[index]).toHaveTextContent(text);
+      expect(teacherDashboardButtons[index]).toHaveAttribute("href", href);
+      const buttonIcon = within(teacherDashboardButtons[index]).getByRole("img");
+      expect(buttonIcon).toBeVisible();
+    });
+  };
+
+  expectCommonButtons();
+
+  if (role === "TEACHER") {
+    expectTeacherButtons();
+  } else {
+    expect(teacherDashboardButtons).toHaveLength(0);
+  }
+};
 
 describe("Dashboard", () => {
   const setupTest = (
@@ -38,25 +87,30 @@ describe("Dashboard", () => {
     const promoTile = screen.queryByTestId("promo-tile");
     expect(featuredNewsTile).toBeNull();
     expect(promoTile).toBeNull();
+    checkDashboardButtons();
   });
 
-  let roles: UserRole[] = ["TEACHER", "EVENT_LEADER", "CONTENT_EDITOR", "EVENT_MANAGER", "ADMIN"];
+  it.each(USER_ROLES)("shows the correct dashboard buttons with links for a %s user", async (role) => {
+    setupTest(role);
+    await screen.findByRole("heading", {
+      name: /welcome/i,
+    });
+    if (role === "TEACHER") checkDashboardButtons("TEACHER");
+    else checkDashboardButtons();
+  });
 
-  it.each(roles)(
-    "promo tile is visible, and featured news tile is not, if %s user is logged in and promo item is available",
-    async (role) => {
-      setupTest(role);
-      const promoTile = await screen.findByTestId("promo-tile");
-      const featuredNewsTile = screen.queryByTestId("featured-news-item");
-      expect(promoTile).toBeInTheDocument();
-      expect(featuredNewsTile).toBeNull();
-      const promoTitle = screen.getByText(mockPromoItem.title);
-      expect(promoTitle).toBeInTheDocument();
-    },
-  );
+  it("shows promo tile and not featured news tile if TEACHER user is logged in and promo item is available", async () => {
+    setupTest("TEACHER");
+    const promoTile = await screen.findByTestId("promo-tile");
+    const featuredNewsTile = screen.queryByTestId("featured-news-item");
+    expect(promoTile).toBeInTheDocument();
+    expect(featuredNewsTile).toBeNull();
+    const promoTitle = screen.getByText(mockPromoItem.title);
+    expect(promoTitle).toBeInTheDocument();
+  });
 
-  it.each(roles)("featured news will appear instead if promo item is not available, for %s user", async (role) => {
-    setupTest(role, {
+  it("shows featured news if TEACHER user is logged in and promo item is not available", async () => {
+    setupTest("TEACHER", {
       promoItem: null,
     });
     const featuredNewsTile = await screen.findByTestId("featured-news-item");
@@ -67,7 +121,9 @@ describe("Dashboard", () => {
     expect(featuredNewsTitle).toBeInTheDocument();
   });
 
-  it.each(roles)("displays promo tile for %s user, not featured news or question tile", async (role) => {
+  const nonTeacherOrStudentRoles: UserRole[] = USER_ROLES.filter((role) => role !== "TEACHER" && role !== "STUDENT");
+
+  it.each(nonTeacherOrStudentRoles)("shows featured news tile if %s user is logged in", async (role) => {
     setupTest(role);
     const promoTile = await screen.findByTestId("promo-tile");
     const featuredNewsTile = screen.queryByTestId("featured-news-item");
@@ -79,10 +135,10 @@ describe("Dashboard", () => {
     expect(promoTitle).toBeInTheDocument();
   });
 
-  roles = ["TEACHER", "EVENT_LEADER", "CONTENT_EDITOR", "EVENT_MANAGER", "ADMIN"];
+  const nonStudentRoles: UserRole[] = USER_ROLES.filter((role) => role !== "STUDENT");
 
-  it.each(roles)(
-    "shows loading spinner for %s users, if neither promo item nor featured news item are provided",
+  it.each(nonStudentRoles)(
+    "shows loading spinner for %s users if neither promo item nor featured news item are provided",
     async (role) => {
       setupTest(role, {
         promoItem: null,
@@ -107,7 +163,7 @@ describe("Dashboard", () => {
     expect(featuredNewsTile).toBeNull();
   });
 
-  it("does not show the question tile empty array comes back from the API", async () => {
+  it("shows featured news instead of question tile for students if no questions comes back from the API", async () => {
     setupTest("STUDENT", {}, [
       rest.get(API_PATH + "/questions/random", (req, res, ctx) => {
         return res(ctx.status(200), ctx.json([]));
