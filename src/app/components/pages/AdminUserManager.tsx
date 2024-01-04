@@ -3,6 +3,7 @@ import * as RS from "reactstrap";
 import { FormGroup } from "reactstrap";
 import { ShowLoading } from "../handlers/ShowLoading";
 import {
+  adminModifyTeacherPending,
   adminModifyUserEmailVerificationStatuses,
   adminModifyUserRoles,
   adminUserDelete,
@@ -113,6 +114,14 @@ export const AdminUserManager = () => {
       searchResults?.filter((user) => user.id && selectedUserIds.includes(user.id)).map((user) => user.email || "") ||
       [];
     await dispatch(adminModifyUserEmailVerificationStatuses(status, selectedEmails));
+    dispatch(adminUserSearchRequest(searchQuery));
+    setSelectedUserIds([]);
+    setUserUpdating(false);
+  };
+
+  const declineTeacherUpgradeAndUpdateResults = async () => {
+    setUserUpdating(true);
+    await dispatch(adminModifyTeacherPending(false, selectedUserIds));
     dispatch(adminUserSearchRequest(searchQuery));
     setSelectedUserIds([]);
     setUserUpdating(false);
@@ -257,7 +266,7 @@ export const AdminUserManager = () => {
       </RS.Card>
 
       {/* Result panel */}
-      <RS.Card className="my-4">
+      <RS.Card className="my-4 mx-n4 mx-sm-n5">
         <RS.CardTitle tag="h4" className="pl-4 pt-3 mb-0">
           Manage users ({(isDefined(searchResults) && searchResults.length) || 0})<br />
           Selected ({selectedUserIds.length})
@@ -266,9 +275,9 @@ export const AdminUserManager = () => {
         <RS.CardBody id="admin-search-results">
           {/* Action Buttons */}
           <RS.Row className="pb-4">
-            <RS.Col>
+            <RS.Col className="d-flex flex-wrap" style={{ gap: "13px" }}>
               <RS.UncontrolledButtonDropdown>
-                <RS.DropdownToggle caret disabled={userUpdating} color="primary" outline>
+                <RS.DropdownToggle caret disabled={userUpdating} color="primary">
                   Modify Role
                 </RS.DropdownToggle>
                 <RS.DropdownMenu>
@@ -284,9 +293,16 @@ export const AdminUserManager = () => {
                   ))}
                 </RS.DropdownMenu>
               </RS.UncontrolledButtonDropdown>
+              <RS.Button
+                disabled={userUpdating || selectedUserIds.length === 0}
+                color="primary"
+                onClick={() => declineTeacherUpgradeAndUpdateResults()}
+              >
+                Decline Teacher Upgrade
+              </RS.Button>
               {isDefined(currentUser) && currentUser.role === "ADMIN" && (
                 <RS.UncontrolledButtonDropdown>
-                  <RS.DropdownToggle caret disabled={userUpdating} color="primary" outline className="ml-3">
+                  <RS.DropdownToggle caret disabled={userUpdating} color="primary">
                     Email Status
                   </RS.DropdownToggle>
                   <RS.DropdownMenu>
@@ -304,7 +320,7 @@ export const AdminUserManager = () => {
                 </RS.UncontrolledButtonDropdown>
               )}
             </RS.Col>
-            <RS.Col>
+            <RS.Col xs={2}>
               <Link
                 className="btn float-right btn-secondary border-0"
                 to={{
@@ -324,7 +340,7 @@ export const AdminUserManager = () => {
             <ShowLoading until={searchResults}>
               {isDefined(searchResults) && searchResults.length > 0 ? (
                 <div className="overflow-auto">
-                  <RS.Table bordered>
+                  <RS.Table bordered className="mb-0 bg-white table-hover table-sm">
                     <thead>
                       <tr>
                         <th>
@@ -338,13 +354,7 @@ export const AdminUserManager = () => {
                         <th>User role</th>
                         <th>School</th>
                         <th>Verification status</th>
-                        <th>
-                          Teacher pending?
-                          <span id="teacher-pending" className="icon-help mb-0" style={{ alignSelf: "center" }} />
-                          <RS.UncontrolledTooltip target="#teacher-pending" placement="bottom">
-                            Awaiting teacher status verification
-                          </RS.UncontrolledTooltip>
-                        </th>
+                        <th>Teacher pending?</th>
                         <th>Member since</th>
                         <th>Last seen</th>
                       </tr>
