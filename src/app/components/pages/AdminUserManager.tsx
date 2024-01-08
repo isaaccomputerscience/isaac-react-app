@@ -67,7 +67,7 @@ const UserManagerSearch = ({
   const updateQuery = (update: { [key: string]: string | null }) => {
     // Replace empty strings with nulls
     const nulledUpdate: { [key: string]: string | null } = {};
-    Object.entries(update).forEach(([key, value]) => (nulledUpdate[key] = value ?? null));
+    Object.entries(update).forEach(([key, value]) => (nulledUpdate[key] = value || null));
     // Create a copy so that we trigger a re-render
     setSearchQuery({ ...searchQuery, ...nulledUpdate });
   };
@@ -526,16 +526,12 @@ export const AdminUserManager = () => {
   return (
     <Container>
       <TitleAndBreadcrumb intermediateCrumbs={[ADMIN_CRUMB]} currentPageTitle="User manager" />
-
-      {/* Search */}
       <UserManagerSearch
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         setSearchRequested={setSearchRequested}
       />
-
       <UserManagerResults searchRequested={searchRequested} searchQuery={searchQuery} />
-
       {isAdmin(currentUser) && <MergeAccounts />}
     </Container>
   );
