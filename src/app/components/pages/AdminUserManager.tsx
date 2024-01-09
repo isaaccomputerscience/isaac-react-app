@@ -41,7 +41,6 @@ import { TitleAndBreadcrumb } from "../elements/TitleAndBreadcrumb";
 import { ADMIN_CRUMB, isAdmin, isDefined } from "../../services";
 import { Link } from "react-router-dom";
 
-let promotableRoles: UserRole[] = ["STUDENT", "TEACHER", "EVENT_LEADER", "CONTENT_EDITOR"];
 const verificationStatuses: EmailVerificationStatus[] = ["NOT_VERIFIED", "DELIVERY_FAILED"];
 
 interface SearchQuery {
@@ -200,7 +199,9 @@ const UserManagerResults = ({ searchRequested, searchQuery }: { searchRequested:
   const [userUpdating, setUserUpdating] = useState(false);
   const [selectedUserIds, setSelectedUserIds] = useState<number[]>([]);
 
-  if (currentUser && currentUser.role == "ADMIN") {
+  let promotableRoles: UserRole[] = ["STUDENT", "TEACHER", "EVENT_LEADER", "CONTENT_EDITOR"];
+
+  if (currentUser && currentUser.role === "ADMIN") {
     promotableRoles = ["STUDENT", "TUTOR", "TEACHER", "EVENT_LEADER", "CONTENT_EDITOR", "EVENT_MANAGER"];
   }
 
@@ -299,7 +300,7 @@ const UserManagerResults = ({ searchRequested, searchQuery }: { searchRequested:
               <DropdownToggle caret disabled={userUpdating} color="primary">
                 Modify Role
               </DropdownToggle>
-              <DropdownMenu>
+              <DropdownMenu data-testid="modify-role-options">
                 <DropdownItem header>Promote or demote selected users to:</DropdownItem>
                 {promotableRoles.map((role) => (
                   <DropdownItem
@@ -324,7 +325,7 @@ const UserManagerResults = ({ searchRequested, searchQuery }: { searchRequested:
                 <DropdownToggle caret disabled={userUpdating} color="primary">
                   Email Status
                 </DropdownToggle>
-                <DropdownMenu>
+                <DropdownMenu data-testid="email-status-options">
                   <DropdownItem header>Change email verification status for users to:</DropdownItem>
                   {verificationStatuses.map((status) => (
                     <DropdownItem
@@ -508,10 +509,6 @@ export const AdminUserManager = () => {
   });
 
   const currentUser = useAppSelector((state: AppState) => (state?.user?.loggedIn && state.user) || null);
-
-  if (currentUser && currentUser.role == "ADMIN") {
-    promotableRoles = ["STUDENT", "TUTOR", "TEACHER", "EVENT_LEADER", "CONTENT_EDITOR", "EVENT_MANAGER"];
-  }
 
   useEffect(() => {
     if (searchResults && searchResults.length > 0) {
