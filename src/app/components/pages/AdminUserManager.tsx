@@ -385,7 +385,7 @@ const UserManagerResults = ({ searchRequested, searchQuery }: { searchRequested:
                           <Input
                             type="checkbox"
                             className="m-0 position-relative"
-                            checked={(user.id && selectedUserIds.includes(user.id)) || undefined}
+                            checked={(user.id && selectedUserIds.includes(user.id)) || false}
                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                               user.id && updateUserSelection(user.id, event.target.checked);
                             }}
