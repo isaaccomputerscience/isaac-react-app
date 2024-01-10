@@ -47,6 +47,12 @@ const findSearchFields = (): Record<string, HTMLElement> => {
   };
 };
 
+const mockSuccessfulPostRequest = (route: string) => {
+  return rest.post(API_PATH + route, (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json({}));
+  });
+};
+
 describe("Admin User Manager", () => {
   const renderUserManager = async ({ role = "ADMIN" }: { role?: UserRole } = {}) => {
     renderTestEnvironment({
@@ -73,18 +79,12 @@ describe("Admin User Manager", () => {
         rest.delete(API_PATH + "/admin/users/:userId", (req, res, ctx) => {
           return res(ctx.status(204), ctx.json({}));
         }),
-        rest.post(API_PATH + "/users/resetpassword", (req, res, ctx) => {
-          return res(ctx.status(200), ctx.json({}));
-        }),
-        rest.post(API_PATH + "/admin/users/change_role/:role", (req, res, ctx) => {
-          return res(ctx.status(200), ctx.json({}));
-        }),
-        rest.post(API_PATH + "/admin/users/change_email_verification_status/:status/true", (req, res, ctx) => {
-          return res(ctx.status(200), ctx.json({}));
-        }),
-        rest.post(API_PATH + "/admin/users/teacher_pending/:status", (req, res, ctx) => {
-          return res(ctx.status(200), ctx.json({}));
-        }),
+        ...[
+          "/users/resetpassword",
+          "/admin/users/change_role/:role",
+          "/admin/users/change_email_verification_status/:status/true",
+          "/admin/users/teacher_pending/:status",
+        ].map((route) => mockSuccessfulPostRequest(route)),
       ],
     });
     await waitFor(() => {
