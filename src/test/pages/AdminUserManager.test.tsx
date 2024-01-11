@@ -12,6 +12,7 @@ import { store } from "../../app/state";
 import { FRIENDLY_DATE_AND_TIME } from "../../app/components/elements/DateString";
 
 const adminSearchSpy = jest.spyOn(actions, "adminUserSearchRequest");
+const popupSpy = jest.spyOn(popups, "showToast");
 
 const findSearchFields = (): Record<string, HTMLElement> => {
   const searchForm = screen.getByRole("form");
@@ -84,6 +85,7 @@ describe("Admin User Manager", () => {
           "/admin/users/change_role/:role",
           "/admin/users/change_email_verification_status/:status/true",
           "/admin/users/teacher_pending/:status",
+          "/admin/users/merge",
         ].map((route) => mockSuccessfulPostRequest(route)),
       ],
     });
@@ -320,8 +322,6 @@ describe("Admin User Manager", () => {
         expect(window.confirm).toHaveBeenCalledWith("Are you sure you want to delete this user?");
       });
 
-      const popupSpy = jest.spyOn(popups, "showToast");
-
       it("continues to delete a user if the confirmation popup is accepted", async () => {
         const deleteSpy = jest.spyOn(actions, "adminUserDelete");
         jest.spyOn(window, "confirm").mockReturnValueOnce(true);
@@ -416,8 +416,29 @@ describe("Admin User Manager", () => {
       expect(mergeButton).toBeEnabled();
     });
 
-    it.todo("shows a popup confirmation window if merge button is clicked");
+    const attemptUserMerge = async () => {
+      const mergeButton = screen.getByRole("button", { name: "Merge" });
+      const firstUserId = screen.getByPlaceholderText("User ID to keep");
+      const secondUserId = screen.getByPlaceholderText("User ID to delete");
+      await userEvent.type(firstUserId, "1");
+      await userEvent.type(secondUserId, "2");
+      await userEvent.click(mergeButton);
+    };
 
-    it.todo("attempts to merge two user accounts if the merge confirmation is accepted");
+    it("shows a popup confirmation window if merge button is clicked", async () => {
+      jest.spyOn(window, "confirm").mockImplementation(jest.fn());
+      await renderUserManager();
+      await attemptUserMerge();
+      expect(window.confirm).toHaveBeenCalledWith(expect.stringContaining("Are you sure you want to merge"));
+    });
+
+    it("attempts to merge two user accounts if the merge confirmation is accepted and success confirmation appears", async () => {
+      const mergeSpy = jest.spyOn(actions, "mergeUsers");
+      jest.spyOn(window, "confirm").mockReturnValueOnce(true);
+      await renderUserManager();
+      await attemptUserMerge();
+      expect(mergeSpy).toHaveBeenCalledWith(1, 2);
+      expect(popupSpy).toHaveBeenCalledWith(expect.objectContaining({ title: "Users merged" }));
+    });
   });
 });
