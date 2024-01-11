@@ -14,38 +14,31 @@ import { FRIENDLY_DATE_AND_TIME } from "../../app/components/elements/DateString
 const adminSearchSpy = jest.spyOn(actions, "adminUserSearchRequest");
 const popupSpy = jest.spyOn(popups, "showToast");
 
-const findSearchFields = (): Record<string, HTMLElement> => {
-  const searchForm = screen.getByRole("form");
-  const familyName = screen.getByRole("textbox", {
-    name: /find a user by family name:/i,
-  });
-  const email = screen.getByRole("textbox", {
-    name: /find a user by email:/i,
-  });
-  const schoolOther = screen.getByRole("textbox", {
-    name: /find by manually entered school:/i,
-  });
-  const role = screen.getByRole("combobox", {
-    name: /find by user role:/i,
-  });
-  const postcode = screen.getByRole("textbox", {
-    name: /find users with school within a given distance of postcode:/i,
-  });
-  const postcodeRadius = getById("postcode-radius-search");
-  const schoolURN = screen.getByRole("textbox", { name: /find a user with school URN/i });
-  const searchButton = screen.getByRole("button", { name: "Search" });
-
-  return {
-    searchForm,
-    familyName,
-    email,
-    schoolOther,
-    role,
-    postcode,
-    postcodeRadius,
-    schoolURN,
-    searchButton,
-  };
+const searchFields = {
+  searchForm: () => screen.getByRole("form"),
+  familyName: () =>
+    screen.getByRole("textbox", {
+      name: /find a user by family name:/i,
+    }),
+  email: () =>
+    screen.getByRole("textbox", {
+      name: /find a user by email:/i,
+    }),
+  schoolOther: () =>
+    screen.getByRole("textbox", {
+      name: /find by manually entered school:/i,
+    }),
+  role: () =>
+    screen.getByRole("combobox", {
+      name: /find by user role:/i,
+    }),
+  postcode: () =>
+    screen.getByRole("textbox", {
+      name: /find users with school within a given distance of postcode:/i,
+    }),
+  postcodeRadius: () => getById("postcode-radius-search"),
+  schoolURN: () => screen.getByRole("textbox", { name: /find a user with school URN/i }),
+  searchButton: () => screen.getByRole("button", { name: "Search" }),
 };
 
 const mockSuccessfulPostRequest = (route: string) => {
@@ -100,12 +93,20 @@ describe("Admin User Manager", () => {
       await renderUserManager();
       checkPageTitle("User manager");
       const { searchForm, familyName, email, schoolOther, role, postcode, postcodeRadius, schoolURN, searchButton } =
-        findSearchFields();
-      [searchForm, familyName, email, schoolOther, role, postcode, postcodeRadius, schoolURN, searchButton].forEach(
-        (input) => expect(input).toBeInTheDocument(),
-      );
+        searchFields;
+      [
+        searchForm(),
+        familyName(),
+        email(),
+        schoolOther(),
+        role(),
+        postcode(),
+        postcodeRadius(),
+        schoolURN(),
+        searchButton(),
+      ].forEach((input) => expect(input).toBeInTheDocument());
       const expectedRadiusOptions = ["5 miles", "10 miles", "15 miles", "20 miles", "25 miles", "50 miles"];
-      const radiusOptions = within(postcodeRadius).getAllByRole("option");
+      const radiusOptions = within(postcodeRadius()).getAllByRole("option");
       radiusOptions.forEach((option, index) => {
         expect(option).toHaveTextContent(expectedRadiusOptions[index]);
       });
@@ -118,7 +119,7 @@ describe("Admin User Manager", () => {
         "Event manager",
         "Admin",
       ];
-      const roleOptions = within(role).getAllByRole("option");
+      const roleOptions = within(role()).getAllByRole("option");
       roleOptions.forEach((option, index) => expect(option).toHaveTextContent(expectedRoleOptions[index]));
     });
 
@@ -139,8 +140,8 @@ describe("Admin User Manager", () => {
       "searches with $fieldName if this text field is changed",
       async ({ fieldName, testValue }) => {
         await renderUserManager();
-        const { [fieldName]: inputField } = findSearchFields();
-        fireEvent.change(inputField, { target: { value: testValue } });
+        const inputField = searchFields[fieldName as keyof typeof searchFields];
+        fireEvent.change(inputField(), { target: { value: testValue } });
         await clickButton("Search");
         expect(adminSearchSpy).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -159,8 +160,8 @@ describe("Admin User Manager", () => {
       "searches with $fieldName if this dropdown is changed",
       async ({ fieldName, testValue }) => {
         await renderUserManager();
-        const { [fieldName]: dropdown } = findSearchFields();
-        await userEvent.selectOptions(dropdown, testValue);
+        const dropdown = searchFields[fieldName as keyof typeof searchFields];
+        await userEvent.selectOptions(dropdown(), testValue);
         await clickButton("Search");
         expect(adminSearchSpy).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -172,24 +173,22 @@ describe("Admin User Manager", () => {
 
     it("searches with null if user clears a text box", async () => {
       await renderUserManager();
-      const { familyName } = findSearchFields();
-      await userEvent.type(familyName, "Smith");
+      const { familyName } = searchFields;
+      await userEvent.type(familyName(), "Smith");
       await clickButton("Search");
       expect(adminSearchSpy).toHaveBeenCalledWith(expect.objectContaining({ familyName: "Smith" }));
-      await userEvent.clear(familyName);
+      await userEvent.clear(familyName());
       await clickButton("Search");
       expect(adminSearchSpy).toHaveBeenCalledWith(expect.objectContaining({ familyName: null }));
     });
   });
 
   describe("Manage users section", () => {
-    const adminButtons = () => {
-      const modifyRole = screen.getByRole("button", { name: /modify role/i });
-      const emailStatus = screen.queryByRole("button", { name: /email status/i });
-      const teacherUpgrade = screen.getByRole("button", { name: /decline teacher upgrade/i });
-      const email = screen.getByRole("link", { name: /email/i });
-
-      return { modifyRole, emailStatus, teacherUpgrade, email };
+    const adminButtons = {
+      modifyRole: () => screen.getByRole("button", { name: /modify role/i }),
+      emailStatus: () => screen.queryByRole("button", { name: /email status/i }),
+      teacherUpgrade: () => screen.getByRole("button", { name: /decline teacher upgrade/i }),
+      email: () => screen.getByRole("link", { name: /email/i }),
     };
 
     const searchAndWaitForResults = async () => {
@@ -200,12 +199,13 @@ describe("Admin User Manager", () => {
       const firstUserDetails = within(tableRows[1]).getAllByRole("cell");
       return { resultsTable, tableRows, firstUserDetails };
     };
+
     it("shows Manage Users heading and expected buttons", async () => {
       await renderUserManager();
       const heading = screen.getByRole("heading", { name: "Manage users (0) Selected (0)" });
       expect(heading).toBeInTheDocument();
-      const { modifyRole, emailStatus, teacherUpgrade, email } = adminButtons();
-      [modifyRole, emailStatus, teacherUpgrade, email].forEach((button) => expect(button).toBeInTheDocument());
+      const { modifyRole, emailStatus, teacherUpgrade, email } = adminButtons;
+      [modifyRole(), emailStatus(), teacherUpgrade(), email()].forEach((button) => expect(button).toBeInTheDocument());
     });
 
     const modifyRoleTestCases = [
@@ -239,8 +239,8 @@ describe("Admin User Manager", () => {
 
     it("does not show Email Status button for EVENT_MANAGER user", async () => {
       await renderUserManager({ role: "EVENT_MANAGER" });
-      const { emailStatus } = adminButtons();
-      expect(emailStatus).not.toBeInTheDocument();
+      const { emailStatus } = adminButtons;
+      expect(emailStatus()).not.toBeInTheDocument();
     });
 
     it("shows correct options for modifying email status for ADMIN user", async () => {
