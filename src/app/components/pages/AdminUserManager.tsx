@@ -192,7 +192,7 @@ const UserManagerSearch = ({
 
 const UserManagerResults = ({ searchRequested, searchQuery }: { searchRequested: boolean; searchQuery: object }) => {
   const dispatch = useAppDispatch();
-  const searchResults = useAppSelector(selectors.admin.userSearch);
+  const searchResults = useAppSelector(selectors.admin.userSearch) ?? [];
   const userIdToSchoolMapping = useAppSelector(selectors.admin.userSchoolLookup);
   const currentUser = useAppSelector((state: AppState) => (state?.user?.loggedIn && state.user) || null);
 
@@ -206,9 +206,9 @@ const UserManagerResults = ({ searchRequested, searchQuery }: { searchRequested:
   }
 
   const selectAllToggle = () => {
-    if (isDefined(searchResults) && searchResults.length === selectedUserIds.length) {
+    if (searchResults.length === selectedUserIds.length) {
       setSelectedUserIds([]);
-    } else if (searchResults) {
+    } else {
       setSelectedUserIds(searchResults.filter((result) => !!result).map((result) => result.id as number));
     }
   };
@@ -251,7 +251,7 @@ const UserManagerResults = ({ searchRequested, searchQuery }: { searchRequested:
   };
 
   const confirmUnverifiedUserPromotions = function () {
-    if (isDefined(searchResults)) {
+    if (searchResults.length) {
       const unverifiedSelectedUsers = selectedUserIds
         .map((selectedId) => searchResults.filter((result) => result.id === selectedId)[0])
         .filter((result) => result.emailVerificationStatus !== "VERIFIED");
@@ -288,7 +288,7 @@ const UserManagerResults = ({ searchRequested, searchQuery }: { searchRequested:
   return (
     <Card className="my-4 mx-n4 mx-sm-n5">
       <CardTitle tag="h4" className="pl-4 pt-3 mb-0">
-        Manage users ({(isDefined(searchResults) && searchResults.length) || 0})<br />
+        Manage users ({searchResults.length})<br />
         Selected ({selectedUserIds.length})
       </CardTitle>
 
@@ -358,7 +358,7 @@ const UserManagerResults = ({ searchRequested, searchQuery }: { searchRequested:
         {/* Results */}
         {searchRequested && (
           <ShowLoading until={searchResults}>
-            {isDefined(searchResults) && searchResults.length > 0 ? (
+            {searchResults.length ? (
               <div className="overflow-auto">
                 <Table bordered className="mb-0 bg-white table-hover table-sm">
                   <thead>
@@ -511,7 +511,7 @@ export const AdminUserManager = () => {
   const currentUser = useAppSelector((state: AppState) => (state?.user?.loggedIn && state.user) || null);
 
   useEffect(() => {
-    if (searchResults && searchResults.length > 0) {
+    if (searchResults?.length) {
       dispatch(
         getUserIdSchoolLookup(
           searchResults.map((result) => result.id).filter((result) => result != undefined) as number[],

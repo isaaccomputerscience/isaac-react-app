@@ -107,6 +107,7 @@ describe("Admin User Manager", () => {
       ].forEach((input) => expect(input).toBeInTheDocument());
       const expectedRadiusOptions = ["5 miles", "10 miles", "15 miles", "20 miles", "25 miles", "50 miles"];
       const radiusOptions = within(postcodeRadius()).getAllByRole("option");
+      expect(radiusOptions).toHaveLength(expectedRadiusOptions.length);
       radiusOptions.forEach((option, index) => {
         expect(option).toHaveTextContent(expectedRadiusOptions[index]);
       });
@@ -120,6 +121,7 @@ describe("Admin User Manager", () => {
         "Admin",
       ];
       const roleOptions = within(role()).getAllByRole("option");
+      expect(roleOptions).toHaveLength(expectedRoleOptions.length);
       roleOptions.forEach((option, index) => expect(option).toHaveTextContent(expectedRoleOptions[index]));
     });
 
