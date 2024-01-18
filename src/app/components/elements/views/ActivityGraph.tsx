@@ -1,17 +1,19 @@
-import React, { useEffect } from "react";
-import { bb } from "billboard.js";
+import React, { useEffect, useMemo } from "react";
+import bb, { zoom, areaSpline } from "billboard.js";
 import { AnsweredQuestionsByDate } from "../../../../IsaacApiTypes";
 import { formatISODateOnly } from "../DateString";
 
 export const ActivityGraph = ({ answeredQuestionsByDate }: { answeredQuestionsByDate: AnsweredQuestionsByDate }) => {
-  let selectedDates: string[] = [];
-  const foundDates = answeredQuestionsByDate ? Object.keys(answeredQuestionsByDate) : [];
-  if (foundDates && foundDates.length > 0) {
-    const nonZeroDates = foundDates.filter((date) => answeredQuestionsByDate && answeredQuestionsByDate[date] > 0);
-    if (nonZeroDates.length > 0) {
-      selectedDates = foundDates.sort();
+  const selectedDates: string[] = useMemo(() => {
+    const foundDates = answeredQuestionsByDate ? Object.keys(answeredQuestionsByDate) : [];
+    if (foundDates && foundDates.length > 0) {
+      const nonZeroDates = foundDates.filter((date) => answeredQuestionsByDate && answeredQuestionsByDate[date] > 0);
+      if (nonZeroDates.length > 0) {
+        return foundDates.sort();
+      }
     }
-  }
+    return [];
+  }, [answeredQuestionsByDate]);
 
   useEffect(() => {
     if (selectedDates.length === 0) {
@@ -36,7 +38,7 @@ export const ActivityGraph = ({ answeredQuestionsByDate }: { answeredQuestionsBy
             ...selectedDates.map((date) => (answeredQuestionsByDate ? answeredQuestionsByDate[date] || 0 : 0)),
           ],
         ],
-        types: { activity: "area-spline" },
+        types: { activity: areaSpline() },
         colors: { activity: "#ffb53f" },
         xFormat: "%Y-%m-%d",
       },
@@ -48,7 +50,7 @@ export const ActivityGraph = ({ answeredQuestionsByDate }: { answeredQuestionsBy
           max: maxDate,
         },
       },
-      zoom: { enabled: true },
+      zoom: { enabled: zoom() },
       legend: { show: false },
       spline: { interpolation: { type: "monotone-x" } },
       bindto: "#activityGraph",

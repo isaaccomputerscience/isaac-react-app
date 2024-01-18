@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import {
   getMyAnsweredQuestionsByDate,
   getMyProgress,
@@ -9,14 +9,14 @@ import {
   useAppSelector,
 } from "../../state";
 import { TitleAndBreadcrumb } from "../elements/TitleAndBreadcrumb";
-import { Card, CardBody, Col, Container, Row } from "reactstrap";
+import { Button, Card, CardBody, Col, Container, Row } from "reactstrap";
 import { HUMAN_QUESTION_TYPES, isTeacherOrAbove, safePercentage } from "../../services";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { PotentialUser } from "../../../IsaacAppTypes";
 import { Unauthorised } from "./Unauthorised";
 import { AggregateQuestionStats } from "../elements/panels/AggregateQuestionStats";
 import { Tabs } from "../elements/Tabs";
-import { FlushableRef, QuestionProgressCharts } from "../elements/views/QuestionProgressCharts";
+import { QuestionProgressCharts } from "../elements/views/QuestionProgressCharts";
 import { ActivityGraph } from "../elements/views/ActivityGraph";
 import { ProgressBar } from "../elements/views/ProgressBar";
 import { LinkToContentSummaryList } from "../elements/list-groups/ContentSummaryListGroupItem";
@@ -51,6 +51,8 @@ const MyProgress = withRouter((props: MyProgressProps) => {
   const myAnsweredQuestionsByDate = useAppSelector(selectors.user.answeredQuestionsByDate);
   const userAnsweredQuestionsByDate = useAppSelector(selectors.teacher.userAnsweredQuestionsByDate);
 
+  const [subId, setSubId] = useState("correct");
+
   useEffect(() => {
     if (viewingOwnData && user.loggedIn) {
       dispatch(getMyProgress());
@@ -60,8 +62,6 @@ const MyProgress = withRouter((props: MyProgressProps) => {
       dispatch(getUserAnsweredQuestionsByDate(userIdOfInterest, 0, Date.now(), false));
     }
   }, [dispatch, userIdOfInterest, viewingOwnData, user]);
-
-  const tabRefs: FlushableRef[] = [useRef(), useRef()];
 
   // Only teachers and above can see other users progress. The API checks if the other user has shared data with the
   // current user or not.
@@ -77,6 +77,8 @@ const MyProgress = withRouter((props: MyProgressProps) => {
     progress?.userDetails?.familyName || ""
   }`;
   const pageTitle = viewingOwnData ? "My progress" : `Progress for ${userName || "user"}`;
+
+  const tagData = progress?.[subId === "attempted" ? "attemptsByTag" : "correctByTag"];
 
   return (
     <Container id="my-progress" className="mb-5">
@@ -95,43 +97,23 @@ const MyProgress = withRouter((props: MyProgressProps) => {
 
                   <Card className="mt-4">
                     <CardBody>
-                      <Tabs
-                        tabContentClass="mt-4"
-                        onActiveTabChange={(tabIndex) => {
-                          const flush = tabRefs[tabIndex - 1].current;
-                          if (flush) {
-                            // Don't call the flush in an event handler that causes the render, that's too early.
-                            // Call it once that's done.
-                            requestAnimationFrame(() => {
-                              flush();
-                              // You'd think this wouldn't do anything, but it fixes the vertical position of the
-                              // legend. I'm beginning to dislike this library.
-                              flush();
-                            });
-                          }
-                        }}
+                      <Button
+                        className="float-right"
+                        color="primary"
+                        outline={subId !== "attempted"}
+                        onClick={() => setSubId("attempted")}
                       >
-                        {{
-                          "Correct questions": (
-                            <QuestionProgressCharts
-                              subId="correct"
-                              questionsByTag={progress?.correctByTag || {}}
-                              questionsByLevel={progress?.correctByLevel || {}}
-                              questionsByStageAndDifficulty={progress?.correctByStageAndDifficulty || {}}
-                              flushRef={tabRefs[0]}
-                            />
-                          ),
-                          "Attempted questions": (
-                            <QuestionProgressCharts
-                              subId="attempted"
-                              questionsByTag={progress?.attemptsByTag || {}}
-                              questionsByLevel={progress?.attemptsByLevel || {}}
-                              questionsByStageAndDifficulty={progress?.attemptsByStageAndDifficulty || {}}
-                              flushRef={tabRefs[1]}
-                            />
-                          ),
-                        }}
-                      </Tabs>
+                        Attempted questions
+                      </Button>
+                      <Button
+                        className="float-right"
+                        color="primary"
+                        outline={subId !== "correct"}
+                        onClick={() => setSubId("correct")}
+                      >
+                        Correct questions
+                      </Button>
+                      <QuestionProgressCharts subId={subId} questionsByTag={tagData || {}} />
                     </CardBody>
                   </Card>
 
