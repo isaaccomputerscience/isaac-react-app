@@ -62,7 +62,7 @@ export const useExpandContent = (expandable: boolean, el?: HTMLElement, unexpand
   const expandableParent = useContext(ExpandableParentContext);
   const deviceSize = useDeviceSize();
 
-  const shouldNotApplyExpandBgClass = el?.id.includes("question-body");
+  const shouldNotApplyExpandBgClass = el?.id.includes("question-body") || !expanded;
 
   const show = expandable && !isMobile() && above["sm"](deviceSize) && !expandableParent;
 
@@ -82,7 +82,8 @@ export const useExpandContent = (expandable: boolean, el?: HTMLElement, unexpand
 
   // If screen size goes below sm, then the `isaac-expand-bg` class no longer applies (the screen is too thin)
   const innerClasses = expanded && show ? "" : unexpandedInnerClasses;
-  const outerClasses = show ? (shouldNotApplyExpandBgClass ? "expand-outer" : "isaac-expand-bg expand-outer") : "";
+  const expandableClasses = shouldNotApplyExpandBgClass ? "expand-outer" : "isaac-expand-bg expand-outer";
+  const outerClasses = show ? expandableClasses : "";
 
   return { expandButton, innerClasses, outerClasses, expanded };
 };
