@@ -14,7 +14,7 @@ import {
   Label,
   Row,
 } from "reactstrap";
-import { PotentialUser } from "../../../IsaacAppTypes";
+import { LoggedInUser, PotentialUser } from "../../../IsaacAppTypes";
 import { isTeacherOrAbove, SITE_SUBJECT_TITLE, SOCIAL_LINKS, validateEmail, WEBMASTER_EMAIL } from "../../services";
 import queryString from "query-string";
 import { TitleAndBreadcrumb } from "../elements/TitleAndBreadcrumb";
@@ -29,24 +29,28 @@ const determineUrlQueryPresets = (user?: Immutable<PotentialUser> | null) => {
   let presetPlaceholder = "";
   let presetUrl = "";
 
-  if (urlQuery?.preset == "teacherRequest" && user?.loggedIn && !isTeacherOrAbove(user)) {
+  const setTeacherRequestPresets = (user: Immutable<LoggedInUser>) => {
     presetSubject = "Teacher Account Request";
     presetMessage =
       "Hello,\n\nPlease could you convert my Isaac account into a teacher account.\n\nMy school is: \nI have changed my account email address to be my school email: [Yes/No]\nA link to my school website with a staff list showing my name and email (or a phone number to contact the school) is: \n\nThanks, \n\n" +
       user.givenName +
       " " +
       user.familyName;
-  } else if (urlQuery?.preset == "accountDeletion" && user?.loggedIn) {
+  };
+
+  const setAccountDeletionPresets = (user: Immutable<LoggedInUser>) => {
     presetSubject = "Account Deletion Request";
     presetMessage =
       `Hello,\n\nPlease could you delete my Isaac ${SITE_SUBJECT_TITLE} account.\n\nThanks, \n\n` +
       user.givenName +
       " " +
       user.familyName;
-  } else if (urlQuery?.preset == "contentProblem") {
+  };
+
+  const setContentProblemPresets = () => {
     presetSubject = "Content problem";
     presetPlaceholder = "Please describe the problem here.";
-    presetUrl = `Page link: ${urlQuery?.url}`;
+    presetUrl = `Page link: ${urlQuery.url}`;
     if (urlQuery?.accordion) {
       presetSubject += ` in "${urlQuery.accordion}"`;
     } else if (urlQuery?.page) {
@@ -55,6 +59,14 @@ const determineUrlQueryPresets = (user?: Immutable<PotentialUser> | null) => {
     if (urlQuery?.section != null) {
       presetSubject += `, section "${urlQuery.section}"`;
     }
+  };
+
+  if (urlQuery?.preset == "teacherRequest" && user?.loggedIn && !isTeacherOrAbove(user)) {
+    setTeacherRequestPresets(user);
+  } else if (urlQuery?.preset == "accountDeletion" && user?.loggedIn) {
+    setAccountDeletionPresets(user);
+  } else if (urlQuery?.preset == "contentProblem") {
+    setContentProblemPresets();
   }
   return [
     (urlQuery.subject as string) || presetSubject,
@@ -67,7 +79,7 @@ const determineUrlQueryPresets = (user?: Immutable<PotentialUser> | null) => {
 export const Contact = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectors.user.orNull);
-  const errorMessage = useAppSelector((state: AppState) => state?.error || null);
+  const error = useAppSelector((state: AppState) => state?.error ?? null);
   const [presetSubject, presetMessage, presetPlaceholder, presetUrl] = determineUrlQueryPresets(user);
   const [firstName, setFirstName] = useState((user?.loggedIn && user.givenName) || "");
   const [lastName, setLastName] = useState((user?.loggedIn && user.familyName) || "");
@@ -127,7 +139,7 @@ export const Contact = () => {
           </Col>
           <Col size={12} md={{ size: 9, order: 2 }} xs={{ order: 1 }}>
             <Card>
-              {messageSent && !errorMessage ? (
+              {messageSent && !error ? (
                 <Row>
                   <Col className="text-center">
                     <h3 ref={successRef} tabIndex={-1}>
@@ -250,11 +262,12 @@ export const Contact = () => {
                   </CardBody>
                   <CardFooter>
                     <div>
-                      <Alert color="danger" isOpen={!!errorMessage}>
-                        <>
-                          {errorMessage} You can contact us at{" "}
-                          <a href={`mailto:${WEBMASTER_EMAIL}`}>{WEBMASTER_EMAIL}</a>
-                        </>
+                      <Alert color="danger" isOpen={!!error}>
+                        <h4 className="d-inline">Error:</h4>
+                        {error?.type === "generalError" && <span> {error.generalError}</span>}
+                        <p>
+                          You can contact us at <a href={`mailto:${WEBMASTER_EMAIL}`}>{WEBMASTER_EMAIL}</a>
+                        </p>
                       </Alert>
                     </div>
                     <Row>
