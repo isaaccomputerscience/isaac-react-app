@@ -20,7 +20,9 @@ export const ReportButton = ({ pageId }: { pageId?: string }) => {
       onClick={() => {
         logPageReport();
         window.open(
-          pageId ? `/contact?preset=contentProblem&page=${pageId}` : "/contact?preset=contentProblem",
+          pageId
+            ? `/contact?preset=contentProblem&page=${pageId}&url=${window.location.href}`
+            : `/contact?preset=contentProblem&url=${window.location.href}`,
           "_blank",
         );
       }}

@@ -28,6 +28,7 @@ export const ReportAccordionButton = ({
         params += `&section=${sectionTitle}`;
       }
     }
+    params += `&url=${window.location.href}`;
     return params;
   };
 
