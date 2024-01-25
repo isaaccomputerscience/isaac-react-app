@@ -1,7 +1,7 @@
 import React from "react";
 import { logAction, useAppDispatch } from "../../state";
 
-interface ReportAccordionButtonProps {
+export interface ReportAccordionButtonProps {
   pageId?: string;
   sectionId?: string;
   sectionTitle?: string;

@@ -36,6 +36,15 @@ const renderContactUs = ({
   });
 };
 
+function setLocation(searchString: string) {
+  const mockLocation = {
+    search: searchString,
+  };
+  Object.defineProperty(window, "location", {
+    value: mockLocation,
+  });
+}
+
 const formFields = {
   firstName: () => screen.getByRole("textbox", { name: /first name/i }),
   lastName: () => screen.getByRole("textbox", { name: /last name/i }),
@@ -138,15 +147,6 @@ describe("Contact form presets", () => {
       value: originalLocation,
     });
   });
-
-  function setLocation(searchString: string) {
-    const mockLocation = {
-      search: searchString,
-    };
-    Object.defineProperty(window, "location", {
-      value: mockLocation,
-    });
-  }
 
   const presetTestCases = [
     {
