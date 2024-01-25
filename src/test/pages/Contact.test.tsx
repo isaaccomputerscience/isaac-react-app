@@ -1,11 +1,11 @@
 import { TestUserRole, checkPageTitle, clickButton, renderTestEnvironment } from "../utils";
-import { screen, waitFor, within } from "@testing-library/react";
-import { USER_ROLES } from "../../IsaacApiTypes";
-import { Contact } from "../../app/components/pages/Contact";
-import { API_PATH, SOCIAL_LINKS } from "../../app/services";
 import { rest } from "msw";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { USER_ROLES } from "../../IsaacApiTypes";
+import { API_PATH, SOCIAL_LINKS } from "../../app/services";
 import * as actions from "../../app/state/actions";
+import { Contact } from "../../app/components/pages/Contact";
 
 const renderContactUs = ({
   role = "STUDENT",
@@ -46,10 +46,10 @@ const formFields = {
 
 const contactFormSubmitSpy = jest.spyOn(actions, "submitMessage");
 
-describe("Contact", () => {
+describe("Contact page", () => {
   const userRoles: TestUserRole[] = [...USER_ROLES, "ANONYMOUS"];
 
-  it.each(userRoles)("renders with form and expected headings for %s", (role) => {
+  it.each(userRoles)("renders with form and expected headings for %s user", (role) => {
     renderContactUs({ role });
     checkPageTitle("Contact us");
     const contactForm = screen.getByRole("form");
@@ -139,38 +139,55 @@ describe("Contact form presets", () => {
     });
   });
 
+  function setLocation(searchString: string) {
+    const mockLocation = {
+      search: searchString,
+    };
+    Object.defineProperty(window, "location", {
+      value: mockLocation,
+    });
+  }
+
   const presetTestCases = [
-    { preset: "contentProblem", expected: "Content problem" },
-    { preset: "teacherRequest", expected: "Teacher Account Request" },
-    { preset: "accountDeletion", expected: "Account Deletion Request" },
+    {
+      preset: "contentProblem",
+      expectedSubject: "Content problem",
+      expectedMessage: "Please describe the problem here",
+    },
+    {
+      preset: "teacherRequest",
+      expectedSubject: "Teacher Account Request",
+      expectedMessage: "Please could you convert my Isaac account into a teacher account",
+    },
+    {
+      preset: "accountDeletion",
+      expectedSubject: "Account Deletion Request",
+      expectedMessage: "Please could you delete my Isaac Computer Science account",
+    },
   ];
   it.each(presetTestCases)(
-    "shows $expected in subject if this information is provided in the URL",
-    async ({ preset, expected }) => {
+    "shows $expectedSubject in subject if this information is provided in the URL, and pre-fills message",
+    async ({ preset, expectedSubject, expectedMessage }) => {
       renderContactUs();
-      const mockLocation = {
-        search: `?preset=${preset}`,
-      };
-      Object.defineProperty(window, "location", {
-        value: mockLocation,
-      });
-      const { firstName, subject } = formFields;
+      setLocation(`?preset=${preset}`);
+      const { firstName, subject, message } = formFields;
       await waitFor(() => expect(firstName()).not.toHaveValue(""));
-      expect(subject()).toHaveValue(expected);
+      expect(subject()).toHaveValue(expectedSubject);
+      if (preset === "contentProblem") {
+        const placeholderMessage = screen.getByPlaceholderText(new RegExp(expectedMessage, "i"));
+        expect(placeholderMessage).toBeInTheDocument();
+      } else {
+        expect((message() as HTMLInputElement).value).toEqual(expect.stringContaining(expectedMessage));
+      }
     },
   );
 
-  const testCases = ["accordion", "page", "section"];
-  it.each(testCases)(
+  const contentTypeTestCases = ["accordion", "page", "section"];
+  it.each(contentTypeTestCases)(
     "shows %s ID in subject if this information is provided and user arrives from a page with a problem",
     async (testCase) => {
       renderContactUs();
-      const mockLocation = {
-        search: `?preset=contentProblem&${testCase}=example_id`,
-      };
-      Object.defineProperty(window, "location", {
-        value: mockLocation,
-      });
+      setLocation(`?preset=contentProblem&${testCase}=example_id`);
       const { firstName, subject } = formFields;
       await waitFor(() => expect(firstName()).not.toHaveValue(""));
       if (testCase === "section") {
@@ -181,14 +198,9 @@ describe("Contact form presets", () => {
     },
   );
 
-  it("submitting a form with a content problem report includes the page URL in the message", async () => {
+  it("includes the page URL in the message if submitting a form with a content problem report", async () => {
     renderContactUs();
-    const mockLocation = {
-      search: "?preset=contentProblem&url=https://example.com",
-    };
-    Object.defineProperty(window, "location", {
-      value: mockLocation,
-    });
+    setLocation("?preset=contentProblem&url=https://example.com");
     const { firstName, message } = formFields;
     await waitFor(() => expect(firstName()).not.toHaveValue(""));
     await userEvent.type(message(), "Test message");
@@ -196,5 +208,21 @@ describe("Contact form presets", () => {
     expect(contactFormSubmitSpy).toHaveBeenCalledWith(
       expect.objectContaining({ message: expect.stringContaining("https://example.com") }),
     );
+  });
+
+  const testFields = ["subject", "message", "placeholder"];
+
+  it.each(testFields)("includes a custom %s if provided in the URL", async (field) => {
+    renderContactUs();
+    setLocation(`?${field}=test_value`);
+    const { firstName } = formFields;
+    await waitFor(() => expect(firstName()).not.toHaveValue(""));
+    const formField = formFields[field as keyof typeof formFields];
+    if (field === "placeholder") {
+      const placeholderMessage = screen.getByPlaceholderText("test_value");
+      expect(placeholderMessage).toBeInTheDocument();
+    } else {
+      expect(formField()).toHaveValue("test_value");
+    }
   });
 });
