@@ -21,7 +21,7 @@ const button = () =>
     name: /report a problem/i,
   });
 
-const testCases = [
+const propTestCases = [
   { prop: "pageId", value: undefined },
   { prop: "pageId", value: "example_id" },
   { prop: "sectionId", value: undefined },
@@ -36,7 +36,7 @@ describe("ReportAccordionButton", () => {
   jest.spyOn(window, "open").mockImplementation(jest.fn());
   const logActionSpy = jest.spyOn(actions, "logAction");
 
-  it.each(testCases)("renders button when $prop is $value", ({ prop, value }) => {
+  it.each(propTestCases)("renders button when $prop is $value", ({ prop, value }) => {
     renderReportButton({ [prop]: value });
     expect(button()).toBeInTheDocument();
   });

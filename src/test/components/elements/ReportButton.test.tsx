@@ -25,9 +25,9 @@ describe("ReportButton", () => {
 
   const logActionSpy = jest.spyOn(actions, "logAction");
 
-  const testCases = [undefined, "example_id"];
+  const propTestCases = [undefined, "example_id"];
 
-  it.each(testCases)("renders button when page ID is %s", (pageId) => {
+  it.each(propTestCases)("renders button when page ID is %s", (pageId) => {
     renderReportButton(pageId);
     expect(button()).toBeInTheDocument();
   });

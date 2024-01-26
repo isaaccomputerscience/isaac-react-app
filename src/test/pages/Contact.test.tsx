@@ -86,9 +86,9 @@ describe("Contact page", () => {
 
   it("shows correct fields in form and auto-populates user details when a user is logged in", async () => {
     renderContactUs();
-    const { firstName } = formFields;
-    const allFormFields = Object.values(formFields).map((field) => field());
-    allFormFields.forEach((el) => expect(el).toBeInTheDocument());
+    const { firstName, lastName, email, subject, message } = formFields;
+    const allFormFields = [firstName(), lastName(), email(), subject(), message()];
+    allFormFields.forEach((field) => expect(field).toBeInTheDocument());
     await waitFor(() => expect(firstName()).not.toHaveValue(""));
     const expectedValues = ["Test", "Admin", "test-admin@test.com", "", ""];
     allFormFields.forEach((field, index) => expect(field).toHaveValue(expectedValues[index]));
@@ -150,11 +150,6 @@ describe("Contact form presets", () => {
 
   const presetTestCases = [
     {
-      preset: "contentProblem",
-      expectedSubject: "Content problem",
-      expectedMessage: "Please describe the problem here",
-    },
-    {
       preset: "teacherRequest",
       expectedSubject: "Teacher Account Request",
       expectedMessage: "Please could you convert my Isaac account into a teacher account",
@@ -173,16 +168,21 @@ describe("Contact form presets", () => {
       const { firstName, subject, message } = formFields;
       await waitFor(() => expect(firstName()).not.toHaveValue(""));
       expect(subject()).toHaveValue(expectedSubject);
-      if (preset === "contentProblem") {
-        const placeholderMessage = screen.getByPlaceholderText(new RegExp(expectedMessage, "i"));
-        expect(placeholderMessage).toBeInTheDocument();
-      } else {
-        expect((message() as HTMLInputElement).value).toEqual(expect.stringContaining(expectedMessage));
-      }
+      expect((message() as HTMLInputElement).value).toEqual(expect.stringContaining(expectedMessage));
     },
   );
 
-  const contentTypeTestCases = ["accordion", "page", "section"];
+  it("shows Content problem in subject if this information is provided in the URL, and sets placeholder message", async () => {
+    renderContactUs();
+    setLocation("?preset=contentProblem");
+    const { firstName, subject } = formFields;
+    await waitFor(() => expect(firstName()).not.toHaveValue(""));
+    expect(subject()).toHaveValue("Content problem");
+    const placeholderMessage = screen.getByPlaceholderText(/Please describe the problem here/i);
+    expect(placeholderMessage).toBeInTheDocument();
+  });
+
+  const contentTypeTestCases = ["accordion", "page"];
   it.each(contentTypeTestCases)(
     "shows %s ID in subject if this information is provided and user arrives from a page with a problem",
     async (testCase) => {
@@ -190,13 +190,17 @@ describe("Contact form presets", () => {
       setLocation(`?preset=contentProblem&${testCase}=example_id`);
       const { firstName, subject } = formFields;
       await waitFor(() => expect(firstName()).not.toHaveValue(""));
-      if (testCase === "section") {
-        expect((subject() as HTMLInputElement).value).toEqual(expect.stringContaining(', section "example_id"'));
-      } else {
-        expect(subject()).toHaveValue(`Content problem in "example_id"`);
-      }
+      expect(subject()).toHaveValue(`Content problem in "example_id"`);
     },
   );
+
+  it("shows section ID in subject if this information is provided and user arrives from a page with a problem", async () => {
+    renderContactUs();
+    setLocation(`?preset=contentProblem&section=example_id`);
+    const { firstName, subject } = formFields;
+    await waitFor(() => expect(firstName()).not.toHaveValue(""));
+    expect((subject() as HTMLInputElement).value).toEqual(expect.stringContaining(', section "example_id"'));
+  });
 
   it("includes the page URL in the message if submitting a form with a content problem report", async () => {
     renderContactUs();
@@ -210,7 +214,7 @@ describe("Contact form presets", () => {
     );
   });
 
-  const testFields = ["subject", "message", "placeholder"];
+  const testFields = ["subject", "message"];
 
   it.each(testFields)("includes a custom %s if provided in the URL", async (field) => {
     renderContactUs();
@@ -218,11 +222,15 @@ describe("Contact form presets", () => {
     const { firstName } = formFields;
     await waitFor(() => expect(firstName()).not.toHaveValue(""));
     const formField = formFields[field as keyof typeof formFields];
-    if (field === "placeholder") {
-      const placeholderMessage = screen.getByPlaceholderText("test_value");
-      expect(placeholderMessage).toBeInTheDocument();
-    } else {
-      expect(formField()).toHaveValue("test_value");
-    }
+    expect(formField()).toHaveValue("test_value");
+  });
+
+  it("includes a custom placeholder if provided in the URL", async () => {
+    renderContactUs();
+    setLocation("?placeholder=test_value");
+    const { firstName } = formFields;
+    await waitFor(() => expect(firstName()).not.toHaveValue(""));
+    const placeholderMessage = screen.getByPlaceholderText("test_value");
+    expect(placeholderMessage).toBeInTheDocument();
   });
 });
