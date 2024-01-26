@@ -33,12 +33,21 @@ describe("ReportButton", () => {
   });
 
   it("opens a new window with expected URL when clicked", async () => {
+    const originalLocation = window.location;
+    Object.defineProperty(window, "location", {
+      writable: true,
+      value: { ...originalLocation, href: "https://example.com/" },
+    });
     renderReportButton("example_id");
     await userEvent.click(button());
     expect(window.open).toHaveBeenCalledWith(
-      `/contact?preset=contentProblem&url=${window.location.href}&page=example_id`,
+      `/contact?preset=contentProblem&url=https://example.com/&page=example_id`,
       "_blank",
     );
+    Object.defineProperty(window, "location", {
+      writable: true,
+      value: originalLocation,
+    });
   });
 
   it("logs an action when clicked", async () => {

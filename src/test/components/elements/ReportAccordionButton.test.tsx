@@ -36,6 +36,23 @@ describe("ReportAccordionButton", () => {
   jest.spyOn(window, "open").mockImplementation(jest.fn());
   const logActionSpy = jest.spyOn(actions, "logAction");
 
+  let originalLocation: Location;
+
+  beforeEach(() => {
+    originalLocation = window.location;
+    Object.defineProperty(window, "location", {
+      writable: true,
+      value: { ...originalLocation, href: "https://example.com/" },
+    });
+  });
+
+  afterEach(() => {
+    Object.defineProperty(window, "location", {
+      writable: true,
+      value: originalLocation,
+    });
+  });
+
   it.each(propTestCases)("renders button when $prop is $value", ({ prop, value }) => {
     renderReportButton({ [prop]: value });
     expect(button()).toBeInTheDocument();
@@ -45,7 +62,7 @@ describe("ReportAccordionButton", () => {
     renderReportButton({ pageId: "example_id" });
     await userEvent.click(button());
     expect(window.open).toHaveBeenCalledWith(
-      `/contact?preset=contentProblem&page=example_id&url=${window.location.href}`,
+      `/contact?preset=contentProblem&page=example_id&url=https://example.com/`,
       "_blank",
     );
   });
@@ -54,7 +71,7 @@ describe("ReportAccordionButton", () => {
     renderReportButton({ pageId: "example_id", sectionTitle: "example_title" });
     await userEvent.click(button());
     expect(window.open).toHaveBeenCalledWith(
-      `/contact?preset=contentProblem&page=example_id&section=example_title&url=${window.location.href}`,
+      `/contact?preset=contentProblem&page=example_id&section=example_title&url=https://example.com/`,
       "_blank",
     );
     expect(logActionSpy).toHaveBeenCalledWith({
@@ -68,7 +85,7 @@ describe("ReportAccordionButton", () => {
     renderReportButton({ sectionId: "example_id" });
     await userEvent.click(button());
     expect(window.open).toHaveBeenCalledWith(
-      `/contact?preset=contentProblem&accordion=example_id&url=${window.location.href}`,
+      `/contact?preset=contentProblem&accordion=example_id&url=https://example.com/`,
       "_blank",
     );
     expect(logActionSpy).toHaveBeenCalledWith({
@@ -86,7 +103,7 @@ describe("ReportAccordionButton", () => {
     });
     await userEvent.click(button());
     expect(window.open).toHaveBeenCalledWith(
-      `/contact?preset=contentProblem&accordion=example_id&url=${window.location.href}`,
+      `/contact?preset=contentProblem&accordion=example_id&url=https://example.com/`,
       "_blank",
     );
     expect(logActionSpy).toHaveBeenCalledWith({
