@@ -3,17 +3,22 @@ import bb, { zoom, areaSpline } from "billboard.js";
 import { AnsweredQuestionsByDate } from "../../../../IsaacApiTypes";
 import { formatISODateOnly } from "../DateString";
 
-export const ActivityGraph = ({ answeredQuestionsByDate }: { answeredQuestionsByDate: AnsweredQuestionsByDate }) => {
-  const selectedDates: string[] = useMemo(() => {
-    const foundDates = answeredQuestionsByDate ? Object.keys(answeredQuestionsByDate) : [];
-    if (foundDates && foundDates.length > 0) {
-      const nonZeroDates = foundDates.filter((date) => answeredQuestionsByDate && answeredQuestionsByDate[date] > 0);
-      if (nonZeroDates.length > 0) {
-        return foundDates.sort();
-      }
+const filterSelectedDates = (answeredQuestionsByDate: AnsweredQuestionsByDate) => {
+  const foundDates = answeredQuestionsByDate ? Object.keys(answeredQuestionsByDate) : [];
+  if (foundDates && foundDates.length > 0) {
+    const nonZeroDates = foundDates.filter((date) => answeredQuestionsByDate && answeredQuestionsByDate[date] > 0);
+    if (nonZeroDates.length > 0) {
+      return foundDates.sort((a, b) => a.localeCompare(b));
     }
-    return [];
-  }, [answeredQuestionsByDate]);
+  }
+  return [];
+};
+
+export const ActivityGraph = ({ answeredQuestionsByDate }: { answeredQuestionsByDate: AnsweredQuestionsByDate }) => {
+  const selectedDates: string[] = useMemo(
+    () => filterSelectedDates(answeredQuestionsByDate),
+    [answeredQuestionsByDate],
+  );
 
   useEffect(() => {
     if (selectedDates.length === 0) {

@@ -1,5 +1,5 @@
-import React, { MutableRefObject, useEffect, useState } from "react";
-import * as RS from "reactstrap";
+import React, { useEffect, useState } from "react";
+import { Row, Col } from "reactstrap";
 import bb, { donut } from "billboard.js";
 import { doughnutColours, TAG_ID, tags } from "../../../services";
 import Select, { SingleValue } from "react-select";
@@ -9,8 +9,6 @@ interface QuestionProgressChartsProps {
   questionsByTag: { [tag: string]: number };
 }
 
-export type FlushableRef = MutableRefObject<(() => void) | undefined>;
-
 const OPTIONS = {
   size: { width: 240, height: 330 },
 };
@@ -18,9 +16,9 @@ const colourPicker = (names: string[]): { [key: string]: string } => {
   const selected = {} as { [key: string]: string };
   let currentIndex = 0;
 
-  for (let i = 0; i < names.length; i++) {
+  for (const element of names) {
     if (currentIndex < doughnutColours.length) {
-      selected[names[i]] = doughnutColours[currentIndex];
+      selected[element] = doughnutColours[currentIndex];
       currentIndex += 1;
     }
   }
@@ -58,9 +56,9 @@ export const QuestionProgressCharts = (props: QuestionProgressChartsProps) => {
   }, [subId, categoryColumns, topicColumns]);
 
   return (
-    <RS.Row>
-      <RS.Col md={3} />
-      <RS.Col xl={6} md={4} className="mt-4 d-flex flex-column">
+    <Row>
+      <Col md={3} />
+      <Col xl={6} md={4} className="mt-4 d-flex flex-column">
         <div className="height-40px text-flex-align mb-2">
           <Select
             inputId={`${subId}-subcategory-select`}
@@ -82,8 +80,8 @@ export const QuestionProgressCharts = (props: QuestionProgressChartsProps) => {
             <strong>{isAllZero(topicColumns) ? "No data" : ""}</strong>
           </div>
         </div>
-      </RS.Col>
-      <RS.Col md={3} />
-    </RS.Row>
+      </Col>
+      <Col md={3} />
+    </Row>
   );
 };

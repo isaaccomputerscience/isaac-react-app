@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  MyProgressState,
   getMyAnsweredQuestionsByDate,
   getMyProgress,
   getUserAnsweredQuestionsByDate,
@@ -12,7 +13,7 @@ import { TitleAndBreadcrumb } from "../elements/TitleAndBreadcrumb";
 import { Button, Card, CardBody, Col, Container, Row } from "reactstrap";
 import { HUMAN_QUESTION_TYPES, isTeacherOrAbove, safePercentage } from "../../services";
 import { RouteComponentProps, withRouter } from "react-router-dom";
-import { PotentialUser } from "../../../IsaacAppTypes";
+import { LoggedInUser, PotentialUser } from "../../../IsaacAppTypes";
 import { Unauthorised } from "./Unauthorised";
 import { AggregateQuestionStats } from "../elements/panels/AggregateQuestionStats";
 import { Tabs } from "../elements/Tabs";
@@ -37,8 +38,44 @@ const statistics = {
   tagColWidth: "col-lg-12",
 };
 
-interface MyProgressProps extends RouteComponentProps<{ userIdOfInterest: string }> {
+const QuestionParts = ({ progress }: { progress: MyProgressState | undefined }) => {
+  return (
+    <div className="mt-4">
+      <h4>Question parts correct by Type</h4>
+      <Row>
+        {statistics.questionTypeStatsList.map((qType: string) => {
+          const correct = progress?.correctByType?.[qType] ?? null;
+          const attempts = progress?.attemptsByType?.[qType] ?? null;
+          const percentage = safePercentage(correct, attempts);
+          return (
+            <Col key={qType} className={`${statistics.typeColWidth} mt-2 type-progress-bar`}>
+              <div className={"px-2"}>{HUMAN_QUESTION_TYPES[qType]} questions correct</div>
+              <div className={"px-2"}>
+                <ProgressBar percentage={percentage ?? 0}>
+                  {percentage == null ? "No data" : `${correct} of ${attempts}`}
+                </ProgressBar>
+              </div>
+            </Col>
+          );
+        })}
+      </Row>
+    </div>
+  );
+};
+
+const canCurrentUserViewOtherUserData = ({
+  viewingOwnData,
+  user,
+}: {
+  viewingOwnData: boolean;
   user: PotentialUser;
+}) => {
+  if (!viewingOwnData && isTeacherOrAbove(user)) return true;
+  else if (!viewingOwnData && !isTeacherOrAbove(user)) return false;
+};
+
+interface MyProgressProps extends RouteComponentProps<{ userIdOfInterest: string }> {
+  user: PotentialUser | LoggedInUser;
 }
 const MyProgress = withRouter((props: MyProgressProps) => {
   const { user, match } = props;
@@ -53,8 +90,10 @@ const MyProgress = withRouter((props: MyProgressProps) => {
 
   const [subId, setSubId] = useState("correct");
 
+  const viewOtherUsers = canCurrentUserViewOtherUserData({ viewingOwnData, user });
+
   useEffect(() => {
-    if (viewingOwnData && user.loggedIn) {
+    if (viewingOwnData && user?.loggedIn) {
       dispatch(getMyProgress());
       dispatch(getMyAnsweredQuestionsByDate(user.id as number, 0, Date.now(), false));
     } else if (isTeacherOrAbove(user)) {
@@ -63,24 +102,23 @@ const MyProgress = withRouter((props: MyProgressProps) => {
     }
   }, [dispatch, userIdOfInterest, viewingOwnData, user]);
 
-  // Only teachers and above can see other users progress. The API checks if the other user has shared data with the
-  // current user or not.
-  if (!viewingOwnData && !isTeacherOrAbove(user)) {
-    return <Unauthorised />;
-  }
+  const progressAndQuestions = viewOtherUsers
+    ? { progress: userProgress, answeredQuestionsByDate: userAnsweredQuestionsByDate }
+    : { progress: myProgress, answeredQuestionsByDate: myAnsweredQuestionsByDate };
 
-  const progress = !viewingOwnData && isTeacherOrAbove(user) ? userProgress : myProgress;
-  const answeredQuestionsByDate =
-    !viewingOwnData && isTeacherOrAbove(user) ? userAnsweredQuestionsByDate : myAnsweredQuestionsByDate;
+  const { progress, answeredQuestionsByDate } = progressAndQuestions;
 
-  const userName = `${progress?.userDetails?.givenName || ""}${progress?.userDetails?.givenName ? " " : ""}${
-    progress?.userDetails?.familyName || ""
+  const userName = `${progress?.userDetails?.givenName ?? ""}${progress?.userDetails?.givenName ? " " : ""}${
+    progress?.userDetails?.familyName ?? ""
   }`;
   const pageTitle = viewingOwnData ? "My progress" : `Progress for ${userName || "user"}`;
 
   const tagData = progress?.[subId === "attempted" ? "attemptsByTag" : "correctByTag"];
 
-  return (
+  // Only teachers and above can see other users progress. The API checks if the other user has shared data with the current user or not.
+  return !viewOtherUsers ? (
+    <Unauthorised />
+  ) : (
     <Container id="my-progress" className="mb-5">
       <TitleAndBreadcrumb currentPageTitle={pageTitle} disallowLaTeX />
       <Card className="mt-4">
@@ -115,30 +153,11 @@ const MyProgress = withRouter((props: MyProgressProps) => {
                           Attempted questions
                         </Button>
                       </Row>
-                      <QuestionProgressCharts subId={subId} questionsByTag={tagData || {}} />
+                      <QuestionProgressCharts subId={subId} questionsByTag={tagData ?? {}} />
                     </CardBody>
                   </Card>
 
-                  <div className="mt-4">
-                    <h4>Question parts correct by Type</h4>
-                    <Row>
-                      {statistics.questionTypeStatsList.map((qType: string) => {
-                        const correct = progress?.correctByType?.[qType] || null;
-                        const attempts = progress?.attemptsByType?.[qType] || null;
-                        const percentage = safePercentage(correct, attempts);
-                        return (
-                          <Col key={qType} className={`${statistics.typeColWidth} mt-2 type-progress-bar`}>
-                            <div className={"px-2"}>{HUMAN_QUESTION_TYPES[qType]} questions correct</div>
-                            <div className={"px-2"}>
-                              <ProgressBar percentage={percentage || 0}>
-                                {percentage == null ? "No data" : `${correct} of ${attempts}`}
-                              </ProgressBar>
-                            </div>
-                          </Col>
-                        );
-                      })}
-                    </Row>
-                  </div>
+                  <QuestionParts progress={progress} />
 
                   {answeredQuestionsByDate && (
                     <div className="mt-4">
