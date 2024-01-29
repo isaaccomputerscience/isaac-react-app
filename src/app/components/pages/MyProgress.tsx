@@ -13,7 +13,7 @@ import { TitleAndBreadcrumb } from "../elements/TitleAndBreadcrumb";
 import { Button, Card, CardBody, Col, Container, Row } from "reactstrap";
 import { HUMAN_QUESTION_TYPES, isTeacherOrAbove, safePercentage } from "../../services";
 import { RouteComponentProps, withRouter } from "react-router-dom";
-import { LoggedInUser, PotentialUser } from "../../../IsaacAppTypes";
+import { PotentialUser } from "../../../IsaacAppTypes";
 import { Unauthorised } from "./Unauthorised";
 import { AggregateQuestionStats } from "../elements/panels/AggregateQuestionStats";
 import { Tabs } from "../elements/Tabs";
@@ -38,30 +38,28 @@ const statistics = {
   tagColWidth: "col-lg-12",
 };
 
-const QuestionParts = ({ progress }: { progress: MyProgressState | undefined }) => {
-  return (
-    <div className="mt-4">
-      <h4>Question parts correct by Type</h4>
-      <Row>
-        {statistics.questionTypeStatsList.map((qType: string) => {
-          const correct = progress?.correctByType?.[qType] ?? null;
-          const attempts = progress?.attemptsByType?.[qType] ?? null;
-          const percentage = safePercentage(correct, attempts);
-          return (
-            <Col key={qType} className={`${statistics.typeColWidth} mt-2 type-progress-bar`}>
-              <div className={"px-2"}>{HUMAN_QUESTION_TYPES[qType]} questions correct</div>
-              <div className={"px-2"}>
-                <ProgressBar percentage={percentage ?? 0}>
-                  {percentage == null ? "No data" : `${correct} of ${attempts}`}
-                </ProgressBar>
-              </div>
-            </Col>
-          );
-        })}
-      </Row>
-    </div>
-  );
-};
+const QuestionParts = ({ progress }: { progress: MyProgressState | undefined }) => (
+  <div className="mt-4">
+    <h4>Question parts correct by Type</h4>
+    <Row>
+      {statistics.questionTypeStatsList.map((qType: string) => {
+        const correct = progress?.correctByType?.[qType] ?? null;
+        const attempts = progress?.attemptsByType?.[qType] ?? null;
+        const percentage = safePercentage(correct, attempts);
+        return (
+          <Col key={qType} className={`${statistics.typeColWidth} mt-2 type-progress-bar`}>
+            <div className={"px-2"}>{HUMAN_QUESTION_TYPES[qType]} questions correct</div>
+            <div className={"px-2"}>
+              <ProgressBar percentage={percentage ?? 0}>
+                {percentage == null ? "No data" : `${correct} of ${attempts}`}
+              </ProgressBar>
+            </div>
+          </Col>
+        );
+      })}
+    </Row>
+  </div>
+);
 
 const canCurrentUserViewOtherUserData = ({
   viewingOwnData,
@@ -75,7 +73,7 @@ const canCurrentUserViewOtherUserData = ({
 };
 
 interface MyProgressProps extends RouteComponentProps<{ userIdOfInterest: string }> {
-  user: PotentialUser | LoggedInUser;
+  user: PotentialUser;
 }
 const MyProgress = withRouter((props: MyProgressProps) => {
   const { user, match } = props;
@@ -93,7 +91,7 @@ const MyProgress = withRouter((props: MyProgressProps) => {
   const viewOtherUsers = canCurrentUserViewOtherUserData({ viewingOwnData, user });
 
   useEffect(() => {
-    if (viewingOwnData && user?.loggedIn) {
+    if (viewingOwnData && user.loggedIn) {
       dispatch(getMyProgress());
       dispatch(getMyAnsweredQuestionsByDate(user.id as number, 0, Date.now(), false));
     } else if (isTeacherOrAbove(user)) {
@@ -116,7 +114,7 @@ const MyProgress = withRouter((props: MyProgressProps) => {
   const tagData = progress?.[subId === "attempted" ? "attemptsByTag" : "correctByTag"];
 
   // Only teachers and above can see other users progress. The API checks if the other user has shared data with the current user or not.
-  return !viewOtherUsers ? (
+  return viewOtherUsers === false ? (
     <Unauthorised />
   ) : (
     <Container id="my-progress" className="mb-5">

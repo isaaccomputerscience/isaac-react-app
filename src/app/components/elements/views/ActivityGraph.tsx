@@ -3,20 +3,19 @@ import bb, { zoom, areaSpline } from "billboard.js";
 import { AnsweredQuestionsByDate } from "../../../../IsaacApiTypes";
 import { formatISODateOnly } from "../DateString";
 
-const filterSelectedDates = (answeredQuestionsByDate: AnsweredQuestionsByDate) => {
+const filterAndSortSelectedDates = (answeredQuestionsByDate: AnsweredQuestionsByDate) => {
   const foundDates = answeredQuestionsByDate ? Object.keys(answeredQuestionsByDate) : [];
-  if (foundDates && foundDates.length > 0) {
-    const nonZeroDates = foundDates.filter((date) => answeredQuestionsByDate && answeredQuestionsByDate[date] > 0);
-    if (nonZeroDates.length > 0) {
-      return foundDates.sort((a, b) => a.localeCompare(b));
-    }
+
+  if (foundDates?.some((date) => answeredQuestionsByDate[date] > 0)) {
+    return foundDates.sort((a, b) => a.localeCompare(b));
   }
+
   return [];
 };
 
 export const ActivityGraph = ({ answeredQuestionsByDate }: { answeredQuestionsByDate: AnsweredQuestionsByDate }) => {
   const selectedDates: string[] = useMemo(
-    () => filterSelectedDates(answeredQuestionsByDate),
+    () => filterAndSortSelectedDates(answeredQuestionsByDate),
     [answeredQuestionsByDate],
   );
 
