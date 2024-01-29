@@ -97,22 +97,24 @@ const MyProgress = withRouter((props: MyProgressProps) => {
 
                   <Card className="mt-4">
                     <CardBody>
-                      <Button
-                        className="float-right"
-                        color="primary"
-                        outline={subId !== "attempted"}
-                        onClick={() => setSubId("attempted")}
-                      >
-                        Attempted questions
-                      </Button>
-                      <Button
-                        className="float-right"
-                        color="primary"
-                        outline={subId !== "correct"}
-                        onClick={() => setSubId("correct")}
-                      >
-                        Correct questions
-                      </Button>
+                      <Row className="justify-content-center">
+                        <Button
+                          color="primary"
+                          outline={subId === "attempted"}
+                          className="mr-2 border-0"
+                          onClick={() => setSubId("correct")}
+                        >
+                          Correct questions
+                        </Button>
+                        <Button
+                          color="primary"
+                          className="border-0"
+                          outline={subId === "correct"}
+                          onClick={() => setSubId("attempted")}
+                        >
+                          Attempted questions
+                        </Button>
+                      </Row>
                       <QuestionProgressCharts subId={subId} questionsByTag={tagData || {}} />
                     </CardBody>
                   </Card>
