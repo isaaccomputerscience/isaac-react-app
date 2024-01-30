@@ -62,16 +62,14 @@ const QuestionParts = ({ progress }: { progress: MyProgressState | undefined }) 
   </div>
 );
 
-const getPageTitle = ({ userDetails, viewingOwnData }: { userDetails?: UserSummaryDTO; viewingOwnData: boolean }) => {
+const getPageTitle = (viewingOwnData: boolean, userDetails?: UserSummaryDTO) => {
   const { givenName, familyName } = userDetails ?? {};
-  const userName = (givenName ?? "") + (givenName && familyName ? " " : "") + (familyName ?? "");
-
-  const pageTitle = viewingOwnData ? "My progress" : `Progress for ${userName || "user"}`;
-
-  return pageTitle;
+  const nonEmptyNames = [givenName, familyName].filter((name) => name);
+  const userName = nonEmptyNames.join(" ") || "user";
+  return viewingOwnData ? "My progress" : `Progress for ${userName}`;
 };
 
-const getTagData = ({ subId, progress }: { subId: string; progress?: UserProgress | null }) =>
+const getTagData = (subId: string, progress?: UserProgress | null) =>
   progress?.[subId === "attempted" ? "attemptsByTag" : "correctByTag"];
 
 interface MyProgressProps extends RouteComponentProps<{ userIdOfInterest: string }> {
@@ -109,8 +107,8 @@ const MyProgress = withRouter((props: MyProgressProps) => {
 
   const { progress, answeredQuestionsByDate } = progressAndQuestions;
 
-  const pageTitle = getPageTitle({ userDetails: progress?.userDetails, viewingOwnData });
-  const tagData = getTagData({ subId, progress });
+  const pageTitle = getPageTitle(viewingOwnData, progress?.userDetails);
+  const tagData = getTagData(subId, progress);
 
   // Only teachers and above can see other users progress. The API checks if the other user has shared data with the current user or not.
   return nonTeacherViewingAnotherUser ? (
