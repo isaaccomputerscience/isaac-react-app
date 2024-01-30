@@ -21,6 +21,7 @@ import { QuestionProgressCharts } from "../elements/views/QuestionProgressCharts
 import { ActivityGraph } from "../elements/views/ActivityGraph";
 import { ProgressBar } from "../elements/views/ProgressBar";
 import { LinkToContentSummaryList } from "../elements/list-groups/ContentSummaryListGroupItem";
+import { UserSummaryDTO } from "../../../IsaacApiTypes";
 
 const statistics = {
   questionTypeStatsList: [
@@ -61,23 +62,17 @@ const QuestionParts = ({ progress }: { progress: MyProgressState | undefined }) 
   </div>
 );
 
-const getPageTitleAndTagData = ({
-  progress,
-  viewingOwnData,
-  subId,
-}: {
-  progress?: UserProgress | null;
-  viewingOwnData: boolean;
-  subId: string;
-}) => {
-  const userName = `${progress?.userDetails?.givenName ?? ""}${progress?.userDetails?.givenName ? " " : ""}${
-    progress?.userDetails?.familyName ?? ""
-  }`;
+const getPageTitle = ({ userDetails, viewingOwnData }: { userDetails?: UserSummaryDTO; viewingOwnData: boolean }) => {
+  const { givenName, familyName } = userDetails ?? {};
+  const userName = (givenName ?? "") + (givenName && familyName ? " " : "") + (familyName ?? "");
+
   const pageTitle = viewingOwnData ? "My progress" : `Progress for ${userName || "user"}`;
 
-  const tagData = progress?.[subId === "attempted" ? "attemptsByTag" : "correctByTag"];
-  return { pageTitle, tagData };
+  return pageTitle;
 };
+
+const getTagData = ({ subId, progress }: { subId: string; progress?: UserProgress | null }) =>
+  progress?.[subId === "attempted" ? "attemptsByTag" : "correctByTag"];
 
 interface MyProgressProps extends RouteComponentProps<{ userIdOfInterest: string }> {
   user: PotentialUser;
@@ -114,11 +109,8 @@ const MyProgress = withRouter((props: MyProgressProps) => {
 
   const { progress, answeredQuestionsByDate } = progressAndQuestions;
 
-  const { pageTitle, tagData } = getPageTitleAndTagData({
-    progress,
-    viewingOwnData,
-    subId,
-  });
+  const pageTitle = getPageTitle({ userDetails: progress?.userDetails, viewingOwnData });
+  const tagData = getTagData({ subId, progress });
 
   // Only teachers and above can see other users progress. The API checks if the other user has shared data with the current user or not.
   return nonTeacherViewingAnotherUser ? (
