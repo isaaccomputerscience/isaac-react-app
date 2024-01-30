@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col } from "reactstrap";
 import bb, { donut } from "billboard.js";
 import { doughnutColours, TAG_ID, tags } from "../../../services";
 import Select, { SingleValue } from "react-select";
@@ -56,32 +55,28 @@ export const QuestionProgressCharts = (props: QuestionProgressChartsProps) => {
   }, [subId, categoryColumns, topicColumns]);
 
   return (
-    <Row>
-      <Col md={3} />
-      <Col xl={6} md={4} className="mt-4 d-flex flex-column">
-        <div className="height-40px text-flex-align mb-2">
-          <Select
-            inputId={`${subId}-subcategory-select`}
-            name="subcategory"
-            className="d-inline-block text-left pr-2 w-50"
-            classNamePrefix="select"
-            defaultValue={{ value: defaultSearchChoiceTag.id, label: defaultSearchChoiceTag.title }}
-            options={tags.getSpecifiedTags(searchTagLevel, tags.allTagIds).map((tag) => {
-              return { value: tag.id, label: tag.title };
-            })}
-            onChange={(e: SingleValue<{ value: TAG_ID; label: string }>) =>
-              setSearchChoice((e as { value: TAG_ID; label: string }).value)
-            }
-          />
-          questions
+    <div className="mt-4">
+      <div className="height-40px text-flex-align mb-2">
+        <Select
+          inputId={`${subId}-subcategory-select`}
+          name="subcategory"
+          className="d-inline-block text-left pr-2 w-auto"
+          classNamePrefix="select"
+          defaultValue={{ value: defaultSearchChoiceTag.id, label: defaultSearchChoiceTag.title }}
+          options={tags.getSpecifiedTags(searchTagLevel, tags.allTagIds).map((tag) => {
+            return { value: tag.id, label: tag.title };
+          })}
+          onChange={(e: SingleValue<{ value: TAG_ID; label: string }>) =>
+            setSearchChoice((e as { value: TAG_ID; label: string }).value)
+          }
+        />
+        questions
+      </div>
+      <div className="d-flex flex-grow-1 justify-content-center">
+        <div id={`${subId}-topicChart`} className="text-center-width w-auto">
+          <strong>{isAllZero(topicColumns) ? "No data" : ""}</strong>
         </div>
-        <div className="d-flex flex-grow-1">
-          <div id={`${subId}-topicChart`} className="text-center-width doughnut-binding  align-self-center">
-            <strong>{isAllZero(topicColumns) ? "No data" : ""}</strong>
-          </div>
-        </div>
-      </Col>
-      <Col md={3} />
-    </Row>
+      </div>
+    </div>
   );
 };
