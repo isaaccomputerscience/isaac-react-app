@@ -47,8 +47,13 @@ export const ActivityGraph = ({ answeredQuestionsByDate }: { answeredQuestionsBy
       },
       axis: {
         x: {
+          padding: { right: 25, unit: "px" }, // to avoid the last label being cut off
           type: "timeseries",
-          tick: { fit: false, format: "%b %Y", count: Math.min(8, nTicks) },
+          tick: {
+            fit: false,
+            format: "%b %Y",
+            count: Math.min(8, nTicks),
+          },
           min: minDate, // If these are undefined, then the values from the data will be used.
           max: maxDate,
         },
@@ -57,7 +62,6 @@ export const ActivityGraph = ({ answeredQuestionsByDate }: { answeredQuestionsBy
       legend: { show: false },
       spline: { interpolation: { type: "monotone-x" } },
       bindto: "#activityGraph",
-      padding: { top: 0, right: 30, bottom: 0, left: 30 }, // Pad sides to avoid tick labels being truncated!
     });
   }, [answeredQuestionsByDate, selectedDates]);
 
