@@ -13,7 +13,7 @@ import { TitleAndBreadcrumb } from "../elements/TitleAndBreadcrumb";
 import { Button, Card, CardBody, Col, Container, Row } from "reactstrap";
 import { HUMAN_QUESTION_TYPES, isTeacherOrAbove, safePercentage } from "../../services";
 import { RouteComponentProps, withRouter } from "react-router-dom";
-import { PotentialUser } from "../../../IsaacAppTypes";
+import { PotentialUser, UserProgress } from "../../../IsaacAppTypes";
 import { Unauthorised } from "./Unauthorised";
 import { AggregateQuestionStats } from "../elements/panels/AggregateQuestionStats";
 import { Tabs } from "../elements/Tabs";
@@ -61,15 +61,22 @@ const QuestionParts = ({ progress }: { progress: MyProgressState | undefined }) 
   </div>
 );
 
-const canCurrentUserViewOtherUserData = ({
+const getPageTitleAndTagData = ({
+  progress,
   viewingOwnData,
-  user,
+  subId,
 }: {
+  progress?: UserProgress | null;
   viewingOwnData: boolean;
-  user: PotentialUser;
+  subId: string;
 }) => {
-  if (!viewingOwnData && isTeacherOrAbove(user)) return true;
-  else if (!viewingOwnData && !isTeacherOrAbove(user)) return false;
+  const userName = `${progress?.userDetails?.givenName ?? ""}${progress?.userDetails?.givenName ? " " : ""}${
+    progress?.userDetails?.familyName ?? ""
+  }`;
+  const pageTitle = viewingOwnData ? "My progress" : `Progress for ${userName || "user"}`;
+
+  const tagData = progress?.[subId === "attempted" ? "attemptsByTag" : "correctByTag"];
+  return { pageTitle, tagData };
 };
 
 interface MyProgressProps extends RouteComponentProps<{ userIdOfInterest: string }> {
@@ -88,8 +95,6 @@ const MyProgress = withRouter((props: MyProgressProps) => {
 
   const [subId, setSubId] = useState("correct");
 
-  const viewOtherUsers = canCurrentUserViewOtherUserData({ viewingOwnData, user });
-
   useEffect(() => {
     if (viewingOwnData && user.loggedIn) {
       dispatch(getMyProgress());
@@ -100,21 +105,23 @@ const MyProgress = withRouter((props: MyProgressProps) => {
     }
   }, [dispatch, userIdOfInterest, viewingOwnData, user]);
 
-  const progressAndQuestions = viewOtherUsers
+  const teacherViewingAnotherUser = !viewingOwnData && isTeacherOrAbove(user);
+  const nonTeacherViewingAnotherUser = !viewingOwnData && !isTeacherOrAbove(user);
+
+  const progressAndQuestions = teacherViewingAnotherUser
     ? { progress: userProgress, answeredQuestionsByDate: userAnsweredQuestionsByDate }
     : { progress: myProgress, answeredQuestionsByDate: myAnsweredQuestionsByDate };
 
   const { progress, answeredQuestionsByDate } = progressAndQuestions;
 
-  const userName = `${progress?.userDetails?.givenName ?? ""}${progress?.userDetails?.givenName ? " " : ""}${
-    progress?.userDetails?.familyName ?? ""
-  }`;
-  const pageTitle = viewingOwnData ? "My progress" : `Progress for ${userName || "user"}`;
-
-  const tagData = progress?.[subId === "attempted" ? "attemptsByTag" : "correctByTag"];
+  const { pageTitle, tagData } = getPageTitleAndTagData({
+    progress,
+    viewingOwnData,
+    subId,
+  });
 
   // Only teachers and above can see other users progress. The API checks if the other user has shared data with the current user or not.
-  return viewOtherUsers === false ? (
+  return nonTeacherViewingAnotherUser ? (
     <Unauthorised />
   ) : (
     <Container id="my-progress" className="mb-5">

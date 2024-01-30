@@ -5,11 +5,10 @@ import { formatISODateOnly } from "../DateString";
 
 const filterAndSortSelectedDates = (answeredQuestionsByDate: AnsweredQuestionsByDate) => {
   const foundDates = answeredQuestionsByDate ? Object.keys(answeredQuestionsByDate) : [];
-
-  if (foundDates?.some((date) => answeredQuestionsByDate[date] > 0)) {
+  const nonZeroDates = foundDates.some((date) => answeredQuestionsByDate[date] > 0);
+  if (nonZeroDates) {
     return foundDates.sort((a, b) => a.localeCompare(b));
   }
-
   return [];
 };
 
