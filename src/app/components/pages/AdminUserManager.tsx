@@ -32,6 +32,7 @@ import {
   mergeUsers,
   resetPassword,
   selectors,
+  showSuccessToast,
   useAppDispatch,
   useAppSelector,
 } from "../../state";
@@ -244,10 +245,11 @@ const UserManagerResults = ({ searchRequested, searchQuery }: { searchRequested:
 
   const declineTeacherUpgradeAndUpdateResults = async () => {
     setUserUpdating(true);
-    await dispatch(adminModifyTeacherPending(false, selectedUserIds));
+    const response = await dispatch(adminModifyTeacherPending(false, selectedUserIds));
     dispatch(adminUserSearchRequest(searchQuery));
     setSelectedUserIds([]);
     setUserUpdating(false);
+    dispatch(showSuccessToast("Teacher Pending Status", response));
   };
 
   const confirmUnverifiedUserPromotions = function () {
