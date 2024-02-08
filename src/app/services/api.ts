@@ -222,7 +222,7 @@ export const api = {
     },
     modifyTeacherPending: {
       post: (status: boolean, userIds: number[]) => {
-        return endpoint.post(`/admin/users/teacher_pending/${status}`, userIds);
+        return endpoint.post(`/admin/users/change_teacher_pending/${status}`, userIds);
       },
     },
     getContentErrors: (): AxiosPromise<AppTypes.ContentErrorsResponse> => {

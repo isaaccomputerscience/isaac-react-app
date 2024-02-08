@@ -77,7 +77,7 @@ describe("Admin User Manager", () => {
           "/users/resetpassword",
           "/admin/users/change_role/:role",
           "/admin/users/change_email_verification_status/:status/true",
-          "/admin/users/teacher_pending/:status",
+          "/admin/users/change_teacher_pending/:status",
           "/admin/users/merge",
         ].map((route) => mockSuccessfulPostRequest(route)),
       ],
