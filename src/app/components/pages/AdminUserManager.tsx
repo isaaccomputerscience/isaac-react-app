@@ -249,7 +249,7 @@ const UserManagerResults = ({ searchRequested, searchQuery }: { searchRequested:
     dispatch(adminUserSearchRequest(searchQuery));
     setSelectedUserIds([]);
     setUserUpdating(false);
-    dispatch(showSuccessToast("Teacher Pending Status", response));
+    if (response) dispatch(showSuccessToast("Teacher Pending Status", response));
   };
 
   const confirmUnverifiedUserPromotions = function () {
