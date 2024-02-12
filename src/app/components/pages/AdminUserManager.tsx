@@ -194,6 +194,7 @@ const UserManagerSearch = ({
 const UserManagerResults = ({ searchRequested, searchQuery }: { searchRequested: boolean; searchQuery: object }) => {
   const dispatch = useAppDispatch();
   const searchResults = useAppSelector(selectors.admin.userSearch) ?? [];
+  const modifyTeacherPendingMessage = useAppSelector(selectors.admin.modifyTeacherPending);
   const userIdToSchoolMapping = useAppSelector(selectors.admin.userSchoolLookup);
   const currentUser = useAppSelector((state: AppState) => (state?.user?.loggedIn && state.user) || null);
 
@@ -201,6 +202,10 @@ const UserManagerResults = ({ searchRequested, searchQuery }: { searchRequested:
   const [selectedUserIds, setSelectedUserIds] = useState<number[]>([]);
 
   let promotableRoles: UserRole[] = ["STUDENT", "TEACHER", "EVENT_LEADER", "CONTENT_EDITOR"];
+
+  useEffect(() => {
+    if (modifyTeacherPendingMessage) dispatch(showSuccessToast("Teacher Pending Status", modifyTeacherPendingMessage));
+  }, [dispatch, modifyTeacherPendingMessage]);
 
   if (currentUser && currentUser.role === "ADMIN") {
     promotableRoles = ["STUDENT", "TUTOR", "TEACHER", "EVENT_LEADER", "CONTENT_EDITOR", "EVENT_MANAGER"];
@@ -234,9 +239,9 @@ const UserManagerResults = ({ searchRequested, searchQuery }: { searchRequested:
 
   const modifyUserEmailVerificationStatusesAndUpdateResults = async (status: EmailVerificationStatus) => {
     setUserUpdating(true);
-    const selectedEmails =
-      searchResults?.filter((user) => user.id && selectedUserIds.includes(user.id)).map((user) => user.email ?? "") ??
-      [];
+    const selectedEmails = searchResults
+      .filter((user) => user.id && selectedUserIds.includes(user.id))
+      .map((user) => user.email ?? "");
     await dispatch(adminModifyUserEmailVerificationStatuses(status, selectedEmails));
     dispatch(adminUserSearchRequest(searchQuery));
     setSelectedUserIds([]);
@@ -245,18 +250,18 @@ const UserManagerResults = ({ searchRequested, searchQuery }: { searchRequested:
 
   const declineTeacherUpgradeAndUpdateResults = async () => {
     setUserUpdating(true);
-    const response = await dispatch(adminModifyTeacherPending(false, selectedUserIds));
+    await dispatch(adminModifyTeacherPending(false, selectedUserIds));
     dispatch(adminUserSearchRequest(searchQuery));
     setSelectedUserIds([]);
     setUserUpdating(false);
-    if (response) dispatch(showSuccessToast("Teacher Pending Status", response));
   };
 
   const confirmUnverifiedUserPromotions = function () {
-    if (searchResults.length) {
-      const unverifiedSelectedUsers = selectedUserIds
-        .map((selectedId) => searchResults.filter((result) => result.id === selectedId)[0])
-        .filter((result) => result.emailVerificationStatus !== "VERIFIED");
+    if (searchResults) {
+      const unverifiedSelectedUsers = selectedUserIds.flatMap((selectedId) => {
+        const result = searchResults.find((result) => result.id === selectedId);
+        return result && result.emailVerificationStatus !== "VERIFIED" ? [result] : [];
+      });
       if (unverifiedSelectedUsers.length > 0) {
         return window.confirm(
           "Are you really sure you want to promote unverified user(s): " +

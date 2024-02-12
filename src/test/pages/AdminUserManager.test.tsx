@@ -294,6 +294,7 @@ describe("Admin User Manager", () => {
       expect(checkbox).not.toBeChecked();
       const expectedButtons = ["View", "Edit", "Delete", "Reset password"];
       const buttons = Array.from(firstUserDetails[1].children);
+      expect(buttons).toHaveLength(4);
       buttons.forEach((button, index) => expect(button).toHaveTextContent(expectedButtons[index]));
     });
 

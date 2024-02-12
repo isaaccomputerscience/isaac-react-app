@@ -1235,8 +1235,10 @@ export const adminModifyTeacherPending = (status: boolean, userIds: number[]) =>
   dispatch({ type: ACTION_TYPE.ADMIN_MODIFY_TEACHER_PENDING_REQUEST });
   try {
     const response = await api.admin.modifyTeacherPending.post(status, userIds);
-    dispatch({ type: ACTION_TYPE.ADMIN_MODIFY_TEACHER_PENDING_RESPONSE_SUCCESS });
-    return response.data;
+    dispatch({
+      type: ACTION_TYPE.ADMIN_MODIFY_TEACHER_PENDING_RESPONSE_SUCCESS,
+      message: response.data,
+    });
   } catch (e) {
     dispatch({ type: ACTION_TYPE.ADMIN_MODIFY_TEACHER_PENDING_RESPONSE_FAILURE });
     dispatch(showAxiosErrorToastIfNeeded("Teacher pending modification failed", e));
