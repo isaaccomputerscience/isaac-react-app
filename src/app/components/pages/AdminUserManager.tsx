@@ -258,10 +258,9 @@ const UserManagerResults = ({ searchRequested, searchQuery }: { searchRequested:
 
   const confirmUnverifiedUserPromotions = function () {
     if (searchResults) {
-      const unverifiedSelectedUsers = selectedUserIds.flatMap((selectedId) => {
-        const result = searchResults.find((result) => result.id === selectedId);
-        return result && result.emailVerificationStatus !== "VERIFIED" ? [result] : [];
-      });
+      const unverifiedSelectedUsers = selectedUserIds
+        .map((selectedId) => searchResults.find((user) => user.id === selectedId)!)
+        .filter((user) => user.emailVerificationStatus !== "VERIFIED");
       if (unverifiedSelectedUsers.length > 0) {
         return window.confirm(
           "Are you really sure you want to promote unverified user(s): " +
