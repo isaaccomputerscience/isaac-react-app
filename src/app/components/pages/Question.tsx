@@ -48,7 +48,7 @@ export const Question = withRouter(({ questionIdOverride, match, location }: Que
               <Container>
                 {/*High contrast option*/}
                 <TitleAndBreadcrumb
-                  currentPageTitle={doc.title || ""}
+                  currentPageTitle={doc.title ?? ""}
                   intermediateCrumbs={[...navigation.breadcrumbHistory]}
                   collectionType={navigation.collectionType}
                   audienceViews={determineAudienceViews(doc.audience, navigation.creationContext)}
