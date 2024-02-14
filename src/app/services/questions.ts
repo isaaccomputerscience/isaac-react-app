@@ -55,26 +55,6 @@ export function selectQuestionPart(questions?: AppQuestionDTO[], questionPartId?
   return questions?.filter((question) => question.id == questionPartId)[0];
 }
 
-function fastTrackConceptEnumerator(questionId: string) {
-  // Magic, unfortunately
-  return "_abcdefghijk".indexOf(questionId.split("_")[2].slice(-1));
-}
-
-export function generateQuestionTitle(doc: ContentDTO | ContentSummaryDTO) {
-  let title = doc.title as string;
-
-  // FastTrack title renaming
-  if (
-    doc.type === DOCUMENT_TYPE.FAST_TRACK_QUESTION &&
-    doc.id &&
-    (doc.tags?.includes("ft_upper") || doc.tags?.includes("ft_lower"))
-  ) {
-    title += " " + fastTrackConceptEnumerator(doc.id) + (doc.tags.includes("ft_lower") ? "ii" : "i");
-  }
-
-  return title;
-}
-
 // Inequality specific functions
 
 export function sanitiseInequalityState(state: any) {
