@@ -1,4 +1,3 @@
-import { UserRole } from "../../IsaacApiTypes";
 import { AdminUserManager } from "../../app/components/pages/AdminUserManager";
 import { checkPageTitle, renderTestEnvironment, getById, clickButton } from "../utils";
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
@@ -6,7 +5,7 @@ import userEvent from "@testing-library/user-event";
 import * as actions from "../../app/state/actions";
 import * as popups from "../../app/state/actions/popups";
 import { rest } from "msw";
-import { API_PATH } from "../../app/services";
+import { API_PATH, UserRole } from "../../app/services";
 import { buildMockStudent, buildMockTeacher, mockUser } from "../../mocks/data";
 import { store } from "../../app/state";
 import { FRIENDLY_DATE_AND_TIME } from "../../app/components/elements/DateString";

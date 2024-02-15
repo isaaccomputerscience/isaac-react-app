@@ -1,5 +1,6 @@
-import { BookingStatus, EventBookingDTO, Gender, UserRole } from "../../../../../IsaacApiTypes";
+import { BookingStatus, EventBookingDTO, Gender } from "../../../../../IsaacApiTypes";
 import { countEventDetailsByRole } from "../../../../../app/components/elements/panels/EventGenderDetails";
+import { UserRole } from "../../../../../app/services";
 import { mockEventBooking, mockEventBookings } from "../../../../../mocks/data";
 
 const genders = ["MALE", "FEMALE", "OTHER", "PREFER_NOT_TO_SAY", "UNKNOWN"] as Gender[];

@@ -15,7 +15,7 @@ import {
 import { TitleAndBreadcrumb } from "../elements/TitleAndBreadcrumb";
 import { Redirect } from "react-router";
 import { MetaDescription } from "../elements/MetaDescription";
-import { UserRole } from "../../../IsaacApiTypes";
+import { UserRole } from "../../services/constants";
 
 export const Registration = () => {
   const user = useAppSelector(selectors.user.orNull);

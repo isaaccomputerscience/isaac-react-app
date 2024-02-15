@@ -1,7 +1,7 @@
 import React from "react";
-import { EventBookingDTO, UserRole } from "../../../../IsaacApiTypes";
+import { EventBookingDTO } from "../../../../IsaacApiTypes";
 import { Col, Table, UncontrolledTooltip } from "reactstrap";
-import { asPercentage } from "../../../services";
+import { UserRole, asPercentage } from "../../../services";
 
 export const countEventDetailsByRole = (role: UserRole, eventBookings: EventBookingDTO[]) => {
   const countByRole = {

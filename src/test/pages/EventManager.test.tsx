@@ -1,9 +1,8 @@
 import { rest } from "msw";
 import { EventManager } from "../../app/components/pages/EventManager";
 import { checkPageTitle, renderTestEnvironment } from "../utils";
-import { API_PATH } from "../../app/services";
+import { API_PATH, UserRole } from "../../app/services";
 import { mockFutureEventOverviews, mockUser } from "../../mocks/data";
-import { UserRole } from "../../IsaacApiTypes";
 import { screen } from "@testing-library/react";
 
 describe("Event Manager", () => {

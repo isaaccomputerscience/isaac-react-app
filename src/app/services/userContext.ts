@@ -19,8 +19,9 @@ import {
   STAGES_CS_STUDENT,
   stagesOrdered,
   useQueryParams,
+  UserRole,
 } from "./";
-import { AudienceContext, ContentBaseDTO, ContentDTO, UserRole, Stage, UserContext } from "../../IsaacApiTypes";
+import { AudienceContext, ContentBaseDTO, ContentDTO, Stage, UserContext } from "../../IsaacApiTypes";
 import { useLocation, useParams } from "react-router-dom";
 import { AppState, useAppSelector } from "../state";
 import { GameboardContext, PotentialUser, ViewingContext } from "../../IsaacAppTypes";

@@ -1,8 +1,8 @@
 import { rest } from "msw";
-import { BookingStatus, EventBookingDTO, UserRole } from "../../../../IsaacApiTypes";
+import { BookingStatus, EventBookingDTO } from "../../../../IsaacApiTypes";
 import { ManageExistingBookings } from "../../../../app/components/elements/panels/ManageExistingBookings";
 import { renderTestEnvironment } from "../../../utils";
-import { API_PATH } from "../../../../app/services";
+import { API_PATH, UserRole } from "../../../../app/services";
 import { mockEvent, mockUser, mockEventBookings, mockEventBooking } from "../../../../mocks/data";
 import { screen, within } from "@testing-library/react";
 import { UserSchoolLookup } from "../../../../IsaacAppTypes";

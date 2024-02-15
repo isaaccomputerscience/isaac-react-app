@@ -5,6 +5,7 @@ import {
   IsaacEventPageDTO,
   UserSummaryWithGroupMembershipDTO,
   EventBookingDTO,
+  DetailedEventBookingDTO,
 } from "../IsaacApiTypes";
 
 export const mockRandomQuestions = [
@@ -690,7 +691,7 @@ export const mockRandomQuestions = [
   },
 ];
 
-export const mockEventBookings: EventBookingDTO[] = [
+export const mockEventBookings: DetailedEventBookingDTO[] = [
   {
     bookingId: 1000,
     userBooked: {

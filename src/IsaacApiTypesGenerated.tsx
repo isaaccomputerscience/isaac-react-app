@@ -1,5 +1,5 @@
 /* tslint:disable */
-// Generated using typescript-generator version 2.12.476 on 2024-02-15 16:37:57.
+// Generated using typescript-generator version 2.12.476 on 2024-02-15 16:54:58.
 
 export interface AssignmentDTO extends IAssignmentLike {
   gameboardId?: string;
@@ -530,10 +530,10 @@ export interface UserSummaryWithGroupMembershipDTO extends UserSummaryDTO {
 
 export interface IAssignmentLike {
   id?: number;
-  creationDate?: EpochTimeStamp;
+  groupId?: number;
   ownerUserId?: number;
   dueDate?: EpochTimeStamp;
-  groupId?: number;
+  creationDate?: EpochTimeStamp;
 }
 
 export interface GameboardItem {
@@ -594,8 +594,8 @@ export interface Location {
 }
 
 export interface IHasQuizSummary {
-  quizSummary?: ContentSummaryDTO;
   quizId?: string;
+  quizSummary?: ContentSummaryDTO;
 }
 
 export interface Mark {
@@ -677,7 +677,7 @@ export type GameboardItemState = "PERFECT" | "PASSED" | "IN_PROGRESS" | "NOT_ATT
 
 export type QuestionPartState = "CORRECT" | "INCORRECT" | "NOT_ATTEMPTED";
 
-export type Stage = "year_7_and_8" | "year_9" | "gcse" | "a_level" | "further_a" | "university" | "all";
+export type Stage = "gcse" | "a_level" | "all";
 
 export type ExamBoard = "aqa" | "ocr" | "cie" | "edexcel" | "eduqas" | "wjec" | "all";
 

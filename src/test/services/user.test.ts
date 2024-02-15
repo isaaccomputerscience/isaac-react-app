@@ -1,5 +1,6 @@
-import { USER_ROLES, UserRole } from "../../IsaacApiTypes";
 import {
+  USER_ROLES,
+  UserRole,
   UserRoleAndLoggedInStatus,
   extractTeacherName,
   isAdmin,

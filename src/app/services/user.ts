@@ -1,6 +1,5 @@
-import { isDefined } from "./";
+import { UserRole, isDefined } from "./";
 import { LoggedInUser, PotentialUser, School } from "../../IsaacAppTypes";
-import { UserRole } from "../../IsaacApiTypes";
 import { Immutable } from "immer";
 
 export type UserRoleAndLoggedInStatus = {

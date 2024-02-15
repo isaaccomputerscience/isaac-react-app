@@ -1,4 +1,4 @@
-import { UserRole } from "../IsaacApiTypes";
+import { UserRole } from "../app/services";
 import { render } from "@testing-library/react/pure";
 import { server } from "../mocks/server";
 import { rest, RestHandler } from "msw";

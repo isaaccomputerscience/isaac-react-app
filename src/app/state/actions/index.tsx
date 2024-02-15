@@ -16,6 +16,7 @@ import {
   persistence,
   QUESTION_ATTEMPT_THROTTLED_MESSAGE,
   TAG_ID,
+  UserRole,
 } from "../../services";
 import {
   Action,
@@ -41,7 +42,6 @@ import {
   IsaacQuestionPageDTO,
   QuestionDTO,
   RegisteredUserDTO,
-  UserRole,
   TestCaseDTO,
   UserContext,
   UserSummaryDTO,

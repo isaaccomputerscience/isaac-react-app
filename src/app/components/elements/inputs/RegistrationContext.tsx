@@ -8,11 +8,12 @@ import {
   getFilteredStageOptions,
   isDefined,
   STAGE,
+  UserRole,
   validateUserContexts,
 } from "../../../services";
 import { Col, FormFeedback, Label, Row, UncontrolledTooltip } from "reactstrap";
 import { CustomInput, Input } from "reactstrap";
-import { UserContext, UserRole } from "../../../../IsaacApiTypes";
+import { UserContext } from "../../../../IsaacApiTypes";
 
 interface UserContextRowProps {
   isStudent?: boolean;

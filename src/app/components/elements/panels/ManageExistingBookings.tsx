@@ -25,7 +25,7 @@ import {
   zeroOrLess,
 } from "../../../services";
 import { PotentialUser } from "../../../../IsaacAppTypes";
-import { BookingStatus, EventBookingDTO } from "../../../../IsaacApiTypes";
+import { BookingStatus, DetailedEventBookingDTO } from "../../../../IsaacApiTypes";
 import { DateString } from "../DateString";
 
 export const ManageExistingBookings = ({ user, eventBookingId }: { user: PotentialUser; eventBookingId: string }) => {
@@ -59,7 +59,7 @@ export const ManageExistingBookings = ({ user, eventBookingId }: { user: Potenti
 
   function relevantUsers(bookingType: string) {
     const idsToReturn: number[] = [];
-    augmentedEventBookings.map((booking: EventBookingDTO & { schoolName?: string }) => {
+    augmentedEventBookings.map((booking: DetailedEventBookingDTO & { schoolName?: string }) => {
       if (booking.userBooked?.id && booking.bookingStatus == bookingType) {
         idsToReturn.push(booking.userBooked.id);
       }

@@ -2,7 +2,7 @@ import { DAYS_AGO, DAYS_IN_FUTURE, TestUserRole, checkPageTitle, renderTestEnvir
 import { mockEvent } from "../../mocks/data";
 import { rest } from "msw";
 import { API_PATH, formatAddress } from "../../app/services";
-import { EventStatus, IsaacEventPageDTO, UserRole } from "../../IsaacApiTypes";
+import { EventStatus, IsaacEventPageDTO, Role } from "../../IsaacApiTypes";
 import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as eventServices from "../../app/services/events";
@@ -86,7 +86,7 @@ describe("EventDetails", () => {
     expect(privateBadge()).not.toBeInTheDocument();
   });
 
-  it.each(["ADMIN", "EVENT_MANAGER", "CONTENT_EDITOR"] as UserRole[])(
+  it.each(["ADMIN", "EVENT_MANAGER", "CONTENT_EDITOR"] as Role[])(
     "if user is %s, a google calendar button shows and can be clicked",
     async (role) => {
       const mockGoogleCalendarTemplate = jest.fn();

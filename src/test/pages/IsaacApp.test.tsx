@@ -1,9 +1,8 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { zip } from "lodash";
-import { USER_ROLES, UserRole } from "../../IsaacApiTypes";
 import { renderTestEnvironment, NavBarMenus, NAV_BAR_MENU_TITLE, TestUserRole } from "../utils";
-import { history } from "../../app/services";
+import { USER_ROLES, UserRole, history } from "../../app/services";
 import { mockPromoPods } from "../../mocks/data";
 
 const myIsaacLinks = ["/assignments", "/my_gameboards", "/progress", "/tests"];

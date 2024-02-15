@@ -36,10 +36,10 @@ import {
   useAppDispatch,
   useAppSelector,
 } from "../../state";
-import { EmailVerificationStatus, UserRole } from "../../../IsaacApiTypes";
+import { EmailVerificationStatus } from "../../../IsaacApiTypes";
 import { DateString } from "../elements/DateString";
 import { TitleAndBreadcrumb } from "../elements/TitleAndBreadcrumb";
-import { ADMIN_CRUMB, isAdmin, isDefined } from "../../services";
+import { ADMIN_CRUMB, UserRole, isAdmin, isDefined } from "../../services";
 import { Link } from "react-router-dom";
 
 const verificationStatuses: EmailVerificationStatus[] = ["NOT_VERIFIED", "DELIVERY_FAILED"];
