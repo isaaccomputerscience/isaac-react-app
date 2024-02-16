@@ -1,5 +1,5 @@
 /* tslint:disable */
-// Generated using typescript-generator version 2.12.476 on 2024-02-15 16:54:58.
+// Generated using typescript-generator version 2.12.476 on 2024-02-16 12:45:34.
 
 export interface AssignmentDTO extends IAssignmentLike {
   gameboardId?: string;
@@ -376,6 +376,13 @@ export interface ImageDTO extends MediaDTO {
   clickTarget?: string;
 }
 
+export interface InteractiveCodeSnippetDTO extends CodeSnippetDTO {
+  setupCode?: string;
+  testCode?: string;
+  expectedResult?: string;
+  wrapCodeInMain?: boolean;
+}
+
 export interface ItemChoiceDTO extends ChoiceDTO {
   allowSubsetMatch?: boolean;
   items?: ItemDTO[];
@@ -520,6 +527,10 @@ export interface UserSummaryForAdminUsersDTO extends UserSummaryWithEmailAddress
   schoolOther?: string;
 }
 
+export interface UserSummaryWithEmailAddressAndGenderDTO extends UserSummaryWithEmailAddressDTO {
+  gender?: Gender;
+}
+
 export interface UserSummaryWithEmailAddressDTO extends UserSummaryDTO {
   email?: string;
 }
@@ -530,10 +541,10 @@ export interface UserSummaryWithGroupMembershipDTO extends UserSummaryDTO {
 
 export interface IAssignmentLike {
   id?: number;
+  creationDate?: EpochTimeStamp;
   groupId?: number;
   ownerUserId?: number;
   dueDate?: EpochTimeStamp;
-  creationDate?: EpochTimeStamp;
 }
 
 export interface GameboardItem {

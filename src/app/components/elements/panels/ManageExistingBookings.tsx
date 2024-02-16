@@ -49,7 +49,7 @@ export const ManageExistingBookings = ({ user, eventBookingId }: { user: Potenti
     setReverse(!reverse);
   };
 
-  const augmentedEventBookings = eventBookings.map((booking: EventBookingDTO & { schoolName?: string }) => {
+  const augmentedEventBookings = eventBookings.map((booking: DetailedEventBookingDTO & { schoolName?: string }) => {
     if (booking.userBooked && booking.userBooked.id) {
       const schoolDetails = userIdToSchoolMapping[booking.userBooked.id];
       booking.schoolName = schoolDetails ? schoolDetails.name : "UNKNOWN";

@@ -1,11 +1,11 @@
-import { BookingStatus, EventBookingDTO, Gender } from "../../../../../IsaacApiTypes";
+import { BookingStatus, DetailedEventBookingDTO, Gender } from "../../../../../IsaacApiTypes";
 import { countEventDetailsByRole } from "../../../../../app/components/elements/panels/EventGenderDetails";
 import { UserRole } from "../../../../../app/services";
 import { mockEventBooking, mockEventBookings } from "../../../../../mocks/data";
 
 const genders = ["MALE", "FEMALE", "OTHER", "PREFER_NOT_TO_SAY", "UNKNOWN"] as Gender[];
 
-const studentBookingsWithGenderAndStatus: EventBookingDTO[] = mockEventBookings.map((booking, index) => {
+const studentBookingsWithGenderAndStatus: DetailedEventBookingDTO[] = mockEventBookings.map((booking, index) => {
   const updatedBooking = {
     ...booking,
     bookingStatus: "CONFIRMED" as BookingStatus,
@@ -15,7 +15,7 @@ const studentBookingsWithGenderAndStatus: EventBookingDTO[] = mockEventBookings.
 });
 describe("countEventDetailsByRole", () => {
   it("returns an object with all genders and count set to 0 when there are no bookings", () => {
-    const bookings = [] as EventBookingDTO[];
+    const bookings = [] as DetailedEventBookingDTO[];
     const result = countEventDetailsByRole("STUDENT", bookings);
     expect(result).toEqual({
       genders: { male: 0, female: 0, other: 0, preferNotToSay: 0, unknown: 0 },
@@ -32,7 +32,7 @@ describe("countEventDetailsByRole", () => {
   });
 
   it("should not count bookings with invalid bookingStatus", () => {
-    const cancelledBooking: EventBookingDTO = {
+    const cancelledBooking: DetailedEventBookingDTO = {
       ...mockEventBooking,
       bookingStatus: "CANCELLED",
       userBooked: { ...mockEventBooking.userBooked, gender: "FEMALE" },
@@ -45,7 +45,7 @@ describe("countEventDetailsByRole", () => {
   });
 
   it("should count user bookings without a gender as Unknown", () => {
-    const studentBookingWithUndefinedGender: EventBookingDTO = {
+    const studentBookingWithUndefinedGender: DetailedEventBookingDTO = {
       ...mockEventBooking,
       bookingStatus: "CONFIRMED",
       userBooked: { ...mockEventBooking.userBooked, gender: undefined, role: "STUDENT" },
