@@ -4,6 +4,9 @@ import {
   ContentBaseDTO,
   ContentDTO,
   EventBookingDTO,
+  EventStatus,
+  Location,
+  ImageDTO,
   QuestionValidationResponseDTO,
   UserSummaryWithEmailAddressAndGenderDTO,
 } from "./IsaacApiTypesGenerated";
@@ -43,7 +46,23 @@ export interface TOTPSharedSecret {
   created: EpochTimeStamp;
 }
 
-// temporary changes to the MisuseStatisticDTO until typescript generator plugin is correctly giving required properties
+export interface IsaacEventPageDTO extends ContentDTO {
+  date?: EpochTimeStamp;
+  bookingDeadline?: EpochTimeStamp;
+  prepWorkDeadline?: EpochTimeStamp;
+  canonicalSourceFile?: string;
+  location?: Location;
+  eventThumbnail?: Omit<ImageDTO, "altText">; // We don't want to use event thumbnail alt text for WCAG compliance (it's a decorative image, and conveys no meaning)
+  numberOfPlaces?: number;
+  groupReservationLimit?: number;
+  allowGroupReservations?: boolean;
+  eventStatus?: EventStatus;
+  placesAvailable?: number;
+  endDate?: EpochTimeStamp;
+  privateEvent?: boolean;
+}
+
+// temporary changes to the MisuseStatisticDTO and AssignmentStatusDTO until typescript generator plugin is correctly giving required properties
 export interface MisuseStatisticDTO {
   agentIdentifier: string;
   eventType: string;
@@ -51,4 +70,10 @@ export interface MisuseStatisticDTO {
   isOverSoftThreshold: boolean;
   lastEventTimestamp?: number;
   currentCounter: number;
+}
+
+export interface AssignmentStatusDTO {
+  groupId: number;
+  assignmentId?: number;
+  errorMessage?: string;
 }
