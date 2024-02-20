@@ -1,5 +1,5 @@
 /* tslint:disable */
-// Generated using typescript-generator version 2.12.476 on 2024-02-16 12:45:34.
+// Generated using typescript-generator version 2.12.476 on 2024-02-20 16:52:53.
 
 export interface AssignmentDTO extends IAssignmentLike {
   gameboardId?: string;
@@ -85,7 +85,8 @@ export interface IsaacClozeQuestionDTO extends IsaacItemQuestionDTO {
   withReplacement?: boolean;
 }
 
-export interface IsaacConceptPageDTO extends SeguePageDTO {}
+export interface IsaacConceptPageDTO extends SeguePageDTO {
+}
 
 export interface IsaacEventPageDTO extends ContentDTO {
   canonicalSourceFile?: string;
@@ -110,7 +111,8 @@ export interface IsaacFeaturedProfileDTO extends ContentDTO {
   homepage?: string;
 }
 
-export interface IsaacFreeTextQuestionDTO extends IsaacQuestionBaseDTO {}
+export interface IsaacFreeTextQuestionDTO extends IsaacQuestionBaseDTO {
+}
 
 export interface IsaacItemQuestionDTO extends IsaacQuestionBaseDTO {
   items?: ItemDTO[];
@@ -142,10 +144,11 @@ export interface IsaacPodDTO extends ContentDTO {
   url?: string;
 }
 
-export interface IsaacQuestionBaseDTO extends ChoiceQuestionDTO {}
+export interface IsaacQuestionBaseDTO extends ChoiceQuestionDTO {
+}
 
 export interface IsaacQuestionPageDTO extends SeguePageDTO {
-  difficulty?: number;
+  difficulty?: Difficulty;
   passMark?: number;
   supersededBy?: string;
 }
@@ -165,13 +168,15 @@ export interface IsaacQuizDTO extends SeguePageDTO, HasTitleOrId {
   individualFeedback?: QuizFeedbackDTO;
 }
 
-export interface IsaacQuizSectionDTO extends SeguePageDTO {}
+export interface IsaacQuizSectionDTO extends SeguePageDTO {
+}
 
 export interface IsaacRegexMatchQuestionDTO extends IsaacQuestionBaseDTO {
   multiLineEntry?: boolean;
 }
 
-export interface IsaacReorderQuestionDTO extends IsaacItemQuestionDTO {}
+export interface IsaacReorderQuestionDTO extends IsaacItemQuestionDTO {
+}
 
 export interface IsaacStringMatchQuestionDTO extends IsaacQuestionBaseDTO {
   multiLineEntry?: boolean;
@@ -179,7 +184,8 @@ export interface IsaacStringMatchQuestionDTO extends IsaacQuestionBaseDTO {
   preserveTrailingWhitespace?: boolean;
 }
 
-export interface IsaacSymbolicLogicQuestionDTO extends IsaacSymbolicQuestionDTO {}
+export interface IsaacSymbolicLogicQuestionDTO extends IsaacSymbolicQuestionDTO {
+}
 
 export interface IsaacSymbolicQuestionDTO extends IsaacQuestionBaseDTO {
   formulaSeed?: string;
@@ -293,9 +299,11 @@ export interface AnvilAppDTO extends ContentDTO {
   appAccessKey?: string;
 }
 
-export interface ChoiceDTO extends ContentDTO {}
+export interface ChoiceDTO extends ContentDTO {
+}
 
-export interface ChoiceQuestionDTO extends QuestionDTO {}
+export interface ChoiceQuestionDTO extends QuestionDTO {
+}
 
 export interface CodeSnippetDTO extends ContentDTO {
   language?: string;
@@ -304,7 +312,8 @@ export interface CodeSnippetDTO extends ContentDTO {
   url?: string;
 }
 
-export interface CodeTabsDTO extends ContentDTO {}
+export interface CodeTabsDTO extends ContentDTO {
+}
 
 export interface ContentBaseDTO {
   id?: string;
@@ -335,13 +344,13 @@ export interface ContentSummaryDTO {
   title?: string;
   summary?: string;
   type?: string;
-  level?: string;
+  level?: number;
   tags?: string[];
   url?: string;
   correct?: boolean;
   supersededBy?: string;
   deprecated?: boolean;
-  difficulty?: string;
+  difficulty?: Difficulty;
   audience?: AudienceContext[];
 }
 
@@ -356,7 +365,8 @@ export interface EmailTemplateDTO extends ContentDTO {
   replyToName?: string;
 }
 
-export interface FigureDTO extends ImageDTO {}
+export interface FigureDTO extends ImageDTO {
+}
 
 export interface FormulaDTO extends ChoiceDTO {
   pythonExpression?: string;
@@ -406,7 +416,8 @@ export interface NotificationDTO extends ContentDTO {
   expiry?: EpochTimeStamp;
 }
 
-export interface ParsonsChoiceDTO extends ItemChoiceDTO {}
+export interface ParsonsChoiceDTO extends ItemChoiceDTO {
+}
 
 export interface ParsonsItemDTO extends ItemDTO {
   indentation?: number;
@@ -441,7 +452,8 @@ export interface StringChoiceDTO extends ChoiceDTO {
   caseInsensitive?: boolean;
 }
 
-export interface VideoDTO extends MediaDTO {}
+export interface VideoDTO extends MediaDTO {
+}
 
 export interface DetailedEventBookingDTO extends EventBookingDTO {
   additionalInformation?: { [index: string]: string };
@@ -459,7 +471,8 @@ export interface EventBookingDTO {
   updated?: EpochTimeStamp;
 }
 
-export interface AbstractSegueUserDTO {}
+export interface AbstractSegueUserDTO {
+}
 
 export interface AnonymousUserDTO extends AbstractSegueUserDTO {
   sessionId?: string;
@@ -542,9 +555,9 @@ export interface UserSummaryWithGroupMembershipDTO extends UserSummaryDTO {
 export interface IAssignmentLike {
   id?: number;
   creationDate?: EpochTimeStamp;
-  groupId?: number;
   ownerUserId?: number;
   dueDate?: EpochTimeStamp;
+  groupId?: number;
 }
 
 export interface GameboardItem {
@@ -557,7 +570,7 @@ export interface GameboardItem {
   audience?: AudienceContext[];
   creationContext?: AudienceContext;
   level?: number;
-  difficulty?: number;
+  difficulty?: Difficulty;
   questionPartsCorrect?: number;
   questionPartsIncorrect?: number;
   questionPartsNotAttempted?: number;
@@ -672,6 +685,8 @@ export type EventStatus = "OPEN" | "FULLY_BOOKED" | "CANCELLED" | "CLOSED" | "WA
 
 export type BookingStatus = "CONFIRMED" | "CANCELLED" | "WAITING_LIST" | "ATTENDED" | "ABSENT" | "RESERVED";
 
+export type Difficulty = "practice_1" | "practice_2" | "practice_3" | "challenge_1" | "challenge_2" | "challenge_3";
+
 export type QuizFeedbackMode = "NONE" | "OVERALL_MARK" | "SECTION_MARKS" | "DETAILED_FEEDBACK";
 
 export type GroupMembershipStatus = "ACTIVE" | "INACTIVE" | "DELETED";
@@ -691,7 +706,5 @@ export type QuestionPartState = "CORRECT" | "INCORRECT" | "NOT_ATTEMPTED";
 export type Stage = "gcse" | "a_level" | "all";
 
 export type ExamBoard = "aqa" | "ocr" | "cie" | "edexcel" | "eduqas" | "wjec" | "all";
-
-export type Difficulty = "practice_1" | "practice_2" | "practice_3" | "challenge_1" | "challenge_2" | "challenge_3";
 
 export type RoleRequirement = "logged_in" | "teacher";

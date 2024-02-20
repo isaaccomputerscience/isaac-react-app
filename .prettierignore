@@ -1,3 +1,4 @@
 # Ignore everything outside of the "src" directory
 /*
 !/src
+/src/IsaacApiTypesGenerated.tsx
