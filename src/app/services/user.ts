@@ -1,11 +1,10 @@
-import { USER_ROLES, isDefined } from "./";
+import { isDefined } from "./";
 import { LoggedInUser, PotentialUser, School } from "../../IsaacAppTypes";
 import { Immutable } from "immer";
-
-export type UserRole = (typeof USER_ROLES)[number];
+import { Role } from "../../IsaacApiTypes";
 
 export type UserRoleAndLoggedInStatus = {
-  readonly role?: UserRole;
+  readonly role?: Role;
   readonly loggedIn?: boolean;
 };
 
@@ -30,7 +29,7 @@ export function isTeacher(user?: UserRoleAndLoggedInStatus | null): boolean {
 }
 
 export function isTeacherPending(
-  user?: { readonly role?: UserRole; readonly loggedIn?: boolean; readonly teacherPending?: boolean } | null,
+  user?: { readonly role?: Role; readonly loggedIn?: boolean; readonly teacherPending?: boolean } | null,
 ): boolean {
   return isDefined(user) && user.teacherPending === true && (user.loggedIn ?? true);
 }
@@ -67,7 +66,7 @@ export function isAdminOrEventManager(user?: UserRoleAndLoggedInStatus | null): 
   return isAdmin(user) || isEventManager(user);
 }
 
-export const roleRequirements: Record<UserRole, (u: UserRoleAndLoggedInStatus | null) => boolean> = {
+export const roleRequirements: Record<Role, (u: UserRoleAndLoggedInStatus | null) => boolean> = {
   STUDENT: isStudent,
   TUTOR: isTutorOrAbove,
   TEACHER: isTeacherOrAbove,

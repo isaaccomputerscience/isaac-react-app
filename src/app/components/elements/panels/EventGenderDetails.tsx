@@ -1,9 +1,9 @@
 import React from "react";
-import { DetailedEventBookingDTO } from "../../../../IsaacApiTypes";
+import { DetailedEventBookingDTO, Role } from "../../../../IsaacApiTypes";
 import { Col, Table, UncontrolledTooltip } from "reactstrap";
-import { UserRole, asPercentage } from "../../../services";
+import { asPercentage } from "../../../services";
 
-export const countEventDetailsByRole = (role: UserRole, eventBookings: DetailedEventBookingDTO[]) => {
+export const countEventDetailsByRole = (role: Role, eventBookings: DetailedEventBookingDTO[]) => {
   const countByRole = {
     genders: {
       male: 0,

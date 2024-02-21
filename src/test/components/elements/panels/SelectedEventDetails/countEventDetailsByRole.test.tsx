@@ -1,6 +1,5 @@
-import { BookingStatus, DetailedEventBookingDTO, Gender } from "../../../../../IsaacApiTypes";
+import { BookingStatus, DetailedEventBookingDTO, Gender, Role } from "../../../../../IsaacApiTypes";
 import { countEventDetailsByRole } from "../../../../../app/components/elements/panels/EventGenderDetails";
-import { UserRole } from "../../../../../app/services";
 import { mockEventBooking, mockEventBookings } from "../../../../../mocks/data";
 
 const genders = ["MALE", "FEMALE", "OTHER", "PREFER_NOT_TO_SAY", "UNKNOWN"] as Gender[];
@@ -9,7 +8,7 @@ const studentBookingsWithGenderAndStatus: DetailedEventBookingDTO[] = mockEventB
   const updatedBooking = {
     ...booking,
     bookingStatus: "CONFIRMED" as BookingStatus,
-    userBooked: { ...booking.userBooked, gender: genders[index], role: "STUDENT" as UserRole },
+    userBooked: { ...booking.userBooked, gender: genders[index], role: "STUDENT" as Role },
   };
   return updatedBooking;
 });

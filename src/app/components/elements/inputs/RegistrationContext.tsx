@@ -8,12 +8,10 @@ import {
   getFilteredStageOptions,
   isDefined,
   STAGE,
-  UserRole,
   validateUserContexts,
 } from "../../../services";
-import { Col, FormFeedback, Label, Row, UncontrolledTooltip } from "reactstrap";
-import { CustomInput, Input } from "reactstrap";
-import { UserContext } from "../../../../IsaacApiTypes";
+import { Col, FormFeedback, Label, Row, UncontrolledTooltip, CustomInput, Input } from "reactstrap";
+import { Role, UserContext } from "../../../../IsaacApiTypes";
 
 interface UserContextRowProps {
   isStudent?: boolean;
@@ -32,7 +30,7 @@ interface RegistrationContextProps {
   displaySettings: Nullable<DisplaySettings>;
   setDisplaySettings: (ds: DisplaySettings | ((oldDs?: DisplaySettings) => DisplaySettings)) => void;
   submissionAttempted: boolean;
-  userRole?: UserRole;
+  userRole?: Role;
 }
 
 interface ShowOtherContentProps {

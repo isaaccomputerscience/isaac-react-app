@@ -1,8 +1,13 @@
 import { EventBookingForm } from "../../../app/components/elements/EventBookingForm";
 import { renderTestEnvironment } from "../../utils";
 import { mockEvent, mockUser } from "../../../mocks/data";
-import { EmailVerificationStatus, RegisteredUserDTO, UserSummaryWithEmailAddressDTO } from "../../../IsaacApiTypes";
-import { API_PATH, UserRole, augmentEvent } from "../../../app/services";
+import {
+  EmailVerificationStatus,
+  RegisteredUserDTO,
+  Role,
+  UserSummaryWithEmailAddressDTO,
+} from "../../../IsaacApiTypes";
+import { API_PATH, augmentEvent } from "../../../app/services";
 import { AdditionalInformation, AugmentedEvent } from "../../../IsaacAppTypes";
 import { Immutable } from "immer";
 import { fireEvent, screen } from "@testing-library/react";
@@ -20,7 +25,7 @@ describe("EventBookingForm", () => {
     user,
     additionalInformation,
   }: {
-    role: UserRole;
+    role: Role;
     event?: AugmentedEvent;
     user: RegisteredUserDTO;
     additionalInformation?: AdditionalInformation;

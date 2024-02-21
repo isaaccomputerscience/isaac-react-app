@@ -2,8 +2,9 @@ import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { zip } from "lodash";
 import { renderTestEnvironment, NavBarMenus, NAV_BAR_MENU_TITLE, TestUserRole } from "../utils";
-import { USER_ROLES, UserRole, history } from "../../app/services";
+import { USER_ROLES, history } from "../../app/services";
 import { mockPromoPods } from "../../mocks/data";
+import { Role } from "../../IsaacApiTypes";
 
 const myIsaacLinks = ["/assignments", "/my_gameboards", "/progress", "/tests"];
 const tutorLinks = ["/groups", "/set_assignments", "/my_markbook"];
@@ -141,15 +142,7 @@ describe("IsaacApp", () => {
     });
   });
 
-  const roles = [
-    "STUDENT",
-    "TUTOR",
-    "TEACHER",
-    "EVENT_LEADER",
-    "EVENT_MANAGER",
-    "CONTENT_EDITOR",
-    "ADMIN",
-  ] as UserRole[];
+  const roles = ["STUDENT", "TUTOR", "TEACHER", "EVENT_LEADER", "EVENT_MANAGER", "CONTENT_EDITOR", "ADMIN"] as Role[];
 
   it.each(roles)("should not show the promo content banner for %s users", async (role) => {
     renderTestEnvironment({ role });

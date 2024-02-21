@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react/pure";
 import { server } from "../mocks/server";
 import { rest, RestHandler } from "msw";
-import { ACTION_TYPE, API_PATH, UserRole, isDefined } from "../app/services";
+import { ACTION_TYPE, API_PATH, isDefined } from "../app/services";
 import { produce } from "immer";
 import { mockUser, registrationUserData } from "../mocks/data";
 import { isaacApi, requestCurrentUser, store } from "../app/state";
@@ -11,12 +11,13 @@ import React from "react";
 import { MemoryRouter } from "react-router";
 import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { Role } from "../IsaacApiTypes";
 
 export const augmentErrorMessage = (message?: string) => (e: Error) => {
   return new Error(`${e.message}\n${message ? "Extra info: " + message : ""}`);
 };
 
-export type TestUserRole = UserRole | "ANONYMOUS";
+export type TestUserRole = Role | "ANONYMOUS";
 
 interface RenderTestEnvironmentOptions {
   role?: TestUserRole;

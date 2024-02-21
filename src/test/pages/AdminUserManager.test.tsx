@@ -5,10 +5,11 @@ import userEvent from "@testing-library/user-event";
 import * as actions from "../../app/state/actions";
 import * as popups from "../../app/state/actions/popups";
 import { rest } from "msw";
-import { API_PATH, UserRole } from "../../app/services";
+import { API_PATH } from "../../app/services";
 import { buildMockStudent, buildMockTeacher, mockUser } from "../../mocks/data";
 import { store } from "../../app/state";
 import { FRIENDLY_DATE_AND_TIME } from "../../app/components/elements/DateString";
+import { Role } from "../../IsaacApiTypes";
 
 const adminSearchSpy = jest.spyOn(actions, "adminUserSearchRequest");
 const popupSpy = jest.spyOn(popups, "showToast");
@@ -47,7 +48,7 @@ const mockSuccessfulPostRequest = (route: string) => {
 };
 
 describe("Admin User Manager", () => {
-  const renderUserManager = async ({ role = "ADMIN" }: { role?: UserRole } = {}) => {
+  const renderUserManager = async ({ role = "ADMIN" }: { role?: Role } = {}) => {
     renderTestEnvironment({
       role: role,
       PageComponent: AdminUserManager,
@@ -211,11 +212,11 @@ describe("Admin User Manager", () => {
 
     const modifyRoleTestCases = [
       {
-        role: "EVENT_MANAGER" as UserRole,
+        role: "EVENT_MANAGER" as Role,
         expectedRoles: ["STUDENT", "TEACHER", "EVENT_LEADER", "CONTENT_EDITOR"],
       },
       {
-        role: "ADMIN" as UserRole,
+        role: "ADMIN" as Role,
         expectedRoles: ["STUDENT", "TUTOR", "TEACHER", "EVENT_LEADER", "CONTENT_EDITOR", "EVENT_MANAGER"],
       },
     ];

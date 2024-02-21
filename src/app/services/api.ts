@@ -1,19 +1,12 @@
 import axios, { AxiosPromise } from "axios";
-import {
-  API_PATH,
-  EventStageFilter,
-  EventTypeFilter,
-  securePadCredentials,
-  securePadPasswordReset,
-  TAG_ID,
-  UserRole,
-} from "./";
+import { API_PATH, EventStageFilter, EventTypeFilter, securePadCredentials, securePadPasswordReset, TAG_ID } from "./";
 import * as ApiTypes from "../../IsaacApiTypes";
 import {
   AuthenticationProvider,
   EmailTemplateDTO,
   EventBookingDTO,
   ResultsWrapper,
+  Role,
   TestCaseDTO,
   UserContext,
 } from "../../IsaacApiTypes";
@@ -219,7 +212,7 @@ export const api = {
       },
     },
     modifyUserRoles: {
-      post: (role: UserRole, userIds: number[]) => {
+      post: (role: Role, userIds: number[]) => {
         return endpoint.post(`/admin/users/change_role/${role}`, userIds);
       },
     },
