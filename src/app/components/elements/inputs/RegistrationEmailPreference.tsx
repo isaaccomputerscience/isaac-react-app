@@ -2,7 +2,7 @@ import { CardBody, FormGroup, Table } from "reactstrap";
 import React from "react";
 import { UserEmailPreferences } from "../../../../IsaacAppTypes";
 import { TrueFalseRadioInput } from "./TrueFalseRadioInput";
-import { UserRole } from "../../../services/constants";
+import { UserRole } from "../../../services";
 
 interface RegistrationEmailPreferenceProps {
   emailPreferences: UserEmailPreferences | null | undefined;

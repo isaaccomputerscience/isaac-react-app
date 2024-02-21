@@ -10,6 +10,7 @@ import {
   Role,
   Stage,
 } from "../../IsaacApiTypes";
+import { UserRole } from "./user";
 
 export const STAGING_URL = "https://www.staging.isaaccomputerscience.org";
 
@@ -903,4 +904,3 @@ export const USER_ROLES: Role[] = [
   "EVENT_MANAGER",
   "ADMIN",
 ];
-export type UserRole = (typeof USER_ROLES)[number];

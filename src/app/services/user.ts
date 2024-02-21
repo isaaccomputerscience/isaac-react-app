@@ -1,6 +1,8 @@
-import { UserRole, isDefined } from "./";
+import { USER_ROLES, isDefined } from "./";
 import { LoggedInUser, PotentialUser, School } from "../../IsaacAppTypes";
 import { Immutable } from "immer";
+
+export type UserRole = (typeof USER_ROLES)[number];
 
 export type UserRoleAndLoggedInStatus = {
   readonly role?: UserRole;

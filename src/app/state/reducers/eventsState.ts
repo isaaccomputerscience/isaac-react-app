@@ -1,7 +1,7 @@
 import { Action, AugmentedEvent, EventMapData, EventOverview, NOT_FOUND_TYPE } from "../../../IsaacAppTypes";
 import { ACTION_TYPE, NOT_FOUND } from "../../services";
 import { routerPageChange } from "../index";
-import { DetailedEventBookingDTO } from "../../../IsaacApiTypesGenerated";
+import { DetailedEventBookingDTO } from "../../../IsaacApiTypes";
 
 type EventsState = { events: AugmentedEvent[]; total: number } | null;
 export const events = (events: EventsState = null, action: Action) => {
