@@ -45,6 +45,16 @@ import AsyncCreatableSelect from "react-select/async-creatable";
 import { throttle } from "lodash";
 import { School } from "../../../IsaacAppTypes";
 
+interface SearchQuery {
+  familyName: string | null;
+  email: string | null;
+  role: Role | null;
+  schoolURN: number | null;
+  schoolOther: string | null;
+  postcode: string | null;
+  postcodeRadius: string;
+}
+
 const verificationStatuses: EmailVerificationStatus[] = ["NOT_VERIFIED", "DELIVERY_FAILED"];
 
 const schoolSearch = (
@@ -64,41 +74,14 @@ const schoolSearch = (
 };
 const throttledSchoolSearch = throttle(schoolSearch, 450, { trailing: true, leading: true });
 
-interface SearchQuery {
-  familyName: string | null;
-  email: string | null;
-  role: Role | null;
-  schoolURN: number | null;
-  schoolOther: string | null;
-  postcode: string | null;
-  postcodeRadius: string;
-}
-
-const UserManagerSearch = ({
+const SchoolSearch = ({
+  updateQuery,
   searchQuery,
-  setSearchQuery,
-  setSearchRequested,
 }: {
+  updateQuery: (update: { [key: string]: string | null }) => void;
   searchQuery: SearchQuery;
-  setSearchQuery: React.Dispatch<React.SetStateAction<SearchQuery>>;
-  setSearchRequested: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const dispatch = useAppDispatch();
-  const updateQuery = (update: { [key: string]: string | null }) => {
-    // Replace empty strings with nulls
-    const nulledUpdate: { [key: string]: string | null } = {};
-    Object.entries(update).forEach(([key, value]) => (nulledUpdate[key] = value || null));
-    // Create a copy so that we trigger a re-render
-    setSearchQuery({ ...searchQuery, ...nulledUpdate });
-  };
-
   const [selectedSchoolObject, setSelectedSchoolObject] = useState<School | null>();
-
-  const search = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setSearchRequested(true);
-    dispatch(adminUserSearchRequest(searchQuery));
-  };
 
   function schoolHasURN(school: string | School): school is School {
     return typeof school === "object" && "urn" in school;
@@ -127,6 +110,49 @@ const UserManagerSearch = ({
     : searchQuery.schoolOther
     ? { value: "manually entered school", label: searchQuery.schoolOther }
     : undefined;
+
+  return (
+    <FormGroup>
+      <Label htmlFor="school-search">Find a user by school:</Label>
+      <AsyncCreatableSelect
+        isClearable
+        inputId="school-search"
+        placeholder={"Type user's school or college name"}
+        value={schoolValue}
+        className="basic-multi-select"
+        classNamePrefix="select"
+        onChange={handleSetSchool}
+        loadOptions={throttledSchoolSearch}
+        filterOption={() => true}
+        formatCreateLabel={(input) => <span>Use &quot;{input}&quot; as user&apos;s school name</span>}
+      />
+    </FormGroup>
+  );
+};
+
+const UserManagerSearch = ({
+  searchQuery,
+  setSearchQuery,
+  setSearchRequested,
+}: {
+  searchQuery: SearchQuery;
+  setSearchQuery: React.Dispatch<React.SetStateAction<SearchQuery>>;
+  setSearchRequested: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  const dispatch = useAppDispatch();
+  const updateQuery = (update: { [key: string]: string | null }) => {
+    // Replace empty strings with nulls
+    const nulledUpdate: { [key: string]: string | null } = {};
+    Object.entries(update).forEach(([key, value]) => (nulledUpdate[key] = value || null));
+    // Create a copy so that we trigger a re-render
+    setSearchQuery({ ...searchQuery, ...nulledUpdate });
+  };
+
+  const search = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSearchRequested(true);
+    dispatch(adminUserSearchRequest(searchQuery));
+  };
 
   return (
     <Card className="mt-5">
@@ -212,21 +238,7 @@ const UserManagerSearch = ({
           </Row>
           <Row>
             <Col>
-              <FormGroup>
-                <Label htmlFor="school-search">Find a user by school:</Label>
-                <AsyncCreatableSelect
-                  isClearable
-                  inputId="school-search"
-                  placeholder={"Type user's school or college name"}
-                  value={schoolValue}
-                  className="basic-multi-select"
-                  classNamePrefix="select"
-                  onChange={handleSetSchool}
-                  loadOptions={throttledSchoolSearch}
-                  filterOption={() => true}
-                  formatCreateLabel={(input) => <span>Use &quot;{input}&quot; as user&apos;s school name</span>}
-                />
-              </FormGroup>
+              <SchoolSearch updateQuery={updateQuery} searchQuery={searchQuery} />
             </Col>
           </Row>
         </CardBody>
