@@ -24,10 +24,7 @@ const searchFields = {
     screen.getByRole("textbox", {
       name: /find a user by email:/i,
     }),
-  schoolOther: () =>
-    screen.getByRole("textbox", {
-      name: /find by manually entered school:/i,
-    }),
+  school: () => screen.getByRole("combobox", { name: /find a user by school:/i }),
   role: () =>
     screen.getByRole("combobox", {
       name: /find by user role:/i,
@@ -37,7 +34,6 @@ const searchFields = {
       name: /find users with school within a given distance of postcode:/i,
     }),
   postcodeRadius: () => getById("postcode-radius-search"),
-  schoolURN: () => screen.getByRole("textbox", { name: /find a user with school URN/i }),
   searchButton: () => screen.getByRole("button", { name: "Search" }),
 };
 
@@ -92,19 +88,10 @@ describe("Admin User Manager", () => {
     it("renders with expected page title and has all expected fields", async () => {
       await renderUserManager();
       checkPageTitle("User manager");
-      const { searchForm, familyName, email, schoolOther, role, postcode, postcodeRadius, schoolURN, searchButton } =
-        searchFields;
-      [
-        searchForm(),
-        familyName(),
-        email(),
-        schoolOther(),
-        role(),
-        postcode(),
-        postcodeRadius(),
-        schoolURN(),
-        searchButton(),
-      ].forEach((input) => expect(input).toBeInTheDocument());
+      const { searchForm, familyName, email, school, role, postcode, postcodeRadius, searchButton } = searchFields;
+      [searchForm(), familyName(), email(), school(), role(), postcode(), postcodeRadius(), searchButton()].forEach(
+        (input) => expect(input).toBeInTheDocument(),
+      );
       const expectedRadiusOptions = ["5 miles", "10 miles", "15 miles", "20 miles", "25 miles", "50 miles"];
       const radiusOptions = within(postcodeRadius()).getAllByRole("option");
       expect(radiusOptions).toHaveLength(expectedRadiusOptions.length);
@@ -134,8 +121,6 @@ describe("Admin User Manager", () => {
     const textSearchCases = [
       { fieldName: "familyName", testValue: "Smith" },
       { fieldName: "email", testValue: "user@example.com" },
-      { fieldName: "schoolOther", testValue: "SchoolA" },
-      { fieldName: "schoolURN", testValue: "123456" },
       { fieldName: "postcode", testValue: "ABC 123" },
     ];
     it.each(textSearchCases)(

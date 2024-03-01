@@ -39,30 +39,10 @@ import {
 import { EmailVerificationStatus, Role } from "../../../IsaacApiTypes";
 import { DateString } from "../elements/DateString";
 import { TitleAndBreadcrumb } from "../elements/TitleAndBreadcrumb";
-import { ADMIN_CRUMB, isAdmin, isDefined, api, schoolNameWithPostcode } from "../../services";
+import { ADMIN_CRUMB, isAdmin, isDefined, schoolNameWithPostcode, throttledSchoolSearch } from "../../services";
 import { Link } from "react-router-dom";
 import AsyncCreatableSelect from "react-select/async-creatable";
-import { throttle } from "lodash";
 import { School } from "../../../IsaacAppTypes";
-
-const verificationStatuses: EmailVerificationStatus[] = ["NOT_VERIFIED", "DELIVERY_FAILED"];
-
-const schoolSearch = (
-  schoolSearchText: string,
-  setAsyncSelectOptionsCallback: (options: { value: string | School; label: string | undefined }[]) => void,
-) => {
-  api.schools
-    .search(schoolSearchText)
-    .then(({ data }) => {
-      setAsyncSelectOptionsCallback(
-        data && data.length > 0 ? data.map((item) => ({ value: item, label: schoolNameWithPostcode(item) })) : [],
-      );
-    })
-    .catch((response) => {
-      console.error("Error searching for schools. ", response);
-    });
-};
-const throttledSchoolSearch = throttle(schoolSearch, 450, { trailing: true, leading: true });
 
 interface SearchQuery {
   familyName: string | null;
@@ -73,6 +53,70 @@ interface SearchQuery {
   postcode: string | null;
   postcodeRadius: string;
 }
+
+type SchoolValue = { value: string | School; label: string | undefined } | undefined;
+
+const SchoolSearch = ({
+  updateQuery,
+  searchQuery,
+}: {
+  updateQuery: (update: { [key: string]: string | null }) => void;
+  searchQuery: SearchQuery;
+}) => {
+  const [selectedSchoolObject, setSelectedSchoolObject] = useState<School | null>();
+
+  function determineSchoolValue(): SchoolValue {
+    if (selectedSchoolObject?.urn) {
+      return {
+        value: selectedSchoolObject.urn,
+        label: schoolNameWithPostcode(selectedSchoolObject) || "",
+      };
+    } else if (searchQuery.schoolOther) {
+      return {
+        value: "manually entered school",
+        label: searchQuery.schoolOther,
+      };
+    } else return undefined;
+  }
+
+  function setUserSchool(school: string | School) {
+    if (typeof school === "object" && "urn" in school) {
+      updateQuery({ schoolURN: school.urn });
+      setSelectedSchoolObject(school);
+    } else {
+      updateQuery({ schoolOther: school });
+    }
+  }
+
+  function handleSetSchool(newValue: { value: string | School } | null) {
+    if (newValue == null) {
+      setSelectedSchoolObject(undefined);
+      updateQuery({ schoolURN: null, schoolOther: null });
+    } else if (newValue) {
+      setUserSchool(newValue.value);
+    }
+  }
+
+  const schoolValue: SchoolValue = determineSchoolValue();
+
+  return (
+    <FormGroup>
+      <Label htmlFor="school-search">Find a user by school:</Label>
+      <AsyncCreatableSelect
+        isClearable
+        inputId="school-search"
+        placeholder={"Type user's school or college name"}
+        value={schoolValue}
+        className="basic-multi-select"
+        classNamePrefix="select"
+        onChange={handleSetSchool}
+        loadOptions={throttledSchoolSearch}
+        filterOption={() => true}
+        formatCreateLabel={(input) => <span>Use &quot;{input}&quot; as user&apos;s school name</span>}
+      />
+    </FormGroup>
+  );
+};
 
 const UserManagerSearch = ({
   searchQuery,
@@ -92,41 +136,11 @@ const UserManagerSearch = ({
     setSearchQuery({ ...searchQuery, ...nulledUpdate });
   };
 
-  const [selectedSchoolObject, setSelectedSchoolObject] = useState<School | null>();
-
   const search = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSearchRequested(true);
     dispatch(adminUserSearchRequest(searchQuery));
   };
-
-  function schoolHasURN(school: string | School): school is School {
-    return typeof school === "object" && "urn" in school;
-  }
-
-  function setUserSchool(school: string | School) {
-    if (schoolHasURN(school)) {
-      updateQuery({ schoolURN: school.urn });
-      setSelectedSchoolObject(school);
-    } else {
-      updateQuery({ schoolOther: school });
-    }
-  }
-
-  function handleSetSchool(newValue: { value: string | School } | null) {
-    if (newValue == null) {
-      setSelectedSchoolObject(undefined);
-      updateQuery({ schoolURN: null, schoolOther: null });
-    } else if (newValue) {
-      setUserSchool(newValue.value);
-    }
-  }
-
-  const schoolValue: { value: string | School; label: string | undefined } | undefined = selectedSchoolObject?.urn
-    ? { value: selectedSchoolObject.urn, label: schoolNameWithPostcode(selectedSchoolObject) }
-    : searchQuery.schoolOther
-    ? { value: "manually entered school", label: searchQuery.schoolOther }
-    : undefined;
 
   return (
     <Card className="mt-5">
@@ -212,21 +226,7 @@ const UserManagerSearch = ({
           </Row>
           <Row>
             <Col>
-              <FormGroup>
-                <Label htmlFor="school-search">Find a user by school:</Label>
-                <AsyncCreatableSelect
-                  isClearable
-                  inputId="school-search"
-                  placeholder={"Type user's school or college name"}
-                  value={schoolValue}
-                  className="basic-multi-select"
-                  classNamePrefix="select"
-                  onChange={handleSetSchool}
-                  loadOptions={throttledSchoolSearch}
-                  filterOption={() => true}
-                  formatCreateLabel={(input) => <span>Use &quot;{input}&quot; as user&apos;s school name</span>}
-                />
-              </FormGroup>
+              <SchoolSearch updateQuery={updateQuery} searchQuery={searchQuery} />
             </Col>
           </Row>
         </CardBody>
@@ -341,6 +341,8 @@ const UserManagerResults = ({ searchRequested, searchQuery }: { searchRequested:
       dispatch(resetPassword({ email: email }));
     }
   };
+
+  const verificationStatuses: EmailVerificationStatus[] = ["NOT_VERIFIED", "DELIVERY_FAILED"];
 
   return (
     <Card className="my-4 mx-n4 mx-sm-n5">
