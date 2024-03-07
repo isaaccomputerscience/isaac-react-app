@@ -69,7 +69,7 @@ const SchoolSearch = ({
     if (selectedSchoolObject?.urn) {
       return {
         value: selectedSchoolObject.urn,
-        label: schoolNameWithPostcode(selectedSchoolObject) || "",
+        label: schoolNameWithPostcode(selectedSchoolObject) ?? "",
       };
     } else if (searchQuery.schoolOther) {
       return {
@@ -99,6 +99,8 @@ const SchoolSearch = ({
 
   const schoolValue: SchoolValue = determineSchoolValue();
 
+  const formatCreateLabel = (input: string) => <span>Use &quot;{input}&quot; as user&apos;s school name</span>;
+
   return (
     <FormGroup>
       <Label htmlFor="school-search">Find a user by school:</Label>
@@ -112,7 +114,7 @@ const SchoolSearch = ({
         onChange={handleSetSchool}
         loadOptions={throttledSchoolSearch}
         filterOption={() => true}
-        formatCreateLabel={(input) => <span>Use &quot;{input}&quot; as user&apos;s school name</span>}
+        formatCreateLabel={formatCreateLabel}
       />
     </FormGroup>
   );
