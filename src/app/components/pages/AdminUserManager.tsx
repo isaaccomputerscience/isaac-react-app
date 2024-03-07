@@ -99,7 +99,9 @@ const SchoolSearch = ({
 
   const schoolValue: SchoolValue = determineSchoolValue();
 
-  const formatCreateLabel = (input: string) => <span>Use &quot;{input}&quot; as user&apos;s school name</span>;
+  const formatCreateLabel = (input: string) => (
+    <span data-testid="custom-school-name">Use &quot;{input}&quot; as user&apos;s school name</span>
+  );
 
   return (
     <FormGroup>

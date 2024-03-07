@@ -66,6 +66,20 @@ describe("Admin User Manager", () => {
           };
           return res(ctx.status(200), ctx.json(mockSchoolLookup));
         }),
+        rest.get(API_PATH + "/schools", (req, res, ctx) => {
+          return res(
+            ctx.status(200),
+            ctx.json([
+              {
+                urn: "1",
+                name: "Test School",
+                postcode: "ABC 123",
+                closed: false,
+                dataSource: "GOVERNMENT_UK",
+              },
+            ]),
+          );
+        }),
         rest.delete(API_PATH + "/admin/users/:userId", (req, res, ctx) => {
           return res(ctx.status(204), ctx.json({}));
         }),
@@ -137,6 +151,26 @@ describe("Admin User Manager", () => {
         );
       },
     );
+
+    it("searches with schoolOther if a custom school name is selected", async () => {
+      await renderUserManager();
+      const schoolDropdown = searchFields.school;
+      await userEvent.type(schoolDropdown(), "Custom School Name");
+      const customSchoolName = await screen.findByTestId("custom-school-name");
+      await userEvent.click(customSchoolName);
+      await clickButton("Search");
+      expect(adminSearchSpy).toHaveBeenCalledWith(expect.objectContaining({ schoolOther: "Custom School Name" }));
+    });
+
+    it("searches with schoolURN if a school is selected from dropdown", async () => {
+      await renderUserManager();
+      const schoolDropdown = searchFields.school;
+      await userEvent.type(schoolDropdown(), "Test");
+      const testSchool = await screen.findByText("Test School, ABC 123");
+      await userEvent.click(testSchool);
+      await clickButton("Search");
+      expect(adminSearchSpy).toHaveBeenCalledWith(expect.objectContaining({ schoolURN: "1" }));
+    });
 
     const dropdownSearchCases = [
       { fieldName: "role", testValue: "STUDENT" },
