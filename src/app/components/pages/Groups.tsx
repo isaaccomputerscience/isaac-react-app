@@ -39,6 +39,7 @@ import { TitleAndBreadcrumb } from "../elements/TitleAndBreadcrumb";
 import { ifKeyIsEnter, isDefined, isStaff, isTeacherOrAbove } from "../../services";
 import { RegisteredUserDTO } from "../../../IsaacApiTypes";
 import { ShowLoadingQuery } from "../handlers/ShowLoadingQuery";
+import { DateString, NUMERIC_DATE } from "../elements/DateString";
 
 enum SortOrder {
   Alphabetical = "Alphabetical",
@@ -153,6 +154,9 @@ const MemberInfo = ({ group, member, user }: MemberInfoProps) => {
             </Tooltip>
           )}
         </div>
+      </div>
+      <div className="d-flex justify-content-between align-self-center">
+        <DateString formatter={NUMERIC_DATE}>{member.groupMembershipInformation.created}</DateString>
       </div>
       <div className="d-flex justify-content-between">
         {isTeacherOrAbove(user) && (
