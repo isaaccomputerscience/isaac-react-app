@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
+import React, { MutableRefObject, PropsWithChildren, ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import {
   Button,
   ButtonDropdown,
@@ -51,11 +51,15 @@ interface GroupCreatorProps {
   createNewGroup: (newGroupName: string) => Promise<boolean>;
 }
 let tooltip = 0;
-const Tooltip = ({ children, tipText, ...props }: any) => {
+const Tooltip = ({
+  children,
+  tipText,
+  className,
+}: PropsWithChildren<{ tipText: ReactNode | string; className?: string }>) => {
   const [tooltipId] = useState("forTooltip-" + tooltip++);
   return (
     <>
-      <span id={tooltipId} {...props}>
+      <span id={tooltipId} className={className}>
         {children}
       </span>
       <UncontrolledTooltip target={`#${tooltipId}`}>{tipText}</UncontrolledTooltip>
@@ -523,7 +527,7 @@ export const Groups = ({ user }: { user: RegisteredUserDTO }) => {
     if (selectedGroup?.id) {
       getGroupMembers(selectedGroup.id);
     }
-  }, [selectedGroup?.id]); // This can't just be group, because group changes when the members change, causing an infinite reload loop
+  }, [selectedGroup?.id, getGroupMembers]); // This can't just be group, because group changes when the members change, causing an infinite reload loop
 
   const groupNameInputRef = useRef<HTMLInputElement>(null);
 
