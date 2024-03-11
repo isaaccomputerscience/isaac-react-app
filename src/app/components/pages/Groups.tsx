@@ -17,6 +17,7 @@ import {
   NavItem,
   NavLink,
   Row,
+  Table,
   UncontrolledButtonDropdown,
   UncontrolledTooltip,
 } from "reactstrap";
@@ -106,84 +107,90 @@ const MemberInfo = ({ group, member, user }: MemberInfoProps) => {
       : group.additionalManagerPrivileges) ?? false;
 
   return (
-    <div className="p-2 member-info-item d-flex justify-content-between" data-testid={"member-info"}>
-      <div className="pt-1 d-flex flex-fill">
-        <div>
-          <span className="icon-group-table-person mt-2" />
-        </div>
-        <div>
-          {member.authorisedFullAccess ? (
-            <Link
-              to={`/progress/${member.groupMembershipInformation.userId}`}
-              className={"align-text-top d-flex align-items-stretch"}
-            >
-              <span className="pl-1">
-                {member.givenName} {member.familyName}
-              </span>
-            </Link>
-          ) : (
-            <span className="not-authorised">
-              <span className="pl-1 struck-out">
-                {member.givenName} {member.familyName}
-              </span>{" "}
-              (Not Sharing)
-            </span>
-          )}
-        </div>
-        <div>
-          {member.emailVerificationStatus == "DELIVERY_FAILED" && (
-            <Tooltip
-              tipText={
-                <>
-                  This user&apos;s account email address is invalid or not accepting email.
-                  <br />
-                  They will not be able to reset their password or receive update emails. Ask them to login and update
-                  it, or contact us to help resolve the issue.
-                </>
-              }
-              className="icon-email-status failed"
-            />
-          )}
-          {member.emailVerificationStatus == "NOT_VERIFIED" && (
-            <Tooltip tipText="This user has not yet verified their email." className="icon-email-status unverified" />
-          )}
-          {member.groupMembershipInformation && member.groupMembershipInformation.status == "INACTIVE" && (
-            <Tooltip tipText="This user has set their status to inactive for this group. This means they will no longer see new assignments.">
-              {" "}
-              (inactive in group)
-            </Tooltip>
-          )}
-        </div>
-      </div>
-      <div className="d-flex justify-content-between align-self-center">
-        <DateString formatter={NUMERIC_DATE}>{member.groupMembershipInformation.created}</DateString>
-      </div>
-      <div className="d-flex justify-content-between">
-        {isTeacherOrAbove(user) && (
-          <>
-            <Tooltip
-              tipText={passwordResetInformation(member, passwordRequestSent)}
-              className="text-right d-none d-sm-block"
-            >
-              <Button
-                color="link"
-                size="sm"
-                onClick={resetPassword}
-                disabled={!canSendPasswordResetRequest(member, passwordRequestSent)}
+    <tr className="member-info-item align-middle" data-testid={"member-info"}>
+      <td className="border-0 align-middle">
+        <div className="d-flex">
+          <div>
+            <span className="icon-group-table-person" />
+          </div>
+          <div>
+            {member.authorisedFullAccess ? (
+              <Link
+                to={`/progress/${member.groupMembershipInformation.userId}`}
+                className={"align-text-top d-flex align-items-stretch"}
               >
-                {!passwordRequestSent ? "Reset Password" : "Reset email sent"}
-              </Button>
-            </Tooltip>
-            {"  "}
-          </>
-        )}
-        {userHasAdditionalGroupPrivileges && (
-          <button className="ml-2 close" onClick={confirmDeleteMember} aria-label="Remove member">
-            ×
-          </button>
-        )}
-      </div>
-    </div>
+                <span className="pl-1">
+                  {member.givenName} {member.familyName}
+                </span>
+              </Link>
+            ) : (
+              <span className="not-authorised">
+                <span className="pl-1 struck-out">
+                  {member.givenName} {member.familyName}
+                </span>{" "}
+                (Not Sharing)
+              </span>
+            )}
+          </div>
+          <div>
+            {member.emailVerificationStatus == "DELIVERY_FAILED" && (
+              <Tooltip
+                tipText={
+                  <>
+                    This user&apos;s account email address is invalid or not accepting email.
+                    <br />
+                    They will not be able to reset their password or receive update emails. Ask them to login and update
+                    it, or contact us to help resolve the issue.
+                  </>
+                }
+                className="icon-email-status failed"
+              />
+            )}
+            {member.emailVerificationStatus == "NOT_VERIFIED" && (
+              <Tooltip tipText="This user has not yet verified their email." className="icon-email-status unverified" />
+            )}
+            {member.groupMembershipInformation && member.groupMembershipInformation.status == "INACTIVE" && (
+              <Tooltip tipText="This user has set their status to inactive for this group. This means they will no longer see new assignments.">
+                {" "}
+                (inactive in group)
+              </Tooltip>
+            )}
+          </div>
+        </div>
+      </td>
+      <td className="border-0 align-middle">
+        <DateString formatter={NUMERIC_DATE}>{member.groupMembershipInformation.created}</DateString>
+      </td>
+      <td className=" border-0 align-middle">
+        <div className="d-flex justify-content-end">
+          {isTeacherOrAbove(user) && (
+            <>
+              <Tooltip tipText={passwordResetInformation(member, passwordRequestSent)} className="d-none d-sm-flex">
+                <Button
+                  color="link"
+                  size="sm"
+                  onClick={resetPassword}
+                  disabled={!canSendPasswordResetRequest(member, passwordRequestSent)}
+                  className="p-0"
+                >
+                  <img
+                    src={`/assets/${passwordRequestSent ? "email-sent.svg" : "pw-reset.svg"}`}
+                    alt={`Reset PW${passwordRequestSent ? " email sent" : ""}`}
+                    style={{ width: 30 }}
+                  />
+                </Button>
+              </Tooltip>
+              {"  "}
+            </>
+          )}
+          {userHasAdditionalGroupPrivileges && (
+            <button className="ml-2 close" onClick={confirmDeleteMember} aria-label="Remove member">
+              ×
+            </button>
+          )}
+        </div>
+      </td>
+    </tr>
   );
 };
 
@@ -355,17 +362,28 @@ const GroupEditor = ({ group, user, createNewGroup, groupNameInputRef }: GroupCr
                           )}
                         </Col>
                       </Row>
-                      <div>
-                        {(!bigGroup || isExpanded) &&
-                          group.members.map((member: AppGroupMembership) => (
-                            <MemberInfo
-                              key={member.groupMembershipInformation.userId}
-                              member={member}
-                              group={group}
-                              user={user}
-                            />
-                          ))}
-                      </div>
+                      <Table className="bordered table-hover table-sm" style={{ maxWidth: "100%" }}>
+                        <thead>
+                          <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col" className="w-15">
+                              Joined
+                            </th>
+                            <th scope="col" className="w-25"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {(!bigGroup || isExpanded) &&
+                            group.members.map((member: AppGroupMembership) => (
+                              <MemberInfo
+                                key={member.groupMembershipInformation.userId}
+                                member={member}
+                                group={group}
+                                user={user}
+                              />
+                            ))}
+                        </tbody>
+                      </Table>
                     </div>
                   )}
                 </ShowLoading>
