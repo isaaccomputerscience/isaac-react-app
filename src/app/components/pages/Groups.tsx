@@ -110,6 +110,11 @@ const MemberInfo = ({ group, member, user }: MemberInfoProps) => {
       ? true
       : group.additionalManagerPrivileges) ?? false;
 
+  const formattedMembershipStatus = member.groupMembershipInformation.status
+    ? member.groupMembershipInformation.status.charAt(0).toUpperCase() +
+      member.groupMembershipInformation.status.slice(1).toLowerCase()
+    : "-";
+
   return (
     <tr className="member-info-item align-middle" data-testid={"member-info"}>
       <td className="border-0 align-middle">
@@ -153,14 +158,19 @@ const MemberInfo = ({ group, member, user }: MemberInfoProps) => {
             {member.emailVerificationStatus == "NOT_VERIFIED" && (
               <Tooltip tipText="This user has not yet verified their email." className="icon-email-status unverified" />
             )}
-            {member.groupMembershipInformation && member.groupMembershipInformation.status == "INACTIVE" && (
-              <Tooltip tipText="This user has set their status to inactive for this group. This means they will no longer see new assignments.">
-                {" "}
-                (inactive in group)
-              </Tooltip>
-            )}
           </div>
         </div>
+      </td>
+      <td className=" border-0 align-middle">
+        {member.groupMembershipInformation && member.groupMembershipInformation.status === "INACTIVE" ? (
+          <Tooltip tipText="This user has set their status to inactive for this group. This means they will no longer see new assignments.">
+            <span className="text-danger">{formattedMembershipStatus}</span>
+          </Tooltip>
+        ) : (
+          <span className={member.groupMembershipInformation.status === "ACTIVE" ? "text-success" : ""}>
+            {formattedMembershipStatus}
+          </span>
+        )}
       </td>
       <td className="border-0 align-middle">
         <DateString formatter={NUMERIC_DATE}>{member.groupMembershipInformation.created}</DateString>
@@ -370,6 +380,7 @@ const GroupEditor = ({ group, user, createNewGroup, groupNameInputRef }: GroupCr
                         <thead>
                           <tr>
                             <th scope="col">Name</th>
+                            <th scope="col">Status</th>
                             <th scope="col" className="w-15">
                               Joined
                             </th>
