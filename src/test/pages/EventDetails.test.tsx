@@ -117,6 +117,8 @@ describe("EventDetails", () => {
     "does not show hub name for %s user",
     async (role) => {
       await setupTest({ role: role, event: mockEvent });
+      const eventTitle = title();
+      expect(eventTitle).toHaveTextContent(mockEvent.title!);
       const hub = screen.queryByTestId("event-hub");
       expect(hub).toBeNull();
     },
