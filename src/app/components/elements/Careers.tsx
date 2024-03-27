@@ -1,7 +1,7 @@
 import React from "react";
 import { Col, Container, Row } from "reactstrap";
 import { selectors, useAppSelector } from "../../state";
-import { isStudent } from "../../services";
+import { CAREER_VIDEO_LINK, isStudent } from "../../services";
 
 const CsAtWorkDescription = () => {
   const user = useAppSelector(selectors.user.orNull);
@@ -18,8 +18,6 @@ const CsAtWorkDescription = () => {
 };
 
 export const Careers = () => {
-  const VIDEO_LINK = "https://www.youtube.com/embed/t0ojrm0fMoE?enablejsapi=1&fs=0&modestbranding=1";
-
   const user = useAppSelector(selectors.user.orNull);
   return (
     <Container className="d-flex align-items-center flex-column">
@@ -32,7 +30,7 @@ export const Careers = () => {
             id="ytplayer"
             width="100%"
             height="100%"
-            src={VIDEO_LINK}
+            src={CAREER_VIDEO_LINK}
             allowFullScreen
           />
         </Col>
