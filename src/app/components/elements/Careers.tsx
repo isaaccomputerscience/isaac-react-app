@@ -16,6 +16,8 @@ const CsAtWorkDescription = () => {
 };
 
 export const Careers = () => {
+  const VIDEO_LINK = "https://www.youtube.com/embed/t0ojrm0fMoE?enablejsapi=1&fs=0&modestbranding=1";
+
   const user = useAppSelector(selectors.user.orNull);
   return (
     <>
@@ -29,7 +31,7 @@ export const Careers = () => {
               id="ytplayer"
               width="100%"
               height="100%"
-              src="https://www.youtube.com/embed/t0ojrm0fMoE?enablejsapi=1&fs=0&modestbranding=1"
+              src={VIDEO_LINK}
               allowFullScreen
             />
           </Col>
