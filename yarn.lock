@@ -2288,11 +2288,6 @@
   resolved "https://registry.yarnpkg.com/@types/he/-/he-1.2.1.tgz#a4f6e7e379757705225abc561b86a64df02af39a"
   integrity sha512-CdNmJMcSqX1BiP3iSsWt+VgixndRIDGzWyaGpBnW3i5heATSk5bJu2j3buutsoBQNjyryqxaNpr8M7fRsGL15w==
 
-"@types/highlight.js@^9.7.0":
-  version "9.12.4"
-  resolved "https://registry.yarnpkg.com/@types/highlight.js/-/highlight.js-9.12.4.tgz#8c3496bd1b50cc04aeefd691140aa571d4dbfa34"
-  integrity sha512-t2szdkwmg2JJyuCM20e8kR2X59WCE5Zkl4bzm1u1Oukjm79zpbiAv+QjnwLnuuV0WHEcX2NgUItu0pAMKuOPww==
-
 "@types/history@^4.7.11":
   version "4.7.11"
   resolved "https://registry.yarnpkg.com/@types/history/-/history-4.7.11.tgz#56588b17ae8f50c53983a524fc3cc47437969d64"
@@ -2576,13 +2571,10 @@
   dependencies:
     redux "^4.0.5"
 
-"@types/remarkable@^2.0.4":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@types/remarkable/-/remarkable-2.0.4.tgz#93b56fde4cf686f292f76937f4fb685915148ab0"
-  integrity sha512-enyIahDSUuzOpnAuBtgzMRt60GoWS3fPAd2NOsn8yAX9MWqid8Z7bel1tELLSZXR6q0vyH2L7Vg24xYEKWjpMg==
-  dependencies:
-    "@types/highlight.js" "^9.7.0"
-    highlight.js "^9.7.0"
+"@types/remarkable@^2.0.8":
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/@types/remarkable/-/remarkable-2.0.8.tgz#e18816db814cdc087e86b0446f6883754d666088"
+  integrity sha512-eKXqPZfpQl1kOADjdKchHrp2gwn9qMnGXhH/AtZe0UrklzhGJkawJo/Y/D0AlWcdWoWamFNIum8+/nkAISQVGg==
 
 "@types/retry@0.12.0":
   version "0.12.0"
@@ -5759,11 +5751,6 @@ headers-polyfill@3.2.5:
   version "3.2.5"
   resolved "https://registry.yarnpkg.com/headers-polyfill/-/headers-polyfill-3.2.5.tgz#6e67d392c9d113d37448fe45014e0afdd168faed"
   integrity sha512-tUCGvt191vNSQgttSyJoibR+VO+I6+iCHIUdhzEMJKE+EAL8BwCN7fUOZlY4ofOelNHsK+gEjxB/B+9N3EWtdA==
-
-highlight.js@^11.8, highlight.js@^9.7.0:
-  version "11.8.0"
-  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-11.8.0.tgz#966518ea83257bae2e7c9a48596231856555bb65"
-  integrity sha512-MedQhoqVdr0U6SSnWPzfiadUcDHfN/Wzq25AkXiQv9oiOO/sG0S7XkvpFIqWBl9Yq1UYyYOOVORs5UW2XlPyzg==
 
 highlight.js@^11.9.0:
   version "11.9.0"
