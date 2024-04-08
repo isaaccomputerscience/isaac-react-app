@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { FIRST_LOGIN_STATE, KEY, allowedDomain, persistence, validateForm } from "../../services";
-import { useAppDispatch, registerUser, upgradeAccount, requestCurrentUser } from "../../state";
+import { allowedDomain, validateForm } from "../../services";
+import { useAppDispatch, registerUser, upgradeAccount } from "../../state";
 import { BooleanNotation, DisplaySettings, UserEmailPreferences, ValidationUser } from "../../../IsaacAppTypes";
 import { UserContext } from "../../../IsaacApiTypes";
 import ReactGA from "react-ga4";
@@ -69,14 +69,11 @@ const useRegistration = ({ isTeacher }: RegistrationOptions) => {
         });
         // send email for account upgrade request
         await dispatch(upgradeAccount({ verificationDetails, otherInformation }));
-        await dispatch(requestCurrentUser());
       }
     };
 
     const handleStudentRegistration = () => {
       if (isValidForm) {
-        persistence.session.save(KEY.FIRST_LOGIN, FIRST_LOGIN_STATE.FIRST_LOGIN);
-
         dispatch(registerUser(newUser, userPreferencesToUpdate, userContexts, recaptchaToken));
         ReactGA.event({
           category: "user",
