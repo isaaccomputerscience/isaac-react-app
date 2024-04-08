@@ -466,7 +466,7 @@ export const handleProviderCallback =
         });
       }
       const nextPage = persistence.pop(KEY.AFTER_AUTH_PATH);
-      history.push(nextPage || "/account");
+      history.push(nextPage ?? "/account");
     } catch (error: any) {
       history.push("/auth_error", { errorMessage: extractMessage(error) });
       dispatch({ type: ACTION_TYPE.USER_LOG_IN_RESPONSE_FAILURE, errorMessage: "Login Failed" });
