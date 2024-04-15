@@ -1,5 +1,13 @@
-import React, { useEffect } from "react";
-import { isaacApi, logAction, selectors, setAssignBoardPath, useAppDispatch, useAppSelector } from "../../state";
+import React, { useEffect, useState } from "react";
+import {
+  isaacApi,
+  logAction,
+  saveGameboard,
+  selectors,
+  setAssignBoardPath,
+  useAppDispatch,
+  useAppSelector,
+} from "../../state";
 import { Link, withRouter } from "react-router-dom";
 import { Button, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap";
 import { GameboardDTO, GameboardItem, IsaacWildcard } from "../../../IsaacApiTypes";
@@ -10,6 +18,7 @@ import {
   filterAudienceViewsByProperties,
   isDefined,
   isFound,
+  isTeacherOrAbove,
   isTutorOrAbove,
   TAG_ID,
   TAG_LEVEL,
@@ -135,7 +144,31 @@ export const Gameboard = withRouter(({ location }) => {
   const gameboardId = location.hash ? location.hash.slice(1) : null;
   const gameboardQuery = isaacApi.endpoints.getGameboardById.useQuery(gameboardId || skipToken);
   const { data: gameboard } = gameboardQuery;
+  const [gameboardTitle, setGameboardTitle] = useState<string | undefined>();
+
   const user = useAppSelector(selectors.user.orNull);
+
+  const isGameboardOwner = (user?.loggedIn && isTeacherOrAbove(user) && gameboard?.ownerUserId === user.id) ?? false;
+
+  const changeGameboardTitle = (newTitle: string) => {
+    if (gameboard?.id && user?.loggedIn) {
+      dispatch(
+        saveGameboard({
+          boardId: gameboard.id,
+          user: user,
+          boardTitle: newTitle,
+        }),
+      ).then(() => {
+        setGameboardTitle(newTitle);
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (gameboard) {
+      setGameboardTitle(gameboard.title);
+    }
+  }, [gameboard]);
 
   // Show filter
   const { filter } = queryString.parse(location.search);
@@ -179,7 +212,11 @@ export const Gameboard = withRouter(({ location }) => {
           }
           return (
             <>
-              <TitleAndBreadcrumb currentPageTitle={(gameboard && gameboard.title) || "Filter Generated Gameboard"} />
+              <TitleAndBreadcrumb
+                editable={isGameboardOwner}
+                onEdit={changeGameboardTitle}
+                currentPageTitle={gameboardTitle ?? "Filter Generated Gameboard"}
+              />
               <GameboardViewer gameboard={gameboard} className="mt-4 mt-lg-5" />
               {user && isTutorOrAbove(user) ? (
                 <Row className="col-8 offset-2">

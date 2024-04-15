@@ -14,6 +14,7 @@ import { DifficultyIcons } from "./svg/DifficultyIcons";
 import classnames from "classnames";
 import { Helmet } from "react-helmet";
 import { Markup } from "./markup";
+import { EditablePageTitle } from "./inputs/EditablePageTitle";
 
 function AudienceViewer({ audienceViews }: { audienceViews: ViewingContext[] }) {
   const userContext = useUserContext();
@@ -47,6 +48,8 @@ export interface PageTitleProps {
   help?: ReactElement;
   className?: string;
   audienceViews?: ViewingContext[];
+  editable?: boolean;
+  onEdit?: (argo0: string) => void;
 }
 export const PageTitle = ({
   currentPageTitle,
@@ -55,6 +58,8 @@ export const PageTitle = ({
   help,
   className,
   audienceViews,
+  editable,
+  onEdit,
 }: PageTitleProps) => {
   const dispatch = useAppDispatch();
   const openModal = useAppSelector((state: AppState) => Boolean(state?.activeModals?.length));
@@ -72,14 +77,13 @@ export const PageTitle = ({
   }, [currentPageTitle]);
 
   return (
-    <h1
-      id="main-heading"
-      tabIndex={-1}
-      ref={headerRef}
-      className={`h-title h-secondary d-sm-flex ${className ? className : ""}`}
-    >
+    <h1 id="main-heading" tabIndex={-1} ref={headerRef} className={`h-title h-secondary d-sm-flex ${className ?? ""}`}>
       <div className="mr-auto" data-testid={"main-heading"}>
-        {formatPageTitle(currentPageTitle, disallowLaTeX)}
+        {editable ? (
+          <EditablePageTitle onEdit={onEdit!} currentPageTitle={currentPageTitle} />
+        ) : (
+          formatPageTitle(currentPageTitle, disallowLaTeX)
+        )}
         {subTitle && <span className="h-subtitle d-none d-sm-block">{subTitle}</span>}
       </div>
       <Helmet>
