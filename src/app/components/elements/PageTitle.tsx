@@ -31,7 +31,7 @@ function AudienceViewer({ audienceViews }: { audienceViews: ViewingContext[] }) 
             <div className="text-center align-self-center">{stageLabelMap[view.stage]}</div>
           )}
           {view.difficulty && (
-            <div className={"ml-2 ml-sm-0" + classnames({ "mr-2": i > 0 })}>
+            <div className={"ml-2 ml-sm-0" + classnames({ "mr-2": i > 0 })} data-testid="difficulty-icons">
               <DifficultyIcons difficulty={view.difficulty} />
             </div>
           )}
