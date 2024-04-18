@@ -28,8 +28,11 @@ export const EditablePageTitle = ({
         <Input
           type="text"
           placeholder={newTitle}
-          onBlur={(e) => {
+          onChange={(e) => {
             setNewTitle(e.target.value);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleEdit();
           }}
         />
       ) : (

@@ -97,7 +97,6 @@ describe("Gameboard", () => {
     const mainHeading = screen.getByTestId("main-heading");
     const inputField = within(mainHeading).getByRole("textbox");
     await userEvent.type(inputField, "New Title");
-    inputField.blur();
     const saveButton = within(mainHeading).getByRole("button", { name: "Save" });
     await waitFor(async () => {
       await userEvent.click(saveButton);
