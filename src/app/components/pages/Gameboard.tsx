@@ -254,6 +254,8 @@ export const Gameboard = () => {
     </Container>
   );
 
+  const renderGameboardDetails = (gameboard: GameboardDTO) => <GameboardDetails gameboard={gameboard} />;
+
   return !gameboardId ? (
     <Redirect to="/gameboards#example-gameboard" />
   ) : (
@@ -262,7 +264,7 @@ export const Gameboard = () => {
         query={gameboardQuery}
         defaultErrorTitle={`Error fetching gameboard with id: ${gameboardId}`}
         ifNotFound={notFoundComponent}
-        thenRender={(gameboard) => <GameboardDetails gameboard={gameboard} />}
+        thenRender={renderGameboardDetails}
       />
     </Container>
   );
