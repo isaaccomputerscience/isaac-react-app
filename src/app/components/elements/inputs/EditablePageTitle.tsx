@@ -6,13 +6,13 @@ export const EditablePageTitle = ({
   onEdit,
 }: {
   currentPageTitle: string;
-  onEdit: (arg0: string) => void;
+  onEdit: (newTitle: string) => void;
 }) => {
   const [newTitle, setNewTitle] = useState<string>(currentPageTitle);
   const [toggleEdit, setToggleEdit] = useState<boolean>(false);
 
   useEffect(() => {
-    setNewTitle(currentPageTitle ?? "");
+    setNewTitle(currentPageTitle);
   }, [currentPageTitle]);
 
   const handleEdit = () => {

@@ -48,8 +48,7 @@ export interface PageTitleProps {
   help?: ReactElement;
   className?: string;
   audienceViews?: ViewingContext[];
-  editable?: boolean;
-  onEdit?: (argo0: string) => void;
+  onTitleEdit?: (newTitle: string) => void;
 }
 export const PageTitle = ({
   currentPageTitle,
@@ -58,8 +57,7 @@ export const PageTitle = ({
   help,
   className,
   audienceViews,
-  editable,
-  onEdit,
+  onTitleEdit,
 }: PageTitleProps) => {
   const dispatch = useAppDispatch();
   const openModal = useAppSelector((state: AppState) => Boolean(state?.activeModals?.length));
@@ -79,8 +77,8 @@ export const PageTitle = ({
   return (
     <h1 id="main-heading" tabIndex={-1} ref={headerRef} className={`h-title h-secondary d-sm-flex ${className ?? ""}`}>
       <div className="mr-auto" data-testid={"main-heading"}>
-        {editable ? (
-          <EditablePageTitle onEdit={onEdit!} currentPageTitle={currentPageTitle} />
+        {onTitleEdit ? (
+          <EditablePageTitle onEdit={onTitleEdit} currentPageTitle={currentPageTitle} />
         ) : (
           formatPageTitle(currentPageTitle, disallowLaTeX)
         )}

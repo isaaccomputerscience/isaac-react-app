@@ -50,7 +50,7 @@ describe("PageTitle", () => {
 
   it("offers edit button if editable", async () => {
     const onEdit = jest.fn();
-    setupTest({ currentPageTitle: "Test Title", editable: true, onEdit });
+    setupTest({ currentPageTitle: "Test Title", onTitleEdit: onEdit });
     const title = screen.getByText(/test title/i);
     const editButton = screen.getByRole("button", { name: /edit/i });
     [title, editButton].forEach((el) => expect(el).toBeInTheDocument());

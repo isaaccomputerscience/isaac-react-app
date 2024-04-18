@@ -8,7 +8,7 @@ import { isaacApi, requestCurrentUser, store } from "../app/state";
 import { Provider } from "react-redux";
 import { IsaacApp } from "../app/components/navigation/IsaacApp";
 import React from "react";
-import { MemoryRouter, WithRouterStatics } from "react-router";
+import { MemoryRouter } from "react-router";
 import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Role } from "../IsaacApiTypes";
@@ -22,7 +22,7 @@ export type TestUserRole = Role | "ANONYMOUS";
 interface RenderTestEnvironmentOptions {
   role?: TestUserRole;
   modifyUser?: (u: typeof mockUser) => typeof mockUser;
-  PageComponent?: React.FC<any> | (React.ComponentClass<any> & WithRouterStatics<any>);
+  PageComponent?: React.FC<any>;
   componentProps?: Record<string, any>;
   initialRouteEntries?: string[];
   extraEndpoints?: RestHandler<any>[];

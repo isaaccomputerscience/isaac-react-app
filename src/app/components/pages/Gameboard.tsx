@@ -8,7 +8,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from "../../state";
-import { Link, withRouter } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap";
 import { GameboardDTO, GameboardItem, IsaacWildcard } from "../../../IsaacApiTypes";
 import { TitleAndBreadcrumb } from "../elements/TitleAndBreadcrumb";
@@ -24,7 +24,7 @@ import {
   TAG_LEVEL,
   tags,
 } from "../../services";
-import { Redirect } from "react-router";
+import { Redirect, useLocation } from "react-router";
 import queryString from "query-string";
 import { StageAndDifficultySummaryIcons } from "../elements/StageAndDifficultySummaryIcons";
 import { Markup } from "../elements/markup";
@@ -139,8 +139,9 @@ export const GameboardViewer = ({ gameboard, className }: { gameboard: Gameboard
   </Row>
 );
 
-export const Gameboard = withRouter(({ location }) => {
+export const Gameboard = () => {
   const dispatch = useAppDispatch();
+  const location = useLocation();
   const gameboardId = location.hash ? location.hash.slice(1) : null;
   const gameboardQuery = isaacApi.endpoints.getGameboardById.useQuery(gameboardId || skipToken);
   const { data: gameboard } = gameboardQuery;
@@ -213,8 +214,7 @@ export const Gameboard = withRouter(({ location }) => {
           return (
             <>
               <TitleAndBreadcrumb
-                editable={isGameboardOwner}
-                onEdit={changeGameboardTitle}
+                onTitleEdit={isGameboardOwner ? changeGameboardTitle : undefined}
                 currentPageTitle={gameboardTitle ?? "Filter Generated Gameboard"}
               />
               <GameboardViewer gameboard={gameboard} className="mt-4 mt-lg-5" />
@@ -268,4 +268,4 @@ export const Gameboard = withRouter(({ location }) => {
       />
     </Container>
   );
-});
+};
