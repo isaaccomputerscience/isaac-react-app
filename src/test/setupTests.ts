@@ -7,15 +7,13 @@ jest.mock("react-ga4"); // Google Analytics requires a DOM.window which doesn't 
 jest.mock("../app/services/websockets"); // MSW can't handle websockets just yet
 jest.mock("popper.js", () => {
   const PopperJS = jest.requireActual("popper.js");
-
-  return class {
+  return class MockedPopper {
     static readonly placements = PopperJS.placements;
-
+    destroy: () => void;
+    scheduleUpdate: () => void;
     constructor() {
-      return {
-        destroy: () => {},
-        scheduleUpdate: () => {},
-      };
+      this.destroy = jest.fn();
+      this.scheduleUpdate = jest.fn();
     }
   };
 });
