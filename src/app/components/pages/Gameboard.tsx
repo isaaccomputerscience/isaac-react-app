@@ -139,12 +139,8 @@ export const GameboardViewer = ({ gameboard, className }: { gameboard: Gameboard
   </Row>
 );
 
-export const Gameboard = () => {
+const GameboardDetails = ({ gameboard }: { gameboard: GameboardDTO }) => {
   const dispatch = useAppDispatch();
-  const location = useLocation();
-  const gameboardId = location.hash ? location.hash.slice(1) : null;
-  const gameboardQuery = isaacApi.endpoints.getGameboardById.useQuery(gameboardId || skipToken);
-  const { data: gameboard } = gameboardQuery;
   const [gameboardTitle, setGameboardTitle] = useState<string | undefined>();
 
   const user = useAppSelector(selectors.user.orNull);
@@ -179,6 +175,65 @@ export const Gameboard = () => {
     showFilter = isDefined(filterValue) && filterValue.toLowerCase() === "true";
   }
 
+  if (showFilter) {
+    return <Redirect to={`/gameboards/new?${extractFilterQueryString(gameboard)}#${gameboard.id}`} />;
+  }
+  return (
+    <>
+      <TitleAndBreadcrumb
+        onTitleEdit={isGameboardOwner ? changeGameboardTitle : undefined}
+        currentPageTitle={gameboardTitle ?? "Filter Generated Gameboard"}
+      />
+      <GameboardViewer gameboard={gameboard} className="mt-4 mt-lg-5" />
+      {user && isTutorOrAbove(user) ? (
+        <Row className="col-8 offset-2">
+          <Col className="mt-4">
+            <Button tag={Link} to={`/add_gameboard/${gameboard.id}`} color="primary" outline className="btn-block">
+              Set as assignment
+            </Button>
+          </Col>
+          <Col className="mt-4">
+            <Button
+              tag={Link}
+              to={{ pathname: "/gameboard_builder", search: `?base=${gameboard.id}` }}
+              color="primary"
+              block
+              outline
+            >
+              Duplicate and edit
+            </Button>
+          </Col>
+        </Row>
+      ) : (
+        gameboard &&
+        !gameboard.savedToCurrentUser && (
+          <Row>
+            <Col className="mt-4" sm={{ size: 8, offset: 2 }} md={{ size: 4, offset: 4 }}>
+              <Button
+                tag={Link}
+                to={`/add_gameboard/${gameboard.id}`}
+                onClick={() => setAssignBoardPath("/set_assignments")}
+                color="primary"
+                outline
+                className="btn-block"
+              >
+                Save to My gameboards
+              </Button>
+            </Col>
+          </Row>
+        )
+      )}
+    </>
+  );
+};
+
+export const Gameboard = () => {
+  const dispatch = useAppDispatch();
+  const location = useLocation();
+  const gameboardId = location.hash ? location.hash.slice(1) : null;
+  const gameboardQuery = isaacApi.endpoints.getGameboardById.useQuery(gameboardId || skipToken);
+  const { data: gameboard } = gameboardQuery;
+
   // Only log a gameboard view when we have a gameboard loaded:
   useEffect(() => {
     if (isDefined(gameboard) && isFound(gameboard)) {
@@ -198,59 +253,6 @@ export const Gameboard = () => {
       </h3>
     </Container>
   );
-
-  const GameboardDetails = ({ gameboard }: { gameboard: GameboardDTO }) => {
-    if (showFilter) {
-      return <Redirect to={`/gameboards/new?${extractFilterQueryString(gameboard)}#${gameboardId}`} />;
-    }
-    return (
-      <>
-        <TitleAndBreadcrumb
-          onTitleEdit={isGameboardOwner ? changeGameboardTitle : undefined}
-          currentPageTitle={gameboardTitle ?? "Filter Generated Gameboard"}
-        />
-        <GameboardViewer gameboard={gameboard} className="mt-4 mt-lg-5" />
-        {user && isTutorOrAbove(user) ? (
-          <Row className="col-8 offset-2">
-            <Col className="mt-4">
-              <Button tag={Link} to={`/add_gameboard/${gameboardId}`} color="primary" outline className="btn-block">
-                Set as assignment
-              </Button>
-            </Col>
-            <Col className="mt-4">
-              <Button
-                tag={Link}
-                to={{ pathname: "/gameboard_builder", search: `?base=${gameboardId}` }}
-                color="primary"
-                block
-                outline
-              >
-                Duplicate and edit
-              </Button>
-            </Col>
-          </Row>
-        ) : (
-          gameboard &&
-          !gameboard.savedToCurrentUser && (
-            <Row>
-              <Col className="mt-4" sm={{ size: 8, offset: 2 }} md={{ size: 4, offset: 4 }}>
-                <Button
-                  tag={Link}
-                  to={`/add_gameboard/${gameboardId}`}
-                  onClick={() => setAssignBoardPath("/set_assignments")}
-                  color="primary"
-                  outline
-                  className="btn-block"
-                >
-                  Save to My gameboards
-                </Button>
-              </Col>
-            </Row>
-          )
-        )}
-      </>
-    );
-  };
 
   return !gameboardId ? (
     <Redirect to="/gameboards#example-gameboard" />
