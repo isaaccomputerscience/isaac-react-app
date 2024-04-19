@@ -1,6 +1,6 @@
 import { Gameboard } from "../../app/components/pages/Gameboard";
 import { renderTestEnvironment } from "../utils";
-import { screen, waitFor, within } from "@testing-library/react";
+import { act, screen, waitFor, within } from "@testing-library/react";
 import { Role } from "../../IsaacApiTypes";
 import { rest } from "msw";
 import { API_PATH, USER_ROLES } from "../../app/services";
@@ -83,15 +83,18 @@ describe("Gameboard", () => {
     const mockSaveGameboard = jest.spyOn(isaacApi.endpoints.renameAndLinkUserToGameboard, "initiate");
     const gameboard = await renderGameboard({ role: "TEACHER" });
     const editButton = screen.getByRole("button", { name: "Edit" });
-    await userEvent.click(editButton);
-    const mainHeading = screen.getByTestId("main-heading");
-    const inputField = within(mainHeading).getByRole("textbox");
-    await userEvent.type(inputField, "New Title");
-    const saveButton = within(mainHeading).getByRole("button", { name: "Save" });
-    await waitFor(async () => {
-      await userEvent.click(saveButton);
+    await act(async () => {
+      await userEvent.click(editButton);
+      const mainHeading = screen.getByTestId("main-heading");
+      const inputField = within(mainHeading).getByRole("textbox");
+      await userEvent.type(inputField, "New Title");
+      const saveButton = within(mainHeading).getByRole("button", { name: "Save" });
+      userEvent.click(saveButton);
     });
-    expect(screen.getByTestId("main-heading")).toHaveTextContent("New Title");
+    const newTitle = await screen.findAllByText("New Title");
+    expect(newTitle).toHaveLength(2); // one in the breadcrumbs, one in the main heading
+    expect(screen.getByRole("heading", { name: /new title/i })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Save" })).toBeNull();
     expect(mockSaveGameboard).toHaveBeenCalledWith({ boardId: gameboard.id, newTitle: "New Title" });
   });
 
