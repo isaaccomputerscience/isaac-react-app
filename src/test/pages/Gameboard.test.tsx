@@ -9,7 +9,7 @@ import { produce } from "immer";
 import userEvent from "@testing-library/user-event";
 import { isaacApi } from "../../app/state";
 
-const renderGameboard = ({
+const renderGameboard = async ({
   role,
   notGameboardOwner,
   notSavedToCurrentUser,
@@ -41,15 +41,17 @@ const renderGameboard = ({
       }),
     ],
   });
+
+  await waitFor(() => {
+    expect(screen.queryByText("Loading...")).toBeNull();
+  });
+
   return mockGameboard;
 };
 
 describe("Gameboard", () => {
   it("renders expected title", async () => {
-    const gameboard = renderGameboard({ role: "STUDENT" });
-    await waitFor(() => {
-      expect(screen.queryByText("Loading...")).toBeNull();
-    });
+    const gameboard = await renderGameboard({ role: "STUDENT" });
     const title = screen.getByRole("heading", { name: gameboard.title });
     expect(title).toBeInTheDocument();
   });
@@ -57,19 +59,13 @@ describe("Gameboard", () => {
   const teachersAndAbove: Role[] = USER_ROLES.filter((role) => role !== "STUDENT" && role !== "TUTOR");
 
   it.each(teachersAndAbove)("offers gameboard title edit button for %s if they own the gameboard", async (role) => {
-    renderGameboard({ role });
-    await waitFor(() => {
-      expect(screen.queryByText("Loading...")).toBeNull();
-    });
+    await renderGameboard({ role });
     const editButton = screen.getByRole("button", { name: "Edit" });
     expect(editButton).toBeInTheDocument();
   });
 
   it.each(["STUDENT", "TUTOR"] as Role[])("does not offer gameboard title edit button for %s", async (role) => {
-    renderGameboard({ role });
-    await waitFor(() => {
-      expect(screen.queryByText("Loading...")).toBeNull();
-    });
+    await renderGameboard({ role });
     const editButton = screen.queryByRole("button", { name: "Edit" });
     expect(editButton).toBeNull();
   });
@@ -77,10 +73,7 @@ describe("Gameboard", () => {
   it.each(USER_ROLES)(
     "does not offer gameboard title edit button for %s if they do not own the gameboard",
     async (role) => {
-      renderGameboard({ role, notGameboardOwner: true });
-      await waitFor(() => {
-        expect(screen.queryByText("Loading...")).toBeNull();
-      });
+      await renderGameboard({ role, notGameboardOwner: true });
       const editButton = screen.queryByRole("button", { name: "Edit" });
       expect(editButton).toBeNull();
     },
@@ -88,10 +81,7 @@ describe("Gameboard", () => {
 
   it("updates gameboard title if new title is submitted", async () => {
     const mockSaveGameboard = jest.spyOn(isaacApi.endpoints.renameAndLinkUserToGameboard, "initiate");
-    const gameboard = renderGameboard({ role: "TEACHER" });
-    await waitFor(() => {
-      expect(screen.queryByText("Loading...")).toBeNull();
-    });
+    const gameboard = await renderGameboard({ role: "TEACHER" });
     const editButton = screen.getByRole("button", { name: "Edit" });
     await userEvent.click(editButton);
     const mainHeading = screen.getByTestId("main-heading");
@@ -106,10 +96,7 @@ describe("Gameboard", () => {
   });
 
   it.each(USER_ROLES)("shows expected buttons for %s", async (role) => {
-    renderGameboard({ role });
-    await waitFor(() => {
-      expect(screen.queryByText("Loading...")).toBeNull();
-    });
+    await renderGameboard({ role });
     const setAssignmentButton = screen.queryByRole("link", { name: "Set as assignment" });
     const duplicateButton = screen.queryByRole("link", { name: "Duplicate and edit" });
     [setAssignmentButton, duplicateButton].forEach((button) => {
@@ -120,19 +107,13 @@ describe("Gameboard", () => {
   });
 
   it("shows 'save to my gameboards' button if user is a student and gameboard is not saved to them", async () => {
-    renderGameboard({ role: "STUDENT", notSavedToCurrentUser: true });
-    await waitFor(() => {
-      expect(screen.queryByText("Loading...")).toBeNull();
-    });
+    await renderGameboard({ role: "STUDENT", notSavedToCurrentUser: true });
     const saveButton = screen.getByRole("link", { name: /save to my gameboards/i });
     expect(saveButton).toBeInTheDocument();
   });
 
   it("displays expected questions", async () => {
-    const gameboard = renderGameboard({ role: "STUDENT" });
-    await waitFor(() => {
-      expect(screen.queryByText("Loading...")).toBeNull();
-    });
+    const gameboard = await renderGameboard({ role: "STUDENT" });
     const listItems = screen.getAllByRole("listitem");
     // filtering to remove breadcrumbs/gameboard title
     const questions = listItems.filter((item) => item.classList.contains("list-group-item"));
