@@ -377,11 +377,12 @@ export const logInUser =
   };
 
 export const upgradeAccount =
-  (params: { verificationDetails: string; otherInformation?: string }) => async (dispatch: Dispatch<Action>) => {
+  (params: { verificationDetails: string; userEmail: string; otherInformation?: string }) =>
+  async (dispatch: Dispatch<Action>) => {
     dispatch({ type: ACTION_TYPE.ACCOUNT_UPGRADE_SEND_REQUEST });
     try {
-      const pendingAccountUpgrade = await api.users.upgradeAccount(params);
-      dispatch({ type: ACTION_TYPE.ACCOUNT_UPGRADE_SEND_RESPONSE_SUCCESS, user: pendingAccountUpgrade.data });
+      await api.users.upgradeAccount(params);
+      dispatch({ type: ACTION_TYPE.ACCOUNT_UPGRADE_SEND_RESPONSE_SUCCESS });
     } catch (e) {
       const errorMessage = extractMessage(e as Error);
       dispatch({ type: ACTION_TYPE.ACCOUNT_UPGRADE_SEND_RESPONSE_FAILURE, errorMessage: errorMessage });

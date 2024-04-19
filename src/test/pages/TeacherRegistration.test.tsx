@@ -181,6 +181,7 @@ describe("Teacher Registration", () => {
     expect(upgradeAccountSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         verificationDetails: registrationUserData.verificationInfo,
+        userEmail: registrationUserData.email,
         otherInformation: "extra information",
       }),
     );

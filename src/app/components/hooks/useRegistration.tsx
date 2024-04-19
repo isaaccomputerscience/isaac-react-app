@@ -67,8 +67,9 @@ const useRegistration = ({ isTeacher }: RegistrationOptions) => {
           action: "registration",
           label: "Create Account (SEGUE)",
         });
-        // send email for account upgrade request
-        await dispatch(upgradeAccount({ verificationDetails, otherInformation }));
+        // send email for account upgrade request - email definitely exists as we've already validated it
+        const userEmail = registrationUser.email!;
+        await dispatch(upgradeAccount({ verificationDetails, userEmail, otherInformation }));
       }
     };
 
