@@ -194,16 +194,14 @@ describe("TeacherRequest", () => {
     const otherInformationInput = screen.getByLabelText(/Any other information/);
     await userEvent.type(verificationDetailsInput, "https://example.com");
     await userEvent.type(otherInformationInput, "Test other information");
-    await act(async () => {
-      await clickButton("Submit");
-      expect(upgradeAccountSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          verificationDetails: "https://example.com",
-          userEmail: mockUser.email,
-          otherInformation: "Test other information",
-        }),
-      );
-    });
+    await act(() => clickButton("Submit"));
+    expect(upgradeAccountSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        verificationDetails: "https://example.com",
+        userEmail: mockUser.email,
+        otherInformation: "Test other information",
+      }),
+    );
     const successMessage = await screen.findByTestId("submit-success");
     expect(successMessage).toBeInTheDocument();
   });

@@ -407,6 +407,7 @@ describe("Admin User Manager", () => {
       await act(() => userEvent.click(notVerifiedEmailStatus));
       expect(modifyEmailStatusSpy).toHaveBeenCalledWith("NOT_VERIFIED", [mockUser.email]);
     });
+
     it("sets teacher pending status to false if Decline Teacher Upgrade button is clicked", async () => {
       const modifyTeacherPendingSpy = jest.spyOn(actions, "adminModifyTeacherPending");
       await renderUserManager();

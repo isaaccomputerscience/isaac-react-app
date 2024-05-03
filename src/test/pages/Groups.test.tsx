@@ -129,12 +129,10 @@ describe("Groups", () => {
     const newGroupInput = await screen.findByPlaceholderText(/Group [Nn]ame/);
     await userEvent.type(newGroupInput, mockNewGroup.groupName);
     const createButton = await screen.findByRole("button", { name: "Create" });
-    await act(async () => {
-      await userEvent.click(createButton);
-      // Expect that the new group POST request is made exactly once
-      await waitFor(() => {
-        expect(newGroupHandler).toHaveBeenCalledTimes(1);
-      });
+    await act(() => userEvent.click(createButton));
+    // Expect that the new group POST request is made exactly once
+    await waitFor(() => {
+      expect(newGroupHandler).toHaveBeenCalledTimes(1);
       expect(newGroupHandler).toHaveBeenRequestedWith(async (req) => {
         const body = await req.json();
         return "groupName" in body && body.groupName === mockNewGroup.groupName;
@@ -545,9 +543,7 @@ describe("Groups", () => {
     const newGroupInput = await screen.findByPlaceholderText(/Group [Nn]ame/);
     await userEvent.type(newGroupInput, mockNewGroup.groupName);
     const createButton = screen.getByRole("button", { name: "Create" });
-    await act(async () => {
-      await userEvent.click(createButton);
-    });
+    await act(() => userEvent.click(createButton));
     await waitFor(() => {
       expect(newGroupHandler).toHaveBeenCalledTimes(1);
       const firstModal = screen.getByTestId("active-modal");
