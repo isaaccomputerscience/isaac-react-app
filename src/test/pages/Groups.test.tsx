@@ -178,24 +178,18 @@ describe("Groups", () => {
       const deleteButton = within(groupToDeleteElement).getByRole("button", { description: "Delete group" });
       // Set up window.confirm mock - we want to accept the alert so return true in mock implementation
       window.confirm = jest.fn(() => true);
-      await act(async () => {
-        await userEvent.click(deleteButton);
-        // Make sure window.confirm was called...
-        await waitFor(() => {
-          expect(window.confirm).toHaveBeenCalledTimes(1);
-        });
-        // ...and that a single DELETE request is sent immediately after.
-        await waitFor(() => {
-          expect(correctDeleteRequests).toEqual(1);
-        });
-        // Assert that list of active groups has been optimistically updated, with ONLY the group we care about removed
-        await waitFor(() => {
-          const newGroupNames = screen
-            .queryAllByTestId("group-item")
-            .map((e) => within(e).getByTestId("select-group").textContent);
-          expect(newGroupNames).not.toContain(groupToDelete.groupName);
-          expect(newGroupNames).toHaveLength(groups.length - 1);
-        });
+      await act(() => userEvent.click(deleteButton));
+      // Make sure window.confirm was called...
+      expect(window.confirm).toHaveBeenCalledTimes(1);
+      // ...and that a single DELETE request is sent immediately after.
+      expect(correctDeleteRequests).toEqual(1);
+      // Assert that list of active groups has been optimistically updated, with ONLY the group we care about removed
+      await waitFor(() => {
+        const newGroupNames = screen
+          .queryAllByTestId("group-item")
+          .map((e) => within(e).getByTestId("select-group").textContent);
+        expect(newGroupNames).not.toContain(groupToDelete.groupName);
+        expect(newGroupNames).toHaveLength(groups.length - 1);
       });
     });
 
