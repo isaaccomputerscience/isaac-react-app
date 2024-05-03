@@ -2,7 +2,7 @@ import { checkPageTitle, clickButton, renderTestEnvironment } from "../utils";
 import { TeacherRequest } from "../../app/components/pages/TeacherRequest";
 import { RestHandler, rest } from "msw";
 import { API_PATH } from "../../app/services";
-import { screen, waitFor } from "@testing-library/react";
+import { act, screen, waitFor } from "@testing-library/react";
 import { produce } from "immer";
 import { mockUser } from "../../mocks/data";
 import userEvent from "@testing-library/user-event";
@@ -194,14 +194,16 @@ describe("TeacherRequest", () => {
     const otherInformationInput = screen.getByLabelText(/Any other information/);
     await userEvent.type(verificationDetailsInput, "https://example.com");
     await userEvent.type(otherInformationInput, "Test other information");
-    await clickButton("Submit");
-    expect(upgradeAccountSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        verificationDetails: "https://example.com",
-        userEmail: mockUser.email,
-        otherInformation: "Test other information",
-      }),
-    );
+    await act(async () => {
+      await clickButton("Submit");
+      expect(upgradeAccountSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          verificationDetails: "https://example.com",
+          userEmail: mockUser.email,
+          otherInformation: "Test other information",
+        }),
+      );
+    });
     const successMessage = await screen.findByTestId("submit-success");
     expect(successMessage).toBeInTheDocument();
   });
