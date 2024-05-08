@@ -1,12 +1,12 @@
 import { AppState, getEventOverviews, useAppDispatch, useAppSelector } from "../../../state";
 import React, { PropsWithChildren, useEffect, useState } from "react";
 import { Accordion } from "../Accordion";
-import * as RS from "reactstrap";
 import { ShowLoading } from "../../handlers/ShowLoading";
 import { Link } from "react-router-dom";
 import { DateString } from "../DateString";
 import { atLeastOne, isEventLeader, sortOnPredicateAndReverse, zeroOrLess } from "../../../services";
 import { EventOverview, PotentialUser } from "../../../../IsaacAppTypes";
+import { Badge, Button, Input, Label, Table } from "reactstrap";
 
 export enum EventOverviewFilter {
   "All events" = "ALL",
@@ -44,9 +44,9 @@ const EventTableRow = ({ eventData, onClick }: { eventData: EventOverview; onCli
   return (
     <tr>
       <td>
-        <RS.Button color="secondary" className="btn-sm" onClick={() => onClick(id as string)}>
+        <Button color="secondary" className="btn-sm" onClick={() => onClick(id as string)}>
           Manage
-        </RS.Button>
+        </Button>
       </td>
       <td className="text-left">
         <Link to={`/events/${id}`} target="_blank">
@@ -59,9 +59,9 @@ const EventTableRow = ({ eventData, onClick }: { eventData: EventOverview; onCli
       <td>
         <DateString>{bookingDeadline}</DateString>
       </td>
-      <td>{location && location.address && location.address.town}</td>
+      <td>{location?.address?.town}</td>
       <td style={{ width: "95px" }}>
-        {privateEvent && <RS.Badge color="primary">Private Event</RS.Badge>}
+        {privateEvent && <Badge color="primary">Private Event</Badge>}
         {eventStatus?.replace(/_/g, " ")}
       </td>
       <td>
@@ -97,7 +97,7 @@ export const EventOverviews = ({
   const EventTableButton = ({ sort, children }: PropsWithChildren<{ sort: string }>) => {
     return (
       <th>
-        <RS.Button
+        <Button
           color="link"
           onClick={() => {
             setSortPredicate(sort);
@@ -106,7 +106,7 @@ export const EventOverviews = ({
           style={{ wordWrap: "normal", minWidth: "80px" }}
         >
           {children}
-        </RS.Button>
+        </Button>
       </th>
     );
   };
@@ -131,8 +131,8 @@ export const EventOverviews = ({
       )}
       <div className="clearfix">
         <div className="float-right mb-4">
-          <RS.Label>
-            <RS.Input
+          <Label>
+            <Input
               type="select"
               value={overviewFilter}
               onChange={(e) => {
@@ -144,8 +144,8 @@ export const EventOverviews = ({
                   {filterLabel}
                 </option>
               ))}
-            </RS.Input>
-          </RS.Label>
+            </Input>
+          </Label>
         </div>
       </div>
 
@@ -155,12 +155,12 @@ export const EventOverviews = ({
           <React.Fragment>
             {atLeastOne(eventOverviews.length) && (
               <div className="overflow-auto">
-                <RS.Table bordered className="mb-0 bg-white table-hover table-sm" style={{ maxWidth: "100%" }}>
+                <Table bordered className="mb-0 bg-white table-hover table-sm" style={{ maxWidth: "100%" }}>
                   <thead>
                     <tr>
                       <th style={{ minWidth: "80px" }}>Actions</th>
                       <th style={{ minWidth: "150px" }}>
-                        <RS.Button
+                        <Button
                           color="link"
                           onClick={() => {
                             setSortPredicate("title");
@@ -168,14 +168,14 @@ export const EventOverviews = ({
                           }}
                         >
                           Title
-                        </RS.Button>
+                        </Button>
                       </th>
                       {eventTableHeaderButtons.map((button) => (
                         <EventTableButton key={button.text} sort={button.sort}>
                           {button.text}
                         </EventTableButton>
                       ))}
-                      <th style={{ minWidth: "80px" }}>Attendance</th>
+                      <th style={{ minWidth: "80p§x" }}>Attendance</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -183,7 +183,7 @@ export const EventOverviews = ({
                       <EventTableRow key={eventData.id} eventData={eventData} onClick={setSelectedEventId} />
                     ))}
                   </tbody>
-                </RS.Table>
+                </Table>
               </div>
             )}
             {zeroOrLess(eventOverviews.length) && (
