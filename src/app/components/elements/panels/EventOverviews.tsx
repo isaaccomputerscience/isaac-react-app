@@ -87,7 +87,7 @@ export const EventOverviews = ({
 
   const [overviewFilter, setOverviewFilter] = useState(EventOverviewFilter["Upcoming events"]);
   const [sortPredicate, setSortPredicate] = useState("date");
-  const [reverse, setReverse] = useState(false);
+  const [reverse, setReverse] = useState(true);
 
   useEffect(() => {
     setSelectedEventId(null);
