@@ -1,4 +1,4 @@
-import { AppState, getEventOverviews, useAppDispatch, useAppSelector } from "../../../state";
+import { AppState, clearEventOverviews, getEventOverviews, useAppDispatch, useAppSelector } from "../../../state";
 import React, { PropsWithChildren, useEffect, useState } from "react";
 import { Accordion } from "../Accordion";
 import { ShowLoading } from "../../handlers/ShowLoading";
@@ -89,9 +89,13 @@ export const EventOverviews = ({
   const [sortPredicate, setSortPredicate] = useState("date");
   const [reverse, setReverse] = useState(true);
 
+  const numberOfLoadedEvents = eventOverviews ? eventOverviews.eventOverviews.length : 0;
+
   useEffect(() => {
+    const startIndex = 0;
     setSelectedEventId(null);
-    dispatch(getEventOverviews(overviewFilter));
+    dispatch(clearEventOverviews);
+    dispatch(getEventOverviews(overviewFilter, startIndex));
   }, [dispatch, setSelectedEventId, overviewFilter]);
 
   const EventTableButton = ({ sort, children }: PropsWithChildren<{ sort: string }>) => {
@@ -151,7 +155,7 @@ export const EventOverviews = ({
 
       <ShowLoading
         until={eventOverviews}
-        thenRender={(eventOverviews) => (
+        thenRender={({ eventOverviews, total }) => (
           <React.Fragment>
             {atLeastOne(eventOverviews.length) && (
               <div className="overflow-auto">
@@ -184,6 +188,20 @@ export const EventOverviews = ({
                     ))}
                   </tbody>
                 </Table>
+              </div>
+            )}
+
+            {/* Load More Button */}
+            {numberOfLoadedEvents < total && (
+              <div className="text-center mt-4">
+                <Button
+                  onClick={() => {
+                    const startIndex = numberOfLoadedEvents;
+                    dispatch(getEventOverviews(overviewFilter, startIndex));
+                  }}
+                >
+                  Load more
+                </Button>
               </div>
             )}
             {zeroOrLess(eventOverviews.length) && (
