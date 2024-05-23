@@ -141,7 +141,7 @@ describe("EventCard", () => {
       ...mockEvent,
       meetingUrl: "https://example-meeting-link.com",
     };
-    await setupTest({ role: "ANONYMOUS", event });
+    setupTest({ role: "ANONYMOUS", event });
     expect(joinEventButton()).toBeNull();
   });
 
@@ -150,7 +150,7 @@ describe("EventCard", () => {
       ...mockEvent,
       meetingUrl: "https://example-meeting-link.com",
     };
-    await setupTest({ role: "STUDENT", event });
+    setupTest({ role: "STUDENT", event });
     expect(joinEventButton()).toBeNull();
   });
 
@@ -162,7 +162,7 @@ describe("EventCard", () => {
         meetingUrl: "https://example-meeting-link.com",
         userBookingStatus: bookingStatus,
       };
-      await setupTest({ role: "STUDENT", event });
+      setupTest({ role: "STUDENT", event });
       const joinEventButton = screen.queryByRole("link", { name: "Join event now" });
       expect(joinEventButton).toBeNull();
     },
@@ -173,7 +173,7 @@ describe("EventCard", () => {
       ...mockEvent,
       userBookingStatus: "CONFIRMED" as BookingStatus,
     };
-    await setupTest({ role: "STUDENT", event });
+    setupTest({ role: "STUDENT", event });
     expect(joinEventButton()).toBeNull();
   });
 
@@ -183,7 +183,7 @@ describe("EventCard", () => {
       meetingUrl: "https://example-meeting-link.com",
       userBookingStatus: "CONFIRMED" as BookingStatus,
     };
-    await setupTest({ role: "STUDENT", event });
+    setupTest({ role: "STUDENT", event });
     expect(joinEventButton()).toBeInTheDocument();
     expect(joinEventButton()).toHaveAttribute("href", event.meetingUrl);
   });
