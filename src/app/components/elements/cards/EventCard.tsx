@@ -100,13 +100,13 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
           </Link>
         </CardText>
         {userBookingStatus === "CONFIRMED" && meetingUrl && (
-          <a href={event.meetingUrl} className="w-100" target="_blank" rel="noopener noreferrer">
-            <div className="d-flex justify-content-center w-100">
-              <Button color="secondary" className="mt-2">
+          <CardText className="d-flex justify-content-center">
+            <a href={meetingUrl} target="_blank" rel="noopener noreferrer">
+              <Button color="secondary" className="mt-2 w-100">
                 Join event now
               </Button>
-            </div>
-          </a>
+            </a>
+          </CardText>
         )}
       </CardBody>
     </Card>
