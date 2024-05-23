@@ -40,9 +40,9 @@ export const ManageExistingBookings = ({ user, eventBookingId }: { user: Potenti
 
   const [sortPredicate, setSortPredicate] = useState("date");
   const [reverse, setReverse] = useState(true);
-  const [dropdownOpen, setOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const toggle = () => setOpen(!dropdownOpen);
+  const toggle = () => setDropdownOpen(!dropdownOpen);
 
   const setSortPredicateAndDirection = (predicate: string) => () => {
     setSortPredicate(predicate);
@@ -50,7 +50,7 @@ export const ManageExistingBookings = ({ user, eventBookingId }: { user: Potenti
   };
 
   const augmentedEventBookings = eventBookings.map((booking: DetailedEventBookingDTO & { schoolName?: string }) => {
-    if (booking.userBooked && booking.userBooked.id) {
+    if (booking.userBooked?.id) {
       const schoolDetails = userIdToSchoolMapping[booking.userBooked.id];
       booking.schoolName = schoolDetails ? schoolDetails.name : "UNKNOWN";
     }
@@ -114,7 +114,7 @@ export const ManageExistingBookings = ({ user, eventBookingId }: { user: Potenti
               </thead>
               <tbody>
                 {augmentedEventBookings.sort(sortOnPredicateAndReverse(sortPredicate, reverse)).map((booking) => {
-                  const userId = booking.userBooked && booking.userBooked.id;
+                  const userId = booking.userBooked?.id;
                   return (
                     <tr key={booking.bookingId}>
                       <td>
@@ -168,9 +168,8 @@ export const ManageExistingBookings = ({ user, eventBookingId }: { user: Potenti
                           </React.Fragment>
                         )}
                       </td>
-                      <td className="py-2 text-nowrap">{booking.userBooked && booking.userBooked.email}</td>
-                      <td>{booking.userBooked && booking.userBooked.role}</td>
-                      {/*TODO When full stats functionality works <Link to={`/admin/stats/schools/${userSchool.urn}/user_list`}>{userSchool.name}</Link>*/}
+                      <td className="py-2 text-nowrap">{booking.userBooked?.email}</td>
+                      <td>{booking.userBooked?.role}</td>
                       <td style={{ minWidth: "200px" }}>{booking.schoolName}</td>
                       <td>
                         {booking.additionalInformation &&
@@ -179,7 +178,7 @@ export const ManageExistingBookings = ({ user, eventBookingId }: { user: Potenti
                             : booking.additionalInformation.yearGroup)}
                       </td>
                       <td>{booking.bookingStatus}</td>
-                      <td>{booking.userBooked && booking.userBooked.gender}</td>
+                      <td>{booking.userBooked?.gender}</td>
                       <td>
                         <DateString>{booking.bookingDate}</DateString>
                       </td>
@@ -199,16 +198,10 @@ export const ManageExistingBookings = ({ user, eventBookingId }: { user: Potenti
                         ).join(", ")}
                       </td>
                       <td>{booking.reservedById || "-"}</td>
-                      <td>
-                        {booking.additionalInformation && booking.additionalInformation.accessibilityRequirements}
-                      </td>
-                      <td>{booking.additionalInformation && booking.additionalInformation.dietaryRequirements}</td>
-                      <td className=" text-nowrap">
-                        {booking.additionalInformation && booking.additionalInformation.emergencyName}
-                      </td>
-                      <td className=" text-nowrap">
-                        {booking.additionalInformation && booking.additionalInformation.emergencyNumber}
-                      </td>
+                      <td>{booking.additionalInformation?.accessibilityRequirements}</td>
+                      <td>{booking.additionalInformation?.dietaryRequirements}</td>
+                      <td className=" text-nowrap">{booking.additionalInformation?.emergencyName}</td>
+                      <td className=" text-nowrap">{booking.additionalInformation?.emergencyNumber}</td>
                     </tr>
                   );
                 })}

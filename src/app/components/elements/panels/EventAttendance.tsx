@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { PropsWithChildren, useState } from "react";
 import { Accordion } from "../Accordion";
 import { AppState, recordEventAttendance, selectors, useAppDispatch, useAppSelector } from "../../../state";
 import { atLeastOne, isEventLeader, NOT_FOUND, sortOnPredicateAndReverse } from "../../../services";
@@ -18,6 +18,14 @@ function displayAttendanceAsSymbol(status?: string) {
   }
 }
 
+const AttendanceHeaderButton = ({ onClick, children }: PropsWithChildren<{ onClick: () => void }>) => (
+  <th className="align-middle">
+    <Button color="link" onClick={onClick}>
+      {children}
+    </Button>
+  </th>
+);
+
 export const EventAttendance = ({ user, eventId }: { user: PotentialUser; eventId: string }) => {
   const dispatch = useAppDispatch();
   const selectedEvent = useAppSelector(
@@ -32,8 +40,10 @@ export const EventAttendance = ({ user, eventId }: { user: PotentialUser; eventI
 
   function filterOnSurname(booking: DetailedEventBookingDTO) {
     return (
-      booking.userBooked?.familyName !== undefined &&
-      booking.userBooked.familyName.toLocaleLowerCase().includes(familyNameFilter.toLocaleLowerCase())
+      // If the family name is undefined (which can happen with Google accounts),
+      // we should show it if the filter is empty, otherwise attendance can't be marked
+      (booking.userBooked?.familyName === undefined && familyNameFilter === "") ||
+      booking.userBooked?.familyName?.toLocaleLowerCase().includes(familyNameFilter.toLocaleLowerCase())
     );
   }
 
@@ -43,6 +53,11 @@ export const EventAttendance = ({ user, eventId }: { user: PotentialUser; eventI
     morningOfEvent.setUTCHours(0, 0);
     canRecordAttendance = morningOfEvent <= new Date();
   }
+
+  const sortBooking = (predicate: string) => {
+    setSortPredicate(predicate);
+    setReverse(!reverse);
+  };
 
   return (
     <React.Fragment>
@@ -58,33 +73,20 @@ export const EventAttendance = ({ user, eventId }: { user: PotentialUser; eventI
             </div>
           )}
           <div className="overflow-auto">
-            <Table bordered className="mb-0 bg-white">
+            <Table bordered className="mb-0 bg-white table-sm table-hover">
               <thead>
                 <tr>
                   <th className="align-middle">Actions</th>
-                  <th className="align-middle">
-                    <Button
-                      color="link"
-                      onClick={() => {
-                        setSortPredicate("bookingStatus");
-                        setReverse(!reverse);
-                      }}
-                    >
-                      Attendance
-                    </Button>
-                  </th>
-                  <th className="align-middle">
-                    <Button
-                      color="link"
-                      onClick={() => {
-                        setSortPredicate("userBooked.familyName");
-                        setReverse(!reverse);
-                      }}
-                    >
+                  <AttendanceHeaderButton onClick={() => sortBooking("bookingStatus")}>
+                    Attendance
+                  </AttendanceHeaderButton>
+                  <th className="align-middle" style={{ minWidth: "140px" }}>
+                    <Button color="link" onClick={() => sortBooking("userBooked.familyName")}>
                       Name
                     </Button>
                     <Input
-                      className="w-auto"
+                      type="text"
+                      className="py-2"
                       value={familyNameFilter}
                       onChange={(e) => setFamilyNameFilter(e.target.value)}
                       placeholder="Surname filter"
@@ -93,43 +95,13 @@ export const EventAttendance = ({ user, eventId }: { user: PotentialUser; eventI
                   <th className="align-middle">Job / year group</th>
                   <th className="align-middle">School</th>
                   <th className="align-middle">Account type</th>
-                  <th className="align-middle">
-                    <Button
-                      color="link"
-                      onClick={() => {
-                        setSortPredicate("userBooked.email");
-                        setReverse(!reverse);
-                      }}
-                    >
-                      Email
-                    </Button>
-                  </th>
-                  <th className="align-middle">
-                    <Button
-                      color="link"
-                      onClick={() => {
-                        setSortPredicate("bookingDate");
-                        setReverse(!reverse);
-                      }}
-                    >
-                      Booking created
-                    </Button>
-                  </th>
-                  <th className="align-middle">
-                    <Button
-                      color="link"
-                      onClick={() => {
-                        setSortPredicate("updated");
-                        setReverse(!reverse);
-                      }}
-                    >
-                      Booking updated
-                    </Button>
-                  </th>
-                  <th className="align-middle">Accessibility requirements</th>
-                  <th className="align-middle">Dietary requirements</th>
-                  <th className="align-middle">Emergency name</th>
-                  <th className="align-middle">Emergency telephone</th>
+                  <AttendanceHeaderButton onClick={() => sortBooking("userBooked.email")}>Email</AttendanceHeaderButton>
+                  <AttendanceHeaderButton onClick={() => sortBooking("bookingDate")}>
+                    Booking created
+                  </AttendanceHeaderButton>
+                  <AttendanceHeaderButton onClick={() => sortBooking("updated")}>
+                    Booking updated
+                  </AttendanceHeaderButton>
                 </tr>
               </thead>
               <tbody>
@@ -174,13 +146,10 @@ export const EventAttendance = ({ user, eventId }: { user: PotentialUser; eventI
                           {userBooked.familyName}, {userBooked.givenName}
                         </td>
                         <td className="align-middle">
-                          {additionalInformation?.jobTitle || additionalInformation?.yearGroup || ""}
+                          {additionalInformation?.jobTitle ?? additionalInformation?.yearGroup ?? ""}
                         </td>
-                        {(userSchool === undefined || !userSchool.urn) && (
-                          <td className="align-middle">{userSchool ? userSchool.name : ""}</td>
-                        )}
-                        {userSchool && userSchool.urn && <td className="align-middle">{userSchool.name}</td>}{" "}
-                        {/* In future can add link to school stats page */}
+                        {!userSchool?.urn && <td className="align-middle">{userSchool?.name ?? ""}</td>}
+                        {userSchool?.urn && <td className="align-middle">{userSchool.name}</td>}{" "}
                         <td className="align-middle">{userBooked.role}</td>
                         <td className="align-middle">{userBooked.email}</td>
                         <td className="align-middle">
@@ -189,10 +158,6 @@ export const EventAttendance = ({ user, eventId }: { user: PotentialUser; eventI
                         <td className="align-middle">
                           <DateString>{booking.updated}</DateString>
                         </td>
-                        <td className="align-middle">{additionalInformation?.accessibilityRequirements || ""}</td>
-                        <td className="align-middle">{additionalInformation?.dietaryRequirements || ""}</td>
-                        <td className="align-middle">{additionalInformation?.emergencyName || ""}</td>
-                        <td className="align-middle">{additionalInformation?.emergencyNumber || ""}</td>
                       </tr>
                     );
                   })}
