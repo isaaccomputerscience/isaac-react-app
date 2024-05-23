@@ -171,7 +171,7 @@ describe("EventCard", () => {
   it("does not offer a 'join event now' button if a meetingUrl is not provided", async () => {
     const event = augmentEvent({
       ...mockEvent,
-      userBookingStatus: "CONFIRMED" as BookingStatus,
+      userBookingStatus: "CONFIRMED",
     });
     setupTest({ role: "STUDENT", event });
     expect(joinEventButton()).toBeNull();
@@ -181,7 +181,7 @@ describe("EventCard", () => {
     const event = augmentEvent({
       ...mockEvent,
       meetingUrl: "https://example-meeting-link.com",
-      userBookingStatus: "CONFIRMED" as BookingStatus,
+      userBookingStatus: "CONFIRMED",
     });
     setupTest({ role: "STUDENT", event });
     expect(joinEventButton()).toBeInTheDocument();
