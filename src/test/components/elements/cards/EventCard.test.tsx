@@ -137,19 +137,19 @@ describe("EventCard", () => {
   });
 
   it("does not offer a 'join event now' button if user is not logged in", async () => {
-    const event = {
+    const event = augmentEvent({
       ...mockEvent,
       meetingUrl: "https://example-meeting-link.com",
-    };
+    });
     setupTest({ role: "ANONYMOUS", event });
     expect(joinEventButton()).toBeNull();
   });
 
   it("does not offer a 'join event now' button if user is not booked on the event", async () => {
-    const event = {
+    const event = augmentEvent({
       ...mockEvent,
       meetingUrl: "https://example-meeting-link.com",
-    };
+    });
     setupTest({ role: "STUDENT", event });
     expect(joinEventButton()).toBeNull();
   });
@@ -157,32 +157,31 @@ describe("EventCard", () => {
   it.each(["RESERVED", "CANCELLED", "WAITING_LIST", "ATTENDED", "ABSENT"] as BookingStatus[])(
     "does not offer a 'join event now' button if user's booking status is %s",
     async (bookingStatus) => {
-      const event = {
+      const event = augmentEvent({
         ...mockEvent,
         meetingUrl: "https://example-meeting-link.com",
-        userBookingStatus: bookingStatus,
-      };
-      setupTest({ role: "STUDENT", event });
+      });
+      setupTest({ role: "STUDENT", event: { ...event, userBookingStatus: bookingStatus } });
       const joinEventButton = screen.queryByRole("link", { name: "Join event now" });
       expect(joinEventButton).toBeNull();
     },
   );
 
   it("does not offer a 'join event now' button if a meetingUrl is not provided", async () => {
-    const event = {
+    const event = augmentEvent({
       ...mockEvent,
       userBookingStatus: "CONFIRMED" as BookingStatus,
-    };
+    });
     setupTest({ role: "STUDENT", event });
     expect(joinEventButton()).toBeNull();
   });
 
   it("offers a 'join event now' button if a meetingUrl is provided and user's booking status is CONFIRMED", async () => {
-    const event = {
+    const event = augmentEvent({
       ...mockEvent,
       meetingUrl: "https://example-meeting-link.com",
       userBookingStatus: "CONFIRMED" as BookingStatus,
-    };
+    });
     setupTest({ role: "STUDENT", event });
     expect(joinEventButton()).toBeInTheDocument();
     expect(joinEventButton()).toHaveAttribute("href", event.meetingUrl);
