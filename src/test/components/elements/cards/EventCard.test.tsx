@@ -160,8 +160,9 @@ describe("EventCard", () => {
       const event = augmentEvent({
         ...mockEvent,
         meetingUrl: "https://example-meeting-link.com",
+        userBookingStatus: bookingStatus,
       });
-      setupTest({ role: "STUDENT", event: { ...event, userBookingStatus: bookingStatus } });
+      setupTest({ role: "STUDENT", event });
       const joinEventButton = screen.queryByRole("link", { name: "Join event now" });
       expect(joinEventButton).toBeNull();
     },
