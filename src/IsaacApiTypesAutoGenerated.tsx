@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2024-05-24 11:05:52.
+// Generated using typescript-generator version 3.2.1263 on 2024-05-24 13:07:29.
 
 export interface AssignmentDTO extends IAssignmentLike {
   gameboardId?: string;
@@ -585,11 +585,11 @@ export interface UserSummaryWithGroupMembershipDTO extends UserSummaryDTO {
 }
 
 export interface IAssignmentLike {
-  id?: number;
-  creationDate?: EpochTimeStamp;
   groupId?: number;
   ownerUserId?: number;
   dueDate?: EpochTimeStamp;
+  creationDate?: EpochTimeStamp;
+  id?: number;
 }
 
 export interface GameboardItem {
@@ -632,8 +632,8 @@ export interface GameFilter {
 }
 
 export interface HasTitleOrId {
-  id?: string;
   title?: string;
+  id?: string;
 }
 
 export interface AudienceContext {
