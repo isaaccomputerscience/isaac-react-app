@@ -142,6 +142,8 @@ describe("EventCard", () => {
       meetingUrl: "https://example-meeting-link.com",
     });
     setupTest({ role: "ANONYMOUS", event });
+    const title = await screen.findByTestId("event-card-title");
+    expect(title).toBeInTheDocument();
     expect(joinEventButton()).toBeNull();
   });
 
@@ -151,6 +153,8 @@ describe("EventCard", () => {
       meetingUrl: "https://example-meeting-link.com",
     });
     setupTest({ role: "STUDENT", event });
+    const title = await screen.findByTestId("event-card-title");
+    expect(title).toBeInTheDocument();
     expect(joinEventButton()).toBeNull();
   });
 
@@ -163,6 +167,8 @@ describe("EventCard", () => {
         userBookingStatus: bookingStatus,
       });
       setupTest({ role: "STUDENT", event });
+      const title = await screen.findByTestId("event-card-title");
+      expect(title).toBeInTheDocument();
       const joinEventButton = screen.queryByRole("link", { name: "Join event now" });
       expect(joinEventButton).toBeNull();
     },
@@ -174,6 +180,8 @@ describe("EventCard", () => {
       userBookingStatus: "CONFIRMED",
     });
     setupTest({ role: "STUDENT", event });
+    const title = await screen.findByTestId("event-card-title");
+    expect(title).toBeInTheDocument();
     expect(joinEventButton()).toBeNull();
   });
 
@@ -184,6 +192,8 @@ describe("EventCard", () => {
       userBookingStatus: "CONFIRMED",
     });
     setupTest({ role: "STUDENT", event });
+    const title = await screen.findByTestId("event-card-title");
+    expect(title).toBeInTheDocument();
     expect(joinEventButton()).toBeInTheDocument();
     expect(joinEventButton()).toHaveAttribute("href", event.meetingUrl);
   });
