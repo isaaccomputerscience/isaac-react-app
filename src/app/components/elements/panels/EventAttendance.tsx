@@ -1,11 +1,20 @@
 import React, { PropsWithChildren, useState } from "react";
 import { Accordion } from "../Accordion";
-import { AppState, recordEventAttendance, selectors, useAppDispatch, useAppSelector } from "../../../state";
+import { AppState, getEvent, recordEventAttendance, selectors, useAppDispatch, useAppSelector } from "../../../state";
 import { atLeastOne, isEventLeader, NOT_FOUND, sortOnPredicateAndReverse } from "../../../services";
 import { DetailedEventBookingDTO, UserSummaryWithEmailAddressAndGenderDTO } from "../../../../IsaacApiTypes";
 import { DateString } from "../DateString";
 import { ATTENDANCE, PotentialUser } from "../../../../IsaacAppTypes";
-import { Button, Input, Table } from "reactstrap";
+import {
+  Button,
+  CardTitle,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  Input,
+  Table,
+  UncontrolledButtonDropdown,
+} from "reactstrap";
 
 function displayAttendanceAsSymbol(status?: string) {
   switch (status) {
@@ -37,6 +46,32 @@ export const EventAttendance = ({ user, eventId }: { user: PotentialUser; eventI
   const [sortPredicate, setSortPredicate] = useState("bookingDate");
   const [reverse, setReverse] = useState(true);
   const [familyNameFilter, setFamilyNameFilter] = useState("");
+  const [selectedUserIds, setSelectedUserIds] = useState<number[]>([]);
+  const [userUpdating, setUserUpdating] = useState(false);
+
+  const selectAllToggle = () => {
+    if (bookings.length === selectedUserIds.length) {
+      setSelectedUserIds([]);
+    } else {
+      setSelectedUserIds(bookings.filter((result) => !!result).map((result) => result.userBooked?.id as number));
+    }
+  };
+
+  const updateUserSelection = (userId: number, checked: boolean) => {
+    if (checked) {
+      setSelectedUserIds([...selectedUserIds, userId]);
+    } else {
+      setSelectedUserIds(selectedUserIds.filter((selectedId) => selectedId !== userId));
+    }
+  };
+
+  const modifyAttendanceStatusAndUpdateResults = async (status: ATTENDANCE) => {
+    setUserUpdating(true);
+    await dispatch(recordEventAttendance(eventId, selectedUserIds, status));
+    dispatch(getEvent(eventId));
+    setSelectedUserIds([]);
+    setUserUpdating(false);
+  };
 
   function filterOnSurname(booking: DetailedEventBookingDTO) {
     return (
@@ -72,11 +107,35 @@ export const EventAttendance = ({ user, eventId }: { user: PotentialUser; eventI
               data.
             </div>
           )}
+          <CardTitle className="d-flex">
+            <h4 className="pl-1 pr-3 pt-1">Selected ({selectedUserIds.length})</h4>
+            <UncontrolledButtonDropdown>
+              <DropdownToggle caret disabled={userUpdating} color="primary">
+                Mark Attendance
+              </DropdownToggle>
+              <DropdownMenu data-testid="modify-booking-options">
+                <DropdownItem header>Update selected users booking status to:</DropdownItem>
+                {[ATTENDANCE.ATTENDED, ATTENDANCE.ABSENT].map((status) => (
+                  <DropdownItem
+                    key={status}
+                    disabled={selectedUserIds.length === 0}
+                    onClick={() => modifyAttendanceStatusAndUpdateResults(status)}
+                  >
+                    {status === ATTENDANCE.ATTENDED ? "ATTENDED" : "ABSENT"}
+                  </DropdownItem>
+                ))}
+              </DropdownMenu>
+            </UncontrolledButtonDropdown>
+          </CardTitle>
           <div className="overflow-auto">
             <Table bordered className="mb-0 bg-white table-sm table-hover">
               <thead>
                 <tr>
-                  <th className="align-middle">Actions</th>
+                  <th className="align-middle">
+                    <Button onClick={selectAllToggle} color="link">
+                      Select
+                    </Button>
+                  </th>
                   <AttendanceHeaderButton onClick={() => sortBooking("bookingStatus")}>
                     Attendance
                   </AttendanceHeaderButton>
@@ -115,31 +174,18 @@ export const EventAttendance = ({ user, eventId }: { user: PotentialUser; eventI
 
                     return (
                       <tr key={booking.bookingId}>
-                        <td className="align-middle">
-                          {booking.bookingStatus != "ATTENDED" && (
-                            <Button
-                              color="primary"
-                              outline
-                              className="btn-sm mb-2"
-                              onClick={() =>
-                                dispatch(recordEventAttendance(eventId, userBooked.id as number, ATTENDANCE.ATTENDED))
-                              }
-                            >
-                              Mark&nbsp;as Attended
-                            </Button>
-                          )}
-                          {booking.bookingStatus != "ABSENT" && (
-                            <Button
-                              color="primary"
-                              outline
-                              className="btn-sm mb-2"
-                              onClick={() =>
-                                dispatch(recordEventAttendance(eventId, userBooked.id as number, ATTENDANCE.ABSENT))
-                              }
-                            >
-                              Mark&nbsp;as Absent
-                            </Button>
-                          )}
+                        <td className="align-middle" key={booking.userBooked?.id}>
+                          <Input
+                            type="checkbox"
+                            className="m-0 position-relative"
+                            checked={
+                              (booking.userBooked?.id && selectedUserIds.includes(booking.userBooked.id)) || false
+                            }
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                              booking.userBooked?.id &&
+                                updateUserSelection(booking.userBooked.id, event.target.checked);
+                            }}
+                          />
                         </td>
                         <td className="align-middle text-center">{displayAttendanceAsSymbol(booking.bookingStatus)}</td>
                         <td className="align-middle">
