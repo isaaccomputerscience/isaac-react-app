@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2024-05-24 13:07:29.
+// Generated using typescript-generator version 3.2.1263 on 2024-05-24 13:50:40.
 
 export interface AssignmentDTO extends IAssignmentLike {
   gameboardId?: string;
@@ -97,6 +97,7 @@ export interface IsaacEventPageDTO extends ContentDTO {
   date?: EpochTimeStamp;
   bookingDeadline?: EpochTimeStamp;
   prepWorkDeadline?: EpochTimeStamp;
+  publicationDate?: EpochTimeStamp;
   location?: Location;
   eventThumbnail?: ImageDTO;
   numberOfPlaces?: number;
@@ -397,11 +398,11 @@ export interface FormulaDTO extends ChoiceDTO {
 }
 
 export interface FreeTextRuleDTO extends ChoiceDTO {
-  wordProximity?: number;
   caseInsensitive?: boolean;
   allowsAnyOrder?: boolean;
   allowsExtraWords?: boolean;
   allowsMisspelling?: boolean;
+  wordProximity?: number;
 }
 
 export interface GlossaryTermDTO extends ContentDTO {
@@ -585,9 +586,9 @@ export interface UserSummaryWithGroupMembershipDTO extends UserSummaryDTO {
 }
 
 export interface IAssignmentLike {
+  dueDate?: EpochTimeStamp;
   groupId?: number;
   ownerUserId?: number;
-  dueDate?: EpochTimeStamp;
   creationDate?: EpochTimeStamp;
   id?: number;
 }
@@ -660,8 +661,8 @@ export interface Image extends Media {
 }
 
 export interface IHasQuizSummary {
-  quizSummary?: ContentSummaryDTO;
   quizId?: string;
+  quizSummary?: ContentSummaryDTO;
 }
 
 export interface Mark {
@@ -741,7 +742,7 @@ export type Role = "STUDENT" | "TUTOR" | "TEACHER" | "EVENT_LEADER" | "CONTENT_E
 
 export type EmailVerificationStatus = "VERIFIED" | "NOT_VERIFIED" | "DELIVERY_FAILED";
 
-export type AuthenticationProvider = "GOOGLE" | "FACEBOOK" | "TWITTER" | "TEST" | "SEGUE";
+export type AuthenticationProvider = "GOOGLE" | "FACEBOOK" | "TWITTER" | "RAVEN" | "TEST" | "SEGUE" | "RASPBERRYPI";
 
 export type GameboardItemState = "PERFECT" | "PASSED" | "IN_PROGRESS" | "NOT_ATTEMPTED" | "FAILED";
 
