@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2024-05-24 13:50:40.
+// Generated using typescript-generator version 3.2.1263 on 2024-05-24 14:03:38.
 
 export interface AssignmentDTO extends IAssignmentLike {
   gameboardId?: string;
@@ -586,10 +586,10 @@ export interface UserSummaryWithGroupMembershipDTO extends UserSummaryDTO {
 }
 
 export interface IAssignmentLike {
-  dueDate?: EpochTimeStamp;
-  groupId?: number;
   ownerUserId?: number;
   creationDate?: EpochTimeStamp;
+  dueDate?: EpochTimeStamp;
+  groupId?: number;
   id?: number;
 }
 
@@ -661,8 +661,8 @@ export interface Image extends Media {
 }
 
 export interface IHasQuizSummary {
-  quizId?: string;
   quizSummary?: ContentSummaryDTO;
+  quizId?: string;
 }
 
 export interface Mark {
@@ -742,7 +742,7 @@ export type Role = "STUDENT" | "TUTOR" | "TEACHER" | "EVENT_LEADER" | "CONTENT_E
 
 export type EmailVerificationStatus = "VERIFIED" | "NOT_VERIFIED" | "DELIVERY_FAILED";
 
-export type AuthenticationProvider = "GOOGLE" | "FACEBOOK" | "TWITTER" | "RAVEN" | "TEST" | "SEGUE" | "RASPBERRYPI";
+export type AuthenticationProvider = "GOOGLE" | "FACEBOOK" | "TWITTER" | "TEST" | "SEGUE";
 
 export type GameboardItemState = "PERFECT" | "PASSED" | "IN_PROGRESS" | "NOT_ATTEMPTED" | "FAILED";
 
