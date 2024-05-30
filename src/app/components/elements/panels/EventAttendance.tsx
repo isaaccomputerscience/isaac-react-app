@@ -40,7 +40,7 @@ export const EventAttendance = ({ user, eventId }: { user: PotentialUser; eventI
   const selectedEvent = useAppSelector(
     (state: AppState) => (state && state.currentEvent !== NOT_FOUND && state.currentEvent) || null,
   );
-  const bookings = useAppSelector((state: AppState) => (state && state.eventBookings) || []);
+  const bookings = useAppSelector(selectors.events.eventBookings);
   const userIdToSchoolMapping = useAppSelector(selectors.admin.userSchoolLookup) || {};
 
   const [sortPredicate, setSortPredicate] = useState("bookingDate");
@@ -107,7 +107,7 @@ export const EventAttendance = ({ user, eventId }: { user: PotentialUser; eventI
               data.
             </div>
           )}
-          <CardTitle className="d-flex">
+          <CardTitle className="d-flex" data-testid="record-attendance-controls">
             <h4 className="pl-1 pr-3 pt-1">Selected ({selectedUserIds.length})</h4>
             <UncontrolledButtonDropdown>
               <DropdownToggle caret disabled={userUpdating} color="primary">
@@ -128,11 +128,11 @@ export const EventAttendance = ({ user, eventId }: { user: PotentialUser; eventI
             </UncontrolledButtonDropdown>
           </CardTitle>
           <div className="overflow-auto">
-            <Table bordered className="mb-0 bg-white table-sm table-hover">
+            <Table bordered className="mb-0 bg-white table-sm table-hover" data-testid="record-attendance-table">
               <thead>
                 <tr>
                   <th className="align-middle">
-                    <Button onClick={selectAllToggle} color="link">
+                    <Button onClick={selectAllToggle} color="link" data-testid="select-all-toggle">
                       Select
                     </Button>
                   </th>
@@ -195,7 +195,7 @@ export const EventAttendance = ({ user, eventId }: { user: PotentialUser; eventI
                           {additionalInformation?.jobTitle ?? additionalInformation?.yearGroup ?? ""}
                         </td>
                         {!userSchool?.urn && <td className="align-middle">{userSchool?.name ?? ""}</td>}
-                        {userSchool?.urn && <td className="align-middle">{userSchool.name}</td>}{" "}
+                        {userSchool?.urn && <td className="align-middle">{userSchool.name}</td>}
                         <td className="align-middle">{userBooked.role}</td>
                         <td className="align-middle">{userBooked.email}</td>
                         <td className="align-middle">

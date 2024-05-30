@@ -219,7 +219,10 @@ export const ManageExistingBookings = ({ user, eventBookingId }: { user: Potenti
                   const usersWithStatus = relevantUsers(key);
                   if (atLeastOne(usersWithStatus.length)) {
                     return (
-                      <DropdownItem key={index} onClick={() => dispatch(showGroupEmailModal(usersWithStatus))}>
+                      <DropdownItem
+                        key={`${usersWithStatus[index]}-email`}
+                        onClick={() => dispatch(showGroupEmailModal(usersWithStatus))}
+                      >
                         Email {bookingStatusMap[key as BookingStatus]} users
                       </DropdownItem>
                     );
