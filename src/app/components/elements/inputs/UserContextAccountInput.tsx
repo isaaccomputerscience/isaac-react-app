@@ -170,7 +170,7 @@ export function UserContextAccountInput({
             userContexts.findIndex((p) => p.stage === STAGE.ALL && p.examBoard === EXAM_BOARD.ALL) === -1;
 
           return (
-            <FormGroup key={index}>
+            <FormGroup key={`${userContext.stage}-${userContext.examBoard}`}>
               <Row>
                 <UserContextRow
                   isStudent={!tutorOrAbove}
