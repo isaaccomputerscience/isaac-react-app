@@ -7,6 +7,8 @@ const configCommon = require('./webpack.config.common');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { merge } = require('webpack-merge');
 const webpack = require('webpack');
+const dotenv = require('dotenv');
+
 
 module.exports = env => {
 
@@ -25,6 +27,7 @@ module.exports = env => {
             }),
             new webpack.DefinePlugin({
                 ISAAC_SITE: '"cs"',
+                'process.env': JSON.stringify(process.env),
             }),
             new CopyWebpackPlugin({
                 patterns: [{

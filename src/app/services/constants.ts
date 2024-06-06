@@ -12,7 +12,7 @@ import {
   Stage,
 } from "../../IsaacApiTypes";
 
-export const STAGING_URL = "https://www.staging.isaaccomputerscience.org";
+export const STAGING_URL = process.env.STAGING_URL as string;
 
 // eslint-disable-next-line no-undef
 export const API_VERSION: string = REACT_APP_API_VERSION || "any";
@@ -21,13 +21,14 @@ export const API_VERSION: string = REACT_APP_API_VERSION || "any";
  * Configure the api provider with the server running the API:
  * No need if we want to use the same server as the static content.
  */
+
 let apiPath = `${document.location.origin}/api/${API_VERSION}/api`;
 if (document.location.hostname === "localhost") {
-  apiPath = "http://localhost:8080/isaac-api/api";
+  apiPath = process.env.API_PATH_LOCAL as string;
 } else if (EDITOR_PREVIEW) {
   apiPath = `${STAGING_URL}/api/any/api`;
 } else if (document.location.hostname.endsWith(".eu.ngrok.io")) {
-  apiPath = "https://isaacscience.eu.ngrok.io/isaac-api/api";
+  apiPath = process.env.API_PATH as string;
 }
 export const isStaging =
   document.location.hostname.startsWith("staging.") || document.location.hostname.startsWith("www.staging.");
@@ -37,18 +38,22 @@ export const envSpecific = <L, S, D>(live: L, staging: S, dev: D) =>
 
 export const API_PATH: string = apiPath;
 
-export const EDITOR_ORIGIN = "https://editor.isaaccomputerscience.org";
+export const EDITOR_ORIGIN = process.env.EDITOR_ORIGIN as string;
 
 export const EDITOR_URL = EDITOR_ORIGIN + "/#!/edit/master/";
 export const EDITOR_COMPARE_URL = EDITOR_ORIGIN + "/#!/compare";
 
-export const GOOGLE_ANALYTICS_4_MEASUREMENT_ID = envSpecific("G-H95WP5C8DR", "G-KZJS9ZKWBD", "G-2QRVC1GSQY");
+export const GOOGLE_ANALYTICS_4_MEASUREMENT_ID = envSpecific(
+  process.env.GOOGLE_ANALYTICS_4_MEASUREMENT_ID_1 as string,
+  process.env.GOOGLE_ANALYTICS_4_MEASUREMENT_ID_2 as string,
+  process.env.GOOGLE_ANALYTICS_4_MEASUREMENT_ID_3 as string,
+);
 
 export const SOCIAL_LINKS = {
-  youtube: { name: "YouTube", href: "https://www.youtube.com/@isaaccomputerscience" },
-  twitter: { name: "Twitter", href: "https://twitter.com/isaaccompsci" },
-  facebook: { name: "Facebook", href: "https://www.facebook.com/IsaacComputerScience" },
-  instagram: { name: "Instagram", href: "https://www.instagram.com/isaaccompsci" },
+  youtube: { name: "YouTube", href: process.env.SOCIAL_YOUTUBE as string },
+  twitter: { name: "Twitter", href: process.env.SOCIAL_TWITTER as string },
+  facebook: { name: "Facebook", href: process.env.SOCIAL_FACEBOOK as string },
+  instagram: { name: "Instagram", href: process.env.SOCIAL_INSTAGRAM as string },
 };
 
 // Change to "http://localhost:3000" if you want to run a local version of the code editor
