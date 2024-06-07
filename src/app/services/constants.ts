@@ -57,7 +57,7 @@ export const SOCIAL_LINKS = {
 };
 
 // Change to "http://localhost:3000" if you want to run a local version of the code editor
-export const CODE_EDITOR_BASE_URL = "https://editor.isaaccode.org";
+export const CODE_EDITOR_BASE_URL = process.env.CODE_EDITOR_BASE_URL as string;
 
 export const API_REQUEST_FAILURE_MESSAGE = "There may be an error connecting to the Isaac platform.";
 export const QUESTION_ATTEMPT_THROTTLED_MESSAGE =
