@@ -7,7 +7,6 @@ const configCommon = require('./webpack.config.common');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { merge } = require('webpack-merge');
 const webpack = require('webpack');
-const dotenv = require('dotenv');
 
 
 module.exports = env => {
