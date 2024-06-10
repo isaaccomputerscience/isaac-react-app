@@ -84,6 +84,8 @@ declare const GOOGLE_ANALYTICS_4_MEASUREMENT_ID_1: string;
 declare const GOOGLE_ANALYTICS_4_MEASUREMENT_ID_2: string;
 declare const GOOGLE_ANALYTICS_4_MEASUREMENT_ID_3: string;
 
+declare const CODE_EDITOR_BASE_URL: string;
+
 declare module "inequality-grammar" {
   export const parseMathsExpression: (exp: string) => any[] | ParsingError;
   export const parseBooleanExpression: (exp: string) => any[] | ParsingError;
