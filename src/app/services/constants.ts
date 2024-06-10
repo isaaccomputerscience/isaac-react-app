@@ -27,8 +27,6 @@ if (document.location.hostname === "localhost") {
   apiPath = REACT_APP_API_PATH_LOCAL || "any";
 } else if (EDITOR_PREVIEW) {
   apiPath = `${STAGING_URL}/api/any/api`;
-} else if (document.location.hostname.endsWith(".eu.ngrok.io")) {
-  apiPath = REACT_APP_API_PATH || "any";
 }
 export const isStaging =
   document.location.hostname.startsWith("staging.") || document.location.hostname.startsWith("www.staging.");

@@ -161,7 +161,6 @@ module.exports = (env) => {
                 EDITOR_PREVIEW: JSON.stringify(isRenderer),
                 REACT_APP_STAGING_URL: `"${process.env.REACT_APP_STAGING_URL}"`,
                 REACT_APP_API_PATH_LOCAL: `"${process.env.REACT_APP_API_PATH_LOCAL}"`,
-                REACT_APP_API_PATH: `"${process.env.REACT_APP_API_PATH}"`,
                 REACT_APP_EDITOR_ORIGIN: `"${process.env.REACT_APP_EDITOR_ORIGIN}"`,
                 REACT_APP_GOOGLE_ANALYTICS_4_MEASUREMENT_ID_1: `"${process.env.REACT_APP_GOOGLE_ANALYTICS_4_MEASUREMENT_ID_1}"`,
                 REACT_APP_GOOGLE_ANALYTICS_4_MEASUREMENT_ID_2: `"${process.env.REACT_APP_GOOGLE_ANALYTICS_4_MEASUREMENT_ID_2}"`,
