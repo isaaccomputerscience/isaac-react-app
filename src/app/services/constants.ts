@@ -21,7 +21,6 @@ export const API_VERSION: string = REACT_APP_API_VERSION || "any";
  * Configure the api provider with the server running the API:
  * No need if we want to use the same server as the static content.
  */
-
 let apiPath = `${document.location.origin}/api/${API_VERSION}/api`;
 if (document.location.hostname === "localhost") {
   apiPath = REACT_APP_API_PATH_LOCAL || "any";
