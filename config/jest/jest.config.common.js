@@ -54,9 +54,7 @@ module.exports = {
         REACT_APP_STAGING_URL: "any",
         REACT_APP_API_PATH_LOCAL: "http://localhost:8080/isaac-api/api",
         REACT_APP_EDITOR_ORIGIN: "any",
-        REACT_APP_GOOGLE_ANALYTICS_4_MEASUREMENT_ID_1: "any",
-        REACT_APP_GOOGLE_ANALYTICS_4_MEASUREMENT_ID_2: "any",
-        REACT_APP_GOOGLE_ANALYTICS_4_MEASUREMENT_ID_3: "any",
+        REACT_APP_GOOGLE_ANALYTICS: "any",
         REACT_APP_CODE_EDITOR_BASE_URL: "any",
     }
 };

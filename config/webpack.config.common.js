@@ -10,6 +10,10 @@ const webpack = require('webpack');
 // Read in the .env file and put into `process.env`:
 require('dotenv').config();
 
+function getEnvVar(envVarName) {
+    return process.env.NODE_ENV === "production" ? envVarName : process.env[envVarName];
+  }
+
 // Loader to remove test ids (only used in production builds)
 const removeTestPropsLoader = {
     loader: "react-remove-props-loader",
@@ -155,17 +159,15 @@ module.exports = (env) => {
                 }
             ]}),
             new webpack.DefinePlugin({
-                REACT_APP_API_VERSION: `"${process.env.REACT_APP_API_VERSION}"`,
-                GOOGLE_RECAPTCHA_SITE_KEY: `"${process.env.GOOGLE_RECAPTCHA_SITE_KEY}"`,
-                ENV_QUIZ_FEATURE_FLAG: process.env.QUIZ_FEATURE && process.env.QUIZ_FEATURE.trim() === "true",
+                REACT_APP_API_VERSION: `"${getEnvVar("REACT_APP_API_VERSION")}"`,
+                GOOGLE_RECAPTCHA_SITE_KEY: `"${getEnvVar("GOOGLE_RECAPTCHA_SITE_KEY")}"`,
+                ENV_QUIZ_FEATURE_FLAG: getEnvVar("QUIZ_FEATURE") && getEnvVar("QUIZ_FEATURE").trim() === "true",
                 EDITOR_PREVIEW: JSON.stringify(isRenderer),
-                REACT_APP_STAGING_URL: `"${process.env.REACT_APP_STAGING_URL}"`,
-                REACT_APP_API_PATH_LOCAL: `"${process.env.REACT_APP_API_PATH_LOCAL}"`,
-                REACT_APP_EDITOR_ORIGIN: `"${process.env.REACT_APP_EDITOR_ORIGIN}"`,
-                REACT_APP_GOOGLE_ANALYTICS_4_MEASUREMENT_ID_1: `"${process.env.REACT_APP_GOOGLE_ANALYTICS_4_MEASUREMENT_ID_1}"`,
-                REACT_APP_GOOGLE_ANALYTICS_4_MEASUREMENT_ID_2: `"${process.env.REACT_APP_GOOGLE_ANALYTICS_4_MEASUREMENT_ID_2}"`,
-                REACT_APP_GOOGLE_ANALYTICS_4_MEASUREMENT_ID_3: `"${process.env.REACT_APP_GOOGLE_ANALYTICS_4_MEASUREMENT_ID_3}"`,
-                REACT_APP_CODE_EDITOR_BASE_URL: `"${process.env.REACT_APP_CODE_EDITOR_BASE_URL}"`,
+                REACT_APP_STAGING_URL: `"${getEnvVar("REACT_APP_STAGING_URL")}"`,
+                REACT_APP_API_PATH_LOCAL: `"${getEnvVar("REACT_APP_API_PATH_LOCAL")}"`,
+                REACT_APP_EDITOR_ORIGIN: `"${getEnvVar("REACT_APP_EDITOR_ORIGIN")}"`,
+                REACT_APP_GOOGLE_ANALYTICS: `"${getEnvVar("REACT_APP_GOOGLE_ANALYTICS")}"`,
+                REACT_APP_CODE_EDITOR_BASE_URL: `"${getEnvVar("REACT_APP_CODE_EDITOR_BASE_URL")}"`,
             }),
         ].filter(Boolean),
     };

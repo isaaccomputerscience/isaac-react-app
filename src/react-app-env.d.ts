@@ -74,15 +74,10 @@ declare const REACT_APP_API_VERSION: string;
 declare const GOOGLE_RECAPTCHA_SITE_KEY: string;
 declare const ENV_QUIZ_FEATURE_FLAG: boolean;
 declare const EDITOR_PREVIEW: boolean;
-
 declare const REACT_APP_STAGING_URL: string;
 declare const REACT_APP_API_PATH_LOCAL: string;
 declare const REACT_APP_EDITOR_ORIGIN: string;
-
-declare const REACT_APP_GOOGLE_ANALYTICS_4_MEASUREMENT_ID_1: string;
-declare const REACT_APP_GOOGLE_ANALYTICS_4_MEASUREMENT_ID_2: string;
-declare const REACT_APP_GOOGLE_ANALYTICS_4_MEASUREMENT_ID_3: string;
-
+declare const REACT_APP_GOOGLE_ANALYTICS: string;
 declare const REACT_APP_CODE_EDITOR_BASE_URL: string;
 
 declare module "inequality-grammar" {
