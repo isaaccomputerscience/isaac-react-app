@@ -283,9 +283,11 @@ export const EventBookingForm = ({
               </Col>
               <Col md={6}>
                 <DisabledInputWithLabel type="stage" invalid={!targetUser.registeredContexts} />
+                <FormFeedback>Stage is required</FormFeedback>
               </Col>
               <Col md={6}>
                 <DisabledInputWithLabel type="examBoard" invalid={!targetUser.registeredContexts} />
+                <FormFeedback>Exam Board is required</FormFeedback>
               </Col>
             </Row>
           </div>
