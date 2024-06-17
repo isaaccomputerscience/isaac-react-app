@@ -282,11 +282,17 @@ export const EventBookingForm = ({
                 {notVerifiedEmail && <EmailVerification />}
               </Col>
               <Col md={6}>
-                <DisabledInputWithLabel type="stage" invalid={!targetUser.registeredContexts} />
+                <DisabledInputWithLabel
+                  type="stage"
+                  invalid={!targetUser.registeredContexts || targetUser.registeredContexts.length === 0}
+                />
                 <FormFeedback>Stage is required</FormFeedback>
               </Col>
               <Col md={6}>
-                <DisabledInputWithLabel type="examBoard" invalid={!targetUser.registeredContexts} />
+                <DisabledInputWithLabel
+                  type="examBoard"
+                  invalid={!targetUser.registeredContexts || targetUser.registeredContexts.length === 0}
+                />
                 <FormFeedback>Exam Board is required</FormFeedback>
               </Col>
             </Row>

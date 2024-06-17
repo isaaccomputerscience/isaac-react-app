@@ -90,7 +90,11 @@ const EventDetails = ({
   // Function to check user information
   const isUserInfoValid = (user: Immutable<UserSummaryWithEmailAddressAndGenderDTO>): boolean => {
     return (
-      !user.familyName && !user.givenName && user.emailVerificationStatus === "VERIFIED" && !user.registeredContexts
+      !!user.familyName &&
+      !!user.givenName &&
+      user.emailVerificationStatus === "VERIFIED" &&
+      !!user.registeredContexts &&
+      user.registeredContexts.length > 0
     );
   };
 
