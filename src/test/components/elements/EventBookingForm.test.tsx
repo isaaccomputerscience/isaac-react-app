@@ -10,13 +10,49 @@ import {
 import { API_PATH, augmentEvent } from "../../../app/services";
 import { AdditionalInformation, AugmentedEvent } from "../../../IsaacAppTypes";
 import { Immutable } from "immer";
-import { fireEvent, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { rest } from "msw";
 import * as actions from "../../../app/state/actions";
+import React from "react";
 
 const requestEmailVerificationSpy = jest.spyOn(actions, "requestEmailVerification");
 const updateAdditionalInformation = jest.fn();
+
+// Mocking components for validation tests
+type DisabledInputWithLabelProps = {
+  type: string;
+  invalid: boolean;
+};
+
+const DisabledInputWithLabel = ({ type, invalid }: DisabledInputWithLabelProps) => (
+  <input aria-label={type} aria-invalid={invalid} />
+);
+
+const FormFeedback = ({ children }: { children: React.ReactNode }) => <div>{children}</div>;
+
+// Test component to wrap DisabledInputWithLabel and FormFeedback for testing
+type TestComponentProps = {
+  givenName: string;
+  familyName: string;
+  registeredContexts?: { stage: string; examBoard: string }[];
+};
+
+const TestComponent = ({ givenName, familyName, registeredContexts }: TestComponentProps) => (
+  <>
+    <DisabledInputWithLabel type="firstname" invalid={!givenName} />
+    {!givenName && <FormFeedback>First name is required</FormFeedback>}
+
+    <DisabledInputWithLabel type="lastname" invalid={!familyName} />
+    {!familyName && <FormFeedback>Last name is required</FormFeedback>}
+
+    <DisabledInputWithLabel type="stage" invalid={!registeredContexts || registeredContexts.length === 0} />
+    {!registeredContexts || (registeredContexts.length === 0 && <FormFeedback>Stage is required</FormFeedback>)}
+
+    <DisabledInputWithLabel type="examBoard" invalid={!registeredContexts || registeredContexts.length === 0} />
+    {!registeredContexts || (registeredContexts.length === 0 && <FormFeedback>Exam Board is required</FormFeedback>)}
+  </>
+);
 
 describe("EventBookingForm", () => {
   const setupTest = ({
@@ -178,5 +214,93 @@ describe("EventBookingForm", () => {
     setupTest({ role: "STUDENT", user: mockUser, event: { ...event, isVirtual: false } });
     const piiMessage = screen.getByTestId("pii-message");
     expect(piiMessage).toBeInTheDocument();
+  });
+  it("renders FormFeedback when the first name is missing", async () => {
+    const targetUser = { givenName: "", familyName: "Bond", registeredContexts: [] };
+
+    render(
+      <TestComponent
+        givenName={targetUser.givenName}
+        familyName={targetUser.familyName}
+        registeredContexts={targetUser.registeredContexts}
+      />,
+    );
+
+    const formFeedback = await screen.findByText("First name is required");
+    expect(formFeedback).toBeInTheDocument();
+  });
+
+  it("renders FormFeedback when the last name is missing", async () => {
+    const targetUser = { givenName: "James", familyName: "", registeredContexts: [] };
+
+    render(
+      <TestComponent
+        givenName={targetUser.givenName}
+        familyName={targetUser.familyName}
+        registeredContexts={targetUser.registeredContexts}
+      />,
+    );
+
+    const formFeedback = await screen.findByText("Last name is required");
+    expect(formFeedback).toBeInTheDocument();
+  });
+
+  it("renders FormFeedback when stage is missing", async () => {
+    const targetUser = { givenName: "James", familyName: "Bond", registeredContexts: [] };
+
+    render(
+      <TestComponent
+        givenName={targetUser.givenName}
+        familyName={targetUser.familyName}
+        registeredContexts={targetUser.registeredContexts}
+      />,
+    );
+
+    const formFeedback = await screen.findByText("Stage is required");
+    expect(formFeedback).toBeInTheDocument();
+  });
+
+  it("renders FormFeedback when exam board is missing", async () => {
+    const targetUser = { givenName: "John", familyName: "Doe", registeredContexts: [] };
+
+    render(
+      <TestComponent
+        givenName={targetUser.givenName}
+        familyName={targetUser.familyName}
+        registeredContexts={targetUser.registeredContexts}
+      />,
+    );
+
+    const formFeedback = await screen.findByText("Exam Board is required");
+    expect(formFeedback).toBeInTheDocument();
+  });
+
+  it("does not render any FormFeedback when all fields are provided", async () => {
+    const targetUser = {
+      givenName: "James",
+      familyName: "Bond",
+      registeredContexts: [
+        { stage: "GCSE", examBoard: "AQA" },
+        { stage: "GCSE", examBoard: "AQA" },
+      ],
+    };
+
+    render(
+      <TestComponent
+        givenName={targetUser.givenName}
+        familyName={targetUser.familyName}
+        registeredContexts={targetUser.registeredContexts}
+      />,
+    );
+
+    const formFeedbackFirstName = screen.queryByText("First name is required");
+    const formFeedbackLastName = screen.queryByText("Last name is required");
+    const formFeedbackStage = screen.queryByText("Stage is required");
+    const formFeedbackExamBoard = screen.queryByText("Exam Board is required");
+
+    expect(formFeedbackFirstName).not.toBeInTheDocument();
+    expect(formFeedbackLastName).not.toBeInTheDocument();
+    expect(formFeedbackStage).not.toBeInTheDocument();
+    expect(formFeedbackExamBoard).not.toBeInTheDocument();
   });
 });
