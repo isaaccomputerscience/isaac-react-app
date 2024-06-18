@@ -40,7 +40,7 @@ describe("EventBookingForm", () => {
       PageComponent: EventBookingForm,
       componentProps: {
         event: event || augmentEvent(mockEvent),
-        targetUser: { ...user, role: role } || { ...mockUserSummary, role: role },
+        targetUser: user ? { ...user, role: role } : { ...mockUserSummary, role: role },
         additionalInformation: additionalInformation || {},
         updateAdditionalInformation: updateAdditionalInformation,
       },
