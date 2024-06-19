@@ -40,7 +40,7 @@ describe("EventBookingForm", () => {
       PageComponent: EventBookingForm,
       componentProps: {
         event: event || augmentEvent(mockEvent),
-        targetUser: user ? { ...user, role: role } : { ...mockUserSummary, role: role },
+        targetUser: { ...user, role: role },
         additionalInformation: additionalInformation || {},
         updateAdditionalInformation: updateAdditionalInformation,
       },
@@ -196,5 +196,16 @@ describe("EventBookingForm", () => {
     const examBoardFeedback = screen.getByText("Exam Board is required");
     expect(stageFeedback).toBeInTheDocument();
     expect(examBoardFeedback).toBeInTheDocument();
+  });
+
+  it("doesn't show error messages, when all fields have been filled", () => {
+    setupTest({ role: "STUDENT", user: mockUserSummary });
+
+    const fieldNames = ["first name", "last name", "stage", "exam board"];
+
+    fieldNames.forEach((fieldName) => {
+      const field = screen.getByRole("textbox", { name: new RegExp(fieldName, "i") });
+      expect(field).toBeValid();
+    });
   });
 });
