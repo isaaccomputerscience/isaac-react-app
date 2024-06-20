@@ -17,16 +17,12 @@ export const middleware: Middleware[] = [
   userConsistencyCheckerMiddleware,
   notificationCheckerMiddleware,
 ];
-const defaultMiddlewareOptions = {
-  serializableCheck: process.env.NODE_ENV !== "test",
-};
-
 export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) => {
     const newMiddleware = getDefaultMiddleware({
-      immutableCheck: false, // Disable immutable state invariant middleware
-      serializableCheck: false, // Disable serializability check middleware
+      immutableCheck: false,
+      serializableCheck: false,
     }).concat(middleware);
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
