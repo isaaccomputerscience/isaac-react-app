@@ -178,34 +178,52 @@ describe("EventBookingForm", () => {
   it("shows an error message if first name is missing", () => {
     const targetUser = { ...mockUserSummary, givenName: undefined };
     setupTest({ role: "STUDENT", user: targetUser });
-    const formFeedback = screen.getByText("First name is required");
-    expect(formFeedback).toBeInTheDocument();
+    const firstName = screen.getByText("First name is required");
+    expect(firstName).toBeValid();
   });
 
   it("shows an error message if family name is missing", () => {
     const targetUser = { ...mockUserSummary, familyName: undefined };
     setupTest({ role: "STUDENT", user: targetUser });
-    const formFeedback = screen.getByText("Last name is required");
-    expect(formFeedback).toBeInTheDocument();
+    const lastName = screen.getByText("Last name is required");
+    expect(lastName).toBeValid();
   });
 
   it("shows an error message if user has no contexts set", () => {
     const targetUser = { ...mockUserSummary, registeredContexts: [] };
     setupTest({ role: "STUDENT", user: targetUser });
-    const stageFeedback = screen.getByText("Stage is required");
-    const examBoardFeedback = screen.getByText("Exam Board is required");
-    expect(stageFeedback).toBeInTheDocument();
-    expect(examBoardFeedback).toBeInTheDocument();
+    const stage = screen.getByText("Stage is required");
+    const examBoard = screen.getByText("Exam Board is required");
+    expect(stage).toBeValid();
+    expect(examBoard).toBeValid();
   });
 
-  it("doesn't show error messages, when all fields have been filled", () => {
+  it("doesn't show error messages if first name is filled out", () => {
     setupTest({ role: "STUDENT", user: mockUserSummary });
-
-    const fieldNames = ["first name", "last name", "stage", "exam board"];
-
-    fieldNames.forEach((fieldName) => {
-      const field = screen.getByRole("textbox", { name: new RegExp(fieldName, "i") });
-      expect(field).toBeValid();
+    const givenName = screen.getByRole("textbox", {
+      name: /first name/i,
     });
+    expect(givenName).toBeValid();
+  });
+  it("doesn't show error messages if last name is filled out", () => {
+    setupTest({ role: "STUDENT", user: mockUserSummary });
+    const familyName = screen.getByRole("textbox", {
+      name: /last name/i,
+    });
+    expect(familyName).toBeValid();
+  });
+  it("doesn't show error messages if stage is filled out", () => {
+    setupTest({ role: "STUDENT", user: mockUserSummary });
+    const registeredContexts = screen.getByRole("textbox", {
+      name: /stage/i,
+    });
+    expect(registeredContexts).toBeValid();
+  });
+  it("doesn't show error messages if examboard is filled out", () => {
+    setupTest({ role: "STUDENT", user: mockUserSummary });
+    const registeredContexts = screen.getByRole("textbox", {
+      name: /exam board/i,
+    });
+    expect(registeredContexts).toBeValid();
   });
 });

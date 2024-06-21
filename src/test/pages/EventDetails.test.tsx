@@ -307,3 +307,5 @@ describe("EventDetails", () => {
     expect(joinEventButton()).toHaveAttribute("href", event.meetingUrl);
   });
 });
+
+// add book event button test here
