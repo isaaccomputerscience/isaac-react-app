@@ -331,14 +331,14 @@ describe("EventDetails", () => {
     });
     const bookButton = screen.getByRole("button", { name: "Book a place" });
     await userEvent.click(bookButton);
+
     const firstNameInput = screen.getByRole("textbox", { name: "First name" });
-    expect(firstNameInput).toBeInvalid();
     const familyNameInput = screen.getByRole("textbox", { name: "Last name" });
-    expect(familyNameInput).toBeInvalid();
     const stageInput = screen.getByRole("textbox", { name: "Stage" });
-    expect(stageInput).toBeInvalid();
     const examBoardInput = screen.getByRole("textbox", { name: "Exam board" });
-    expect(examBoardInput).toBeInvalid();
+
+    [firstNameInput, familyNameInput, stageInput, examBoardInput].forEach((each) => expect(each).toBeInvalid());
+
     const bookNowButton = screen.getByRole("button", { name: "Book now" });
     expect(bookNowButton).toBeDisabled();
   });
@@ -349,14 +349,14 @@ describe("EventDetails", () => {
 
     const bookButton = screen.getByRole("button", { name: "Book a place" });
     await userEvent.click(bookButton);
+
     const firstNameInput = screen.getByRole("textbox", { name: "First name" });
-    expect(firstNameInput).toBeValid();
     const familyNameInput = screen.getByRole("textbox", { name: "Last name" });
-    expect(familyNameInput).toBeValid();
     const stageInput = screen.getByRole("textbox", { name: "Stage" });
-    expect(stageInput).toBeValid();
     const examBoardInput = screen.getByRole("textbox", { name: "Exam board" });
-    expect(examBoardInput).toBeValid();
+
+    [firstNameInput, familyNameInput, stageInput, examBoardInput].forEach((each) => expect(each).toBeValid());
+
     const bookNowButton = screen.getByRole("button", { name: "Book now" });
     expect(bookNowButton).toBeEnabled();
   });
