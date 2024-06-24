@@ -33,6 +33,8 @@ export const store = configureStore({
 
     return newMiddleware;
   },
+  preloadedState: {},
+  devTools: process.env.NODE_ENV !== "production",
 });
 
 export type AppDispatch = typeof store.dispatch;
