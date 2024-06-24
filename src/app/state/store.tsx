@@ -22,7 +22,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) => {
     const newMiddleware = getDefaultMiddleware({
       immutableCheck: false,
-      serializableCheck: false,
+      serializableCheck: process.env.NODE_ENV !== "test",
     }).concat(middleware);
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
