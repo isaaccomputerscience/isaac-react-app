@@ -178,8 +178,8 @@ describe("EventBookingForm", () => {
   const missingDetailsTestCases = [
     { field: "First name", user: { ...mockUserSummary, givenName: undefined } },
     { field: "Last name", user: { ...mockUserSummary, familyName: undefined } },
-    { field: "Stage", user: { ...mockUserSummary, registeredContexts: undefined } },
-    { field: "Exam board", user: { ...mockUserSummary, registeredContexts: undefined } },
+    { field: "Stage", user: { ...mockUserSummary, registeredContexts: [] } },
+    { field: "Exam board", user: { ...mockUserSummary, registeredContexts: [] } },
   ];
 
   it.each(missingDetailsTestCases)("has an invalid form field if $field is missing", ({ user, field }) => {
@@ -188,16 +188,12 @@ describe("EventBookingForm", () => {
     expect(invalidField).toBeInvalid();
   });
 
-  const detailsTestCases = [
-    { field: "First name", user: { ...mockUserSummary } },
-    { field: "Last name", user: { ...mockUserSummary } },
-    { field: "Stage", user: { ...mockUserSummary } },
-    { field: "Exam board", user: { ...mockUserSummary } },
-  ];
-
-  it.each(detailsTestCases)("doesn't have an invalid form field if $field is present", ({ user, field }) => {
-    setupTest({ role: "STUDENT", user: user });
-    const invalidField = screen.getByRole("textbox", { name: field });
-    expect(invalidField).not.toBeInvalid();
-  });
+  it.each(missingDetailsTestCases.map((each) => each.field))(
+    "doesn't have an invalid form field if %s is present",
+    (field) => {
+      setupTest({ role: "STUDENT", user: mockUserSummary });
+      const invalidField = screen.getByRole("textbox", { name: field });
+      expect(invalidField).not.toBeInvalid();
+    },
+  );
 });
