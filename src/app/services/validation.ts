@@ -100,7 +100,19 @@ export function validateUserContexts(userContexts?: UserContext[]): boolean {
 
 // Users school is valid if user is a tutor - their school is allowed to be undefined
 export const validateUserSchool = (user?: Immutable<ValidationUser> | null) => {
-  return !!user && (!!user.schoolId || (!!user.schoolOther && user.schoolOther.length > 0) || isTutor(user));
+  const forbiddenWords = ["https", "www"];
+  const maxSchoolOtherLength = 150;
+
+  if (!user) return false;
+
+  const isValidSchoolOther = user.schoolOther
+    ? user.schoolOther.length > 0 &&
+      user.schoolOther.length <= maxSchoolOtherLength &&
+      !forbiddenWords.some((word) => user.schoolOther!.includes(word))
+    : false;
+
+  return !!user.schoolId || isValidSchoolOther || isTutor(user);
+  // return !!user && (!!user.schoolId || (!!user.schoolOther && user.schoolOther.length > 0) || isTutor(user));
 };
 
 export const validateUserGender = (user?: Immutable<ValidationUser> | null) => {
