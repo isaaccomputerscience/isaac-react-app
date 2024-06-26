@@ -18,7 +18,16 @@ export function zeroOrLess(possibleNumber?: number): boolean {
 }
 
 export function validateName(userName?: string | null) {
-  return userName && userName.length > 0 && userName.length <= 255 && !userName.includes("*");
+  const forbiddenWords = ["https", "www"];
+  const validPattern = /^[a-zA-Zas`]+$/;
+
+  if (!userName) return false;
+
+  const isValidLength = userName.length > 0 && userName.length <= 50;
+  const isValidCharacters = validPattern.test(userName);
+  const containsForbiddenWords = forbiddenWords.some((word) => userName.includes(word));
+
+  return isValidLength && isValidCharacters && !containsForbiddenWords;
 }
 
 export const validateEmail = (email?: string) => {
