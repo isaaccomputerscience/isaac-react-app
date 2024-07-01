@@ -46,7 +46,9 @@ export const EventAttendance = ({ user, eventId }: { user: PotentialUser; eventI
   );
   const bookings = useAppSelector(selectors.events.eventBookings);
   const validStatuses = ["CONFIRMED", "ATTENDED", "ABSENT"] as BookingStatus[];
-  const validBookings = bookings.filter((booking) => validStatuses.includes(booking.bookingStatus!));
+  const validBookings = bookings.filter(
+    (booking) => booking.bookingStatus !== undefined && validStatuses.includes(booking.bookingStatus),
+  );
   const userIdToSchoolMapping = useAppSelector(selectors.admin.userSchoolLookup) || {};
 
   const [sortPredicate, setSortPredicate] = useState("bookingDate");
