@@ -19,7 +19,7 @@ export function zeroOrLess(possibleNumber?: number): boolean {
 
 export function validateName(userName?: string | null) {
   const forbiddenWords = ["https", "www"];
-  const validPattern = /^[a-zA-Zas`- ]+$/;
+  const validPattern = /^[a-zA-Zas`\- ]+$/;
 
   if (!userName) return false;
 
