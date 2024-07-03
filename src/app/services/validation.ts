@@ -19,7 +19,7 @@ export function zeroOrLess(possibleNumber?: number): boolean {
 
 export function validateName(userName?: string | null) {
   const forbiddenWords = ["https", "www"];
-  const validPattern = /^[\p{L}\-'` ]+$/;
+  const validPattern = /^[\p{L}\-'` ]+$/u;
 
   if (!userName) return false;
 
@@ -111,8 +111,7 @@ export const validateUserSchool = (user?: Immutable<ValidationUser> | null) => {
       !forbiddenWords.some((word) => user.schoolOther!.includes(word))
     : false;
 
-  return !!user.schoolId || isValidSchoolOther || isTutor(user);
-  // return !!user && (!!user.schoolId || (!!user.schoolOther && user.schoolOther.length > 0) || isTutor(user));
+  return !!user.schoolId || isTutor(user) || isValidSchoolOther;
 };
 
 export const validateUserGender = (user?: Immutable<ValidationUser> | null) => {
