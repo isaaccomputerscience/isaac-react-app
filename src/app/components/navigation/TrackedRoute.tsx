@@ -8,7 +8,7 @@ import { isTeacherOrAbove, isTutorOrAbove, KEY, persistence, TEACHER_REQUEST_ROU
 import { Unauthorised } from "../pages/Unauthorised";
 import { Immutable } from "immer";
 
-ReactGA.initialize(REACT_APP_GOOGLE_ANALYTICS);
+ReactGA.initialize(REACT_APP_GOOGLE_ANALYTICS_ENV);
 
 export interface FieldsObject {
   [i: string]: any;

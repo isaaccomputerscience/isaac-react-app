@@ -12,27 +12,27 @@ import {
   Stage,
 } from "../../IsaacApiTypes";
 
-export const STAGING_URL = REACT_APP_STAGING_URL;
+export const STAGING_URL = REACT_APP_STAGING_URL_ENV;
 
 // eslint-disable-next-line no-undef
-export const API_VERSION = REACT_APP_API_VERSION;
+export const API_VERSION = REACT_APP_API_VERSION_ENV;
 
 /*
  * Configure the api provider with the server running the API:
  * No need if we want to use the same server as the static content.
  */
-let apiPath = `${document.location.origin}/api/${REACT_APP_API_VERSION}/api`;
+let apiPath = `${document.location.origin}/api/${REACT_APP_API_VERSION_ENV}/api`;
 if (document.location.hostname === "localhost") {
-  apiPath = REACT_APP_API_PATH_LOCAL;
+  apiPath = REACT_APP_API_PATH_LOCAL_ENV;
 } else if (EDITOR_PREVIEW) {
-  apiPath = `${REACT_APP_STAGING_URL}/api/any/api`;
+  apiPath = `${REACT_APP_STAGING_URL_ENV}/api/any/api`;
 }
 export const isStaging =
   document.location.hostname.startsWith("staging.") || document.location.hostname.startsWith("www.staging.");
 
 export const API_PATH: string = apiPath;
 
-export const EDITOR_ORIGIN = REACT_APP_EDITOR_ORIGIN;
+export const EDITOR_ORIGIN = REACT_APP_EDITOR_ORIGIN_ENV;
 export const EDITOR_URL = EDITOR_ORIGIN + "/#!/edit/master/";
 export const EDITOR_COMPARE_URL = EDITOR_ORIGIN + "/#!/compare";
 
@@ -44,7 +44,7 @@ export const SOCIAL_LINKS = {
 };
 
 // Change to "http://localhost:3000" if you want to run a local version of the code editor
-export const CODE_EDITOR_BASE_URL = REACT_APP_CODE_EDITOR_BASE_URL;
+export const CODE_EDITOR_BASE_URL = REACT_APP_CODE_EDITOR_BASE_URL_ENV;
 
 export const API_REQUEST_FAILURE_MESSAGE = "There may be an error connecting to the Isaac platform.";
 export const QUESTION_ATTEMPT_THROTTLED_MESSAGE =

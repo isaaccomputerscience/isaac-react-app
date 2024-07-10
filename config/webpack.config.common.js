@@ -159,15 +159,15 @@ module.exports = (env) => {
                 }
             ]}),
             new webpack.DefinePlugin({
-                REACT_APP_API_VERSION: `"${getEnvVar("REACT_APP_API_VERSION")}"`,
-                GOOGLE_RECAPTCHA_SITE_KEY: `"${getEnvVar("GOOGLE_RECAPTCHA_SITE_KEY")}"`,
+                REACT_APP_API_VERSION_ENV: `"${getEnvVar("REACT_APP_API_VERSION")}"`,
+                GOOGLE_RECAPTCHA_SITE_KEY_ENV: `"${getEnvVar("GOOGLE_RECAPTCHA_SITE_KEY")}"`,
                 ENV_QUIZ_FEATURE_FLAG: getEnvVar("QUIZ_FEATURE") && getEnvVar("QUIZ_FEATURE").trim() === "true",
                 EDITOR_PREVIEW: JSON.stringify(isRenderer),
-                REACT_APP_STAGING_URL: `"${getEnvVar("REACT_APP_STAGING_URL")}"`,
-                REACT_APP_API_PATH_LOCAL: `"${getEnvVar("REACT_APP_API_PATH_LOCAL")}"`,
-                REACT_APP_EDITOR_ORIGIN: `"${getEnvVar("REACT_APP_EDITOR_ORIGIN")}"`,
-                REACT_APP_GOOGLE_ANALYTICS: `"${getEnvVar("REACT_APP_GOOGLE_ANALYTICS")}"`,
-                REACT_APP_CODE_EDITOR_BASE_URL: `"${getEnvVar("REACT_APP_CODE_EDITOR_BASE_URL")}"`,
+                REACT_APP_STAGING_URL_ENV: `"${getEnvVar("REACT_APP_STAGING_URL")}"`,
+                REACT_APP_API_PATH_LOCAL_ENV: `"${getEnvVar("REACT_APP_API_PATH_LOCAL")}"`,
+                REACT_APP_EDITOR_ORIGIN_ENV: `"${getEnvVar("REACT_APP_EDITOR_ORIGIN")}"`,
+                REACT_APP_GOOGLE_ANALYTICS_ENV: `"${getEnvVar("REACT_APP_GOOGLE_ANALYTICS")}"`,
+                REACT_APP_CODE_EDITOR_BASE_URL_ENV: `"${getEnvVar("REACT_APP_CODE_EDITOR_BASE_URL")}"`,
             }),
         ].filter(Boolean),
     };
