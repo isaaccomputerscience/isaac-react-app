@@ -53,14 +53,9 @@ const WrapperComponent = function ({ component: Component, trackingOptions, ...p
 };
 
 const isGoogleBot = function (userAgent?: string): boolean {
-  const googlebotUserAgents: string[] = [
-    "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
-    "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/W.X.Y.Z Safari/537.36",
-    "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/W.X.Y.Z Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
-    // Add other Googlebot user-agent strings as needed
-  ];
-
-  return userAgent !== undefined && googlebotUserAgents.some((bot) => userAgent.includes(bot));
+  const googleBotUserAgents: string = "compatible; Googlebot/2.1; +http://www.google.com/bot.html";
+  console.log(userAgent);
+  return userAgent !== undefined && userAgent.includes(googleBotUserAgents);
 };
 
 export const TrackedRoute = function ({ component, trackingOptions, componentProps, ...rest }: TrackedRouteProps) {
@@ -68,6 +63,7 @@ export const TrackedRoute = function ({ component, trackingOptions, componentPro
   if (component) {
     if (rest.ifUser !== undefined) {
       const { ifUser, userAgent, ...rest$ } = rest;
+      console.log(isGoogleBot(userAgent));
       return (
         <Route
           {...rest$}
@@ -77,18 +73,14 @@ export const TrackedRoute = function ({ component, trackingOptions, componentPro
               rest.ifUser && [isTutorOrAbove.name, isTeacherOrAbove.name].includes(rest.ifUser.name); // TODO we should try to find a more robust way than this
             return (
               <ShowLoading until={user}>
-                {user && ifUser(user) ? (
+                {(user && ifUser(user)) || isGoogleBot(userAgent) ? (
                   <WrapperComponent
                     component={component}
                     trackingOptions={trackingOptions}
                     {...propsWithUser}
                     {...componentProps}
                   />
-                ) : user &&
-                  !user.loggedIn &&
-                  !isTutorOrAbove(user) &&
-                  userNeedsToBeTutorOrTeacher &&
-                  !isGoogleBot(userAgent) ? (
+                ) : user && !user.loggedIn && !isTutorOrAbove(user) && userNeedsToBeTutorOrTeacher ? (
                   persistence.save(KEY.AFTER_AUTH_PATH, props.location.pathname + props.location.search) && (
                     <Redirect to="/login" />
                   )
