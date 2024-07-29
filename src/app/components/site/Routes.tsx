@@ -48,7 +48,14 @@ export const Routes = [
     component={AllTopics}
     componentProps={{ stage: STAGE.A_LEVEL }}
   />,
-  <TrackedRoute key={key++} exact path="/topics/:topicName" ifUser={isLoggedIn} component={Topic} />,
+  <TrackedRoute
+    key={key++}
+    exact
+    path="/topics/:topicName"
+    ifUser={isLoggedIn}
+    userAgent={window.navigator.userAgent}
+    component={Topic}
+  />,
 
   // Glossary:
   <TrackedRoute key={key++} exact path="/glossary" ifUser={isLoggedIn} component={Glossary} />,

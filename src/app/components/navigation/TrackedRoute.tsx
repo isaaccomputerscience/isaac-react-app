@@ -52,11 +52,22 @@ const WrapperComponent = function ({ component: Component, trackingOptions, ...p
   );
 };
 
+const isGoogleBot = function (userAgent?: string): boolean {
+  const googlebotUserAgents: string[] = [
+    "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+    "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/W.X.Y.Z Safari/537.36",
+    "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/W.X.Y.Z Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+    // Add other Googlebot user-agent strings as needed
+  ];
+
+  return userAgent !== undefined && googlebotUserAgents.some((bot) => userAgent.includes(bot));
+};
+
 export const TrackedRoute = function ({ component, trackingOptions, componentProps, ...rest }: TrackedRouteProps) {
   const user = useAppSelector(selectors.user.orNull);
   if (component) {
     if (rest.ifUser !== undefined) {
-      const { ifUser, ...rest$ } = rest;
+      const { ifUser, userAgent, ...rest$ } = rest;
       return (
         <Route
           {...rest$}
@@ -73,7 +84,11 @@ export const TrackedRoute = function ({ component, trackingOptions, componentPro
                     {...propsWithUser}
                     {...componentProps}
                   />
-                ) : user && !user.loggedIn && !isTutorOrAbove(user) && userNeedsToBeTutorOrTeacher ? (
+                ) : user &&
+                  !user.loggedIn &&
+                  !isTutorOrAbove(user) &&
+                  userNeedsToBeTutorOrTeacher &&
+                  !isGoogleBot(userAgent) ? (
                   persistence.save(KEY.AFTER_AUTH_PATH, props.location.pathname + props.location.search) && (
                     <Redirect to="/login" />
                   )
