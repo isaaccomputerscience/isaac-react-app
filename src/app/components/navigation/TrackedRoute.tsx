@@ -54,7 +54,6 @@ const WrapperComponent = function ({ component: Component, trackingOptions, ...p
 
 const isGoogleBot = function (userAgent?: string): boolean {
   const googleBotUserAgents: string = "compatible; Googlebot/2.1; +http://www.google.com/bot.html";
-  console.log(userAgent);
   return userAgent !== undefined && userAgent.includes(googleBotUserAgents);
 };
 
@@ -63,7 +62,6 @@ export const TrackedRoute = function ({ component, trackingOptions, componentPro
   if (component) {
     if (rest.ifUser !== undefined) {
       const { ifUser, userAgent, ...rest$ } = rest;
-      console.log(isGoogleBot(userAgent));
       return (
         <Route
           {...rest$}
