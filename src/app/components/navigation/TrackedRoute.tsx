@@ -33,6 +33,7 @@ interface UserFilterProps {
 type TrackedRouteProps = RouteProps & {
   trackingOptions?: FieldsObject;
   componentProps?: FieldsObject;
+  userAgent?: string;
 } & UserFilterProps;
 type TrackedRouteComponentProps = RouteComponentProps & {
   component: React.ComponentType<RouteComponentProps<any>> | React.ComponentType<any>;
