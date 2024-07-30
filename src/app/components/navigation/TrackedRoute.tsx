@@ -52,7 +52,7 @@ const WrapperComponent = function ({ component: Component, trackingOptions, ...p
   );
 };
 
-const isGoogleBot = function (userAgent?: string): boolean {
+export const isGoogleBot = function (userAgent?: string): boolean {
   const googleBotUserAgents: string = "compatible; Googlebot/2.1; +http://www.google.com/bot.html";
   return userAgent !== undefined && userAgent.includes(googleBotUserAgents);
 };
