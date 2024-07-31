@@ -12,6 +12,6 @@ describe("isGoogleBot", () => {
   });
 
   it("should return false for undefined user agent", () => {
-    expect(isGoogleBot(undefined)).toBe(false);
+    expect(isGoogleBot()).toBe(false);
   });
 });
