@@ -66,8 +66,8 @@ describe("EventGenderDetails", () => {
   it("renders a list of genders with correct counts when there are event bookings", () => {
     setupTest({ eventBookings: mockEventBookings });
     const { studentGenders, teacherGenders } = findTableDetails();
-    const expectedStudentCounts = ["1 (17%)", "0 (0%)", "1 (17%)", "0 (0%)", "1 (17%)", "3"];
-    const expectedTeacherCounts = ["0 (0%)", "1 (25%)", "0 (0%)", "1 (25%)", "0 (0%)", "2"];
+    const expectedStudentCounts = ["1 (33%)", "0 (0%)", "1 (33%)", "0 (0%)", "1 (33%)", "3"];
+    const expectedTeacherCounts = ["0 (0%)", "1 (50%)", "0 (0%)", "1 (50%)", "0 (0%)", "2"];
     checkGenderCounts(studentGenders, expectedStudentCounts);
     checkGenderCounts(teacherGenders, expectedTeacherCounts);
   });

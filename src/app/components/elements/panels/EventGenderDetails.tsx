@@ -49,7 +49,6 @@ export const countEventDetailsByRole = (role: Role, eventBookings: DetailedEvent
           countByRole.genders.unknown++;
           break;
       }
-      countByRole.numberOfConfirmedOrAttendedBookings++;
     }
   });
 
@@ -63,13 +62,6 @@ export const EventGenderDetails = ({ eventBookings }: { eventBookings: DetailedE
     student: Object.entries(studentDetails.genders),
     teacher: Object.entries(teacherDetails.genders),
   };
-
-  const calculateTotal = (data: number[]) => {
-    return data.reduce((total, value) => total + value, 0);
-  };
-
-  const totalStudent = calculateTotal(genderData.student.map(([, value]) => value));
-  const totalTeacher = calculateTotal(genderData.teacher.map(([, value]) => value));
 
   return (
     <>
@@ -100,7 +92,7 @@ export const EventGenderDetails = ({ eventBookings }: { eventBookings: DetailedE
                   studentDetails.numberOfConfirmedOrAttendedBookings,
                 )}%)`}</td>
               ))}
-              <td>{totalStudent}</td>
+              <td>{studentDetails.numberOfConfirmedOrAttendedBookings}</td>
             </tr>
             <tr>
               <th scope="row">Teacher</th>
@@ -110,7 +102,7 @@ export const EventGenderDetails = ({ eventBookings }: { eventBookings: DetailedE
                   teacherDetails.numberOfConfirmedOrAttendedBookings,
                 )}%)`}</td>
               ))}
-              <td>{totalTeacher}</td>
+              <td>{teacherDetails.numberOfConfirmedOrAttendedBookings}</td>
             </tr>
           </tbody>
         </Table>

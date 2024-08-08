@@ -44,16 +44,18 @@ describe("SelectedEventDetails", () => {
       "195 / 200",
       "3 / 200",
       "2 / 200",
-      "1 (33%)",
+      "1 (17%)",
       "0 (0%)",
-      "1 (33%)",
+      "1 (17%)",
       "0 (0%)",
-      "1 (33%)",
+      "1 (17%)",
       "0 (0%)",
-      "1 (50%)",
+      "1 (25%)",
       "0 (0%)",
-      "1 (50%)",
+      "1 (25%)",
       "0 (0%)",
+      "3",
+      "2",
     ];
     expectedValues.forEach((each) => expect(eventInfo).toHaveTextContent(each));
     const title = screen.getByText("Selected event details");
