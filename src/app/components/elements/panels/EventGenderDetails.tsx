@@ -60,8 +60,8 @@ export const EventGenderDetails = ({ eventBookings }: { eventBookings: DetailedE
   const studentDetails = countEventDetailsByRole("STUDENT", eventBookings);
   const teacherDetails = countEventDetailsByRole("TEACHER", eventBookings);
   const genderData = {
-    student: Object.entries(studentDetails.genders) as [string, number][],
-    teacher: Object.entries(teacherDetails.genders) as [string, number][],
+    student: Object.entries(studentDetails.genders),
+    teacher: Object.entries(teacherDetails.genders),
   };
 
   const calculateTotal = (data: number[]) => {
