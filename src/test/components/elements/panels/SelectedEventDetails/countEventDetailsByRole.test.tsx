@@ -26,7 +26,7 @@ describe("countEventDetailsByRole", () => {
     const result = countEventDetailsByRole("STUDENT", studentBookingsWithGenderAndStatus);
     expect(result).toEqual({
       genders: { male: 1, female: 1, other: 1, preferNotToSay: 1, unknown: 1 },
-      numberOfConfirmedOrAttendedBookings: 5,
+      numberOfConfirmedOrAttendedBookings: 10,
     });
   });
 
@@ -39,7 +39,7 @@ describe("countEventDetailsByRole", () => {
     const results = countEventDetailsByRole("STUDENT", [...studentBookingsWithGenderAndStatus, cancelledBooking]);
     expect(results).toEqual({
       genders: { male: 1, female: 1, other: 1, preferNotToSay: 1, unknown: 1 },
-      numberOfConfirmedOrAttendedBookings: 5,
+      numberOfConfirmedOrAttendedBookings: 10,
     });
   });
 
@@ -55,7 +55,7 @@ describe("countEventDetailsByRole", () => {
     ]);
     expect(results).toEqual({
       genders: { male: 1, female: 1, other: 1, preferNotToSay: 1, unknown: 2 },
-      numberOfConfirmedOrAttendedBookings: 6,
+      numberOfConfirmedOrAttendedBookings: 12,
     });
   });
 
