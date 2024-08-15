@@ -286,7 +286,7 @@ const ReservationsModal = () => {
                   <Table bordered responsive className="bg-white reserved">
                     <thead>
                       <tr>
-                        <th colSpan={4}>All current reservations</th>
+                        <th colSpan={4}>All reservations in group</th>
                       </tr>
                       <tr>
                         <th className="align-middle checkbox">
