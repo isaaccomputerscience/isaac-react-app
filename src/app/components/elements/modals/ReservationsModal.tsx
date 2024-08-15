@@ -71,12 +71,14 @@ const ReservationsModal = () => {
   }, [dispatch, selectedEvent]);
 
   useEffect(() => {
-    const flattenedGroupBookings = eventBookingsForAllGroups.flat();
-    const uniqueBookings = flattenedGroupBookings.filter(
-      (v, i, a) => a.findIndex((t) => t.bookingId === v.bookingId) === i,
-    );
-    setModifiedBookingsForAllGroups(uniqueBookings);
-  }, [eventBookingsForAllGroups]);
+    if (selectedGroup?.id) {
+      const flattenedGroupBookings = eventBookingsForGroup.flat();
+      const uniqueBookings = flattenedGroupBookings.filter(
+        (v, i, a) => a.findIndex((t) => t.bookingId === v.bookingId) === i,
+      );
+      setModifiedBookingsForAllGroups(uniqueBookings);
+    }
+  }, [selectedGroup, eventBookingsForGroup]);
 
   useEffect(() => {
     if (selectedGroup?.id && !selectedGroup.members) {
