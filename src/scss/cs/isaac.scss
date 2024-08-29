@@ -200,6 +200,23 @@ input.btn.btn-xl{
   font-family: "dm-sans-light", DMSans-Light;
 }
 
+.signup span, .login span{
+  text-transform: none;
+  font-family: "dm-sans-medium", DMSans-Medium;
+  font-size: 18px;
+}
+
+.logout span
+{
+  text-transform: none;
+  font-family: "dm-sans-medium", DMSans-Medium;
+  font-size: 18px;
+}
+.my-account span {
+  text-transform: none;
+  font-family: "dm-sans-medium", DMSans-Medium;
+  font-size: 18px;
+}
 .list-group-item {
   border-width: 0;
   width: 100%;

@@ -32,12 +32,12 @@ export const Header = () => {
                     <React.Fragment>
                       <div className="login mx-5 mx-sm-2">
                         <Link to="/login">
-                          <span>LOG IN</span>
+                          <span>Log in</span>
                         </Link>
                       </div>
                       <div className="signup m-0 mr-md-4 ml-md-3">
                         <Link to="/register">
-                          <span>SIGN UP</span>
+                          <span>Sign up</span>
                         </Link>
                       </div>
                     </React.Fragment>
@@ -45,12 +45,12 @@ export const Header = () => {
                     <React.Fragment>
                       <div className="my-account mx-5 mx-sm-2">
                         <Link to="/account">
-                          <span>{`${!["xs"].includes(deviceSize) ? "MY " : ""}ACCOUNT`}</span>
+                          <span>{`${!["xs"].includes(deviceSize) ? "My " : ""}Account`}</span>
                         </Link>
                       </div>
                       <div className="logout m-0 mr-md-4 ml-md-3">
                         <Link to="/logout">
-                          <span>LOG OUT</span>
+                          <span>Logout</span>
                         </Link>
                       </div>
                     </React.Fragment>
