@@ -74,6 +74,10 @@ $secondary-font-bold: "exo_2bold", sans-serif;
 $secondary-font-semi-bold: "exo_2semi_bold", sans-serif;
 $secondary-font-medium: "exo_2medium", sans-serif;
 $tertiary-font: "arconrounded-regular", sans-serif;
+$homepage-text-font: "roboto", Roboto;
+$homepage-title-font: "dm-sans-light", DMSans-Light;
+$homepage-button-font:"dm-sans-medium", DMSans-Medium;
+
 
 // ISAAC
 // Node module imports
@@ -164,6 +168,38 @@ a.disabled {
   cursor: default;
 }
 
+a.btn{
+  font-family: "dm-sans-medium", DMSans-Medium;
+}
+
+button.btn.btn-secondary{
+  font-family: "dm-sans-medium", DMSans-Medium;
+}
+
+button.log-in{  
+  font-family: "dm-sans-medium", DMSans-Medium;
+}
+
+button.btn.btn-primary{
+  font-family: "dm-sans-light", DMSans-Light;
+}
+
+button#sign-up{
+  font-family: "dm-sans-light", DMSans-Light;
+}
+
+button.position-relative{
+  font-family: "dm-sans-light", DMSans-Light;
+}
+
+input.btn.btn-block{
+  font-family: "dm-sans-light", DMSans-Light;
+}
+
+input.btn.btn-xl{
+  font-family: "dm-sans-light", DMSans-Light;
+}
+
 .list-group-item {
   border-width: 0;
   width: 100%;
@@ -188,11 +224,19 @@ p small {
 
 body {
   color: $black;
-  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-family: "roboto", Roboto;
   line-height: 1.625;
   display: -ms-flexbox;
   -ms-flex-direction: column;
   flex-direction: column;
+}
+
+h1{
+  font-family: "dm-sans-light", DMSans-Light;
+}
+
+h2.h-title{
+  font-family: "dm-sans-light", DMSans-Light;
 }
 
 .content-body {
