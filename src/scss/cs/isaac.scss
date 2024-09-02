@@ -172,6 +172,14 @@ a.btn{
   font-family: "dm-sans-medium", DMSans-Medium;
 }
 
+.btn{
+  text-decoration: none;
+
+    &:hover {
+      text-decoration: none;
+    }
+}
+
 button.btn.btn-secondary{
   font-family: "dm-sans-medium", DMSans-Medium;
 }
