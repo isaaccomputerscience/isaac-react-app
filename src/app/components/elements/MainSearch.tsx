@@ -51,18 +51,20 @@ const MainSearchComponent = ({ history }: MainSearchProps) => {
                 <Label for="header-search" className="sr-only">
                   Search
                 </Label>
+
                 <Input
                   id="header-search"
                   type="search"
                   name="query"
-                  placeholder="Search"
                   aria-label="Search"
                   value={searchText}
                   onChange={setSearchTextAsValue}
                   innerRef={searchInputRef}
                   maxLength={SEARCH_CHAR_LENGTH_LIMIT}
+                  className="form-control"
                 />
                 <SearchButton />
+
                 <input type="hidden" name="types" value="isaacQuestionPage,isaacConceptPage" />
               </FormGroup>
             </Form>
