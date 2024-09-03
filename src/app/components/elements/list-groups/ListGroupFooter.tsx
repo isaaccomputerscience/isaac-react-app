@@ -26,32 +26,23 @@ const footerLinks = {
     <FooterLink key={key++} linkTo="/contact">
       Contact us
     </FooterLink>,
-    <FooterLink key={key++} linkTo="/accessibility">
-      Accessibility <span className="d-none d-md-inline">statement</span>
-    </FooterLink>,
     <FooterLink key={key++} linkTo="/safeguarding">
       Safeguarding
     </FooterLink>,
-  ],
-  right: [
-    <FooterLink key={key++} linkTo="/privacy">
-      Privacy policy
+    <FooterLink key={key++} linkTo="/support/student">
+      Student Support
     </FooterLink>,
-    <FooterLink key={key++} linkTo="/terms">
-      Terms of use
-    </FooterLink>,
-    <FooterLink key={key++} linkTo="/cookies">
-      Cookie policy
+    <FooterLink key={key++} linkTo="/support/teacher">
+      Teacher Support
     </FooterLink>,
   ],
 };
 
 export const ListGroupFooter = () => (
   <div className="footer-links">
-    <h2 className="h5">Links</h2>
+    <h2 className="h5">Support</h2>
     <div className="d-flex flex-row pt-lg-3">
       <ListGroup className="w-50 mb-3 link-list">{footerLinks.left}</ListGroup>
-      <ListGroup className="w-50 mb-3 link-list">{footerLinks.right}</ListGroup>
     </div>
   </div>
 );
