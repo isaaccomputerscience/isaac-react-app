@@ -9,6 +9,7 @@ import {
   isTeacherOrAbove,
   isTutorOrAbove,
 } from "../../services";
+import VectorIcon from "../../../../public/assets/Vector.svg";
 
 export const NavigationBar = () => {
   const user = useAppSelector(selectors.user.orNull);
@@ -20,6 +21,7 @@ export const NavigationBar = () => {
         title={
           <>
             My Isaac {<MenuBadge count={assignmentsCount + quizzesCount} message="incomplete assignments and tests" />}
+            {<img src={VectorIcon} alt="Icon" className="svgIcon" />}
           </>
         }
       >
@@ -32,7 +34,7 @@ export const NavigationBar = () => {
       </NavigationSection>
 
       {isTutorOrAbove(user) && (
-        <NavigationSection title="Teachers">
+        <NavigationSection title="Teachers" svgIcon={<img src={VectorIcon} alt="Icon" className="svgIcon" />}>
           <LinkItem to="/groups">Manage groups</LinkItem>
           <LinkItem to="/set_assignments">Set assignments</LinkItem>
           <LinkItem to="/my_markbook">Markbook</LinkItem>
@@ -45,7 +47,7 @@ export const NavigationBar = () => {
         </NavigationSection>
       )}
 
-      <NavigationSection title="Learn">
+      <NavigationSection title="Learn" svgIcon={<img src={VectorIcon} alt="Icon" className="svgIcon" />}>
         {isTeacherOrAbove(user) && <LinkItem to="/pages/workbooks_2020">Workbooks</LinkItem>}
         <LinkItem to="/topics/gcse">GCSE topics</LinkItem>
         <LinkItem to="/topics/a_level">A level topics</LinkItem>
@@ -55,26 +57,14 @@ export const NavigationBar = () => {
         <LinkItem to="/glossary">Glossary</LinkItem>
       </NavigationSection>
 
-      <NavigationSection title="Events">
+      <NavigationSection title="Events" svgIcon={<img src={VectorIcon} alt="Icon" className="svgIcon" />}>
         {isTeacherOrAbove(user) && <LinkItem to="/events?show_reservations_only=true">My event reservations</LinkItem>}
         <LinkItem to="/events">Events</LinkItem>
         <LinkItem to="/safeguarding">Safeguarding</LinkItem>
       </NavigationSection>
 
-      <NavigationSection
-        title={
-          <React.Fragment>
-            <span className="d-none d-md-inline d-lg-none">Support</span>
-          </React.Fragment>
-        }
-      >
-        <LinkItem to="/support/teacher">Teacher support</LinkItem>
-        <LinkItem to="/support/student">Student support</LinkItem>
-        <LinkItem to="/contact">Contact us</LinkItem>
-      </NavigationSection>
-
       {(isStaff(user) || isEventLeader(user)) && (
-        <NavigationSection title="Admin">
+        <NavigationSection title="Admin" svgIcon={<img src={VectorIcon} alt="Icon" className="svgIcon" />}>
           {isStaff(user) && <LinkItem to="/admin">Admin tools</LinkItem>}
           {isAdmin(user) && <LinkItem to="/admin/usermanager">User manager</LinkItem>}
           {(isEventLeader(user) || isAdminOrEventManager(user)) && <LinkItem to="/admin/events">Event admin</LinkItem>}
