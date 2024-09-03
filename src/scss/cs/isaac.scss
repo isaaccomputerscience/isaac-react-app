@@ -208,7 +208,7 @@ a.disabled {
 }
 
 a.btn {
-  font-family: "dm-sans-medium", DMSans-Medium;
+  font-family: "dm-sans-medium", DMSans-Medium, sans-serif;
 }
 
 .btn {
@@ -223,11 +223,11 @@ a.btn {
 // Button Styles
 // ----------------------------------------------
 button {
-  font-family: "dm-sans-medium", DMSans-Medium;
+  font-family: "dm-sans-medium", DMSans-Medium, sans-serif;
 
   &.btn-secondary,
   &.log-in {
-    font-family: "dm-sans-medium", DMSans-Medium;
+    font-family: "dm-sans-medium", DMSans-Medium, sans-serif;
   }
 
   &.btn-primary,
@@ -235,7 +235,7 @@ button {
   #sign-up,
   .btn-block,
   .btn-xl {
-    font-family: "dm-sans-light", DMSans-Light;
+    font-family: "dm-sans-light", DMSans-Light, sans-serif;
   }
 }
 
@@ -247,7 +247,7 @@ button {
 .logout span,
 .my-account span {
   text-transform: none;
-  font-family: "dm-sans-medium", DMSans-Medium;
+  font-family: "dm-sans-medium", DMSans-Medium, sans-serif;
   font-size: 18px;
 }
 
@@ -268,7 +268,7 @@ button {
   font-size: 16px;
   margin-top: 2px;
   padding: 8px 6px;
-  font-family: "dm-sans-medium", DMSans-Medium;
+  font-family: "dm-sans-medium", DMSans-Medium, sans-serif;
 }
 
 // ----------------------------------------------
@@ -306,7 +306,7 @@ p small {
 // ----------------------------------------------
 body {
   color: $black;
-  font-family: "roboto", Roboto;
+  font-family: "roboto", Roboto, sans-serif;
   line-height: 1.625;
   display: flex;
   flex-direction: column;
@@ -317,7 +317,7 @@ body {
 // ----------------------------------------------
 h1,
 h2.h-title {
-  font-family: "dm-sans-light", DMSans-Light;
+  font-family: "dm-sans-light", DMSans-Light, sans-serif;
 }
 
 // ----------------------------------------------
