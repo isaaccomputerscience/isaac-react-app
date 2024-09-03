@@ -13,7 +13,7 @@ export const Footer = () => (
           <Col md="4" lg="3" className="pt-5 logo-col">
             <div className="d-flex flex-row">
               <Link to="/">
-                <img src="/assets/logo-mustard.svg" className="footerLogo" alt="Isaac Computer Science homepage" />
+                <img src="/assets/logo_footer.svg" className="footerLogo" alt="Isaac Computer Science homepage" />
               </Link>
             </div>
             <div className="footer-links logo-text pt-3">
