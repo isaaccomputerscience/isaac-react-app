@@ -64,7 +64,6 @@ export const NavigationBar = () => {
       <NavigationSection
         title={
           <React.Fragment>
-            <span className="d-md-none d-lg-inline">Help and support</span>
             <span className="d-none d-md-inline d-lg-none">Support</span>
           </React.Fragment>
         }
