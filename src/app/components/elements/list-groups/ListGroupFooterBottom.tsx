@@ -1,10 +1,48 @@
 import React from "react";
 import { ListGroup, ListGroupItem } from "reactstrap";
 import { ExternalLink } from "../ExternalLink";
+import { Link } from "react-router-dom";
+interface FooterLinkProps {
+  linkTo: string;
+  children?: React.ReactNode | string;
+}
+
+const FooterLink = ({ linkTo, children }: FooterLinkProps) => {
+  return (
+    <ListGroupItem className="border-0 px-0 py-0 bg-transparent align-items-stretch">
+      <Link className="footerLink py-2" to={linkTo}>
+        {children}
+      </Link>
+    </ListGroupItem>
+  );
+};
+
+let key = 0;
+const footerLinks = {
+  right: [
+    <FooterLink key={key++} linkTo="/accessibility">
+      Accessibility <span className="d-none d-md-inline"></span>
+    </FooterLink>,
+    <FooterLink key={key++} linkTo="/cookies">
+      Cookie policy
+    </FooterLink>,
+    <FooterLink key={key++} linkTo="/privacy">
+      Privacy policy
+    </FooterLink>,
+    <FooterLink key={key++} linkTo="/terms">
+      Terms of use
+    </FooterLink>,
+  ],
+};
 
 export const ListGroupFooterBottom = () => (
   <div className="footer-links footer-bottom">
     <ListGroup className="d-flex flex-wrap flex-row">
+      <h2 className="h5">Links</h2>
+      {/* Add the right footer links */}
+      <ListGroupItem className="footer-bottom-links border-0 px-0 py-0 bg-transparent">
+        <ListGroup className="d-flex flex-row justify-content-end">{footerLinks.right}</ListGroup>
+      </ListGroupItem>
       <ListGroupItem className="footer-bottom-info border-0 px-0 py-0 bg-transparent">
         <p className="pt-2 mb-lg-0">
           All teaching materials on this site are available under the&nbsp;
