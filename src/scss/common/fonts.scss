@@ -422,6 +422,13 @@
 }
 
 @font-face {
+  font-family: "roboto-700";
+  font-weight: 700;
+  font-style: normal;
+  src: url("/assets/fonts/Roboto-Bold.ttf") format("truetype");
+}
+
+@font-face {
   font-family: "dm-sans-light";
   font-weight: 300;
   font-style: normal;
@@ -437,4 +444,11 @@
   src: url("/assets/fonts/DMSans-Light.ttf");
   src: 
     url("/assets/fonts/DMSans-Light.ttf") format("truetype"),
+}
+
+@font-face {
+  font-family: "dm-sans-700";
+  font-weight: 700;
+  font-style: normal;
+  src: url("/assets/fonts/DMSans-Bold.ttf") format("truetype");
 }
