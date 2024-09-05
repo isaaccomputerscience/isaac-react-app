@@ -42,7 +42,7 @@ export const ListGroupFooter = () => (
   <div className="footer-links">
     <h2 className="h5">Support</h2>
     <div className="d-flex flex-row pt-lg-3">
-      <ListGroup className="w-50 mb-3 link-list">{footerLinks.left}</ListGroup>
+      <ListGroup className="d-flex flex-row justify-content-end link-list">{footerLinks.left}</ListGroup>
     </div>
   </div>
 );
