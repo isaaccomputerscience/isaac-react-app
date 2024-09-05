@@ -25,9 +25,9 @@ export const Footer = () => (
               </p>
             </div>
           </Col>
-          <Col md="8" lg="9">
+          <Col md={{ size: 7, offset: 1 }} lg={{ size: 8, offset: 1 }} className="pt-5">
             <Row>
-              <Col md="8" lg="9" className="pt-5 pl-md-4">
+            <Col xs="12" className="mb-4">
                 <ListGroupFooter />
                 <ListGroupSocial />
               </Col>
