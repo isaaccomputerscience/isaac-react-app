@@ -38,9 +38,9 @@ const footerLinks = {
 export const ListGroupFooterBottom = () => (
   <div className="footer-links footer-bottom">
     <ListGroup className="d-flex flex-wrap flex-row">
-      <h2 className="h5-bottom">Links</h2>
       {/* Add the right footer links */}
-      <ListGroupItem className="footer-bottom-links border-0 px-0 py-0 bg-transparent">
+      <ListGroupItem className="footer-bottom-links d-flex flex-row pt-lg-3 bg-transparent">
+        <h2 className="h5-bottom">Links</h2>
         <ListGroup className="d-flex flex-row justify-content-end">{footerLinks.right}</ListGroup>
       </ListGroupItem>
       <ListGroupItem className="footer-bottom-info border-0 px-0 py-0 bg-transparent">
