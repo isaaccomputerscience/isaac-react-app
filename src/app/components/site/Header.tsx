@@ -15,7 +15,7 @@ export const Header = () => {
       <Container className="container-fluid px-0">
         <Row>
           <Col>
-            <div className="header-bar mx-3 mx-md-0 py-3 d-md-flex">
+            <div className="header-bar mx-3 mx-md-3 py-3 d-md-flex">
               <div className="header-logo">
                 <Link to="/">
                   <img src="/assets/logo.svg" alt="Isaac Computer Science" />
