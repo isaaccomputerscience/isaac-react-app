@@ -69,7 +69,7 @@ export const NavigationSection = ({ children, svgIcon, title, topLevelLink, to }
             {title}
           </NavLink>
         ) : (
-          <DropdownToggle nav caret className="p-3 ml-3 mr-3">
+          <DropdownToggle nav caret className="p-3 mr-3">
             {title}
             {svgIcon && <span className="mr-2">{svgIcon}</span>}
           </DropdownToggle>
@@ -126,7 +126,7 @@ export const NavBar = ({ children }: { children: React.ReactNode }) => {
           Menu
         </NavbarToggler>
 
-        <Collapse isOpen={menuOpen} navbar className="px-0 mx-0 mx-xl-5 px-xl-5">
+        <Collapse isOpen={menuOpen} navbar className="px-0 mx-0">
           <Nav navbar className="justify-content-between" id="main-menu">
             {children}
           </Nav>

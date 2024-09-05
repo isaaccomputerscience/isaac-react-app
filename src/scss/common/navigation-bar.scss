@@ -27,7 +27,9 @@ nav {
     }
 
     .navbar-nav {
-      width: 100%;
+      width: auto;
+      margin-left: 0;
+      margin-right: auto;
 
       .nav-link {
         border-bottom: 1px solid $gray-118;
