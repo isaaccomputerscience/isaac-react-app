@@ -19,7 +19,9 @@ export const Footer = () => (
             <div className="footer-links logo-text pt-3">
               <p>
                 Isaac Computer Science is part of the
-                <Link to="/teachcomputing">National Centre for Computing Education.</Link>
+                <Link to="/teachcomputing" style={{ color: "white", textDecoration: "none" }}>
+                  National Centre for Computing Education.
+                </Link>
               </p>
             </div>
           </Col>
