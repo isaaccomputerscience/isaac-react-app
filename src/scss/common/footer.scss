@@ -37,6 +37,7 @@
 
   .h5 {
     font-family: $footer-links-font;
+    padding-right: 30px;
   }
 
   a {
@@ -52,6 +53,7 @@
   .footerLink {
     font-family: $footer-text-font;
     font-size: 16px;
+    padding-right: 30px;
   }
 
   .logo-col {
@@ -72,6 +74,7 @@
     background-position: left 82%;
     background-repeat: no-repeat;
     height: 100%;
+    
 
     @include respond-above(md) {
       background-position: left 100% bottom 15%;
@@ -119,6 +122,8 @@
 
   a {
     color: inherit;
+    padding-right: 30px;
+    float:left;
   }
 }
 
@@ -126,4 +131,5 @@
   color: black;
   font-family: $footer-links-font;
   font-size: 20px;
+  padding-right: 30px;
 }
