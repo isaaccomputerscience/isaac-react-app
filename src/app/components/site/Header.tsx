@@ -15,7 +15,7 @@ export const Header = () => {
       <Container className="container-fluid px-0">
         <Row>
           <Col>
-            <div className="header-bar mx-3 mx-md-0 py-3 d-md-flex">
+            <div className="header-bar mx-3 mx-md-3 py-3 d-md-flex">
               <div className="header-logo">
                 <Link to="/">
                   <img src="/assets/logo.svg" alt="Isaac Computer Science" />
@@ -32,12 +32,12 @@ export const Header = () => {
                     <React.Fragment>
                       <div className="login mx-5 mx-sm-2">
                         <Link to="/login">
-                          <span>LOG IN</span>
+                          <span>Log in</span>
                         </Link>
                       </div>
                       <div className="signup m-0 mr-md-4 ml-md-3">
                         <Link to="/register">
-                          <span>SIGN UP</span>
+                          <span>Sign up</span>
                         </Link>
                       </div>
                     </React.Fragment>
@@ -45,12 +45,12 @@ export const Header = () => {
                     <React.Fragment>
                       <div className="my-account mx-5 mx-sm-2">
                         <Link to="/account">
-                          <span>{`${!["xs"].includes(deviceSize) ? "MY " : ""}ACCOUNT`}</span>
+                          <span>{`${!["xs"].includes(deviceSize) ? "My " : ""}Account`}</span>
                         </Link>
                       </div>
                       <div className="logout m-0 mr-md-4 ml-md-3">
                         <Link to="/logout">
-                          <span>LOG OUT</span>
+                          <span>Logout</span>
                         </Link>
                       </div>
                     </React.Fragment>
