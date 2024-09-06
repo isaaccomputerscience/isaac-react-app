@@ -51,7 +51,6 @@ const MainSearchComponent = ({ history }: MainSearchProps) => {
                 <Label for="header-search" className="sr-only">
                   Search
                 </Label>
-
                 <Input
                   id="header-search"
                   type="search"
@@ -64,7 +63,6 @@ const MainSearchComponent = ({ history }: MainSearchProps) => {
                   className="form-control"
                 />
                 <SearchButton />
-
                 <input type="hidden" name="types" value="isaacQuestionPage,isaacConceptPage" />
               </FormGroup>
             </Form>
