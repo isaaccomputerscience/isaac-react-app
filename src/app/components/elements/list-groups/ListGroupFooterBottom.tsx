@@ -48,7 +48,7 @@ export const ListGroupFooterBottom = () => (
           All teaching materials on this site are available under the&nbsp;
           <ExternalLink
             href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
-            className="d-inline text-dark font-weight-bold print-font"
+            className="d-inline font-weight-bold print-font"
           >
             Open Government Licence v3.0
           </ExternalLink>
