@@ -39,10 +39,10 @@ const footerLinks = {
 };
 
 export const ListGroupFooter = () => (
-  <div className="footer-links">
+  <div className="footer-links list-link-item ">
     <div className="d-flex flex-row pt-lg-3">
       <h2 className="h5">Support</h2>
-      <ListGroup className="d-flex flex-row justify-content-end link-list">{footerLinks.left}</ListGroup>
+      <ListGroup className="d-flex flex-row justify-content-end link-list ">{footerLinks.left}</ListGroup>
     </div>
   </div>
 );
