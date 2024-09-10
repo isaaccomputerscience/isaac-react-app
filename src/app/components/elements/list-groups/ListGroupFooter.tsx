@@ -10,7 +10,7 @@ interface FooterLinkProps {
 const FooterLink = ({ linkTo, children }: FooterLinkProps) => {
   return (
     <ListGroupItem className="border-0 px-0 py-0 bg-transparent align-items-stretch">
-      <Link className="footerLink py-2" to={linkTo}>
+      <Link className="footerLink" to={linkTo}>
         {children}
       </Link>
     </ListGroupItem>
@@ -40,7 +40,7 @@ const footerLinks = {
 
 export const ListGroupFooter = () => (
   <div className="footer-links list-link-item ">
-    <div className="d-flex flex-row pt-lg-3">
+    <div className="d-flex flex-row mt-3 pb-5 py-lg-3">
       <h2 className="h5">Support</h2>
       <ListGroup className="d-flex flex-row justify-content-end link-list ">{footerLinks.left}</ListGroup>
     </div>

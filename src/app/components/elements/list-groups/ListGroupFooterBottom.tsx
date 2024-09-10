@@ -10,7 +10,7 @@ interface FooterLinkProps {
 const FooterLink = ({ linkTo, children }: FooterLinkProps) => {
   return (
     <ListGroupItem className="border-0 px-0 py-0 bg-transparent align-items-stretch">
-      <Link className="footerLink-py-2" to={linkTo}>
+      <Link className="footerLink" to={linkTo}>
         {children}
       </Link>
     </ListGroupItem>
