@@ -37,18 +37,18 @@ const footerLinks = {
 
 export const ListGroupFooterBottom = () => (
   <div className="footer-links footer-bottom">
-    <ListGroup className="d-flex flex-wrap flex-row">
+    <ListGroup className="d-flex flex-wrap flex-row link-group">
       {/* Add the right footer links */}
-      <ListGroupItem className="footer-bottom-links d-flex flex-row pt-lg-3 bg-transparent">
+      <ListGroupItem className="footer-bottom-links d-flex flex-row pt-lg-3 bg-transparent link-group w-100">
         <h2 className="h5-bottom">Links</h2>
-        <ListGroup className="d-flex flex-row justify-content-end">{footerLinks.right}</ListGroup>
+        <ListGroup className="d-flex flex-row justify-content-end list-link-item">{footerLinks.right}</ListGroup>
       </ListGroupItem>
       <ListGroupItem className="footer-bottom-info border-0 px-0 py-0 bg-transparent">
         <p className="pt-2 mb-lg-0">
           All teaching materials on this site are available under the&nbsp;
           <ExternalLink
             href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
-            className="d-inline text-dark font-weight-bold"
+            className="d-inline text-dark font-weight-bold print-font"
           >
             Open Government Licence v3.0
           </ExternalLink>
