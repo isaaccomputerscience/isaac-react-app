@@ -62,14 +62,20 @@ export const ListGroupFooterBottom = () => (
             src="/assets/logos/ncce.svg"
             alt="National Centre for Computing Education website"
             className="logo-mr"
-            height="57px"
+            height="70px"
           />
         </ExternalLink>
         <ExternalLink href="https://www.gov.uk/government/organisations/department-for-education">
-          <img src="/assets/logos/dfe.svg" alt="UK Department for Education" className="logo-mr" height="57px" />
+          <img src="/assets/logos/dfe.svg" alt="UK Department for Education" className="logo-mr" height="70px" />
         </ExternalLink>
         <ExternalLink href="https://www.stem.org.uk/">
-          <img src="/assets/logos/stem_footer.svg" alt="STEM Learning" className="logo-mr" height="57px" />
+          <img
+            src="/assets/logos/stem_footer.svg"
+            alt="STEM Learning"
+            className="logo-mr"
+            height="90px"
+            width="292px"
+          />
         </ExternalLink>
       </ListGroupItem>
     </ListGroup>
