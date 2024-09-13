@@ -11,28 +11,6 @@
   }
 }
 
-.footer-bottom {
-  background-color: white;
-  width: 100%;
-  .footer-bottom-info {
-    p {
-      font-family: $footer-text-font;
-      font-size: 14px;
-      color: #000000;
-    }
-    @include respond-above(md) {
-      width: 40%;
-    }
-  }
-  .footer-bottom-logos {
-    @include respond-above(md) {
-      width: 40%;
-      margin-left: 17%;
-      gap: 30px;
-    }
-  }
-}
-
 .footer-links {
   color: white;
 
@@ -98,7 +76,7 @@
 }
 
 .footer-bottom {
-  background-color: #ffffff;
+  background-color: white;
   width: 100%;
   .footer-bottom-info {
     p {
@@ -114,6 +92,7 @@
     @include respond-above(md) {
       width: 40%;
       margin-left: 17%;
+      gap: 30px;
     }
   }
 }
@@ -146,3 +125,4 @@
   font-family:$footer-bold-font;
   color: black !important;
 }
+
