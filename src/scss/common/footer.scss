@@ -126,3 +126,49 @@
   color: black !important;
 }
 
+.footer-bottom-logos img {
+  height: 70px;
+  width: auto;
+}
+
+.footer-bottom-logos img[alt="STEM Learning"] {
+  height: 90px;
+  width: 292px;
+}
+
+/* Responsive styles for smaller screens */
+@media only screen and (max-width: 768px) {
+  .footer-bottom-logos {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footer-bottom-logos img {
+    height: auto;
+    width: 80%;
+    max-width: 200px;
+    margin-bottom: 30px;
+  }
+
+  .footer-bottom-logos img[alt="STEM Learning"] {
+    height: auto;
+    width: 90%;
+    max-width: 250px;
+  }
+
+  .footer-bottom-logos img:last-child {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-bottom-logos img {
+    width: 90%;
+    max-width: 180px;
+    margin-bottom: 25px;
+  }
+
+  .footer-bottom-logos img[alt="STEM Learning"] {
+    max-width: 220px;
+  }
+}
