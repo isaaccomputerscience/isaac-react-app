@@ -7,7 +7,7 @@ export const ListGroupSocial = () => {
   return (
     <div className="footer-links footer-links-social">
       <ListGroup className="mt-3 pb-5 py-lg-3 link-list d-md-flex flex-row link-group">
-        <h2 className="h5">Social</h2>
+        <h2 className="h5-social">Social</h2>
         {Object.entries(SOCIAL_LINKS).map(([_, { name, href }]) => (
           <ListGroupItem key={name} className="border-0 px-0 py-0 pb-1 bg-transparent list-link-item">
             <ExternalLink href={href}>
