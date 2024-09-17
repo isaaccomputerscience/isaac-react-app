@@ -126,42 +126,83 @@
   color: black !important;
 }
 
+.footer-bottom-logos {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
 .footer-bottom-logos img {
-  height: 70px;
+  height: auto;
   width: auto;
+  max-width: 100px;
 }
 
 .footer-bottom-logos img[alt="STEM Learning"] {
-  height: 90px;
-  width: 292px;
+  height: auto;
+  width: auto;
+  max-width: 120px;
 }
 
-/* Responsive styles for smaller screens */
-@media only screen and (max-width: 768px) {
+@media only screen and (min-width: 990px) {
+  .footer-bottom-logos img {
+    height: 90px;
+  }
+
+  .footer-bottom-logos img[alt="National Centre for Computing Education website"] {
+    height: 110px;
+    width: auto;
+    max-width: 200px;
+  }
+
+  .footer-bottom-logos img[alt="STEM Learning"] {
+    height: 110px;
+    width: auto;
+    max-width: 200px;
+  }
+}
+
+@media only screen and (min-width: 769px) and (max-width: 989px) {
   .footer-bottom-logos {
-    flex-direction: column;
-    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
   }
 
   .footer-bottom-logos img {
     height: auto;
-    width: 80%;
-    max-width: 200px;
-    margin-bottom: 30px;
+    width: auto;
+    max-width: 150px;
+    flex: 1 1 calc(33.33% - 20px);
+    margin: 10px;
   }
 
   .footer-bottom-logos img[alt="STEM Learning"] {
-    height: auto;
-    width: 90%;
-    max-width: 250px;
-  }
-
-  .footer-bottom-logos img:last-child {
-    margin-bottom: 0;
+    max-width: 180px;
   }
 }
 
-@media (max-width: 480px) {
+@media only screen and (max-width: 768px) {
+  .footer-bottom-logos {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .footer-bottom-logos img {
+    height: auto;
+    width: auto;
+    max-width: 90%;
+    margin-bottom: 20px;
+  }
+
+  .footer-bottom-logos img[alt="STEM Learning"] {
+    max-width: 90%;
+  }
+}
+
+@media only screen and (max-width: 480px) {
   .footer-bottom-logos img {
     width: 90%;
     max-width: 180px;
