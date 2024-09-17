@@ -91,7 +91,7 @@
   .footer-bottom-logos {
     @include respond-above(md) {
       width: 40%;
-      margin-left: 17%;
+      margin-left: 100px;
       gap: 30px;
     }
   }
@@ -128,7 +128,7 @@
 
 .footer-bottom-logos {
   display: flex;
-  justify-content: space-between;
+  // justify-content: space-between;
   align-items: center;
   flex-wrap: nowrap;
 }
@@ -148,20 +148,52 @@
 @media only screen and (min-width: 990px) {
   .footer-bottom-logos img {
     height: 90px;
-  }
-
-  .footer-bottom-logos img[alt="National Centre for Computing Education website"] {
-    height: 110px;
     width: auto;
-    max-width: 200px;
+    max-width: 100%; /* Ensures images don't overflow their container */
   }
 
+  .footer-bottom-logos img[alt="National Centre for Computing Education website"],
   .footer-bottom-logos img[alt="STEM Learning"] {
     height: 110px;
     width: auto;
-    max-width: 200px;
+    max-width: 190px;
+  }
+
+  .footer-bottom-logos img[alt="UK Department for Education"] {
+    height: 80px;
+    width: auto;
+    max-width: 90px; /* Remove any max-width restriction */
   }
 }
+
+@media only screen and (min-width: 990px) and (max-width: 1200px) {
+  .footer-bottom-logos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    width: 100%;
+  }
+
+  .footer-bottom-logos a {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10px;
+  }
+
+  .footer-bottom-logos img,
+  .footer-bottom-logos img[alt="STEM Learning"],
+  .footer-bottom-logos img[alt="National Centre for Computing Education website"],
+  .footer-bottom-logos img[alt="UK Department for Education"] {
+    max-width: 100%;
+    height: auto;
+    width: auto;
+    max-height: 80px; /* Adjust this value as needed */
+  }
+}
+
 
 @media only screen and (min-width: 769px) and (max-width: 989px) {
   .footer-bottom-logos {
