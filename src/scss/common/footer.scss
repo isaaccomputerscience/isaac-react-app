@@ -99,12 +99,14 @@
 
 .footer-bottom-links {
   color: black;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
 
-  a {
-    color: inherit;
-    padding-right: 30px;
-    float:left;
-  }
+.footer-bottom-links a {
+  color: black;
+  padding-right: 30px;
 }
 
 .h5-bottom {
@@ -112,10 +114,14 @@
   font-family: $footer-links-font;
   font-size: 20px;
   padding-right: 30px;
+  margin-bottom: 0px !important;
 }
 
 .list-link-item {
   width: auto !important;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 .link-group {
   gap: 16px;
@@ -146,10 +152,14 @@
 }
 
 @media only screen and (min-width: 990px) {
+  .footer-bottom-links {
+    flex-direction: row;
+  }
+
   .footer-bottom-logos img {
     height: 90px;
     width: auto;
-    max-width: 100%; /* Ensures images don't overflow their container */
+    max-width: 100%;
   }
 
   .footer-bottom-logos img[alt="National Centre for Computing Education website"],
@@ -162,11 +172,19 @@
   .footer-bottom-logos img[alt="UK Department for Education"] {
     height: 80px;
     width: auto;
-    max-width: 90px; /* Remove any max-width restriction */
+    max-width: 90px;
   }
 }
 
 @media only screen and (min-width: 990px) and (max-width: 1200px) {
+  .footer-bottom-links {
+    flex-direction: row;
+  }
+
+  .h5-bottom{
+    margin-top: 10px;
+  }
+
   .footer-bottom-logos {
     display: flex;
     justify-content: space-between;
@@ -190,12 +208,35 @@
     max-width: 100%;
     height: auto;
     width: auto;
-    max-height: 80px; /* Adjust this value as needed */
+    max-height: 80px;
   }
 }
 
 
 @media only screen and (min-width: 769px) and (max-width: 989px) {
+  .footer-bottom-links {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .h5-bottom {
+    margin: 0;
+    padding-right: 15px;
+  }
+
+  .list-link-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .footer-bottom-links a {
+    padding: 5px 10px;
+    white-space: nowrap;
+  }
+
   .footer-bottom-logos {
     flex-wrap: wrap;
     justify-content: center;
@@ -216,6 +257,35 @@
 }
 
 @media only screen and (max-width: 768px) {
+  .footer-bottom-links.d-flex.flex-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .footer-bottom-links {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .h5-bottom {
+    width: 100%;
+    margin-bottom: 15px;
+    text-align: center;
+    padding-right: 0;
+  }
+
+  .list-link-item {
+    flex-direction: column;
+    width: 100%;
+    padding-left: 0;
+  }
+
+  .footer-bottom-links a {
+    display: block;
+    padding: 10px 0;
+    margin-bottom: 5px;
+    text-align: left;
+  }
   .footer-bottom-logos {
     flex-direction: column;
     align-items: center;
@@ -235,10 +305,18 @@
 }
 
 @media only screen and (max-width: 480px) {
-  .footer-bottom-logos img {
-    width: 90%;
-    max-width: 180px;
-    margin-bottom: 25px;
+  .footer-bottom-links {
+    width: 100%;
+  }
+
+  .h5-bottom {
+    margin-bottom: 15px;
+    text-align: center;
+    width: 100%;
+  }
+
+  .list-link-item a {
+    padding-left: 5px;
   }
 
   .footer-bottom-logos img[alt="STEM Learning"] {
