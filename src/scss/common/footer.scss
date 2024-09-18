@@ -14,9 +14,33 @@
 .footer-links {
   color: white;
 
-  .h5 {
-    font-family: $footer-links-font;
-    padding-right: 30px;
+  .footer-support-links {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .h5 {
+      font-family: $footer-links-font;
+      padding-right: 30px;
+      margin-bottom: 0;
+    }
+
+    .link-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+
+      a {
+        font-family: $footer-text-font;
+        color: white;
+        text-decoration: none;
+        padding-right: 30px;
+
+        &:hover {
+          color: white;
+        }
+      }
+    }
   }
 
   .h5-social {
@@ -160,7 +184,7 @@
 }
 
 @media only screen and (min-width: 990px) {
-  .footer-bottom-links {
+  .footer-links .footer-support-links, .footer-bottom-links {
     flex-direction: row;
   }
 
@@ -185,6 +209,14 @@
 }
 
 @media only screen and (min-width: 990px) and (max-width: 1200px) {
+  .footer-links .footer-support-links {
+    flex-direction: row;
+
+    .link-list a {
+      padding-right: 20px;
+    }
+  }
+
   .footer-bottom-links {
     flex-direction: row;
   }
@@ -218,6 +250,29 @@
 
 
 @media only screen and (min-width: 769px) and (max-width: 989px) {
+  .footer-links .footer-support-links {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    .h5 {
+      margin: 0;
+      padding-right: 15px;
+    }
+
+    .link-list {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      flex-wrap: wrap;
+
+      a {
+        padding: 5px 10px;
+        white-space: nowrap;
+      }
+    }
+  }
+
   .footer-bottom-links {
     flex-direction: row;
     flex-wrap: wrap;
@@ -261,6 +316,31 @@
 }
 
 @media only screen and (max-width: 768px) {
+  .footer-links .footer-support-links {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+
+    .h5 {
+      width: 100%;
+      margin-bottom: 15px;
+      text-align: center;
+      padding-right: 0;
+    }
+
+    .link-list {
+      flex-direction: column;
+      width: 100%;
+      padding-left: 0;
+
+      a {
+        display: block;
+        padding: 10px 0;
+        margin-bottom: 5px;
+        text-align: left;
+      }
+    }
+  }
+
   .footer-bottom-links.d-flex.flex-row {
     flex-direction: column !important;
     align-items: flex-start !important;
@@ -309,6 +389,20 @@
 }
 
 @media only screen and (max-width: 480px) {
+  .footer-links .footer-support-links {
+    width: 100%;
+
+    .h5 {
+      margin-bottom: 15px;
+      text-align: center;
+      width: 100%;
+    }
+
+    .link-list a {
+      padding-left: 5px;
+    }
+  }
+
   .footer-bottom-links {
     width: 100%;
   }
