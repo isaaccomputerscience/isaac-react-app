@@ -328,6 +328,12 @@ h2.h-title {
   color: #120540;
 }
 
+.homepage-sub-title{
+  font-family: "dm-sans-light", DMSans-Light, sans-serif;
+  font-size: 40px;
+  color: #120540;
+}
+
 // ----------------------------------------------
 // Content Body Styles
 // ----------------------------------------------
@@ -437,4 +443,11 @@ h2.h-title {
   background-repeat: no-repeat; // Optional: Prevent the image from repeating
   background-position: right; // Center the image
   background-size: contain;
+}
+
+.event-text-description{
+  font-size: 19px;
+  color: #1C1C1C;
+  padding-left: 0;
+  max-width: 60%;
 }

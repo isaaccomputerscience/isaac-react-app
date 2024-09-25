@@ -53,11 +53,11 @@ export const Homepage = () => {
             <div className="event-section-background-img">
               <Container className="pt-4 pb-5">
                 <div className="eventList pt-5 pattern-03">
-                  <h2 className="h-title text-center mb-4">Events</h2>
-                  <p className="pt-4 pb-2 event-description text-center col-md-8 offset-md-2">
-                    {"We offer free online events for students. Visit our "}
-                    <Link to="/events">Events page</Link>
-                    {" to see what’s happening, and sign up today!"}
+                  <h2 className="homepage-sub-title text-left mb-4">Events</h2>
+                  <p className="pt-4 pb-2 event-text-description text-left">
+                    {
+                      "We offer free online events for students. Choose from our booster events to support revision and improve understanding of classroom learning, or our discovery events, to explore the career possibilities that computer science opens up."
+                    }
                   </p>
                   <EventsCarousel />
                   <Link to="/events">See all Events</Link>
