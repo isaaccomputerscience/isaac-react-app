@@ -424,3 +424,17 @@ h2.h-title {
   width: 3.5rem;
   height: 3.5rem;
 }
+
+// ----------------------------------------------
+// Homepage Event Section
+// ----------------------------------------------
+
+.event-section{
+  background-color: #FFBBDC;
+}
+.event-section-background-img{
+  background-image: url('../../../public/assets/EventBackground.svg');
+  background-repeat: no-repeat; // Optional: Prevent the image from repeating
+  background-position: right; // Center the image
+  background-size: contain;
+}
