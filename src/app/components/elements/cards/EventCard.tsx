@@ -28,12 +28,15 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
   return (
     <Card
       data-testid="event-card"
-      className={classnames("card-neat", {
+      className={classnames("card-neat custom-card", {
         "disabled text-muted": hasExpired || isCancelled,
         "m-4": pod,
         "mb-4": !pod,
       })}
     >
+      <CardBody className="d-flex flex-column">
+        <CardTitle>GCSE/A-LEVEL</CardTitle>
+      </CardBody>
       {eventThumbnail && (
         <div className={"event-card-image text-center"}>
           <CardImg

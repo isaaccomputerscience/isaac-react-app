@@ -25,7 +25,7 @@
   > a[class^="carousel-control-"] {
     display: block;
     cursor: pointer;
-    width: 16px;
+    width: 40px;
     background-repeat: no-repeat;
     background-size: contain;
     background-position-y: center;
@@ -45,11 +45,11 @@
     }
   }
   > a[class*="next"] {
-    right: 3px;
+    right: -30px;
     background-image: url("/assets/chevron_right.svg");
   }
   > a[class*="prev"] {
-    left: 3px;
+    left: -30px;
     background-image: url("/assets/chevron_left.svg");
   }
 }
