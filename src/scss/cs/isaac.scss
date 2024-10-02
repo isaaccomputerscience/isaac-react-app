@@ -1,4 +1,3 @@
-
 // ----------------------------------------------
 // NOMENSA variables.scss
 //Custom Colours
@@ -8,13 +7,13 @@ $cs-hot-pink: #ff4aa0;
 $cs-reddish: #d7335f; // Used as an active colour on secondary buttons
 $focus-blue: #3e59a3; // Used as focus indicator colour on inputs
 
+
 // ----------------------------------------------
 // Colour Overrides
 // ----------------------------------------------
 $purple: #9148bc;
 $cyan: #0f8294;
 $green: #208838;
-
 
 // ----------------------------------------------
 // Theme
@@ -25,7 +24,6 @@ $theme-colors: (
   "primary": $primary,
   "secondary": $secondary,
 );
-
 
 // ----------------------------------------------
 // Stage Colours
@@ -39,7 +37,6 @@ $all-stages-colour-25: #e3d1ee;
 $a-level-colour: #2146ad;
 $a-level-colour-50: #90a2d6;
 $a-level-colour-25: #c7d1ea;
-
 
 // ----------------------------------------------
 // Highlighting Colours
@@ -86,7 +83,6 @@ $input-btn-padding-y-lg: 0.5rem;
 $input-btn-padding-x-lg: 3rem;
 $border-radius-lg: 0.25rem;
 
-
 // ----------------------------------------------
 // Fonts
 // ----------------------------------------------
@@ -98,7 +94,7 @@ $secondary-font-medium: "exo_2medium", sans-serif;
 $tertiary-font: "arconrounded-regular", sans-serif;
 $homepage-text-font: "roboto", Roboto;
 $homepage-title-font: "dm-sans-light", DMSans-Light;
-$homepage-button-font:"dm-sans-medium", DMSans-Medium;
+$homepage-button-font: "dm-sans-medium", DMSans-Medium;
 $footer-text-font: "roboto", Roboto;
 $footer-bold-font: "roboto-700", Roboto-Bold;
 $footer-links-font: "dm-sans-700", DMSans-Bold;
@@ -242,6 +238,11 @@ button {
   }
 }
 
+.homepage-button{
+  background-color: #D60265;
+  font-size: 18px;
+}
+
 // ----------------------------------------------
 // Span Styles
 // ----------------------------------------------
@@ -323,11 +324,24 @@ h2.h-title {
   font-family: "dm-sans-light", DMSans-Light, sans-serif;
 }
 
+.homepage-title{
+  font-family: "dm-sans-light", DMSans-Light, sans-serif;
+  font-size: 48px;
+  color: #120540;
+}
+
 // ----------------------------------------------
 // Content Body Styles
 // ----------------------------------------------
 .content-body {
   background-color: rgba($gray-107, 0.4);
+}
+
+// ----------------------------------------------
+// Text Styles
+// ----------------------------------------------
+.homepage-text{
+  font-size: 19px;
 }
 
 // ----------------------------------------------
@@ -349,6 +363,15 @@ h2.h-title {
       background-repeat: repeat-y;
     }
   }
+}
+
+// ----------------------------------------------
+// Custom width styling
+// ----------------------------------------------
+.custom-width {
+  max-width: 50%;
+  flex: 45%;
+  padding-right: 5px;
 }
 
 // Additional pattern styles...
