@@ -39,7 +39,7 @@ const footerLinks = {
 };
 
 export const ListGroupFooter = () => (
-  <div className="footer-links list-link-item ">
+  <div className="footer-links list-link-item">
     <div className="footer-support-links d-flex flex-row mt-3 pb-5 py-lg-3">
       <h2 className="h5">Support</h2>
       <ListGroup className="d-flex flex-row link-list">{footerLinks.left}</ListGroup>
