@@ -491,5 +491,27 @@ h2.h-title {
   font-size: 19px !important;
   color: #6B009A;
   flex: 1;
+}
 
+.details-button:hover {
+  color: #6B009A;
+  text-decoration: none;
+}
+
+a.browse-events{
+  color: #0F0F0F;
+  font-family: "dm-sans-light", DMSans-Light, sans-serif;
+  font-size: 18px;
+  text-decoration: none;
+  display: inline-block;
+  align-items: center;
+  background-color: white; 
+  border: 3px solid #D60265; 
+  padding: 10px 15px;
+  border-radius: 5px;
+}
+
+.center-container {
+  display: flex;
+  justify-content: center; 
 }

@@ -60,7 +60,11 @@ export const Homepage = () => {
                     }
                   </p>
                   <EventsCarousel />
-                  <Link to="/events">See all Events</Link>
+                  <div className="center-container">
+                    <Link className="browse-events" to="/events">
+                      Browse all events
+                    </Link>
+                  </div>
                 </div>
               </Container>
             </div>
