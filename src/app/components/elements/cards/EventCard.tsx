@@ -34,11 +34,9 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
         "mb-4": !pod,
       })}
     >
-      <CardBody className="d-flex flex-column">
-        <CardTitle>GCSE/A-LEVEL</CardTitle>
-      </CardBody>
       {eventThumbnail && (
-        <div className={"event-card-image text-center"}>
+        <div className={"event-card-image"}>
+          <span className="course-name">GCSE/A level</span>
           <CardImg
             data-testid="event-card-image"
             aria-hidden={true}
@@ -50,7 +48,7 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
       )}
       <CardBody className="d-flex flex-column">
         {title && (
-          <CardTitle tag="h3" data-testid="event-card-title">
+          <CardTitle tag="h3" data-testid="event-card-title" className="card-title">
             {title}
             {isCancelled ? (
               <Badge color={"danger"} className="ml-1">
@@ -68,13 +66,18 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
         )}
         {subtitle && (
           <CardText className="m-0 my-auto card-date-time" data-testid="event-card-subtitle">
-            {subtitle}
+            <span className="d-block my-2">
+              <span className="card-sub-title">What</span>
+              <span className="d-block" data-testid="event-card-date">
+                {subtitle}
+              </span>
+            </span>
           </CardText>
         )}
         <CardText className="m-0 my-auto card-date-time">
           {date && endDate && (
             <span className="d-block my-2">
-              <span className="font-weight-bold">When:</span>
+              <span className="card-sub-title">When</span>
               <span className="d-block" data-testid="event-card-date">
                 {formatEventCardDate(event, pod)}
               </span>
@@ -82,20 +85,23 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
           )}
           {(location?.address?.addressLine1 || event.isVirtual) && (
             <span className="d-block my-2" data-testid="event-card-location">
-              <span className="font-weight-bold">Location:</span>{" "}
-              {event.isVirtual ? (
-                <span>Online</span>
-              ) : (
-                <span>
-                  {location?.address?.addressLine1}
-                  {location?.address?.town && `, ${location.address.town}`}
-                </span>
-              )}
+              <span className="card-sub-title">Where</span>
+              <span className="d-block" data-testid="event-card-date">
+                <span className="font-weight-bold">Location:</span>{" "}
+                {event.isVirtual ? (
+                  <span>Online</span>
+                ) : (
+                  <span>
+                    {location?.address?.addressLine1}
+                    {location?.address?.town && `, ${location.address.town}`}
+                  </span>
+                )}
+              </span>
             </span>
           )}
         </CardText>
         <CardText className="d-flex" data-testid="event-card-details">
-          <Link className="focus-target" to={`/events/${id}`}>
+          <Link className="details-button" to={`/events/${id}`}>
             View details
             <span className="sr-only">
               {" "}
