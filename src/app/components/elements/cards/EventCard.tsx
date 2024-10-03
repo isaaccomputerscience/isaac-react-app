@@ -36,7 +36,13 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
     >
       {eventThumbnail && (
         <div className={"event-card-image"}>
-          <span className="course-name">GCSE/A level</span>
+          <span className="course-name">
+            {subtitle?.toLowerCase().includes("gcse")
+              ? "GCSE"
+              : subtitle?.toLowerCase().includes("a level")
+              ? "A level"
+              : "N/A"}
+          </span>
           <CardImg
             data-testid="event-card-image"
             aria-hidden={true}
