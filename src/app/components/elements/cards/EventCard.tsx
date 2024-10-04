@@ -25,6 +25,19 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
     meetingUrl,
   } = event;
 
+  const getCourseName = (subtitle: string | undefined) => {
+    if (!subtitle) return "N/A";
+
+    const lowerCaseSubtitle = subtitle.toLowerCase();
+    if (lowerCaseSubtitle.includes("gcse")) {
+      return "GCSE";
+    } else if (lowerCaseSubtitle.includes("a level")) {
+      return "A level";
+    } else {
+      return "N/A";
+    }
+  };
+
   return (
     <Card
       data-testid="event-card"
@@ -36,13 +49,7 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
     >
       {eventThumbnail && (
         <div className={"event-card-image"}>
-          <span className="course-name">
-            {subtitle?.toLowerCase().includes("gcse")
-              ? "GCSE"
-              : subtitle?.toLowerCase().includes("a level")
-              ? "A level"
-              : "N/A"}
-          </span>
+          <span className="course-name">{getCourseName(subtitle)}</span>
           <CardImg
             data-testid="event-card-image"
             aria-hidden={true}
