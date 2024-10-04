@@ -37,8 +37,8 @@ export const Footer = () => (
       </Container>
     </div>
     <div className="footerBottom">
-      <Container>
-        <Row className="pt-3 px-3 px-sm-0">
+      <Container fluid>
+        <Row>
           <ListGroupFooterBottom />
         </Row>
       </Container>
