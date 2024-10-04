@@ -508,11 +508,118 @@ a.browse-events{
   align-items: center;
   background-color: white; 
   border: 3px solid #D60265; 
-  padding: 10px 15px;
+  padding: 7px 48px;  
   border-radius: 5px;
 }
 
 .center-container {
   display: flex;
   justify-content: center; 
+}
+
+// ----------------------------------------------
+// Homepage Resources Section
+// ----------------------------------------------
+
+.resources-section {
+  background-color: white;
+}
+
+.resources-background {
+  background-color: #FFDF80;
+  max-width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  border-radius: 5px;
+}
+
+.resources-sub-heading-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.resources-sub-heading {
+  color: #120540;
+  font-family: "dm-sans-medium", DMSans-Medium, sans-serif;
+  font-size: 24px;
+}
+
+.q-finder-image {
+  width: 30px;
+  height: 30px;
+  cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+.tooltip-container {
+  position: relative; /* Required for positioning the tooltip */
+  display: inline-block;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  width: 270px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* Position above the image */
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip-container:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.resources-text-description {
+  font-size: 19px;
+  color: #1C1C1C;
+  padding-left: 0;
+  flex: 1;
+}
+
+.resources-links {
+  color: #0F0F0F;
+  font-family: "dm-sans-light", DMSans-Light, sans-serif;
+  font-size: 18px;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white; 
+  border: 3px solid #D60265; 
+  border-radius: 5px;
+  width: 230px;
+  height: 48px;
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    width: 100%; 
+    height: auto;
+  }
+}
+
+.columns-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.custom-col-60, .custom-col-30 {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.center-container {
+  display: flex;
+  gap: 205px;
 }

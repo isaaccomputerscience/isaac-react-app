@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
 import { useAppSelector, selectors, isaacApi } from "../../state";
 import { Link } from "react-router-dom";
-import { Container } from "reactstrap";
+import { Col, Container, Row } from "reactstrap";
 import { SITE_SUBJECT_TITLE } from "../../services";
 import { NewsCarousel } from "../elements/NewsCarousel";
 import { EventsCarousel } from "../elements/EventsCarousel";
 import classNames from "classnames";
 import { Dashboard } from "../elements/Dashboard";
 import { CareersBanner } from "../elements/CareersBanner";
+import questionFinderSVG from "../../../../public/assets/q-finder.svg";
 
 export const Homepage = () => {
   useEffect(() => {
@@ -66,6 +67,61 @@ export const Homepage = () => {
                 </div>
               </Container>
             </div>
+          </section>
+        )}
+
+        {!user?.loggedIn && (
+          <section id="resources" className="resources-section">
+            <Container className="pt-4 pb-5">
+              <div className="pt-5">
+                <h2 className="homepage-sub-title text-left mb-4">Resources</h2>
+              </div>
+              <Row>
+                <div className="columns-container">
+                  <Col className="custom-col-60">
+                    <div className="resources-background">
+                      <p className="resources-sub-heading">Computer science topics</p>
+                      <p className="resources-text-description">
+                        {
+                          "Discover our free computer science topics and questions, mapped to the leading exam specifications in England. Review key curriculum areas and get specific feedback to address common misconceptions."
+                        }
+                      </p>
+                      <div className="center-container">
+                        <Link className="resources-links" to="/topics/gcse">
+                          GCSE topics
+                        </Link>
+                        <Link className="resources-links" to="/topics/a_level">
+                          A level topics
+                        </Link>
+                      </div>
+                    </div>
+                  </Col>
+                  <Col className="custom-col-30">
+                    <div className="resources-background">
+                      <div className="resources-sub-heading-container">
+                        <p className="resources-sub-heading">Question finder</p>
+                        <div className="tooltip-container">
+                          <img src={questionFinderSVG} alt="Question Finder" className="q-finder-image" />
+                          <span className="tooltip-text">
+                            You can build a gameboard by selecting the areas of interest, stage and difficulties.
+                            <br />
+                            You can select more than one entry in each area.
+                          </span>
+                        </div>
+                      </div>
+                      <p className="resources-text-description">
+                        {"Specify your search criteria and we’ll generate a random selection of up to 10 questions!"}
+                      </p>
+                      <div className="center-container">
+                        <Link className="resources-links" to="/topics/gcse">
+                          Question finder
+                        </Link>
+                      </div>
+                    </div>
+                  </Col>
+                </div>
+              </Row>
+            </Container>
           </section>
         )}
 
