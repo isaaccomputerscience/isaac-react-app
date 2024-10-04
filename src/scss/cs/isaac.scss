@@ -328,6 +328,12 @@ h2.h-title {
   color: #120540;
 }
 
+.homepage-sub-title{
+  font-family: "dm-sans-light", DMSans-Light, sans-serif;
+  font-size: 40px;
+  color: #120540;
+}
+
 // ----------------------------------------------
 // Content Body Styles
 // ----------------------------------------------
@@ -423,4 +429,90 @@ h2.h-title {
 .isaac-spinner-lg {
   width: 3.5rem;
   height: 3.5rem;
+}
+
+// ----------------------------------------------
+// Homepage Event Section
+// ----------------------------------------------
+
+.event-section{
+  background-color: #FFBBDC;
+}
+.event-section-background-img{
+  background-image: url('../../../public/assets/EventBackground.svg');
+  background-repeat: no-repeat; // Optional: Prevent the image from repeating
+  background-position: right; // Center the image
+  background-size: contain;
+}
+
+.event-text-description{
+  font-size: 19px;
+  color: #1C1C1C;
+  padding-left: 0;
+  max-width: 60%;
+}
+
+.custom-card {
+  width: 322px;
+  height: auto;
+  padding-top: 5px;
+  max-width: 100%;
+  max-height: 100%;
+  box-shadow: 0 2px 10px rgba(255, 192, 0, 0.5);
+  border-radius: 5px;
+}
+
+.course-name{
+  font-size: 24px;
+  font-family: "dm-sans-light", DMSans-Light, sans-serif;
+  background-color: #F6B400;
+  padding-top: 9px;
+  padding-left: 18px;
+  padding-right: 18px;
+  padding-bottom: 9px;
+  border-top-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.card-title{
+  font-size: 20px;
+  font-family: "dm-sans-light", DMSans-Light, sans-serif;
+  color: #120540;
+}
+
+.card-sub-title{
+  font-size: 16px;
+  font-family: "roboto-700", Roboto-Bold, sans-serif;
+  color: #1C1C1C;
+}
+
+.details-button {
+  text-decoration: none;
+  text-align: center;
+  font-size: 19px !important;
+  color: #6B009A;
+  flex: 1;
+}
+
+.details-button:hover {
+  color: #6B009A;
+  text-decoration: none;
+}
+
+a.browse-events{
+  color: #0F0F0F;
+  font-family: "dm-sans-light", DMSans-Light, sans-serif;
+  font-size: 18px;
+  text-decoration: none;
+  display: inline-block;
+  align-items: center;
+  background-color: white; 
+  border: 3px solid #D60265; 
+  padding: 10px 15px;
+  border-radius: 5px;
+}
+
+.center-container {
+  display: flex;
+  justify-content: center; 
 }

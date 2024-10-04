@@ -3,7 +3,6 @@ import { useAppSelector, selectors, isaacApi } from "../../state";
 import { Link } from "react-router-dom";
 import { Button, Col, Container } from "reactstrap";
 import { SITE_SUBJECT_TITLE } from "../../services";
-import { WhySignUpTabs } from "../elements/WhySignUpTabs";
 import { NewsCarousel } from "../elements/NewsCarousel";
 import { EventsCarousel } from "../elements/EventsCarousel";
 import classNames from "classnames";
@@ -50,19 +49,26 @@ export const Homepage = () => {
         </section>
 
         {!user?.loggedIn && (
-          <>
-            <Container>
-              <hr />
-            </Container>
-            <section id="why-sign-up" className="row sign-up-tabs">
-              <Container>
-                <Col className="pb-5 pt-4 pattern-04">
-                  <h2 className="text-center mb-5">Why sign up?</h2>
-                  <WhySignUpTabs />
-                </Col>
+          <section id="events" className="event-section">
+            <div className="event-section-background-img">
+              <Container className="pt-4 pb-5">
+                <div className="eventList pt-5 pattern-03">
+                  <h2 className="homepage-sub-title text-left mb-4">Events</h2>
+                  <p className="pt-4 pb-2 event-text-description text-left">
+                    {
+                      "We offer free online events for students. Choose from our booster events to support revision and improve understanding of classroom learning, or our discovery events, to explore the career possibilities that computer science opens up."
+                    }
+                  </p>
+                  <EventsCarousel />
+                  <div className="center-container">
+                    <Link className="browse-events" to="/events">
+                      Browse all events
+                    </Link>
+                  </div>
+                </div>
               </Container>
-            </section>
-          </>
+            </div>
+          </section>
         )}
 
         <section id="careers" className="banner-primary pattern-05 p-5">
@@ -95,20 +101,22 @@ export const Homepage = () => {
           </section>
         )}
 
-        <section id="events">
-          <Container className="pt-4 pb-5">
-            <div className="eventList pt-5 pattern-03">
-              <h2 className="h-title text-center mb-4">Events</h2>
-              <p className="pt-4 pb-2 event-description text-center col-md-8 offset-md-2">
-                {"We offer free online events for students. Visit our "}
-                <Link to="/events">Events page</Link>
-                {" to see what’s happening, and sign up today!"}
-              </p>
-              <EventsCarousel />
-              <Link to="/events">See all Events</Link>
-            </div>
-          </Container>
-        </section>
+        {user?.loggedIn && (
+          <section id="events">
+            <Container className="pt-4 pb-5">
+              <div className="eventList pt-5 pattern-03">
+                <h2 className="h-title text-center mb-4">Events</h2>
+                <p className="pt-4 pb-2 event-description text-center col-md-8 offset-md-2">
+                  {"We offer free online events for students. Visit our "}
+                  <Link to="/events">Events page</Link>
+                  {" to see what’s happening, and sign up today!"}
+                </p>
+                <EventsCarousel />
+                <Link to="/events">See all Events</Link>
+              </div>
+            </Container>
+          </section>
+        )}
 
         {!user?.loggedIn && (
           <section className="row">
