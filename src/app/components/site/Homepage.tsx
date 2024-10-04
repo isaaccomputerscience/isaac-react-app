@@ -1,13 +1,11 @@
 import React, { useEffect } from "react";
 import { useAppSelector, selectors, isaacApi } from "../../state";
 import { Link } from "react-router-dom";
-import { Button, Col, Container } from "reactstrap";
+import { Container } from "reactstrap";
 import { SITE_SUBJECT_TITLE } from "../../services";
 import { NewsCarousel } from "../elements/NewsCarousel";
 import { EventsCarousel } from "../elements/EventsCarousel";
 import classNames from "classnames";
-import { PromoContent } from "../elements/PromoContent";
-import { ShowLoading } from "../handlers/ShowLoading";
 import { Dashboard } from "../elements/Dashboard";
 import { CareersBanner } from "../elements/CareersBanner";
 
@@ -28,7 +26,7 @@ export const Homepage = () => {
     orderDescending: true,
   });
 
-  const [teacherPromoItem, loggedOutPromoItem] = promo
+  const [teacherPromoItem] = promo
     ? [
         promo.find((item) => item && !item?.id?.includes("public")),
         promo.find((item) => item && item?.id?.includes("public")),
@@ -88,19 +86,6 @@ export const Homepage = () => {
           </Container>
         </section>
 
-        {!user?.loggedIn && (
-          <section id="promo-content" className="row bg-primary pattern-05">
-            <ShowLoading
-              until={promo}
-              thenRender={() => (
-                <Container>
-                  <Col className="py-5">{loggedOutPromoItem && <PromoContent item={loggedOutPromoItem} />}</Col>
-                </Container>
-              )}
-            />
-          </section>
-        )}
-
         {user?.loggedIn && (
           <section id="events">
             <Container className="pt-4 pb-5">
@@ -114,21 +99,6 @@ export const Homepage = () => {
                 <EventsCarousel />
                 <Link to="/events">See all Events</Link>
               </div>
-            </Container>
-          </section>
-        )}
-
-        {!user?.loggedIn && (
-          <section className="row">
-            <Container>
-              <Col className="py-4 px-5 mb-5 d-flex align-items-center flex-column flex-md-row border border-dark">
-                <h3 className="text-center text-md-left mr-md-4 mr-lg-0 mb-3 mb-md-0">
-                  Sign up to track your progress
-                </h3>
-                <Button tag={Link} size="lg" className="ml-md-auto mr-md-3 mr-lg-5 btn-xl" to={"/register"}>
-                  Sign up
-                </Button>
-              </Col>
             </Container>
           </section>
         )}
