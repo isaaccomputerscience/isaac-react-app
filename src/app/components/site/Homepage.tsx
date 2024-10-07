@@ -9,6 +9,7 @@ import classNames from "classnames";
 import { Dashboard } from "../elements/Dashboard";
 import { CareersBanner } from "../elements/CareersBanner";
 import questionFinderSVG from "../../../../public/assets/q-finder.svg";
+import starSVG from "../../../../public/assets/star.svg";
 
 export const Homepage = () => {
   useEffect(() => {
@@ -121,6 +122,15 @@ export const Homepage = () => {
                   </Col>
                 </div>
               </Row>
+              <br></br>
+              <div className="center-container">
+                <div className="resource-comment">
+                  <div className="comment-content">
+                    <img src={starSVG} alt="Star" className="star-img" />
+                    <p>95% of teachers rate the quality of Isaac CS resources as good or very good.</p>
+                  </div>
+                </div>
+              </div>
             </Container>
           </section>
         )}

@@ -523,6 +523,7 @@ a.browse-events{
 
 .resources-section {
   background-color: white;
+  padding: 20px;
 }
 
 .resources-background {
@@ -549,11 +550,11 @@ a.browse-events{
 .q-finder-image {
   width: 30px;
   height: 30px;
-  cursor: pointer; /* Change cursor to pointer on hover */
+  cursor: pointer;
 }
 
 .tooltip-container {
-  position: relative; /* Required for positioning the tooltip */
+  position: relative;
   display: inline-block;
 }
 
@@ -567,7 +568,7 @@ a.browse-events{
   padding: 5px 0;
   position: absolute;
   z-index: 1;
-  bottom: 125%; /* Position above the image */
+  bottom: 125%;
   left: 50%;
   transform: translateX(-50%);
   opacity: 0;
@@ -604,22 +605,79 @@ a.browse-events{
   @media (max-width: 768px) {
     width: 100%; 
     height: auto;
+    margin-bottom: 10px;
   }
 }
 
 .columns-container {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 }
 
-.custom-col-60, .custom-col-30 {
+.custom-col-60 {
+  flex: 0 0 66%; // Take up 60% of the width
+  max-width: 66%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  flex: 1;
+  margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    flex: 100%; // Make columns full width on smaller screens
+    max-width: 100%;
+  }
+}
+
+.custom-col-30 {
+  flex: 0 0 33%; // Take up 30% of the width
+  max-width: 33%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    flex: 100%; // Make columns full width on smaller screens
+    max-width: 100%;
+  }
 }
 
 .center-container {
   display: flex;
-  gap: 205px;
+  justify-content: center;
+  align-items: center;
+  gap: 100px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+.resource-comment {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.comment-content {
+  background-color: #FFF5FA;
+  color: #120540;
+  font-size: 20px;
+  font-family: "dm-sans-light", DMSans-Light, sans-serif;
+  display: flex;
+  gap: 10px;
+  padding: 20px 20px;
+  text-align: center;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 10px;
+  }
+}
+
+.star-img {
+  width: 26px;
+  height: 25px;
 }
