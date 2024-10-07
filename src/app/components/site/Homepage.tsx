@@ -113,7 +113,7 @@ export const Homepage = () => {
                         {"Specify your search criteria and we’ll generate a random selection of up to 10 questions!"}
                       </p>
                       <div className="center-container">
-                        <Link className="resources-links" to="/topics/gcse">
+                        <Link className="resources-links" to="/gameboards/new">
                           Question finder
                         </Link>
                       </div>
