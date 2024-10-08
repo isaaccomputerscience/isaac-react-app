@@ -1,17 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Carousel, CarouselControl, CarouselIndicators, CarouselItem } from "reactstrap";
+import { Carousel, CarouselControl, CarouselItem } from "reactstrap";
 import { ifKeyIsEnter } from "../../services";
 
 const ControlledCarouselInstance = ({ children, collectionTag }: any) => {
   const items = children;
   const [activeIndex, setActiveIndex] = useState(0);
   const [animating, setAnimating] = useState(false);
-
-  const gotoIndex = (newIndex: any) => {
-    if (!animating) {
-      setActiveIndex(newIndex);
-    }
-  };
 
   const next = () => {
     if (!animating) {
@@ -88,11 +82,6 @@ const ControlledCarouselInstance = ({ children, collectionTag }: any) => {
           </CarouselItem>
         ))}
         <CarouselControl direction="next" directionText="Next" onClickHandler={next} onKeyPress={next} />
-        <CarouselIndicators
-          items={items.map((item: any, index: number) => ({ key: index }))}
-          activeIndex={activeIndex}
-          onClickHandler={gotoIndex}
-        />
       </Carousel>
     </div>
   );
