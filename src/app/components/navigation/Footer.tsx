@@ -9,8 +9,8 @@ export const Footer = () => (
   <footer>
     <div className="footerTop d-print-none">
       <Container>
-        <Row className="px-3 px-sm-0 pb-3 pb-md-4">
-          <Col md="4" lg="3" className="pt-5 logo-col ">
+        <Row className="px-3 px-sm-0 pb-3 pb-md-4 footer-content">
+          <Col md="4" lg="3" className="pt-5 logo-col">
             <div className="d-flex flex-row">
               <Link to="/">
                 <img src="/assets/logo_footer.svg" className="footerLogo" alt="Isaac Computer Science homepage" />
@@ -25,7 +25,7 @@ export const Footer = () => (
               </p>
             </div>
           </Col>
-          <Col md={{ size: 7, offset: 1 }} lg={{ size: 8, offset: 1 }} className="pt-5">
+          <Col md={{ size: 7, offset: 1 }} lg={{ size: 8, offset: 1 }} className="pt-5 links-col">
             <Row>
               <Col xs="12" className="mb-4">
                 <ListGroupFooter />
