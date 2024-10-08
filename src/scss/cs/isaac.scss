@@ -508,6 +508,18 @@ a.browse-events{
   align-items: center;
   background-color: white; 
   border: 3px solid #D60265; 
-  padding: 7px 48px;  
+  padding: 10px 15px;  
   border-radius: 5px;
+}
+
+.center-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 10px;
+  }
 }
