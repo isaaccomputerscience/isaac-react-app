@@ -10,6 +10,7 @@ import { Dashboard } from "../elements/Dashboard";
 import { CareersBanner } from "../elements/CareersBanner";
 import questionFinderSVG from "../../../../public/assets/q-finder.svg";
 import starSVG from "../../../../public/assets/star.svg";
+import Resources from "../elements/Resources";
 
 export const Homepage = () => {
   useEffect(() => {
@@ -80,12 +81,12 @@ export const Homepage = () => {
               <Row>
                 <div className="columns-container">
                   <Col className="custom-col-60">
-                    <div className="resources-background">
+                    <Resources>
                       <p className="resources-sub-heading">Computer science topics</p>
                       <p className="resources-text-description">
-                        {
-                          "Discover our free computer science topics and questions, mapped to the leading exam specifications in England. Review key curriculum areas and get specific feedback to address common misconceptions."
-                        }
+                        Discover our free computer science topics and questions, mapped to the leading exam
+                        specifications in England. Review key curriculum areas and get specific feedback to address
+                        common misconceptions.
                       </p>
                       <div className="center-container">
                         <Link className="resources-links" to="/topics/gcse">
@@ -95,10 +96,10 @@ export const Homepage = () => {
                           A level topics
                         </Link>
                       </div>
-                    </div>
+                    </Resources>
                   </Col>
                   <Col className="custom-col-30">
-                    <div className="resources-background">
+                    <Resources>
                       <div className="resources-sub-heading-container">
                         <p className="resources-sub-heading">Question finder</p>
                         <div className="tooltip-container">
@@ -111,18 +112,18 @@ export const Homepage = () => {
                         </div>
                       </div>
                       <p className="resources-text-description">
-                        {"Specify your search criteria and we’ll generate a random selection of up to 10 questions!"}
+                        Specify your search criteria and we’ll generate a random selection of up to 10 questions!
                       </p>
                       <div className="center-container">
                         <Link className="resources-links" to="/gameboards/new">
                           Question finder
                         </Link>
                       </div>
-                    </div>
+                    </Resources>
                   </Col>
                 </div>
               </Row>
-              <br></br>
+              <br />
               <div className="center-container">
                 <div className="resource-comment">
                   <div className="comment-content">
