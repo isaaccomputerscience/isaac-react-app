@@ -16,12 +16,12 @@ const Resources = ({ heading, description, links, tooltip, children, className =
     <div className={`resources-background ${className}`}>
       <div className="resources-heading-container">
         <p className="resources-sub-heading">{heading}</p>
-        {tooltip && <div className="tooltip-container">{tooltip}</div>}
+        {tooltip && <div className="resources-tooltip-container">{tooltip}</div>}
       </div>
       <p className="resources-text-description">{description}</p>
-      <div className="center-container">
-        {links.map((link, index) => (
-          <Link key={index} className="resources-links" to={link.to}>
+      <div className="resources-center-container">
+        {links.map((link) => (
+          <Link key={link.to} className="resources-links" to={link.to}>
             {link.text}
           </Link>
         ))}
