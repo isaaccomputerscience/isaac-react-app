@@ -81,27 +81,19 @@ export const Homepage = () => {
               <Row>
                 <div className="columns-container">
                   <Col className="custom-col-60">
-                    <Resources>
-                      <p className="resources-sub-heading">Computer science topics</p>
-                      <p className="resources-text-description">
-                        Discover our free computer science topics and questions, mapped to the leading exam
-                        specifications in England. Review key curriculum areas and get specific feedback to address
-                        common misconceptions.
-                      </p>
-                      <div className="center-container">
-                        <Link className="resources-links" to="/topics/gcse">
-                          GCSE topics
-                        </Link>
-                        <Link className="resources-links" to="/topics/a_level">
-                          A level topics
-                        </Link>
-                      </div>
-                    </Resources>
+                    <Resources
+                      heading="Computer science topics"
+                      description="Discover our free computer science topics and questions, mapped to the leading exam specifications in England. Review key curriculum areas and get specific feedback to address common misconceptions."
+                      links={[
+                        { to: "/topics/gcse", text: "GCSE topics" },
+                        { to: "/topics/a_level", text: "A level topics" },
+                      ]}
+                    />
                   </Col>
                   <Col className="custom-col-30">
-                    <Resources>
-                      <div className="resources-sub-heading-container">
-                        <p className="resources-sub-heading">Question finder</p>
+                    <Resources
+                      heading="Question finder"
+                      tooltip={
                         <div className="tooltip-container">
                           <img src={questionFinderSVG} alt="Question Finder" className="q-finder-image" />
                           <span className="tooltip-text">
@@ -110,16 +102,10 @@ export const Homepage = () => {
                             You can select more than one entry in each area.
                           </span>
                         </div>
-                      </div>
-                      <p className="resources-text-description">
-                        Specify your search criteria and we’ll generate a random selection of up to 10 questions!
-                      </p>
-                      <div className="center-container">
-                        <Link className="resources-links" to="/gameboards/new">
-                          Question finder
-                        </Link>
-                      </div>
-                    </Resources>
+                      }
+                      description="Specify your search criteria and we’ll generate a random selection of up to 10 questions!"
+                      links={[{ to: "/gameboards/new", text: "Question finder" }]}
+                    />
                   </Col>
                 </div>
               </Row>

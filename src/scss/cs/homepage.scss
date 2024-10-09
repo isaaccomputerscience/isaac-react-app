@@ -135,7 +135,7 @@
   padding: 20px;
 
   .resources-background {
-    background-color: #FFDF80;
+    background-color: #ffdf80;
     max-width: 100%;
     padding: 20px;
     display: flex;
@@ -144,7 +144,7 @@
     border-radius: 5px;
   }
 
-  .resources-sub-heading-container {
+  .resources-heading-container {
     display: flex;
     justify-content: space-between;
   }
@@ -190,28 +190,28 @@
 
   .resources-text-description {
     font-size: 19px;
-    color: #1C1C1C;
+    color: #1c1c1c;
     padding-left: 0;
     flex: 1;
   }
 
   .resources-links {
-    color: #0F0F0F;
+    color: #0f0f0f;
     font-family: "dm-sans-light", DMSans-Light, sans-serif;
     font-size: 18px;
     text-decoration: none;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: white; 
-    border: 3px solid #D60265; 
+    background-color: white;
+    border: 3px solid #d60265;
     border-radius: 5px;
     width: 230px;
     height: 48px;
     box-sizing: border-box;
 
     @media (max-width: 768px) {
-      width: 100%; 
+      width: 100%;
       height: auto;
       margin-bottom: 10px;
     }
@@ -269,7 +269,7 @@
     gap: 2px;
 
     .comment-content {
-      background-color: #FFF5FA;
+      background-color: #fff5fa;
       color: #120540;
       font-size: 20px;
       font-family: "dm-sans-light", DMSans-Light, sans-serif;
