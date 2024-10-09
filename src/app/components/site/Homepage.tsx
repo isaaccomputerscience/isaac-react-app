@@ -79,8 +79,8 @@ export const Homepage = () => {
                 <h2 className="homepage-sub-title text-left mb-4">Resources</h2>
               </div>
               <Row>
-                <div className="columns-container">
-                  <Col className="custom-col-60">
+                <div className="resources-columns-container">
+                  <Col className="resources-custom-col-60">
                     <Resources
                       heading="Computer science topics"
                       description="Discover our free computer science topics and questions, mapped to the leading exam specifications in England. Review key curriculum areas and get specific feedback to address common misconceptions."
@@ -90,11 +90,13 @@ export const Homepage = () => {
                       ]}
                     />
                   </Col>
-                  <Col className="custom-col-30">
+                  <Col className="resources-custom-col-30">
                     <Resources
                       heading="Question finder"
+                      description="Specify your search criteria and we’ll generate a random selection of up to 10 questions!"
+                      links={[{ to: "/gameboards/new", text: "Question finder" }]}
                       tooltip={
-                        <div className="tooltip-container">
+                        <div className="resources-tooltip-container">
                           <img src={questionFinderSVG} alt="Question Finder" className="q-finder-image" />
                           <span className="tooltip-text">
                             You can build a gameboard by selecting the areas of interest, stage and difficulties.
@@ -103,16 +105,14 @@ export const Homepage = () => {
                           </span>
                         </div>
                       }
-                      description="Specify your search criteria and we’ll generate a random selection of up to 10 questions!"
-                      links={[{ to: "/gameboards/new", text: "Question finder" }]}
                     />
                   </Col>
                 </div>
               </Row>
               <br />
-              <div className="center-container">
-                <div className="resource-comment">
-                  <div className="comment-content">
+              <div className="resources-center-container">
+                <div className="resources-comment">
+                  <div className="resources-comment-content">
                     <img src={starSVG} alt="Star" className="star-img" />
                     <p>95% of teachers rate the quality of Isaac CS resources as good or very good.</p>
                   </div>
