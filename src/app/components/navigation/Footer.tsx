@@ -12,7 +12,11 @@ export const Footer = () => (
         <Row className="px-3 px-sm-0 pb-3 pb-md-4 footer-content">
           <Col xs="12" lg="3" className="pt-5 logo-col">
             <Link to="/">
-              <img src="/assets/logo_footer.svg" className="footerLogo" alt="Isaac Computer Science homepage" />
+              <img
+                src="/assets/logo_footer.svg"
+                className="footerLogo d-block w-100"
+                alt="Isaac Computer Science homepage"
+              />
             </Link>
             <div className="footer-links logo-text pt-3">
               <p>
