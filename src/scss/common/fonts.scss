@@ -422,6 +422,14 @@
 }
 
 @font-face {
+  font-family: "roboto-700";
+  font-weight: 700;
+  font-style: normal;
+  src: url("/assets/fonts/Roboto-Bold.ttf");
+  src: url("/assets/fonts/Roboto-Bold.ttf") format("truetype");
+}
+
+@font-face {
   font-family: "dm-sans-light";
   font-weight: 300;
   font-style: normal;
@@ -440,10 +448,9 @@
 }
 
 @font-face {
-  font-family: "roboto-700";
+  font-family: "dm-sans-700";
   font-weight: 700;
   font-style: normal;
-  src: url("/assets/fonts/Roboto-Bold.ttf");
-  src: 
-    url("/assets/fonts/Roboto-Bold.ttf") format("truetype"),
+  src: url("/assets/fonts/DMSans-Bold.ttf");
+  src: url("/assets/fonts/DMSans-Bold.ttf") format("truetype");
 }
