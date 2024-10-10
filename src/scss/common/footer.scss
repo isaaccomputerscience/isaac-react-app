@@ -363,22 +363,12 @@
 //     margin-bottom: 5px;
 //     text-align: left;
 //   }
-//   .footer-bottom-logos {
-//     flex-direction: column;
-//     align-items: center;
-//     gap: 20px;
-//   }
 
 //   .footer-bottom-logos img {
 //     height: auto;
 //     width: auto;
 //     max-width: 90%;
 //     margin-bottom: 20px;
-//   }
-
-//   .footer-bottom-logos img[alt="STEM Learning"] {
-//     max-width: 90%;
-//     align-items: end;
 //   }
 // }
 
@@ -405,5 +395,18 @@
     flex-wrap: wrap;
     justify-content: flex-start;
     flex-direction: row !important;
+  }
+
+  .footer-bottom-logos img {
+    height: auto;
+    width: auto;
+    max-width: 90%;
+    margin-bottom: 20px;
+  }
+
+  .footer-bottom-logos {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
   }
 }
