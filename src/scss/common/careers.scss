@@ -5,6 +5,13 @@
     background-color: #ffdf80;
   }
 
+  &-background-img {
+    background-image: url("../../../public/assets/CareerBackground.svg");
+    background-repeat: no-repeat;
+    background-position: left;
+    background-size: contain;
+  }
+
   &-title {
     color: #120540;
     font-size: 40px;
