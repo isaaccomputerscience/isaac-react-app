@@ -319,10 +319,10 @@
 //   }
 // }
 
-// @media only screen and (max-width: 768px) {
+// @media only screen and (min-width: 480px) and (max-width: 768px) {
 //   .footer-links .footer-support-links {
-//     flex-direction: column !important;
-//     align-items: flex-start !important;
+//     // flex-direction: column !important;
+//     // align-items: flex-start !important;
 
 //     .h5 {
 //       width: 100%;
@@ -344,11 +344,6 @@
 //         text-align: left;
 //       }
 //     }
-//   }
-
-//   .footer-bottom-links.d-flex.flex-row {
-//     flex-direction: column !important;
-//     align-items: flex-start !important;
 //   }
 
 //   .footer-bottom-links {
@@ -395,12 +390,6 @@
 // }
 
 @media only screen and (max-width: 480px) {
-  .footer-links .footer-support-links,
-  .footer-bottom-links {
-    width: 100%;
-    flex-direction: column !important;
-  }
-
   .footer-links .footer-support-links .h5, 
   .footer-bottom-links .h5 {
     margin-bottom: 15px;
@@ -408,27 +397,14 @@
     width: 100%;
   }
 
-  .footer-links .footer-support-links .link-list,
-  .footer-bottom-links .link-list {
-    flex-direction: column !important;
-  }
-
-  .footer-links .footer-support-links .link-list a,
-  .footer-bottom-links .list-link-item a {
-    text-align: left;
-    padding-left: 5px;
-    padding-right: 0;
+  .footer-links .footer-support-links a,
+  .footer-bottom-links a {
     margin-bottom: 10px;
-  }
-
-  .footer-links-social {
-    width: 100%;
   }
 
   .footer-links-social .h5-social {
     margin-bottom: 15px;
     text-align: left;
-    padding-bottom: 15px;
   }
 
   .footer-links-social .link-list {
@@ -436,19 +412,5 @@
     flex-wrap: wrap;
     justify-content: flex-start;
     flex-direction: row !important;
-  }
-
-  .footer-links-social .list-link-item {
-    margin-right: 15px;
-    margin-bottom: 10px;
-  }
-
-  .footer-links-social .logo-mr {
-    width: 30px;
-    height: 30px;
-  }
-
-  .footer-bottom-logos img[alt="STEM Learning"] {
-    max-width: 220px;
   }
 }
