@@ -15,12 +15,9 @@
   color: white;
 
   .footer-support-links {
-
-
     .h5 {
       font-family: $footer-links-font;
       padding-right: 30px;
-      margin-bottom: 0;
     }
 
     .link-list {
@@ -105,6 +102,15 @@
 .footer-bottom {
   background-color: white;
   width: 100%;
+
+  .h5 {
+    color: black;
+    font-family: $footer-links-font;
+    font-size: 20px;
+    padding-right: 30px;
+    margin-bottom: 0;
+  }
+
   .footer-bottom-info {
     p {
       font-family: $footer-text-font;
@@ -124,24 +130,16 @@
   }
 }
 
-.footer-bottom-links {
-  color: black;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
+// .footer-bottom-links {
+//   color: black;
+//   // display: flex;
+//   // flex-direction: row;
+//   // align-items: center;
+// }
 
 .footer-bottom-links a {
   color: black;
   padding-right: 30px;
-}
-
-.h5-bottom {
-  color: black;
-  font-family: $footer-links-font;
-  font-size: 20px;
-  padding-right: 30px;
-  margin-bottom: 0px !important;
 }
 
 .list-link-item {
@@ -403,8 +401,8 @@
     flex-direction: column !important;
   }
 
-  .footer-links .footer-support-links .h5,
-  .h5-bottom {
+  .footer-links .footer-support-links .h5, 
+  .footer-bottom-links .h5 {
     margin-bottom: 15px;
     text-align: left;
     width: 100%;
