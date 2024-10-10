@@ -122,7 +122,7 @@ export const Homepage = () => {
           </section>
         )}
 
-        <section id="careers" className="banner-primary pattern-05 p-5">
+        <section id="careers" className="career-section">
           <CareersBanner />
         </section>
 
