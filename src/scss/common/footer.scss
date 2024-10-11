@@ -160,10 +160,6 @@
 }
 
 @media only screen and (min-width: 990px) {
-  .footer-links .footer-support-links, .footer-bottom-links {
-    flex-direction: row;
-  }
-
   .footer-bottom-logos img[alt="National Centre for Computing Education website"],
   .footer-bottom-logos img[alt="STEM Learning"] {
     height: 110px;
@@ -177,34 +173,6 @@
     max-width: 90px;
   }
 }
-
-@media only screen and (min-width: 990px) and (max-width: 1200px) {
-  .footer-links .footer-support-links {
-    flex-direction: row;
-
-    .link-list a {
-      padding-right: 20px;
-    }
-  }
-
-  .footer-bottom-links {
-    flex-direction: row;
-  }
-
-  .footer-bottom-logos img[alt="National Centre for Computing Education website"],
-  .footer-bottom-logos img[alt="STEM Learning"] {
-    height: 110px;
-    width: auto;
-    max-width: 180px;
-  }
-
-  .footer-bottom-logos img[alt="UK Department for Education"] {
-    height: 80px;
-    width: auto;
-    max-width: 90px;
-  }
-}
-
 
 @media only screen and (min-width: 769px) and (max-width: 989px) {
   .footer-bottom-logos {
