@@ -1,10 +1,11 @@
 import React from "react";
-import { Col, Container, Row } from "reactstrap";
+import { Card, CardBody, CardImg, CardText, CardTitle, Col, Container, Row } from "reactstrap";
 import { selectors, useAppSelector } from "../../state";
 import { isStudent } from "../../services";
 import careerVideos from "../../assets/career_videos.json";
 import { Link } from "react-router-dom";
 import starSVG from "../../../../public/assets/star.svg";
+import PropTypes from "prop-types";
 
 const CsAtWorkDescription = () => {
   const user = useAppSelector(selectors.user.orNull);
@@ -20,6 +21,42 @@ const CsAtWorkDescription = () => {
   return <p className="mb-3">{!user?.loggedIn ? loggedOutDescription : roleSpecificDescription}</p>;
 };
 
+interface CareerCardProps {
+  imgSrc?: string;
+  imgAlt?: string;
+  title: string;
+  text: string | JSX.Element;
+  linkTo: string;
+  linkText: string;
+  children?: React.ReactNode;
+}
+
+const CareerCard: React.FC<CareerCardProps> = ({ imgSrc, imgAlt, title, text, linkTo, linkText, children }) => (
+  <Card className="career-card">
+    {imgSrc && <CardImg variant="top" src={imgSrc} alt={imgAlt} className="career-media-row-image" />}
+    <CardBody className="career-card-body">
+      {children}
+      <CardTitle className="career-subtitle">{title}</CardTitle>
+      <CardText className="career-text">{text}</CardText>
+      <div className="career-link-column">
+        <Link className="career-link" to={linkTo}>
+          {linkText}
+        </Link>
+      </div>
+    </CardBody>
+  </Card>
+);
+
+CareerCard.propTypes = {
+  imgSrc: PropTypes.string,
+  imgAlt: PropTypes.string,
+  title: PropTypes.string.isRequired,
+  text: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
+  linkTo: PropTypes.string.isRequired,
+  linkText: PropTypes.string.isRequired,
+  children: PropTypes.node,
+};
+
 const videoId = careerVideos[0].video;
 
 export const CareersBanner = () => {
@@ -29,46 +66,35 @@ export const CareersBanner = () => {
       <Container className="career-section">
         <h4 className="career-title">Careers in Computer Science</h4>
         <Row className="career-media-row">
-          <Col className="d-flex">
-            <img src="/assets/cs_journeys.svg" alt="cs journeys" className="career-media-row-image" />
-            <div className="career-text-row-column">
-              <h4 className="career-subtitle">Computer Science Journeys</h4>
-              <p className="career-text">
-                Discover our interview series and learn from passionate educators and recent computer science graduates
-                in the Isaac community, who are excelling in various computing fields.
-              </p>
-              <Col className="career-link-column">
-                <Link className="career-link" to={`/pages/computer_science_journeys_gallery`}>
-                  Read our interviews
-                </Link>
-              </Col>
-            </div>
+          <Col>
+            <CareerCard
+              imgSrc="/assets/cs_journeys.svg"
+              imgAlt="cs journeys"
+              title="Computer Science Journeys"
+              text="Discover our interview series and learn from passionate educators and recent computer science graduates in the Isaac community, who are excelling in various computing fields."
+              linkTo="/pages/computer_science_journeys_gallery"
+              linkText="Read our interviews"
+            />
           </Col>
           <Col>
-            <div className="career-media-row-column">
-              <iframe
-                title="career-video"
-                className="career-media-row-video no-border"
-                id="ytplayer"
-                width="100%"
-                height="100%"
-                src={`https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&fs=1&modestbranding=1`}
-                allowFullScreen
-              />
-            </div>
-            <div className="career-text-row-column">
-              <h4 className="career-subtitle">
-                {isStudent(user) ? "Linking computer science to the real world" : "Computer Science at work"}
-              </h4>
-              <div className="career-text">
-                <CsAtWorkDescription />
+            <CareerCard
+              title={isStudent(user) ? "Linking computer science to the real world" : "Computer Science at work"}
+              text={<CsAtWorkDescription />}
+              linkTo="/careers_in_computer_science"
+              linkText="See more career videos"
+            >
+              <div className="career-media-row-column">
+                <iframe
+                  title="career-video"
+                  className="career-media-row-video no-border"
+                  id="ytplayer"
+                  width="100%"
+                  height="100%"
+                  src={`https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&fs=1&modestbranding=1`}
+                  allowFullScreen
+                />
               </div>
-              <Col className="career-link-column">
-                <Link className="career-link" to={`/careers_in_computer_science`}>
-                  See more career videos
-                </Link>
-              </Col>
-            </div>
+            </CareerCard>
           </Col>
         </Row>
         <div className="career-comment">
