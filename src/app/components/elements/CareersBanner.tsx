@@ -5,7 +5,6 @@ import { isStudent } from "../../services";
 import careerVideos from "../../assets/career_videos.json";
 import { Link } from "react-router-dom";
 import starSVG from "../../../../public/assets/star.svg";
-import PropTypes from "prop-types";
 
 const CsAtWorkDescription = () => {
   const user = useAppSelector(selectors.user.orNull);
@@ -46,16 +45,6 @@ const CareerCard = ({ imgSrc, imgAlt, title, text, linkTo, linkText, children }:
     </CardBody>
   </Card>
 );
-
-CareerCard.propTypes = {
-  imgSrc: PropTypes.string,
-  imgAlt: PropTypes.string,
-  title: PropTypes.string.isRequired,
-  text: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
-  linkTo: PropTypes.string.isRequired,
-  linkText: PropTypes.string.isRequired,
-  children: PropTypes.node,
-};
 
 const videoId = careerVideos[0].video;
 
