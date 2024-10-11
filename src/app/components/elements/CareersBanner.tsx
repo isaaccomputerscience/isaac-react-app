@@ -31,7 +31,7 @@ interface CareerCardProps {
   children?: React.ReactNode;
 }
 
-const CareerCard: React.FC<CareerCardProps> = ({ imgSrc, imgAlt, title, text, linkTo, linkText, children }) => (
+const CareerCard = ({ imgSrc, imgAlt, title, text, linkTo, linkText, children }: CareerCardProps) => (
   <Card className="career-card">
     {imgSrc && <CardImg variant="top" src={imgSrc} alt={imgAlt} className="career-media-row-image" />}
     <CardBody className="career-card-body">
