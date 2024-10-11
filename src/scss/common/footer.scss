@@ -5,12 +5,6 @@
   color: white;
 }
 
-.link-list {
-  a {
-    font-family: $footer-links-font;
-  }
-}
-
 .footer-links {
   color: white;
 
@@ -35,12 +29,9 @@
     }
   }
 
-  .h5-social {
-    color: white;
+  .h5 {
     font-family: $footer-links-font;
-    font-size: 20px;
     padding-right: 30px;
-    margin-bottom: 0px !important;
   }
 
   a {
@@ -101,7 +92,6 @@
 
 .footer-bottom {
   background-color: white;
-  width: 100%;
 
   .h5 {
     color: black;
@@ -136,7 +126,7 @@
 }
 
 .print-font {
-  font-family:$footer-bold-font;
+  font-family: $footer-bold-font;
   color: black !important;
 }
 
@@ -145,18 +135,6 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: nowrap;
-}
-
-.footer-bottom-logos img {
-  height: auto;
-  width: auto;
-  max-width: 100px;
-}
-
-.footer-bottom-logos img[alt="STEM Learning"] {
-  height: auto;
-  width: auto;
-  max-width: 120px;
 }
 
 @media only screen and (min-width: 990px) {
