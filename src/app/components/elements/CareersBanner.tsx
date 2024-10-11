@@ -71,7 +71,7 @@ export const CareersBanner = () => {
               imgSrc="/assets/cs_journeys.svg"
               imgAlt="cs journeys"
               title="Computer Science Journeys"
-              text="Discover our interview series and learn from passionate educators and recent computer science graduates in the Isaac community, who are excelling in various computing fields."
+              text="Discover our interview series and learn from passionate educators within the Isaac community, and recently graduated computer scientists, who are doing amazing things in a huge range of computing-related fields."
               linkTo="/pages/computer_science_journeys_gallery"
               linkText="Read our interviews"
             />
