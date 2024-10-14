@@ -145,6 +145,10 @@
 }
 
 @media only screen and (min-width: 769px) and (max-width: 989px) {
+  .links-col {
+    padding-top: 0.5rem !important;
+  }
+  
   .footer-bottom-logos img {
     height: auto;
     width: auto;
@@ -154,6 +158,10 @@
 }
 
 @media only screen and (min-width: 480px) and (max-width: 768px) {
+  .links-col {
+    padding-top: 0.5rem !important;
+  }
+
   .footer-links .footer-support-links .h5, 
   .footer-bottom-links .h5 {
     margin-bottom: 15px;
@@ -174,6 +182,10 @@
 }
 
 @media only screen and (max-width: 480px) {
+  .links-col {
+    padding-top: 0.5rem !important;
+  }
+
   .footer-links .footer-support-links .h5, 
   .footer-bottom-links .h5 {
     margin-bottom: 15px;
@@ -196,6 +208,7 @@
     flex-wrap: wrap;
     justify-content: flex-start;
     flex-direction: row !important;
+    padding-bottom: auto;
   }
 
   .footer-bottom-logos img {

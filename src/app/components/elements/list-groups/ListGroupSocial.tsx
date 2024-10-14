@@ -6,7 +6,7 @@ import { ExternalLink } from "../ExternalLink";
 export const ListGroupSocial = () => {
   return (
     <div className="footer-links footer-links-social">
-      <ListGroup className="mt-3 pb-5 py-lg-3 link-list d-flex flex-row">
+      <ListGroup className="mt-3 pb-4 py-lg-3 link-list d-flex flex-row">
         <h2 className="h5">Social</h2>
         {Object.entries(SOCIAL_LINKS).map(([_, { name, href }]) => (
           <ListGroupItem key={name} className="border-0 px-2 py-0 pb-1 bg-transparent list-link-item">
