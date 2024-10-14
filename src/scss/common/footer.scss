@@ -92,6 +92,7 @@
 
 .footer-bottom {
   background-color: white;
+  width: 100%;
 
   .h5 {
     color: black;
@@ -114,8 +115,7 @@
   .footer-bottom-logos {
     @include respond-above(md) {
       width: 40%;
-      margin-left: 150px;
-      gap: 30px;
+      margin-left: 17%;
     }
   }
 }
@@ -138,31 +138,18 @@
 }
 
 @media only screen and (min-width: 990px) {
-  .footer-bottom-logos img[alt="National Centre for Computing Education website"],
-  .footer-bottom-logos img[alt="STEM Learning"] {
-    height: 110px;
+  .footer-bottom-logos img {
+    height: auto;
     width: auto;
-    max-width: 190px;
-  }
-
-  .footer-bottom-logos img[alt="UK Department for Education"] {
-    height: 80px;
-    width: auto;
-    max-width: 90px;
   }
 }
 
 @media only screen and (min-width: 769px) and (max-width: 989px) {
-  .footer-bottom-logos {
-    gap: 20px;
-  }
-
   .footer-bottom-logos img {
     height: auto;
     width: auto;
-    max-width: 150px;
-    flex: 1 1 calc(33.33% - 20px);
-    margin: 10px;
+    max-width: 90%;
+    margin-bottom: 20px;
   }
 }
 
