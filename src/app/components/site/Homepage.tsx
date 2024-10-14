@@ -133,7 +133,7 @@ export const Homepage = () => {
             })}
           >
             <div data-testid={"news-carousel"} className="eventList pt-3 pt-md-4 pattern-03-reverse">
-              <h2 className="h-title mb-4 pt-lg-3">News</h2>
+              <h2 className="homepage-sub-title mb-4 pt-lg-3">News</h2>
               <NewsCarousel items={carouselNewsItems} />
             </div>
           </Container>

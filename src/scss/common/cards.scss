@@ -254,6 +254,11 @@
       transform: translate(-50%);
     }
   }
+  .centered-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 .news-card + a,
 .events-carousel + a {
