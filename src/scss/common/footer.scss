@@ -148,12 +148,18 @@
   .links-col {
     padding-top: 0.5rem !important;
   }
-  
+
+  .footer-bottom-info {
+    p {
+      padding-bottom: 1.5rem !important;
+    }
+  }
+
   .footer-bottom-logos img {
     height: auto;
     width: auto;
     max-width: 90%;
-    margin-bottom: 20px;
+    padding-left: 14px;
   }
 }
 
@@ -173,11 +179,17 @@
     margin-bottom: 10px;
   }
 
+  .footer-bottom-info {
+    p {
+      padding-bottom: 1.5rem !important;
+    }
+  }
+
   .footer-bottom-logos img {
     height: auto;
     width: auto;
     max-width: 90%;
-    margin-bottom: 20px;
+    padding-left: 14px;
   }
 }
 
@@ -211,11 +223,17 @@
     padding-bottom: auto;
   }
 
+  .footer-bottom-info {
+    p {
+      padding-bottom: 0.5rem !important;
+    }
+  }
+
   .footer-bottom-logos img {
     height: auto;
     width: auto;
     max-width: 90%;
-    margin-bottom: 20px;
+    padding-left: 14px;
   }
 
   .footer-bottom-logos {
