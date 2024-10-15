@@ -21,7 +21,7 @@ let key = 0;
 const footerLinks = {
   right: [
     <FooterLink key={key++} linkTo="/accessibility">
-      Accessibility <span className="d-none d-md-inline"></span>
+      Accessibility
     </FooterLink>,
     <FooterLink key={key++} linkTo="/cookies">
       Cookie policy
