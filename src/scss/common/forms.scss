@@ -156,6 +156,7 @@ button {
 .search--main-group,
 .search--filter-group {
   &.form-group {
+    display: flex;
     margin: 0;
     position: relative;
     flex-wrap: nowrap;

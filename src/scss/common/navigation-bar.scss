@@ -14,15 +14,15 @@ nav {
     .navbar-toggler {
       border-width: 0;
       color: $black;
-      font-family: $secondary-font-medium;
+      font-family: "dm-sans-light", DMSans-Light, sans-serif;
       padding: 0.8rem 0 0.8rem 0.1rem;
       position: absolute;
       right: 9%;
-      text-transform: uppercase;
       top: 15px;
+      text-decoration: none;
 
       &:hover {
-        text-decoration: underline;
+        text-decoration: none;
       }
     }
 

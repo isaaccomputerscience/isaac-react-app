@@ -4,12 +4,10 @@ import { selectors, useAppSelector } from "../../state";
 import { Col, Container, Row } from "reactstrap";
 import { MainSearch } from "../elements/MainSearch";
 import { NavigationBar } from "./NavigationBar";
-import { useDeviceSize } from "../../services";
 
 export const Header = () => {
   const user = useAppSelector(selectors.user.orNull);
   const mainContentId = useAppSelector(selectors.mainContentId.orDefault);
-  const deviceSize = useDeviceSize();
   return (
     <header className="light" data-testid={"header"}>
       <Container className="container-fluid px-0">
@@ -30,12 +28,10 @@ export const Header = () => {
                 {user &&
                   (!user.loggedIn ? (
                     <React.Fragment>
-                      <div className="login mx-5 mx-sm-2">
-                        <Link to="/login">
+                      <div className="login mx-5 mx-sm-2 d-flex flex-row">
+                        <Link to="/login" className="mr-3">
                           <span>Log in</span>
                         </Link>
-                      </div>
-                      <div className="signup m-0 mr-md-4 ml-md-3">
                         <Link to="/register">
                           <span>Sign up</span>
                         </Link>
@@ -43,12 +39,10 @@ export const Header = () => {
                     </React.Fragment>
                   ) : (
                     <React.Fragment>
-                      <div className="my-account mx-5 mx-sm-2">
-                        <Link to="/account">
-                          <span>{`${!["xs"].includes(deviceSize) ? "My " : ""}Account`}</span>
+                      <div className="my-account mx-5 mx-sm-2 d-md-flex flex-md-row">
+                        <Link to="/account" className="mr-md-3">
+                          <span>My Account</span>
                         </Link>
-                      </div>
-                      <div className="logout m-0 mr-md-4 ml-md-3">
                         <Link to="/logout">
                           <span>Logout</span>
                         </Link>
