@@ -123,6 +123,10 @@
 .footer-bottom-links a {
   color: black;
   padding-right: 30px;
+  
+  &:hover {
+    color: black;
+  }
 }
 
 .print-font {
