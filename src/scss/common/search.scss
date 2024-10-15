@@ -52,7 +52,11 @@ nav.search {
 
   .navbar-toggler {
     border-width: 0;
+    width: 40px;
+    height: 40px;
     position: absolute;
+    border-radius: 10px;
+    background-color: #d60265;
 
     @include respond-below(xs) {
       right: 19%;
@@ -64,7 +68,9 @@ nav.search {
     }
 
     .navbar-toggler-icon {
-      background-image: url("/assets/search-icon.svg");
+      background-image: url("../../../public/assets/SearchIcon.svg");
+      width: 20px;
+      height: 20px;
     }
 
     &.open {
