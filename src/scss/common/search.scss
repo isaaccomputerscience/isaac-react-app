@@ -59,11 +59,11 @@ nav.search {
     background-color: #d60265;
 
     @include respond-below(xs) {
-      right: 19%;
+      right: 12%;
       top: 19px;
     }
     @include respond-above(xs) {
-      right: 90px;
+      right: 70px;
       top: 19px;
     }
 
