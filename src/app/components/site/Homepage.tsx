@@ -1,15 +1,16 @@
 import React, { useEffect } from "react";
 import { useAppSelector, selectors, isaacApi } from "../../state";
 import { Link } from "react-router-dom";
-import { Button, Col, Container } from "reactstrap";
+import { Col, Container, Row } from "reactstrap";
 import { SITE_SUBJECT_TITLE } from "../../services";
 import { NewsCarousel } from "../elements/NewsCarousel";
 import { EventsCarousel } from "../elements/EventsCarousel";
 import classNames from "classnames";
-import { PromoContent } from "../elements/PromoContent";
-import { ShowLoading } from "../handlers/ShowLoading";
 import { Dashboard } from "../elements/Dashboard";
 import { CareersBanner } from "../elements/CareersBanner";
+import questionFinderSVG from "../../../../public/assets/q-finder.svg";
+import starSVG from "../../../../public/assets/star.svg";
+import Resources from "../elements/Resources";
 
 export const Homepage = () => {
   useEffect(() => {
@@ -28,7 +29,7 @@ export const Homepage = () => {
     orderDescending: true,
   });
 
-  const [teacherPromoItem, loggedOutPromoItem] = promo
+  const [teacherPromoItem] = promo
     ? [
         promo.find((item) => item && !item?.id?.includes("public")),
         promo.find((item) => item && item?.id?.includes("public")),
@@ -71,7 +72,57 @@ export const Homepage = () => {
           </section>
         )}
 
-        <section id="careers" className="banner-primary pattern-05 p-5">
+        {!user?.loggedIn && (
+          <section id="resources" className="resources-section">
+            <Container className="pt-4 pb-5">
+              <div className="pt-5">
+                <h2 className="homepage-sub-title text-left mb-4">Resources</h2>
+              </div>
+              <Row>
+                <div className="resources-columns-container">
+                  <Col className="resources-custom-col-60">
+                    <Resources
+                      heading="Computer science topics"
+                      description="Discover our free computer science topics and questions, mapped to the leading exam specifications in England. Review key curriculum areas and get specific feedback to address common misconceptions."
+                      links={[
+                        { to: "/topics/gcse", text: "GCSE topics" },
+                        { to: "/topics/a_level", text: "A level topics" },
+                      ]}
+                    />
+                  </Col>
+                  <Col className="resources-custom-col-30">
+                    <Resources
+                      heading="Question finder"
+                      description="Specify your search criteria and we’ll generate a random selection of up to 10 questions!"
+                      links={[{ to: "/gameboards/new", text: "Question finder" }]}
+                      tooltip={
+                        <div className="resources-tooltip-container">
+                          <img src={questionFinderSVG} alt="Question Finder" className="q-finder-image" />
+                          <span className="tooltip-text">
+                            You can build a gameboard by selecting the areas of interest, stage and difficulties.
+                            <br />
+                            You can select more than one entry in each area.
+                          </span>
+                        </div>
+                      }
+                    />
+                  </Col>
+                </div>
+              </Row>
+              <br />
+              <div className="resources-center-container">
+                <div className="resources-comment">
+                  <div className="resources-comment-content">
+                    <img src={starSVG} alt="Star" className="star-img" />
+                    <p>95% of teachers rate the quality of Isaac CS resources as good or very good.</p>
+                  </div>
+                </div>
+              </div>
+            </Container>
+          </section>
+        )}
+
+        <section id="careers" className="career-section">
           <CareersBanner />
         </section>
 
@@ -82,24 +133,11 @@ export const Homepage = () => {
             })}
           >
             <div data-testid={"news-carousel"} className="eventList pt-3 pt-md-4 pattern-03-reverse">
-              <h2 className="h-title mb-4 pt-lg-3">News</h2>
+              <h2 className="homepage-sub-title mb-4 pt-lg-3">News</h2>
               <NewsCarousel items={carouselNewsItems} />
             </div>
           </Container>
         </section>
-
-        {!user?.loggedIn && (
-          <section id="promo-content" className="row bg-primary pattern-05">
-            <ShowLoading
-              until={promo}
-              thenRender={() => (
-                <Container>
-                  <Col className="py-5">{loggedOutPromoItem && <PromoContent item={loggedOutPromoItem} />}</Col>
-                </Container>
-              )}
-            />
-          </section>
-        )}
 
         {user?.loggedIn && (
           <section id="events">
@@ -114,21 +152,6 @@ export const Homepage = () => {
                 <EventsCarousel />
                 <Link to="/events">See all Events</Link>
               </div>
-            </Container>
-          </section>
-        )}
-
-        {!user?.loggedIn && (
-          <section className="row">
-            <Container>
-              <Col className="py-4 px-5 mb-5 d-flex align-items-center flex-column flex-md-row border border-dark">
-                <h3 className="text-center text-md-left mr-md-4 mr-lg-0 mb-3 mb-md-0">
-                  Sign up to track your progress
-                </h3>
-                <Button tag={Link} size="lg" className="ml-md-auto mr-md-3 mr-lg-5 btn-xl" to={"/register"}>
-                  Sign up
-                </Button>
-              </Col>
             </Container>
           </section>
         )}
