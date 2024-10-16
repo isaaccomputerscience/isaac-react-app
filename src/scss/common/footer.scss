@@ -11,7 +11,6 @@
   .footer-support-links {
     .h5 {
       font-family: $footer-links-font;
-      padding-right: 30px;
     }
 
     .link-list {
@@ -20,7 +19,6 @@
         font-family: $footer-text-font;
         color: white;
         text-decoration: none;
-        padding-right: 30px;
 
         &:hover {
           color: white;
@@ -31,7 +29,6 @@
 
   .h5 {
     font-family: $footer-links-font;
-    padding-right: 30px;
   }
 
   a {
@@ -47,7 +44,6 @@
   .footerLink {
     font-family: $footer-text-font;
     font-size: 16px;
-    padding-right: 20px;
   }
 
   .logo-col {
@@ -81,7 +77,6 @@
   font-family: $footer-text-font;
   font-size: 14px;
   line-height: 16.41px;
-  margin-top: 20px; 
 }
 
 .link-list {
@@ -98,8 +93,6 @@
     color: black;
     font-family: $footer-links-font;
     font-size: 20px;
-    padding-right: 30px;
-    margin-bottom: 0;
   }
 
   .footer-bottom-info {
