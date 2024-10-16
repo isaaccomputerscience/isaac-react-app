@@ -163,30 +163,26 @@ export const Dashboard = ({
 
   const loggedOutContent = (
     <Row>
-      <Col className="ml-5">
-        <img src={HomepageImage} alt="Description" style={{ width: "521px", height: "521px" }} />
-      </Col>
-      <Col className="order-first pb-3 custom-width">
-        <Row>
-          <Col>
-            <h1 className="homepage-title">The free online textbook for computer science</h1>
-            <p className="mt-4 homepage-text">
-              Welcome to Isaac Computer Science, the learning platform for GCSE and A level students and teachers.
-            </p>
-            <p className="mt-4 mb-0 homepage-text">How we can help:</p>
-            <ul className="homepage-text">
-              <li>Access tailored content for your exam board to boost learning and revision</li>
-              <li>Save time when planning lessons and homework</li>
-              <li>Track progress on questions to pinpoint areas to work on</li>
-              <li>Work towards better exam results with quality materials written by experienced teachers</li>
-            </ul>
-          </Col>
-        </Row>
+      <Col lg={6} xs={12} className="pb-3">
+        <h1 className="homepage-title">The free online textbook for computer science</h1>
+        <p className="mt-4 homepage-text">
+          Welcome to Isaac Computer Science, the learning platform for GCSE and A level students and teachers.
+        </p>
+        <p className="mt-4 mb-0 homepage-text">How we can help:</p>
+        <ul className="homepage-text">
+          <li>Access tailored content for your exam board to boost learning and revision</li>
+          <li>Save time when planning lessons and homework</li>
+          <li>Track progress on questions to pinpoint areas to work on</li>
+          <li>Work towards better exam results with quality materials written by experienced teachers</li>
+        </ul>
         <Row className="justify-content-left mt-4">
           <Col xs="auto">
             <LoggedOutButton loggedIn={undefined} />
           </Col>
         </Row>
+      </Col>
+      <Col lg={6} xs={12} className="order-lg-2">
+        <img src={HomepageImage} alt="Description" className="img-fluid" style={{ width: "100%", height: "auto" }} />
       </Col>
     </Row>
   );
