@@ -188,6 +188,8 @@
 
   .footer-bottom-logos {
     padding-bottom: 1.5rem;
+    margin-left: 5%;
+    gap: 1.25rem;
   }
 
 }
@@ -201,22 +203,15 @@
   .footer-bottom-links .h5 {
     margin-bottom: 15px;
     text-align: left;
-    width: 100%;
-  }
-
-  .footer-links-social .h5-social {
-    margin-bottom: 15px;
-    text-align: left;
   }
   
-  .footer-bottom-logos img {
-    height: auto;
-    width: auto;
-    max-width: 90%;
-    padding-left: 14px;
+  .footer-links .footer-support-links a,
+  .footer-bottom-links a {
+    margin-bottom: 10px;
   }
 
   .footer-bottom-logos {
     gap: 1.25rem;
+    margin-left: 5%;
   }
 }
