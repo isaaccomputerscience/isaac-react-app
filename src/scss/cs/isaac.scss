@@ -7,7 +7,6 @@ $cs-hot-pink: #ff4aa0;
 $cs-reddish: #d7335f; // Used as an active colour on secondary buttons
 $focus-blue: #3e59a3; // Used as focus indicator colour on inputs
 
-
 // ----------------------------------------------
 // Colour Overrides
 // ----------------------------------------------
@@ -235,8 +234,8 @@ button {
   }
 }
 
-.homepage-button{
-  background-color: #D60265;
+.homepage-button {
+  background-color: #d60265;
   font-size: 18px;
 }
 
@@ -251,6 +250,12 @@ button {
   font-family: "dm-sans-medium", DMSans-Medium, sans-serif;
   font-weight: 500;
   font-size: 18px;
+}
+@media (max-width: 576px) {
+  .signup {
+    margin-right: 2rem; /* Adjust as needed */
+    margin-left: 1rem; /* Adjust as needed */
+  }
 }
 
 // ----------------------------------------------
@@ -322,13 +327,13 @@ h2.h-title {
   font-family: "dm-sans-light", DMSans-Light, sans-serif;
 }
 
-.homepage-title{
+.homepage-title {
   font-family: "dm-sans-light", DMSans-Light, sans-serif;
   font-size: 48px;
   color: #120540;
 }
 
-.homepage-sub-title{
+.homepage-sub-title {
   font-family: "dm-sans-light", DMSans-Light, sans-serif;
   font-size: 40px;
   color: #120540;
@@ -344,7 +349,7 @@ h2.h-title {
 // ----------------------------------------------
 // Text Styles
 // ----------------------------------------------
-.homepage-text{
+.homepage-text {
   font-size: 19px;
 }
 
@@ -435,19 +440,19 @@ h2.h-title {
 // Homepage Event Section
 // ----------------------------------------------
 
-.event-section{
-  background-color: #FFBBDC;
+.event-section {
+  background-color: #ffbbdc;
 }
-.event-section-background-img{
-  background-image: url('../../../public/assets/EventBackground.svg');
+.event-section-background-img {
+  background-image: url("../../../public/assets/EventBackground.svg");
   background-repeat: no-repeat; // Optional: Prevent the image from repeating
   background-position: right; // Center the image
   background-size: contain;
 }
 
-.event-text-description{
+.event-text-description {
   font-size: 19px;
-  color: #1C1C1C;
+  color: #1c1c1c;
   padding-left: 0;
   max-width: 60%;
 }
@@ -455,17 +460,16 @@ h2.h-title {
 .custom-card {
   width: 322px;
   height: auto;
-  padding-top: 5px;
   max-width: 100%;
   max-height: 100%;
   box-shadow: 0 2px 10px rgba(255, 192, 0, 0.5);
   border-radius: 5px;
 }
 
-.course-name{
+.course-name {
   font-size: 24px;
   font-family: "dm-sans-light", DMSans-Light, sans-serif;
-  background-color: #F6B400;
+  background-color: #f6b400;
   padding-top: 9px;
   padding-left: 18px;
   padding-right: 18px;
@@ -474,41 +478,41 @@ h2.h-title {
   border-bottom-right-radius: 5px;
 }
 
-.card-title{
+.card-title {
   font-size: 20px;
   font-family: "dm-sans-light", DMSans-Light, sans-serif;
   color: #120540;
 }
 
-.card-sub-title{
+.card-sub-title {
   font-size: 16px;
   font-family: "roboto-700", Roboto-Bold, sans-serif;
-  color: #1C1C1C;
+  color: #1c1c1c;
 }
 
 .details-button {
   text-decoration: none;
   text-align: center;
   font-size: 19px !important;
-  color: #6B009A;
+  color: #6b009a;
   flex: 1;
 }
 
 .details-button:hover {
-  color: #6B009A;
+  color: #6b009a;
   text-decoration: none;
 }
 
-a.browse-events{
-  color: #0F0F0F;
+a.browse-events {
+  color: #0f0f0f;
   font-family: "dm-sans-light", DMSans-Light, sans-serif;
   font-size: 18px;
   text-decoration: none;
   display: inline-block;
   align-items: center;
-  background-color: white; 
-  border: 3px solid #D60265; 
-  padding: 10px 15px;  
+  background-color: white;
+  border: 3px solid #d60265;
+  padding: 10px 15px;
   border-radius: 5px;
 }
 
