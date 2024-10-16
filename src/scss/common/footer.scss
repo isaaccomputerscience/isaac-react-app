@@ -204,30 +204,11 @@
     width: 100%;
   }
 
-  .footer-links .footer-support-links a,
-  .footer-bottom-links a {
-    margin-bottom: 10px;
-  }
-
   .footer-links-social .h5-social {
     margin-bottom: 15px;
     text-align: left;
   }
-
-  .footer-links-social .link-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    flex-direction: row !important;
-    padding-bottom: auto;
-  }
-
-  .footer-bottom-info {
-    p {
-      padding-bottom: 0.5rem !important;
-    }
-  }
-
+  
   .footer-bottom-logos img {
     height: auto;
     width: auto;
