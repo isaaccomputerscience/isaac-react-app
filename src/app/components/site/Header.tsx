@@ -36,8 +36,8 @@ export const Header = () => {
                       </Link>
                     </div>
                   ) : (
-                    <div className="my-account mx-5 mx-sm-2 d-md-flex flex-md-row">
-                      <Link to="/account" className="mr-md-3">
+                    <div className="my-account mx-4 mx-sm-2 d-flex flex-row">
+                      <Link to="/account" className="mr-3">
                         <span>My Account</span>
                       </Link>
                       <Link to="/logout">

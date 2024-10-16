@@ -256,6 +256,13 @@ button {
     margin-right: 2rem; /* Adjust as needed */
     margin-left: 1rem; /* Adjust as needed */
   }
+
+  .signup span,
+  .login span,
+  .logout span,
+  .my-account span {
+    font-size: 16px;
+  }
 }
 
 // ----------------------------------------------
