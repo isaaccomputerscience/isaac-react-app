@@ -17,22 +17,21 @@ const FooterLink = ({ linkTo, children }: FooterLinkProps) => {
   );
 };
 
-let key = 0;
 const footerLinks = {
   left: [
-    <FooterLink key={key++} linkTo="/about">
+    <FooterLink key="about-us-footer-link" linkTo="/about">
       About us
     </FooterLink>,
-    <FooterLink key={key++} linkTo="/contact">
+    <FooterLink key="contact-us-footer-link" linkTo="/contact">
       Contact us
     </FooterLink>,
-    <FooterLink key={key++} linkTo="/safeguarding">
+    <FooterLink key="safeguarding-footer-link" linkTo="/safeguarding">
       Safeguarding
     </FooterLink>,
-    <FooterLink key={key++} linkTo="/support/student">
+    <FooterLink key="student-support-footer-link" linkTo="/support/student">
       Student Support
     </FooterLink>,
-    <FooterLink key={key++} linkTo="/support/teacher">
+    <FooterLink key="teacher-support-footer-link" linkTo="/support/teacher">
       Teacher Support
     </FooterLink>,
   ],

@@ -17,19 +17,18 @@ const FooterLink = ({ linkTo, children }: FooterLinkProps) => {
   );
 };
 
-let key = 0;
 const footerLinks = {
   right: [
-    <FooterLink key={key++} linkTo="/accessibility">
+    <FooterLink key="accessibility-footer-link" linkTo="/accessibility">
       Accessibility
     </FooterLink>,
-    <FooterLink key={key++} linkTo="/cookies">
+    <FooterLink key="cookie-policy-footer-link" linkTo="/cookies">
       Cookie policy
     </FooterLink>,
-    <FooterLink key={key++} linkTo="/privacy">
+    <FooterLink key="privacy-policy-footer-link" linkTo="/privacy">
       Privacy policy
     </FooterLink>,
-    <FooterLink key={key++} linkTo="/terms">
+    <FooterLink key="terms-of-use-footer-link" linkTo="/terms">
       Terms of use
     </FooterLink>,
   ],
