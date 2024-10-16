@@ -38,15 +38,15 @@ export const ListGroupFooterBottom = () => (
   <div className="footer-links footer-bottom">
     <ListGroup className="d-flex flex-wrap flex-row link-group">
       <ListGroupItem className="footer-bottom-links d-md-flex flex-md-row bg-transparent link-group w-100">
-        <h2 className="h5 pr-4">Links</h2>
+        <h2 className="h5 mb-3 mb-md-0 mr-md-4">Links</h2>
         <ListGroup className="d-md-flex flex-md-row">{footerLinks.right}</ListGroup>
       </ListGroupItem>
       <ListGroupItem className="footer-bottom-info border-0 px-0 py-0 bg-transparent">
-        <p className="pl-3 pt-2 mb-lg-0">
-          All teaching materials on this site are available under the&nbsp;
+        <p className="pl-3 pt-2 mb-lg-0 pb-2 pb-sm-0">
+          All teaching materials on this site are available under the{" "}
           <ExternalLink
             href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
-            className="d-inline font-weight-bold print-font"
+            className="d-inline fw-bold print-font"
           >
             Open Government Licence v3.0
           </ExternalLink>
