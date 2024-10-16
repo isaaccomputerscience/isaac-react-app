@@ -41,12 +41,10 @@ export const Footer = () => (
           <ListGroupFooterBottom />
         </Row>
       </Container>
-      <div>
-        <div className="float-right">
-          <ExternalLink href="https://www.stem.org.uk/">
-            <img src="/assets/logos/stem_footer.svg" alt="STEM Learning" className="logo-mr" height="100px" />
-          </ExternalLink>
-        </div>
+      <div className="w-100 d-flex justify-content-end">
+        <ExternalLink href="https://www.stem.org.uk/">
+          <img src="/assets/logos/stem_footer.svg" alt="STEM Learning" className="logo-mr" height="100px" />
+        </ExternalLink>
       </div>
     </div>
   </footer>
