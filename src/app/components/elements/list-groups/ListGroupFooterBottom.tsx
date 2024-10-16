@@ -38,7 +38,7 @@ export const ListGroupFooterBottom = () => (
   <div className="footer-links footer-bottom">
     <ListGroup className="d-flex flex-wrap flex-row link-group">
       <ListGroupItem className="footer-bottom-links d-md-flex flex-md-row bg-transparent link-group w-100">
-        <h2 className="h5">Links</h2>
+        <h2 className="h5 pr-4">Links</h2>
         <ListGroup className="d-md-flex flex-md-row">{footerLinks.right}</ListGroup>
       </ListGroupItem>
       <ListGroupItem className="footer-bottom-info border-0 px-0 py-0 bg-transparent">
@@ -54,12 +54,16 @@ export const ListGroupFooterBottom = () => (
         </p>
       </ListGroupItem>
 
-      <ListGroupItem className="footer-bottom-logos border-0 px-0 py-0 pb-4 pb-md-1 bg-transparent d-flex justify-content-between d-print-none">
-        <ExternalLink href="https://computingeducation.org.uk/">
-          <img src="/assets/logos/ncce.svg" alt="National Centre for Computing Education website" className="logo-mr" />
+      <ListGroupItem className="footer-bottom-logos border-0 px-0 py-0 bg-transparent d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center d-print-none">
+        <ExternalLink href="https://computingeducation.org.uk/" className="mb-3 mb-md-0">
+          <img
+            src="/assets/logos/ncce.svg"
+            alt="National Centre for Computing Education website"
+            className="img-fluid"
+          />
         </ExternalLink>
         <ExternalLink href="https://www.gov.uk/government/organisations/department-for-education">
-          <img src="/assets/logos/dfe.svg" alt="UK Department for Education" className="logo-mr" />
+          <img src="/assets/logos/dfe.svg" alt="UK Department for Education" className="img-fluid" />
         </ExternalLink>
       </ListGroupItem>
     </ListGroup>
