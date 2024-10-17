@@ -195,6 +195,10 @@
 }
 
 @media only screen and (max-width: 480px) {
+  .logo-col {
+    padding: 20px !important;
+  }
+  
   .links-col {
     padding-top: 0.5rem !important;
   }
