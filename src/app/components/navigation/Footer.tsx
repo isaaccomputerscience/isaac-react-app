@@ -10,7 +10,7 @@ export const Footer = () => (
   <footer>
     <div className="footerTop d-print-none">
       <Container>
-        <Row className="px-3 px-sm-0 pb-3 pb-md-4 footer-content">
+        <Row className="px-sm-0 pb-3 pb-md-4 footer-content">
           <Col xs="12" lg="3" className="pt-5 logo-col">
             <Link to="/">
               <img
@@ -37,7 +37,7 @@ export const Footer = () => (
     </div>
     <div className="footerBottom">
       <Container>
-        <Row className="pt-3 px-3 px-sm-0">
+        <Row className="pt-3 px-sm-0">
           <ListGroupFooterBottom />
         </Row>
       </Container>

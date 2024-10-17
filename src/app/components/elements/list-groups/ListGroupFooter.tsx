@@ -43,7 +43,10 @@ export const ListGroupFooter = () => (
       <h2 className="h5 mb-3 mb-md-0 mr-md-4">Support</h2>
       <ListGroup className="d-flex flex-column flex-md-row">
         {footerLinks.left.map((link, index) => (
-          <ListGroupItem key={`footer-link-${index}`} className="border-0 bg-transparent px-0 py-1 py-md-0 mr-md-3">
+          <ListGroupItem
+            key={`footer-link-${index}`}
+            className="border-0 bg-transparent px-0 py-0 mb-0 mb-md-0 mr-md-3"
+          >
             {link}
           </ListGroupItem>
         ))}
