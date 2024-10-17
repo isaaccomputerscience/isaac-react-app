@@ -27,7 +27,7 @@ export const Header = () => {
               <div className="header-links ml-auto pr-3 px-md-3 d-flex align-items-center d-print-none">
                 {user &&
                   (!user.loggedIn ? (
-                    <div className="login mx-4 mx-sm-2 d-flex flex-row">
+                    <div className="login mx-4 d-flex flex-row">
                       <Link to="/login" className="mr-3">
                         <span>Log in</span>
                       </Link>
@@ -36,7 +36,7 @@ export const Header = () => {
                       </Link>
                     </div>
                   ) : (
-                    <div className="my-account mx-4 mx-sm-2 d-flex flex-row">
+                    <div className="my-account mx-4 d-flex flex-row">
                       <Link to="/account" className="mr-3">
                         <span>My Account</span>
                       </Link>
