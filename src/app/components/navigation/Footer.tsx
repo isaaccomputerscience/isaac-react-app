@@ -19,7 +19,7 @@ export const Footer = () => (
                 alt="Isaac Computer Science homepage"
               />
             </Link>
-            <div className="footer-links logo-text pt-3 mt-4">
+            <div className="footer-links logo-text mb-1 mt-4">
               <p>
                 Isaac Computer Science is part of the
                 <Link to="/teachcomputing" style={{ color: "white", textDecoration: "none" }}>
