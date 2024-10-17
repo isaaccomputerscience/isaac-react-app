@@ -39,7 +39,7 @@ const footerLinks = {
 
 export const ListGroupFooter = () => (
   <div className="footer-links">
-    <div className="footer-support-links d-flex flex-column flex-md-row align-items-start mt-3 pb-4 py-lg-3">
+    <div className="footer-support-links d-flex flex-column flex-md-row align-items-start mt-2 pb-4 py-lg-3">
       <h2 className="h5 mb-3 mb-md-0 mr-md-4">Support</h2>
       <ListGroup className="d-flex flex-column flex-md-row">
         {footerLinks.left.map((link, index) => (
