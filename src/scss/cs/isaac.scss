@@ -94,6 +94,9 @@ $tertiary-font: "arconrounded-regular", sans-serif;
 $homepage-text-font: "roboto", Roboto;
 $homepage-title-font: "dm-sans-light", DMSans-Light;
 $homepage-button-font: "dm-sans-medium", DMSans-Medium;
+$footer-text-font: "roboto", Roboto;
+$footer-bold-font: "roboto-700", Roboto-Bold;
+$footer-links-font: "dm-sans-700", DMSans-Bold;
 
 // ----------------------------------------------
 // ISAAC
@@ -290,7 +293,7 @@ button {
 // ----------------------------------------------
 .list-group-item {
   border-width: 0;
-  width: 100%;
+  padding: 12px 16px;
 }
 
 p small {
