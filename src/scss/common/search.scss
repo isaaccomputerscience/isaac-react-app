@@ -82,6 +82,8 @@ nav.search {
     &.open {
       .navbar-toggler-icon {
         background-image: url("/assets/cross.svg");
+        width: 20px;
+        height: 20px;
       }
     }
   }
