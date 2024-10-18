@@ -114,7 +114,9 @@ export const Homepage = () => {
                 <div className="resources-comment">
                   <div className="resources-comment-content">
                     <img src={starSVG} alt="Star" className="star-img" />
-                    <p>95% of teachers rate the quality of Isaac CS resources as good or very good.</p>
+                    <p className="text-left my-3 mx-3">
+                      95% of teachers rate the quality of Isaac CS resources as good or very good.
+                    </p>
                   </div>
                 </div>
               </div>

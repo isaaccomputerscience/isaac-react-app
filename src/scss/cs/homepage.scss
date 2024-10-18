@@ -133,7 +133,7 @@
 .resources {
   &-section {
     background-color: white;
-    padding: 20px;
+    // padding: 10px;
   }
 
   &-background {
@@ -278,8 +278,7 @@
       text-align: center;
 
       @media (max-width: 768px) {
-        flex-direction: column;
-        padding: 10px;
+       
       }
 
       .star-img {
