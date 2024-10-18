@@ -97,7 +97,11 @@ export const Homepage = () => {
                       links={[{ to: "/gameboards/new", text: "Question finder" }]}
                       tooltip={
                         <div className="resources-tooltip-container">
-                          <img src={questionFinderSVG} alt="Question Finder" className="q-finder-image" />
+                          <img
+                            src={questionFinderSVG}
+                            alt="Question Finder"
+                            className="q-finder-image d-none d-md-block"
+                          />
                           <span className="tooltip-text">
                             You can build a gameboard by selecting the areas of interest, stage and difficulties.
                             <br />
@@ -114,7 +118,9 @@ export const Homepage = () => {
                 <div className="resources-comment">
                   <div className="resources-comment-content">
                     <img src={starSVG} alt="Star" className="star-img" />
-                    <p>95% of teachers rate the quality of Isaac CS resources as good or very good.</p>
+                    <p className="text-left my-3 mx-3">
+                      95% of teachers rate the quality of Isaac CS resources as good or very good.
+                    </p>
                   </div>
                 </div>
               </div>
