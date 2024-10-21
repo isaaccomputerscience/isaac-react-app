@@ -518,12 +518,14 @@ a.browse-events {
   font-family: "dm-sans-light", DMSans-Light, sans-serif;
   font-size: 18px;
   text-decoration: none;
-  display: inline-block;
+  display: flex;
+  justify-content: center;
   align-items: center;
   background-color: white;
   border: 3px solid #d60265;
-  padding: 10px 15px;
   border-radius: 5px;
+  width: 210px;
+  height: 48px;
 }
 
 .center-container {
