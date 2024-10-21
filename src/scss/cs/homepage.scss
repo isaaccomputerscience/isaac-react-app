@@ -230,6 +230,15 @@
       flex: 100%;
       max-width: 100%;
     }
+    .resources-center-container {
+      display: flex;
+      flex-direction: column;
+  
+      @media (min-width: 768px) {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
   }
 
   &-custom-col-30 {
