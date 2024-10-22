@@ -4,6 +4,7 @@
   .carousel-item {
     > div {
       display: flex;
+      justify-content: center;
     }
   }
   .carousel-indicators {
