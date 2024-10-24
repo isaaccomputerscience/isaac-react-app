@@ -1,3 +1,4 @@
+import { SCREEN_SIZES, GROUP_LIMITS } from "../../services/constants";
 import React, { useEffect, useRef, useState } from "react";
 import { Carousel, CarouselControl, CarouselItem } from "reactstrap";
 import { ifKeyIsEnter } from "../../services";
@@ -96,12 +97,12 @@ export const ResponsiveCarousel = ({ groupingLimit, children, collectionTag = "d
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  let effectiveGroupingLimit = groupingLimit || 3;
+  let effectiveGroupingLimit = groupingLimit || GROUP_LIMITS.DEFAULT;
 
-  if (screenWidth >= 769 && screenWidth <= 1024) {
-    effectiveGroupingLimit = 2;
-  } else if (screenWidth < 769) {
-    effectiveGroupingLimit = 1;
+  if (screenWidth >= SCREEN_SIZES.MOBILE && screenWidth <= SCREEN_SIZES.TABLET) {
+    effectiveGroupingLimit = GROUP_LIMITS.TABLET;
+  } else if (screenWidth < SCREEN_SIZES.MOBILE) {
+    effectiveGroupingLimit = GROUP_LIMITS.MOBILE;
   }
 
   const tuple: any = [];

@@ -17,6 +17,18 @@ export const STAGING_URL = "https://www.staging.development.isaaccomputerscience
 // eslint-disable-next-line no-undef
 export const API_VERSION: string = REACT_APP_API_VERSION || "any";
 
+// Screen size breakpoints and grouping limits
+export const SCREEN_SIZES = {
+  MOBILE: 769,
+  TABLET: 1024,
+};
+
+export const GROUP_LIMITS = {
+  DEFAULT: 3,
+  TABLET: 2,
+  MOBILE: 1,
+};
+
 /*
  * Configure the api provider with the server running the API:
  * No need if we want to use the same server as the static content.
