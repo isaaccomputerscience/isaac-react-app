@@ -1,3 +1,4 @@
+import { SCREEN_SIZES, GROUP_LIMITS } from "../../services/constants";
 import React, { useEffect, useRef, useState } from "react";
 import { Carousel, CarouselControl, CarouselItem } from "reactstrap";
 import { ifKeyIsEnter } from "../../services";
@@ -88,17 +89,29 @@ const ControlledCarouselInstance = ({ children, collectionTag }: any) => {
 };
 
 export const ResponsiveCarousel = ({ groupingLimit, children, collectionTag = "div", className }: any) => {
-  const tuple: any = [];
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
-  if (!groupingLimit || groupingLimit == 0) {
-    groupingLimit = 3;
+  useEffect(() => {
+    const handleResize = () => setScreenWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  let effectiveGroupingLimit = groupingLimit || GROUP_LIMITS.DEFAULT;
+
+  if (screenWidth >= SCREEN_SIZES.MOBILE && screenWidth <= SCREEN_SIZES.TABLET) {
+    effectiveGroupingLimit = GROUP_LIMITS.TABLET;
+  } else if (screenWidth < SCREEN_SIZES.MOBILE) {
+    effectiveGroupingLimit = GROUP_LIMITS.MOBILE;
   }
 
+  const tuple: any = [];
+
   children.forEach((child: any, index: number) => {
-    if (index % groupingLimit === 0) {
+    if (index % effectiveGroupingLimit === 0) {
       tuple.push([]);
     }
-    tuple[Math.floor(index / groupingLimit)].push(child);
+    tuple[Math.floor(index / effectiveGroupingLimit)].push(child);
   });
 
   return (
@@ -106,10 +119,14 @@ export const ResponsiveCarousel = ({ groupingLimit, children, collectionTag = "d
       <div className={`d-md-none ${className ?? ""}`}>
         <ControlledCarouselInstance collectionTag={collectionTag}>{children}</ControlledCarouselInstance>
       </div>
-      <div data-testid={"carousel-inner"} className={`d-none d-md-block ${className ?? ""}`}>
+      <div className={`d-none d-md-block d-lg-none ${className ?? ""}`}>
+        <ControlledCarouselInstance collectionTag={collectionTag}>{tuple}</ControlledCarouselInstance>
+      </div>
+      <div data-testid={"carousel-inner"} className={`d-none d-lg-block ${className ?? ""}`}>
         <ControlledCarouselInstance collectionTag={collectionTag}>{tuple}</ControlledCarouselInstance>
       </div>
     </React.Fragment>
   );
 };
+
 export default ResponsiveCarousel;
