@@ -75,7 +75,8 @@
   
   @media (max-width: 480px) {
     a[class^="carousel-control-"] {
-  
+      border-radius: 50%;
+      
       &:focus,
       &:hover {
         height: 25px;
