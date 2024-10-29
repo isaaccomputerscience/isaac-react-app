@@ -105,14 +105,19 @@ export const ResponsiveCarousel = ({ groupingLimit, children, collectionTag = "d
     effectiveGroupingLimit = GROUP_LIMITS.MOBILE;
   }
 
-  const tuple: any = [];
+  type TupleItem = React.ReactNode[];
+  const [tuple, setTuple] = useState<TupleItem[]>([]);
 
-  children.forEach((child: any, index: number) => {
-    if (index % effectiveGroupingLimit === 0) {
-      tuple.push([]);
-    }
-    tuple[Math.floor(index / effectiveGroupingLimit)].push(child);
-  });
+  useEffect(() => {
+    const calculatedTuple: TupleItem[] = [];
+    React.Children.forEach(children, (child, index) => {
+      if (index % effectiveGroupingLimit === 0) {
+        calculatedTuple.push([]);
+      }
+      calculatedTuple[Math.floor(index / effectiveGroupingLimit)].push(child);
+    });
+    setTuple(calculatedTuple);
+  }, [children, effectiveGroupingLimit]);
 
   return (
     <React.Fragment>
