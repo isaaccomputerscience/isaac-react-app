@@ -51,51 +51,53 @@ const videoId = careerVideos[0].video;
 export const CareersBanner = () => {
   const user = useAppSelector(selectors.user.orNull);
   return (
-    <div className="career-background-img">
-      <Container className="career-section">
-        <h4 className="career-title">Careers in Computer Science</h4>
-        <Row className="career-media-row">
-          <Col>
-            <CareerCard
-              imgSrc="/assets/cs_journeys.svg"
-              imgAlt="cs journeys"
-              title="Computer Science Journeys"
-              text="Discover our interview series and learn from passionate educators within the Isaac community, and recently graduated computer scientists, who are doing amazing things in a huge range of computing-related fields."
-              linkTo="/pages/computer_science_journeys_gallery"
-              linkText="Read our interviews"
-            />
-          </Col>
-          <Col>
-            <CareerCard
-              title={isStudent(user) ? "Linking computer science to the real world" : "Computer Science at work"}
-              text={<CsAtWorkDescription />}
-              linkTo="/careers_in_computer_science"
-              linkText="See more career videos"
-            >
-              <div className="career-media-row-column">
-                <iframe
-                  title="career-video"
-                  className="career-media-row-video no-border"
-                  id="ytplayer"
-                  width="100%"
-                  height="100%"
-                  src={`https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&fs=1&modestbranding=1`}
-                  allowFullScreen
-                />
-              </div>
-            </CareerCard>
-          </Col>
-        </Row>
-        <div className="career-comment">
-          <div className="resources-comment-content">
-            <img src={starSVG} alt="Star" className="star-img" />
-            <p>
-              Students have been able to dive deeper into topics by using Isaac CS, which has led to further interest
-              and helped them understand what topics they may like to study in post 16 and post 18 study.
-            </p>
+    <Container className="pt-4 pb-5">
+      <div className="career-background-img">
+        <Container className="career-section">
+          <h4 className="career-title">Careers</h4>
+          <Row className="career-media-row">
+            <Col>
+              <CareerCard
+                imgSrc="/assets/cs_journeys.svg"
+                imgAlt="cs journeys"
+                title="Computer Science Journeys"
+                text="Discover our interview series and learn from passionate educators within the Isaac community, and recently graduated computer scientists, who are doing amazing things in a huge range of computing-related fields."
+                linkTo="/pages/computer_science_journeys_gallery"
+                linkText="Read our interviews"
+              />
+            </Col>
+            <Col>
+              <CareerCard
+                title={isStudent(user) ? "Linking computer science to the real world" : "Computer Science at work"}
+                text={<CsAtWorkDescription />}
+                linkTo="/careers_in_computer_science"
+                linkText="See more career videos"
+              >
+                <div className="career-media-row-column">
+                  <iframe
+                    title="career-video"
+                    className="career-media-row-video no-border"
+                    id="ytplayer"
+                    width="100%"
+                    height="100%"
+                    src={`https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&fs=1&modestbranding=1`}
+                    allowFullScreen
+                  />
+                </div>
+              </CareerCard>
+            </Col>
+          </Row>
+          <div className="career-comment">
+            <div className="resources-comment-content">
+              <img src={starSVG} alt="Star" className="star-img" />
+              <p className="text-left my-3 mx-3">
+                Students have been able to dive deeper into topics by using Isaac CS, which has led to further interest
+                and helped them understand what topics they may like to study in post 16 and post 18 study.
+              </p>
+            </div>
           </div>
-        </div>
-      </Container>
-    </div>
+        </Container>
+      </div>
+    </Container>
   );
 };
