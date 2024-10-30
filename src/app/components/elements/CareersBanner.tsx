@@ -31,13 +31,13 @@ interface CareerCardProps {
 }
 
 const CareerCard = ({ imgSrc, imgAlt, title, text, linkTo, linkText, children }: CareerCardProps) => (
-  <Card className="career-card">
+  <Card className="career-card h-100">
     {imgSrc && <CardImg variant="top" src={imgSrc} alt={imgAlt} className="career-media-row-image" />}
-    <CardBody className="career-card-body">
+    <CardBody className="career-card-body d-flex flex-wrap flex-column">
       {children}
       <CardTitle className="career-subtitle">{title}</CardTitle>
       <CardText className="career-text">{text}</CardText>
-      <div className="career-link-column">
+      <div className="career-link-column mt-auto">
         <Link className="career-link" to={linkTo}>
           {linkText}
         </Link>
@@ -51,12 +51,12 @@ const videoId = careerVideos[0].video;
 export const CareersBanner = () => {
   const user = useAppSelector(selectors.user.orNull);
   return (
-    <Container className="pt-4 pb-5">
+    <Container className="py-4 py-lg-5">
       <div className="career-background-img">
         <Container className="career-section">
-          <h4 className="career-title">Careers</h4>
-          <Row className="career-media-row">
-            <Col>
+          <h4 className="career-title mb-4">Careers</h4>
+          <Row className="career-media-row gy-4 justify-content-center">
+            <Col xs={12} sm={10} md={10} lg={5}>
               <CareerCard
                 imgSrc="/assets/cs_journeys.svg"
                 imgAlt="cs journeys"
@@ -66,7 +66,7 @@ export const CareersBanner = () => {
                 linkText="Read our interviews"
               />
             </Col>
-            <Col>
+            <Col xs={12} sm={10} md={10} lg={5}>
               <CareerCard
                 title={isStudent(user) ? "Linking computer science to the real world" : "Computer Science at work"}
                 text={<CsAtWorkDescription />}
@@ -87,10 +87,10 @@ export const CareersBanner = () => {
               </CareerCard>
             </Col>
           </Row>
-          <div className="career-comment">
-            <div className="resources-comment-content">
-              <img src={starSVG} alt="Star" className="star-img" />
-              <p className="text-left my-3 mx-3">
+          <div className="career-comment mt-4">
+            <div className="resources-comment-content d-flex align-items-center">
+              <img src={starSVG} alt="Star" className="star-img me-3" />
+              <p className="text-left my-3 mx-3 mb-0">
                 Students have been able to dive deeper into topics by using Isaac CS, which has led to further interest
                 and helped them understand what topics they may like to study in post 16 and post 18 study.
               </p>

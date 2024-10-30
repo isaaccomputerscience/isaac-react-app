@@ -40,45 +40,12 @@
   &-media-row-image,
   &-media-row-video {
     width: 100%;
-    height: 300px;
+    height: auto;
     object-fit: cover;
     border-radius: 5px 5px 0 0;
   }
-  
-  &-media-row {
-    display: flex;
-    flex-wrap: wrap;
-  }
-  
-  &-media-row > .col,
-  &-text-row > .col {
-    flex: 1 0 25%;
-    padding: 10px;
-  }
-  
-  /* Tablet breakpoint */
-  @media (max-width: 992px) {
-    &-media-row > .col,
-    &-text-row > .col {
-      flex: 1 0 50%;
-    }
-  }
-  
-  /* Mobile breakpoint */
-  @media (max-width: 768px) {
-    &-media-row {
-      flex-direction: column;
-    }
-  
-    &-media-row > .col,
-    &-text-row > .col {
-      flex: 1 0 100%;
-    }
-  
-    &-media-row-image,
-    &-media-row-video {
-      height: 200px;
-    }
+  &-media-row-video {
+    height: 250px;
   }
 
   &-link-column {
