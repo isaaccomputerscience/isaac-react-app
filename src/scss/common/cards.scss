@@ -249,10 +249,6 @@
     @include respond-above(sm) {
       margin: 1.5rem;
     }
-    @include respond-below(sm) {
-      left: 50%;
-      transform: translate(-50%);
-    }
   }
   .centered-link {
     display: flex;

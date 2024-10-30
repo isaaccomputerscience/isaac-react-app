@@ -39,21 +39,13 @@
 
   &-media-row-image,
   &-media-row-video {
-    height: 300px;
+    width: 100%;
+    height: auto;
     object-fit: cover;
     border-radius: 5px 5px 0 0;
   }
-
-  @media (max-width: 768px) {
-    &-media-row {
-      flex-direction: column;
-      gap: 0;
-    }
-
-    &-media-row > .col,
-    &-text-row > .col {
-      padding: 10px;
-    }
+  &-media-row-video {
+    height: 250px;
   }
 
   &-link-column {
