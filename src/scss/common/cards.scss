@@ -248,10 +248,6 @@
     max-width: 322px;
     @include respond-above(sm) {
       margin: 1.5rem;
-      flex: 0 1 calc(50% - 1rem);
-    }
-    @include respond-above(md) {
-      flex: 0 1 calc(33.333% - 1rem);
     }
   }
   .centered-link {
