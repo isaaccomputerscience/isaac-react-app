@@ -464,7 +464,6 @@ h2.h-title {
   font-size: 19px;
   color: #1c1c1c;
   padding-left: 0;
-  max-width: 60%;
 }
 
 .custom-card {
@@ -518,12 +517,14 @@ a.browse-events {
   font-family: "dm-sans-light", DMSans-Light, sans-serif;
   font-size: 18px;
   text-decoration: none;
-  display: inline-block;
+  display: flex;
+  justify-content: center;
   align-items: center;
   background-color: white;
   border: 3px solid #d60265;
-  padding: 10px 15px;
   border-radius: 5px;
+  width: 210px;
+  height: 48px;
 }
 
 .center-container {
