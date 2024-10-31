@@ -8,7 +8,6 @@ import { IsaacPodDTO, IsaacQuestionPageDTO } from "../../../IsaacApiTypes";
 import { ShowLoading, defaultPlaceholder } from "../handlers/ShowLoading";
 import QuestionCard from "./cards/QuestionCard";
 import { isStudent, isTeacher, isTutorOrAbove } from "../../services";
-import HomepageImage from "../../../../public/assets/homepage-header-image.png";
 
 const ShowMeButtons = ({ loggedIn }: { loggedIn: boolean | undefined }) => {
   const showMeButtons = [
@@ -182,7 +181,12 @@ export const Dashboard = ({
         </Row>
       </Col>
       <Col lg={6} xs={12} className="order-lg-2 order-3 mt-4 mt-lg-0 pb-5 pb-md-0">
-        <img src={HomepageImage} alt="Description" className="img-fluid" style={{ maxWidth: "100%", height: "auto" }} />
+        <img
+          src="/assets/homepage-header-image.png"
+          alt="Description"
+          className="img-fluid"
+          style={{ maxWidth: "100%", height: "auto" }}
+        />
       </Col>
     </Row>
   );

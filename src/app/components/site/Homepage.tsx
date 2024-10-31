@@ -8,8 +8,6 @@ import { EventsCarousel } from "../elements/EventsCarousel";
 import classNames from "classnames";
 import { Dashboard } from "../elements/Dashboard";
 import { CareersBanner } from "../elements/CareersBanner";
-import questionFinderSVG from "../../../../public/assets/q-finder.svg";
-import starSVG from "../../../../public/assets/star.svg";
 import Resources from "../elements/Resources";
 
 export const Homepage = () => {
@@ -98,7 +96,7 @@ export const Homepage = () => {
                       tooltip={
                         <div className="resources-tooltip-container">
                           <img
-                            src={questionFinderSVG}
+                            src="/assets/q-finder.svg"
                             alt="Question Finder"
                             className="q-finder-image d-none d-md-block"
                           />
@@ -117,7 +115,7 @@ export const Homepage = () => {
               <div className="resources-center-container">
                 <div className="resources-comment">
                   <div className="resources-comment-content">
-                    <img src={starSVG} alt="Star" className="star-img" />
+                    <img src="/assets/star.svg" alt="Star" className="star-img" />
                     <p className="text-left my-3 mx-3">
                       95% of teachers rate the quality of Isaac CS resources as good or very good.
                     </p>

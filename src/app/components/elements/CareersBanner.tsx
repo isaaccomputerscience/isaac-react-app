@@ -4,7 +4,6 @@ import { selectors, useAppSelector } from "../../state";
 import { isStudent } from "../../services";
 import careerVideos from "../../assets/career_videos.json";
 import { Link } from "react-router-dom";
-import starSVG from "../../../../public/assets/star.svg";
 
 const CsAtWorkDescription = () => {
   const user = useAppSelector(selectors.user.orNull);
@@ -89,7 +88,7 @@ export const CareersBanner = () => {
           </Row>
           <div className="career-comment mt-4">
             <div className="resources-comment-content d-flex align-items-center">
-              <img src={starSVG} alt="Star" className="star-img me-3" />
+              <img src="/assets/star.svg" alt="Star" className="star-img me-3" />
               <p className="text-left my-3 mx-3 mb-0">
                 Students have been able to dive deeper into topics by using Isaac CS, which has led to further interest
                 and helped them understand what topics they may like to study in post 16 and post 18 study.

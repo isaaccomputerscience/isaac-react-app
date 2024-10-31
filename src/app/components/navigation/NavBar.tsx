@@ -18,7 +18,6 @@ import { filterAssignmentsByStatus, isFound, partitionCompleteAndIncompleteQuizz
 import { RenderNothing } from "../elements/RenderNothing";
 import classNames from "classnames";
 import { skipToken } from "@reduxjs/toolkit/query";
-import MenuIcon from "../../../../public/assets/hamburger-menu.svg";
 
 const MenuOpenContext = React.createContext<{
   menuOpen: boolean;
@@ -124,7 +123,7 @@ export const NavBar = ({ children }: { children: React.ReactNode }) => {
     <MenuOpenContext.Provider value={{ menuOpen, setMenuOpen }}>
       <Navbar className="main-nav p-0" color="light" light expand="md">
         <NavbarToggler onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? "Close menu" : "Open menu"}>
-          <img src={MenuIcon} alt="Menu icon" className="menu-icon" />
+          <img src="/assets/hamburger-menu.svg" alt="Menu icon" className="menu-icon" />
         </NavbarToggler>
         <Collapse isOpen={menuOpen} navbar className="px-0 mx-0">
           <Nav navbar className="justify-content-between" id="main-menu">
