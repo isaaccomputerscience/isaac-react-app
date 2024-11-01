@@ -3,7 +3,6 @@ import userEvent from "@testing-library/user-event";
 import { zip } from "lodash";
 import { renderTestEnvironment, NavBarMenus, NAV_BAR_MENU_TITLE, TestUserRole } from "../utils";
 import { USER_ROLES, history } from "../../app/services";
-import { mockPromoPods } from "../../mocks/data";
 
 const myIsaacLinks = ["/assignments", "/my_gameboards", "/progress", "/tests"];
 const tutorLinks = ["/groups", "/set_assignments", "/my_markbook"];
