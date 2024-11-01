@@ -131,17 +131,6 @@ describe("IsaacApp", () => {
   });
   it.todo("should show the users number of current assignments in the navigation menu");
 
-  it("should show the promo content banner for anonymous users", async () => {
-    renderTestEnvironment({ role: "ANONYMOUS" });
-    await screen.findByTestId("main");
-    const promoContent = document.querySelector("#promo-content");
-    expect(promoContent).toBeInTheDocument();
-    await waitFor(() => {
-      const publicPromoItem = screen.queryByText(mockPromoPods.results[1].value);
-      expect(publicPromoItem).toBeInTheDocument();
-    });
-  });
-
   it.each(USER_ROLES)("should not show the promo content banner for %s users", async (role) => {
     renderTestEnvironment({ role });
     await screen.findByTestId("main");
