@@ -51,7 +51,7 @@ describe("EventCard", () => {
       },
     });
     const title = screen.queryByTestId("event-card-title");
-    const subtitle = screen.queryByTestId("event-card-subtitle");
+    const subtitle = screen.queryByTestId("event-card-subitle");
     const dateText = screen.queryByTestId("event-card-date");
     const image = screen.queryByTestId("event-card-image");
     [title, subtitle, dateText, image].forEach((element) => {

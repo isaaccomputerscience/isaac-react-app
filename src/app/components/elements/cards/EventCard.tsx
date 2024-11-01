@@ -81,9 +81,7 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
           <CardText className="m-0 my-auto card-date-time" data-testid="event-card-subtitle">
             <span className="d-block my-2">
               <span className="card-sub-title">What</span>
-              <span className="d-block" data-testid="event-card-date">
-                {subtitle}
-              </span>
+              <span className="d-block">{subtitle}</span>
             </span>
           </CardText>
         )}
@@ -99,7 +97,7 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
           {(location?.address?.addressLine1 || event.isVirtual) && (
             <span className="d-block my-2" data-testid="event-card-location">
               <span className="card-sub-title">Where</span>
-              <span className="d-block" data-testid="event-card-date">
+              <span className="d-block">
                 <span className="font-weight-bold">Location:</span>{" "}
                 {event.isVirtual ? (
                   <span>Online</span>
