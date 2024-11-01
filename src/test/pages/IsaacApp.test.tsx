@@ -6,7 +6,14 @@ import { USER_ROLES, history } from "../../app/services";
 
 const myIsaacLinks = ["/assignments", "/my_gameboards", "/progress", "/tests"];
 const tutorLinks = ["/groups", "/set_assignments", "/my_markbook"];
-const teacherLinks = ["/groups", "/set_assignments", "/my_markbook", "/set_tests", "/teaching_order"];
+const teacherLinks = [
+  "/groups",
+  "/set_assignments",
+  "/my_markbook",
+  "/set_tests",
+  "/teaching_order_g_ocr",
+  "/teaching_order",
+];
 const learnLinks = [
   "/topics/gcse",
   "/topics/a_level",
