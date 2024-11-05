@@ -50,7 +50,7 @@ const videoId = careerVideos[0].video;
 export const CareersBanner = () => {
   const user = useAppSelector(selectors.user.orNull);
   return (
-    <Container className="py-4 py-lg-5">
+    <Container className="pt-4 pb-5">
       <div className="career-background-img">
         <Container className="career-section">
           <h4 className="career-title mb-4">Careers</h4>
