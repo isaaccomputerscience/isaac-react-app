@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardBody, CardImg, CardText, CardTitle, Col, Container, Row } from "reactstrap";
+import { Card, CardBody, CardImg, CardText, Col, Container, Row } from "reactstrap";
 import { selectors, useAppSelector } from "../../state";
 import { isStudent } from "../../services";
 import careerVideos from "../../assets/career_videos.json";
@@ -30,7 +30,7 @@ interface CareerCardProps {
 }
 
 const CareerCard = ({ imgSrc, imgAlt, title, text, linkTo, linkText, children }: CareerCardProps) => (
-  <Card className="career-card h-100">
+  <Card className="career-card h-100 w-100">
     {imgSrc && <CardImg variant="top" src={imgSrc} alt={imgAlt} className="career-media-row-image" />}
     <CardBody className="career-card-body d-flex flex-wrap flex-column">
       {children}
