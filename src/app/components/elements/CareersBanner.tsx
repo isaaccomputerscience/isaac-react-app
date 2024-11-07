@@ -34,7 +34,7 @@ const CareerCard = ({ imgSrc, imgAlt, title, text, linkTo, linkText, children }:
     {imgSrc && <CardImg variant="top" src={imgSrc} alt={imgAlt} className="career-media-row-image" />}
     <CardBody className="career-card-body d-flex flex-wrap flex-column">
       {children}
-      <h3 className="card-title p-4">{title}</h3>
+      <h3 className="card-title title-styling-custom">{title}</h3>
       <CardText className="career-text">{text}</CardText>
       <div className="career-link-column mt-auto">
         <Link className="career-link" to={linkTo}>
