@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardBody, CardImg, CardText, Col, Container, Row } from "reactstrap";
+import { Card, CardBody, CardImg, CardText, CardTitle, Col, Container, Row } from "reactstrap";
 import { selectors, useAppSelector } from "../../state";
 import { isStudent } from "../../services";
 import careerVideos from "../../assets/career_videos.json";
@@ -34,7 +34,7 @@ const CareerCard = ({ imgSrc, imgAlt, title, text, linkTo, linkText, children }:
     {imgSrc && <CardImg variant="top" src={imgSrc} alt={imgAlt} className="career-media-row-image" />}
     <CardBody className="career-card-body d-flex flex-wrap flex-column">
       {children}
-      <h3 className="card-title custom-title-styling">{title}</h3>
+      <CardTitle className="career-subtitle">{title}</CardTitle>
       <CardText className="career-text">{text}</CardText>
       <div className="career-link-column mt-auto">
         <Link className="career-link" to={linkTo}>
