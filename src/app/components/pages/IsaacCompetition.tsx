@@ -42,8 +42,25 @@ export const IsaacCompetition = () => {
               </p>
               <p className="mt-4 mb-0 homepage-text">
                 Please note: the competition will open in January and last two months. For now, find out more below,
-                follow our X and Facebook account for updates on when you can enter, and teachers can sign up to our
-                expression of interest form.
+                follow our{" "}
+                <a
+                  href="https://x.com/isaaccompsci"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-decoration-none"
+                >
+                  X
+                </a>{" "}
+                and{" "}
+                <a
+                  href="https://www.facebook.com/IsaacComputerScience"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-decoration-none"
+                >
+                  Facebook
+                </a>{" "}
+                account for updates on when you can enter, and teachers can sign up to our expression of interest form.
               </p>
               <Row className="justify-content-left mt-4">
                 <Col xs="auto">
