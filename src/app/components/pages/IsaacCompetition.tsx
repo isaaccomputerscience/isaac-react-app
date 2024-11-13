@@ -32,8 +32,8 @@ export const IsaacCompetition = () => {
       <div id="section1">
         <Container className="pt-4 z1">
           <Row>
+            <h1 className="homepage-title">National Computer Science Competition 2024/25</h1>
             <Col lg={6} xs={12} className="pb-3">
-              <h1 className="homepage-title">National Computer Science Competition 2024/25</h1>
               <p className="mt-4 homepage-text">
                 Calling all computer science enthusiasts! Isaac Computer Science , ran by the National Centre for
                 Computing Education (NCCE), is hosting a national competition that challenges you to imagine, design,
@@ -56,7 +56,7 @@ export const IsaacCompetition = () => {
                 src="/assets/competition-image.png"
                 alt="Competition"
                 className="img-fluid"
-                style={{ maxWidth: "100%", height: "auto" }}
+                style={{ maxWidth: "360px", height: "360px" }}
               />
             </Col>
           </Row>
