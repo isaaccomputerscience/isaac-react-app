@@ -1,0 +1,43 @@
+.ioe {
+  &-row {
+    gap: 40px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+  }
+
+  &-col {
+    border-radius: 5px;
+    background-color: white;
+    padding: 30px;
+  }
+
+  &-title {
+    padding-top: 30px;
+    color: #120540;
+    font-size: 24px;
+  }
+
+  &-text {
+    color: #1c1c1c;
+    font-size: 19px;
+    padding-top: 15px;
+  }
+
+  &-comment {
+    display: flex;
+    align-items: center;
+
+    &-content {
+      background-color: #fff5fa;
+      color: #120540;
+      font-size: 16px;
+      font-family: "roboto", Roboto, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 65px 20px 65px;
+      text-align: center;
+      
+    }
+  }
+}
