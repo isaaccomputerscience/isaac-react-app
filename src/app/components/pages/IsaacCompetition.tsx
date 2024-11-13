@@ -1,12 +1,29 @@
 import React, { useEffect } from "react";
 import { SITE_SUBJECT_TITLE } from "../../services";
 import { TitleAndBreadcrumb } from "../elements/TitleAndBreadcrumb";
-import { Col, Container, Row } from "reactstrap";
+import { Button, Col, Container, Row } from "reactstrap";
+import { Link } from "react-router-dom";
 
 export const IsaacCompetition = () => {
   useEffect(() => {
     document.title = "Isaac " + SITE_SUBJECT_TITLE;
   }, []);
+
+  const CompetitionButton = ({ loggedIn }: { loggedIn: boolean | undefined }) => {
+    const competitionInterestButton = [{ to: "/competition-sign-up", label: "Express your interest" }];
+
+    return (
+      <Row>
+        {competitionInterestButton.map(({ to, label }) => (
+          <Col xs={12} lg={loggedIn ? 12 : 4} className="py-1" key={to}>
+            <Button size="lg" tag={Link} to={to} block className="homepage-button text-light">
+              {label}
+            </Button>
+          </Col>
+        ))}
+      </Row>
+    );
+  };
 
   return (
     <Container>
@@ -28,6 +45,11 @@ export const IsaacCompetition = () => {
                 follow our X and Facebook account for updates on when you can enter, and teachers can sign up to our
                 expression of interest form.
               </p>
+              <Row className="justify-content-left mt-4">
+                <Col xs="auto">
+                  <CompetitionButton loggedIn={undefined} />
+                </Col>
+              </Row>
             </Col>
             <Col lg={6} xs={12} className="order-lg-2 order-3 mt-4 mt-lg-0 pb-5 pb-md-0">
               <img
