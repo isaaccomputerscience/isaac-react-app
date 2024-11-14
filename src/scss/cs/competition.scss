@@ -1,11 +1,21 @@
 .ioe {
   &-row {
     gap: 40px;
+    justify-content: center;
   }
 
   &-col {
     background-color: white;
-    width: 540px;
+  }
+
+  &-custom-width {
+    width: 90%;
+  }
+
+  @media (min-width: 1200px) {
+    &-custom-width {
+      width: 540px;
+    }
   }
 
   &-title {
@@ -32,6 +42,10 @@
       justify-content: center;
       padding: 20px 65px 20px 65px;
       text-align: center;
+
+      @media (max-width: 576px) {
+        width: 90%;
+      }
     }
   }
 }

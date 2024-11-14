@@ -20,7 +20,7 @@ export const IsaacCompetition = () => {
         <div className="event-section-background-img">
           <div className="container">
             <div className="row ioe-row pt-4 pb-4">
-              <div className="col ioe-col p-4 rounded">
+              <div className="ioe-custom-width ioe-col p-4 rounded">
                 <h3 className="ioe-title">What is the Internet of Everything?</h3>
                 <p className="ioe-text pt-3">
                   Imagine a world where everything around you is connected to the internet. Not just your phone or
@@ -36,7 +36,7 @@ export const IsaacCompetition = () => {
                   through a video submission.
                 </p>
               </div>
-              <div className="col ioe-col p-4 rounded">
+              <div className="ioe-custom-width ioe-col p-4 rounded">
                 <h3 className="ioe-title">Real-life examples of IoE include:</h3>
                 <ul className="ioe-text pt-3">
                   <li>
@@ -57,7 +57,7 @@ export const IsaacCompetition = () => {
                   </li>
                 </ul>
               </div>
-              <div className="col-12 ioe-comment-content">
+              <div className="ioe-comment-width ioe-comment-content">
                 <img src="/assets/star.svg" alt="Star" className="star-img" />
                 <p className="text-left my-2 mx-2">
                   The Internet of Everything isn’t just about smart devices; it’s about connecting everything to make
