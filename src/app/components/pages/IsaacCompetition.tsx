@@ -25,7 +25,7 @@ export const IsaacCompetition = () => {
                 <p className="ioe-text pt-3">
                   Imagine a world where everything around you is connected to the internet. Not just your phone or
                   computer, but your watch, your shoes, your fridge, even your toothbrush! This is what we call the
-                  Internet of Everything (IoE).
+                  Internet of Everything.
                 </p>
                 <p className="ioe-text pt-3">
                   The IoE is like a giant invisible web that connects all things, people, data, and processes. It’s like
@@ -40,20 +40,20 @@ export const IsaacCompetition = () => {
                 <h3 className="ioe-title">Real-life examples of IoE include:</h3>
                 <ul className="ioe-text pt-3">
                   <li>
-                    Smart Homes: Imagine your alarm clock wakes you up and then automatically tells your coffee maker to
-                    start brewing coffee.
+                    smart homes: imagine your alarm clock wakes you up and then automatically tells your coffee maker to
+                    start brewing coffee
                   </li>
                   <li>
-                    Wearable Devices: Devices like smartwatches can monitor your health, track your location if you’re
-                    lost, and even let you make phone calls or send messages.
+                    wearable devices: devices like smartwatches can monitor your health, track your location if you’re
+                    lost, and even let you make phone calls or send messages
                   </li>
                   <li>
-                    Smart Cities: Streetlights that turn off when it is light outside, or traffic lights that adjust
-                    based on road conditions.
+                    smart cities: streetlights that turn off when it is light outside, or traffic lights that adjust
+                    based on road conditions
                   </li>
                   <li>
-                    Connected Cars: Cars can communicate with each other to avoid accidents. They can also tell you when
-                    they need repairs or even call for help if there’s an emergency.
+                    connected cars: cars can communicate with each other to avoid accidents. They can also tell you when
+                    they need repairs or even call for help if there’s an emergency
                   </li>
                 </ul>
               </div>
@@ -62,7 +62,7 @@ export const IsaacCompetition = () => {
                 <p className="text-left my-2 mx-2">
                   The Internet of Everything isn’t just about smart devices; it’s about connecting everything to make
                   life easier, safer, and more enjoyable. It’s like a superpower that lets us make objects work together
-                  - but we must use this power responsibly and safely.
+                  — but we must use this power responsibly and safely.
                 </p>
               </div>
             </div>
