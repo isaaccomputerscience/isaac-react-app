@@ -33,7 +33,7 @@ export const IsaacCompetition = () => {
       <div id="competition-headline-section">
         <Container className="pt-4 z1">
           <Row>
-            <h1 className="primary-heading">National Computer Science Competition</h1>
+            <h1 className="primary-heading pl-3">National Computer Science Competition</h1>
             <Col xs={12} md={6} lg={8} className="pb-3">
               <p className="mt-4 body-text">
                 Calling all computer science fans! Isaac Computer Science, ran by the National Centre for Computing
