@@ -29,7 +29,7 @@ export const IsaacCompetition = () => {
     <Container>
       <TitleAndBreadcrumb currentPageTitle="Isaac Competition" breadcrumbTitleOverride="Isaac Competition" />
 
-      <div id="section1">
+      <div id="competition-headline-section">
         <Container className="pt-4 z1">
           <Row>
             <h1 className="primary-heading">National Computer Science Competition</h1>
