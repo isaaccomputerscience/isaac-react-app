@@ -19,7 +19,7 @@ export const IsaacCompetition = () => {
       <section id="internetOfEverything" className="event-section">
         <div className="event-section-background-img">
           <div className="container">
-            <div className="row ioe-row pt-4 pb-4">
+            <div className="row ioe-row pl-2 pr-2 pt-4 pb-4">
               <div className="ioe-custom-width ioe-col p-4 rounded">
                 <h3 className="ioe-title">What is the Internet of Everything?</h3>
                 <p className="ioe-text pt-3">
@@ -57,13 +57,15 @@ export const IsaacCompetition = () => {
                   </li>
                 </ul>
               </div>
-              <div className="ioe-comment-width ioe-comment-content">
-                <img src="/assets/star.svg" alt="Star" className="star-img" />
-                <p className="text-left my-2 mx-2">
-                  The Internet of Everything isn’t just about smart devices; it’s about connecting everything to make
-                  life easier, safer, and more enjoyable. It’s like a superpower that lets us make objects work together
-                  — but we must use this power responsibly and safely.
-                </p>
+              <div className="p-1">
+                <div className="d-flex align-items-center justify-content-center bg-light p-4 text-center flex-row ioe-content">
+                  <img src="/assets/star.svg" alt="Star" className="star-img mb-3 mb-md-0" />
+                  <p className="text-left my-2 mx-2">
+                    The Internet of Everything isn’t just about smart devices; it’s about connecting everything to make
+                    life easier, safer, and more enjoyable. It’s like a superpower that lets us make objects work
+                    together — but we must use this power responsibly and safely.
+                  </p>
+                </div>
               </div>
             </div>
           </div>

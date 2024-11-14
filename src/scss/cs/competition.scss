@@ -8,10 +8,6 @@
     background-color: white;
   }
 
-  &-custom-width {
-    width: 90%;
-  }
-
   @media (min-width: 1200px) {
     &-custom-width {
       width: 540px;
@@ -28,24 +24,10 @@
     font-size: 19px;
   }
 
-  &-comment {
-    display: flex;
-    align-items: center;
-
-    &-content {
-      background-color: #fff5fa;
-      color: #120540;
-      font-size: 16px;
-      font-family: "roboto", Roboto, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px 65px 20px 65px;
-      text-align: center;
-
-      @media (max-width: 576px) {
-        width: 90%;
-      }
-    }
+  &-content {
+    background-color: #fff5fa;
+    color: #120540;
+    font-size: 16px;
+    font-family: "roboto", Roboto, sans-serif;
   }
 }
