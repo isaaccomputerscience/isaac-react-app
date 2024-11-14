@@ -16,7 +16,7 @@ export const IsaacCompetition = () => {
       <Row>
         {competitionInterestButton.map(({ to, label }) => (
           <Col xs={12} lg={loggedIn ? 12 : 4} className="py-1" key={to}>
-            <Button size="lg" tag={Link} to={to} block className="homepage-button text-light">
+            <Button size="lg" tag={Link} to={to} block className="primary-button text-light">
               {label}
             </Button>
           </Col>
@@ -32,17 +32,17 @@ export const IsaacCompetition = () => {
       <div id="section1">
         <Container className="pt-4 z1">
           <Row>
-            <h1 className="homepage-title">National Computer Science Competition</h1>
+            <h1 className="primary-heading">National Computer Science Competition</h1>
             <Col lg={6} xs={12} className="pb-3">
-              <p className="mt-4 homepage-text">
+              <p className="mt-4 body-text">
                 Calling all computer science fans! Isaac Computer Science, ran by the National Centre for Computing
                 Education (NCCE), is hosting a national competition that challenges students to imagine, design, and
                 pitch a groundbreaking new product for the Internet of Everything. The competition is a fantastic
                 opportunity for students to apply their knowledge to real-world ideas
               </p>
-              <p className="mt-4 mb-0 homepage-text">
-                Please note: Competition entries open in January and last two months. Students will be able to submit
-                their entries until 17 March. Follow our{" "}
+              <p className="mt-4 mb-0 body-text">
+                <span style={{ fontWeight: "bold" }}>Please note:</span> Competition entries open in January and last
+                two months. Students will be able to submit their entries until 17 March. Follow our{" "}
                 <a
                   href="https://x.com/isaaccompsci"
                   target="_blank"
@@ -73,7 +73,7 @@ export const IsaacCompetition = () => {
                 src="/assets/competition-image.png"
                 alt="Competition"
                 className="img-fluid d-none d-md-block"
-                style={{ maxWidth: "360px", height: "360px" }}
+                style={{ maxWidth: "100%", height: "auto" }}
               />
             </Col>
           </Row>
