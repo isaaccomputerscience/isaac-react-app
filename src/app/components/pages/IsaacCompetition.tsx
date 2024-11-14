@@ -9,7 +9,7 @@ export const IsaacCompetition = () => {
     document.title = "Isaac " + SITE_SUBJECT_TITLE;
   }, []);
 
-  const CompetitionButton = ({ loggedIn }: { loggedIn: boolean | undefined }) => {
+  const CompetitionButton = () => {
     const competitionInterestButton = [{ to: "/competition-sign-up", label: "Express your interest" }];
 
     return (
@@ -64,7 +64,7 @@ export const IsaacCompetition = () => {
               </p>
               <Row className="justify-content-left mt-4">
                 <Col xs="auto">
-                  <CompetitionButton loggedIn={undefined} />
+                  <CompetitionButton />
                 </Col>
               </Row>
             </Col>
