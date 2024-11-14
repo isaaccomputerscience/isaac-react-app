@@ -15,7 +15,7 @@ export const IsaacCompetition = () => {
     return (
       <Row>
         {competitionInterestButton.map(({ to, label }) => (
-          <Col xs={12} lg={loggedIn ? 12 : 4} className="py-1" key={to}>
+          <Col xs={12} className="py-1" key={to}>
             <Button size="lg" tag={Link} to={to} block className="primary-button text-light">
               {label}
             </Button>
