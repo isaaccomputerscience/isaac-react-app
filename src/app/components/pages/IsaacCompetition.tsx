@@ -41,8 +41,8 @@ export const IsaacCompetition = () => {
                 opportunity for students to apply their knowledge to real-world ideas
               </p>
               <p className="mt-4 mb-0 body-text">
-                <span style={{ fontWeight: "bold" }}>Please note:</span> Competition entries open in January and last
-                two months. Students will be able to submit their entries until 17 March. Follow our{" "}
+                <span style={{ fontWeight: 700 }}>Please note:</span> Competition entries open in January and last two
+                months. Students will be able to submit their entries until 17 March. Follow our{" "}
                 <a
                   href="https://x.com/isaaccompsci"
                   target="_blank"
