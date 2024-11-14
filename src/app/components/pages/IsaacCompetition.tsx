@@ -34,7 +34,7 @@ export const IsaacCompetition = () => {
         <Container className="pt-4 z1">
           <Row>
             <h1 className="primary-heading">National Computer Science Competition</h1>
-            <Col lg={6} xs={12} className="pb-3">
+            <Col xs={12} md={6} lg={8} className="pb-3">
               <p className="mt-4 body-text">
                 Calling all computer science fans! Isaac Computer Science, ran by the National Centre for Computing
                 Education (NCCE), is hosting a national competition that challenges students to imagine, design, and
@@ -69,7 +69,7 @@ export const IsaacCompetition = () => {
                 </Col>
               </Row>
             </Col>
-            <Col lg={6} className="order-lg-2 order-3 mt-4 mt-lg-0 pb-5 pb-md-0">
+            <Col lg={4} md={6} className="order-lg-2 order-3 mt-4 mt-lg-0 pb-5 pb-md-0">
               <img
                 src="/assets/competition-image.png"
                 alt="Competition"
