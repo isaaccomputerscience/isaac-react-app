@@ -35,7 +35,7 @@ export const IsaacCompetition = () => {
             <h1 className="homepage-title">National Computer Science Competition 2024/25</h1>
             <Col lg={6} xs={12} className="pb-3">
               <p className="mt-4 homepage-text">
-                Calling all computer science enthusiasts! Isaac Computer Science , ran by the National Centre for
+                Calling all computer science enthusiasts! Isaac Computer Science, ran by the National Centre for
                 Computing Education (NCCE), is hosting a national competition that challenges you to imagine, design,
                 and pitch a groundbreaking new product for the Internet of Everything (IoE). The competition is a
                 fantastic opportunity for students to apply their knowledge to real-world ideas
