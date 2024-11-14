@@ -26,9 +26,10 @@ export const IsaacCompetition = () => {
   };
 
   return (
-    <Container>
-      <TitleAndBreadcrumb currentPageTitle="Isaac Competition" breadcrumbTitleOverride="Isaac Competition" />
-
+    <>
+      <Container>
+        <TitleAndBreadcrumb currentPageTitle="Isaac Competition" breadcrumbTitleOverride="Isaac Competition" />
+      </Container>
       <div id="competition-headline-section">
         <Container className="pt-4 z1">
           <Row>
@@ -83,6 +84,6 @@ export const IsaacCompetition = () => {
       <div id="section2">
         <h1>Section 2</h1>
       </div>
-    </Container>
+    </>
   );
 };
