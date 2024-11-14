@@ -80,10 +80,6 @@ export const IsaacCompetition = () => {
           </Row>
         </Container>
       </div>
-
-      <div id="section2">
-        <h1>Section 2</h1>
-      </div>
     </>
   );
 };
