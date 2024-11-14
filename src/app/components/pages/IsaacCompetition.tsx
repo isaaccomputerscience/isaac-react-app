@@ -68,11 +68,11 @@ export const IsaacCompetition = () => {
                 </Col>
               </Row>
             </Col>
-            <Col lg={6} xs={12} className="order-lg-2 order-3 mt-4 mt-lg-0 pb-5 pb-md-0">
+            <Col lg={6} className="order-lg-2 order-3 mt-4 mt-lg-0 pb-5 pb-md-0">
               <img
                 src="/assets/competition-image.png"
                 alt="Competition"
-                className="img-fluid"
+                className="img-fluid d-none d-md-block"
                 style={{ maxWidth: "360px", height: "360px" }}
               />
             </Col>
