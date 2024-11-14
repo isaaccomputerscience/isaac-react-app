@@ -32,17 +32,17 @@ export const IsaacCompetition = () => {
       <div id="section1">
         <Container className="pt-4 z1">
           <Row>
-            <h1 className="homepage-title">National Computer Science Competition 2024/25</h1>
+            <h1 className="homepage-title">National Computer Science Competition</h1>
             <Col lg={6} xs={12} className="pb-3">
               <p className="mt-4 homepage-text">
-                Calling all computer science enthusiasts! Isaac Computer Science, ran by the National Centre for
-                Computing Education (NCCE), is hosting a national competition that challenges you to imagine, design,
-                and pitch a groundbreaking new product for the Internet of Everything (IoE). The competition is a
-                fantastic opportunity for students to apply their knowledge to real-world ideas
+                Calling all computer science fans! Isaac Computer Science, ran by the National Centre for Computing
+                Education (NCCE), is hosting a national competition that challenges students to imagine, design, and
+                pitch a groundbreaking new product for the Internet of Everything. The competition is a fantastic
+                opportunity for students to apply their knowledge to real-world ideas
               </p>
               <p className="mt-4 mb-0 homepage-text">
-                Please note: the competition will open in January and last two months. For now, find out more below,
-                follow our{" "}
+                Please note: Competition entries open in January and last two months. Students will be able to submit
+                their entries until 17 March. Follow our{" "}
                 <a
                   href="https://x.com/isaaccompsci"
                   target="_blank"
@@ -60,7 +60,7 @@ export const IsaacCompetition = () => {
                 >
                   Facebook
                 </a>{" "}
-                account for updates on when you can enter, and teachers can sign up to our expression of interest form.
+                accounts for updates and teachers can sign up to our expression of interest form below.
               </p>
               <Row className="justify-content-left mt-4">
                 <Col xs="auto">
