@@ -6,7 +6,7 @@ interface TestimonialCommentProps {
   text: string;
 }
 
-const TestimonialComment: React.FC<TestimonialCommentProps> = ({ imageSrc, altText, text }) => (
+const TestimonialComment = ({ imageSrc, altText, text }: TestimonialCommentProps) => (
   <div className="resources-center-container">
     <div className="resources-comment">
       <div className="resources-comment-content">
