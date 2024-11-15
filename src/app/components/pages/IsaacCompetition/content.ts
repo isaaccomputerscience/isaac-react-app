@@ -7,7 +7,10 @@ export default {
       ],
     },
     note: {
-      text: "Please note: Competition entries open in January and last two months. Students will be able to submit their entries until 17 March. Follow our X and Facebook accounts for updates and teachers can sign up to our expression of interest form below.",
+      heading: "Please note:",
+      entryDetails:
+        "Competition entries open in January and last two months. Students will be able to submit their entries until 17 March. Follow our",
+      callToAction: "accounts for updates and teachers can sign up to our expression of interest form below.",
       xLink: "https://x.com/isaaccompsci",
       facebookLink: "https://www.facebook.com/IsaacComputerScience",
     },
