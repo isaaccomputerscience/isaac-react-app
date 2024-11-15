@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { SITE_SUBJECT_TITLE } from "../../services";
-import { TitleAndBreadcrumb } from "../elements/TitleAndBreadcrumb";
+import { SITE_SUBJECT_TITLE } from "../../../services";
+import { TitleAndBreadcrumb } from "../../elements/TitleAndBreadcrumb";
 import { Button, Col, Container, Row } from "reactstrap";
 import { Link } from "react-router-dom";
 

@@ -94,7 +94,7 @@ import { TeacherRegistration } from "../pages/TeacherRegistration";
 import { WorkbookDownload } from "../pages/WorkbookDownload";
 import { RegistrationSuccess } from "../pages/RegistrationSuccess";
 import { Careers } from "../pages/Careers";
-import { IsaacCompetition } from "../pages/IsaacCompetition";
+import { IsaacCompetition } from "../pages/IsaacCompetition/IsaacCompetition";
 
 const ContentEmails = lazy(() => import("../pages/ContentEmails"));
 const MyProgress = lazy(() => import("../pages/MyProgress"));
