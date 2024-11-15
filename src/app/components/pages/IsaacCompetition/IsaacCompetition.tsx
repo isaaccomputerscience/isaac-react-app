@@ -5,6 +5,8 @@ import { Button, Col, Container, Row } from "reactstrap";
 import { Link } from "react-router-dom";
 import content from "./content";
 
+const { section1 } = content;
+
 export const IsaacCompetition = () => {
   useEffect(() => {
     document.title = "Isaac " + SITE_SUBJECT_TITLE;
@@ -36,12 +38,12 @@ export const IsaacCompetition = () => {
           <Row>
             <h1 className="primary-heading pl-3">National Computer Science Competition</h1>
             <Col xs={12} md={6} lg={8} className="pb-3">
-              <p className="mt-4 body-text">{content.section1.header.section}</p>
+              <p className="mt-4 body-text">{section1.header.section}</p>
               <p className="mt-4 mb-0 body-text">
-                <span style={{ fontWeight: 700 }}>{content.section1.note.text.split(":")[0]}:</span>{" "}
-                {content.section1.note.text.split(":")[1].split("X")[0]}
+                <span style={{ fontWeight: 700 }}>{section1.note.text.split(":")[0]}:</span>{" "}
+                {section1.note.text.split(":")[1].split("X")[0]}
                 <a
-                  href={content.section1.note.xLink}
+                  href={section1.note.xLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-decoration-none"
@@ -50,14 +52,14 @@ export const IsaacCompetition = () => {
                 </a>
                 {" and "}
                 <a
-                  href={content.section1.note.facebookLink}
+                  href={section1.note.facebookLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-decoration-none"
                 >
                   Facebook
                 </a>
-                {content.section1.note.text.split("Facebook")[1]}
+                {section1.note.text.split("Facebook")[1]}
               </p>
               <Row className="justify-content-left mt-4">
                 <Col xs="auto">
