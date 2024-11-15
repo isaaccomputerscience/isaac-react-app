@@ -49,8 +49,8 @@ export const IsaacCompetition = () => {
                   className="text-decoration-none"
                 >
                   X
-                </a>
-                {" and "}
+                </a>{" "}
+                and{" "}
                 <a
                   href={section1.note.facebookLink}
                   target="_blank"
