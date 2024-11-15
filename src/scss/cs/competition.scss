@@ -1,17 +1,6 @@
 .ioe {
-  &-row {
-    gap: 40px;
-    justify-content: center;
-  }
-
   &-col {
     background-color: white;
-  }
-
-  @media (min-width: 1200px) {
-    &-custom-width {
-      width: 540px;
-    }
   }
 
   &-title {
@@ -22,12 +11,5 @@
   &-text {
     color: #1c1c1c;
     font-size: 19px;
-  }
-
-  &-content {
-    background-color: #fff5fa;
-    color: #120540;
-    font-size: 16px;
-    font-family: "roboto", Roboto, sans-serif;
   }
 }

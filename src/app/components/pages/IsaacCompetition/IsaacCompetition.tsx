@@ -34,11 +34,7 @@ export const IsaacCompetition = () => {
               </Col>
             </Row>
             <div className="pb-4">
-              <TestimonialComment
-                imageSrc="/assets/star.svg"
-                altText="Star"
-                text="The Internet of Everything isn’t just about smart devices; it’s about connecting everything to make life easier, safer, and more enjoyable. It’s like a superpower that lets us make objects work together — but we must use this power responsibly and safely."
-              />
+              <TestimonialComment imageSrc="/assets/star.svg" altText="Star" text={section2.testamonial.text} />
             </div>
           </Container>
         </div>

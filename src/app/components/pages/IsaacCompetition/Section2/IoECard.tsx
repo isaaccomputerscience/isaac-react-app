@@ -16,9 +16,9 @@ const IoECard = ({ title, content, isList = false }: IoECardProps) => (
       {isList ? (
         <ul>
           {content.map((text, index) => (
-            <li key={index} className="ioe-text">
+            <CardText key={index} tag="li" className="ioe-text">
               {text}
-            </li>
+            </CardText>
           ))}
         </ul>
       ) : (
