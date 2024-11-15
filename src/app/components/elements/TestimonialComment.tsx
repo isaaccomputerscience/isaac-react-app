@@ -1,4 +1,5 @@
 import React from "react";
+import { Col, Container, Row } from "reactstrap";
 
 interface TestimonialCommentProps {
   imageSrc: string;
@@ -7,14 +8,14 @@ interface TestimonialCommentProps {
 }
 
 const TestimonialComment = ({ imageSrc, altText, text }: TestimonialCommentProps) => (
-  <div className="resources-center-container">
-    <div className="resources-comment">
-      <div className="resources-comment-content">
+  <Container className="resources-center-container">
+    <Row className="resources-comment">
+      <Col className="resources-comment-content d-flex align-items-center">
         <img src={imageSrc} alt={altText} className="star-img" />
         <p className="text-left my-3 mx-3">{text}</p>
-      </div>
-    </div>
-  </div>
+      </Col>
+    </Row>
+  </Container>
 );
 
 export default TestimonialComment;
