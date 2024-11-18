@@ -4,8 +4,12 @@ import { TitleAndBreadcrumb } from "../../elements/TitleAndBreadcrumb";
 import { Button, Col, Container, Row } from "reactstrap";
 import { Link } from "react-router-dom";
 import content from "./content";
+import "../../../../scss/cs/competition.scss";
+import IoECard from "./Section2/IoECard";
+import TestimonialComment from "../../elements/TestimonialComment";
 
 const { section1 } = content;
+const { section2 } = content;
 
 export const IsaacCompetition = () => {
   useEffect(() => {
@@ -77,6 +81,23 @@ export const IsaacCompetition = () => {
           </Row>
         </Container>
       </div>
+      <section id="internetOfEverything" className="event-section">
+        <div className="event-section-background-img">
+          <Container>
+            <Row className="py-4">
+              <Col xs={12} lg={6}>
+                <IoECard title={section2.ioe.title} content={section2.ioe.section} />
+              </Col>
+              <Col xs={12} lg={6} className="mt-4 mt-lg-0">
+                <IoECard title={section2.examples.title} content={section2.examples.section} isList />
+              </Col>
+            </Row>
+            <div className="pb-4">
+              <TestimonialComment imageSrc="/assets/star.svg" altText="Star" text={section2.testamonial.text} />
+            </div>
+          </Container>
+        </div>
+      </section>
     </>
   );
 };
