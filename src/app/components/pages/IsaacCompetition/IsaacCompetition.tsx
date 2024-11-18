@@ -43,7 +43,8 @@ export const IsaacCompetition = () => {
             <Col xs={12} md={6} lg={8} className="pb-3">
               <p className="mt-4 body-text">{section1.header.section}</p>
               <p className="mt-4 mb-0 body-text">
-                <span style={{ fontWeight: 700 }}>{section1.note.heading}</span> {section1.note.entryDetails}{" "}
+                <span style={{ fontWeight: 700 }}>{section1.note.heading}</span>
+                {` ${section1.note.entryDetails} `}
                 <a
                   href={section1.note.xLink}
                   target="_blank"
@@ -51,8 +52,8 @@ export const IsaacCompetition = () => {
                   className="text-decoration-none"
                 >
                   X
-                </a>{" "}
-                and{" "}
+                </a>
+                {` and `}
                 <a
                   href={section1.note.facebookLink}
                   target="_blank"
@@ -60,9 +61,10 @@ export const IsaacCompetition = () => {
                   className="text-decoration-none"
                 >
                   Facebook
-                </a>{" "}
-                {section1.note.callToAction}
+                </a>
+                {` ${section1.note.callToAction}`}
               </p>
+
               <Row className="justify-content-left mt-4">
                 <Col xs="auto">
                   <CompetitionButton />
