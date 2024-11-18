@@ -8,8 +8,7 @@ import "../../../../scss/cs/competition.scss";
 import IoECard from "./Section2/IoECard";
 import TestimonialComment from "../../elements/TestimonialComment";
 
-const { section1 } = content;
-const { section2 } = content;
+const { section1, section2 } = content;
 
 export const IsaacCompetition = () => {
   useEffect(() => {
