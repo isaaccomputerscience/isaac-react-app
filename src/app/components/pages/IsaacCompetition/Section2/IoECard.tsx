@@ -8,8 +8,8 @@ interface IoECardProps {
 }
 
 const IoECard = ({ title, content, isList = false }: IoECardProps) => (
-  <Card className="p-4 h-100">
-    <CardTitle tag="h3" className="ioe-title">
+  <Card className="h-100">
+    <CardTitle tag="h3" className="ioe-title pt-4 px-4">
       {title}
     </CardTitle>
     <CardBody>
