@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { SITE_SUBJECT_TITLE } from "../../../services";
-import { TitleAndBreadcrumb } from "../../elements/TitleAndBreadcrumb";
+import { BreadcrumbTrail } from "../../elements/TitleAndBreadcrumb";
 import { Button, Col, Container, Row } from "reactstrap";
 import { Link } from "react-router-dom";
 import content from "./content";
@@ -34,9 +34,9 @@ export const IsaacCompetition = () => {
   return (
     <>
       <Container>
-        <TitleAndBreadcrumb currentPageTitle="Isaac Competition" breadcrumbTitleOverride="Isaac Competition" />
+        <BreadcrumbTrail currentPageTitle="Isaac Competition" />
       </Container>
-      <div id="competition-headline-section">
+      <section id="competition-headline-section">
         <Container className="pt-4 pb-4 z1">
           <Row>
             <h1 className="primary-heading pl-3">National Computer Science Competition</h1>
@@ -79,7 +79,7 @@ export const IsaacCompetition = () => {
             </Col>
           </Row>
         </Container>
-      </div>
+      </section>
       <section id="internetOfEverything" className="event-section">
         <div className="event-section-background-img">
           <Container>
