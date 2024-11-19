@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { SITE_SUBJECT_TITLE } from "../../../services";
 import { BreadcrumbTrail } from "../../elements/TitleAndBreadcrumb";
 import { Col, Container, Row } from "reactstrap";
-// import { Link } from "react-router-dom";
 import content from "./content";
 import "../../../../scss/cs/competition.scss";
 import IoECard from "./Section2/IoECard";
@@ -14,22 +13,6 @@ export const IsaacCompetition = () => {
   useEffect(() => {
     document.title = "Isaac " + SITE_SUBJECT_TITLE;
   }, []);
-
-  // const CompetitionButton = () => {
-  //   const competitionInterestButton = [{ to: "/competition-sign-up", label: "Express your interest" }];
-
-  //   return (
-  //     <Row>
-  //       {competitionInterestButton.map(({ to, label }) => (
-  //         <Col xs={12} className="py-1" key={to}>
-  //           <Button size="lg" tag={Link} to={to} block className="primary-button text-light">
-  //             {label}
-  //           </Button>
-  //         </Col>
-  //       ))}
-  //     </Row>
-  //   );
-  // };
 
   return (
     <>
@@ -64,12 +47,6 @@ export const IsaacCompetition = () => {
                 </a>
                 {` ${section1.note.callToAction}`}
               </p>
-
-              <Row className="justify-content-left mt-4">
-                {/* <Col xs="auto">
-                  <CompetitionButton />
-                </Col> */}
-              </Row>
             </Col>
             <Col lg={4} md={6} className="order-lg-2 order-3 mt-4 mt-lg-0 pb-md-0">
               <img
