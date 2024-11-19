@@ -240,6 +240,11 @@ button {
 .homepage-button {
   background-color: #d60265;
   font-size: 18px;
+
+  &:hover {
+    background-color: #ad0051;
+    text-decoration: underline;
+  }
 }
 
 // ----------------------------------------------
@@ -525,6 +530,11 @@ a.browse-events {
   border-radius: 5px;
   width: 210px;
   height: 48px;
+
+  &:hover {
+    text-decoration: underline;
+    border: 3px solid #AD0051;
+  }
 }
 
 .center-container {

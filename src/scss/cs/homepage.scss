@@ -182,6 +182,11 @@
     @media (max-width: 768px) {
       margin-bottom: 10px;
     }
+
+    &:hover {
+      text-decoration: underline;
+      border: 3px solid #ad0051;
+    }
   }
 
   &-tooltip-container {
@@ -232,7 +237,7 @@
     .resources-center-container {
       display: flex;
       flex-direction: column;
-  
+
       @media (min-width: 768px) {
         flex-direction: row;
         justify-content: space-between;
@@ -284,7 +289,6 @@
       text-align: center;
 
       @media (max-width: 768px) {
-       
       }
 
       .star-img {
