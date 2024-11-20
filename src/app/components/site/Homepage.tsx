@@ -100,7 +100,7 @@ export const Homepage = () => {
                             alt="Question Finder"
                             className="q-finder-image d-none d-md-block"
                           />
-                          <span className="tooltip-text">
+                          <span className="tooltip-text p-3">
                             You can build a gameboard by selecting the areas of interest, stage and difficulties.
                             <br />
                             You can select more than one entry in each area.
