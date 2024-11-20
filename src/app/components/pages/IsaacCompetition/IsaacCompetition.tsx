@@ -40,7 +40,7 @@ export const IsaacCompetition = () => {
                   href={section1.note.xLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-decoration-none"
+                  className="text-decoration-underline"
                 >
                   X
                 </a>
@@ -49,7 +49,7 @@ export const IsaacCompetition = () => {
                   href={section1.note.facebookLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-decoration-none"
+                  className="text-decoration-underline"
                 >
                   Facebook
                 </a>
