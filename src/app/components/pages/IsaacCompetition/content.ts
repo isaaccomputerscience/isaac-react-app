@@ -41,20 +41,20 @@ export default {
     howItWorks: {
       title: "How does it work?",
       steps: [
-        "Students need to ask their teacher to participate",
-        "Students and teachers create or log in to an account",
-        "Attend our Q&A sessions for tips and tricks on entries (coming soon)",
-        "Boost your knowledge with our Student Boosters and Gameboards",
-        "Submit your entry! The finalists will be selected and invited to a final in Manchester, Birmingham, or London (depending on the location of your school) in June",
+        "1. Students need to ask their teacher to participate",
+        "2. Students and teachers create or log in to an account",
+        "3. Attend our Q&A sessions for tips and tricks on entries (coming soon)",
+        "4. Boost your knowledge with our Student Boosters and Gameboards",
+        "5. Submit your entry! The finalists will be selected and invited to a final in Manchester, Birmingham, or London (depending on the location of your school) in June",
       ],
     },
     whyJoin: {
       title: "Why join the competition?",
       description: "Participating in this competition will allow students to:",
       benefits: [
-        "network with industry leaders: meet professionals, gain insights into potential career paths, and build connections",
-        "enhance their computer science knowledge: revise for mock exams through interactive gameboards and practical applications",
-        "showcase their talent: stand out on future university or job applications and earn the title of an IoE innovator",
+        "a. network with industry leaders: meet professionals, gain insights into potential career paths, and build connections",
+        "b. enhance their computer science knowledge: revise for mock exams through interactive gameboards and practical applications",
+        "c. showcase their talent: stand out on future university or job applications and earn the title of an IoE innovator",
       ],
     },
     eligibility: {
