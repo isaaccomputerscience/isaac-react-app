@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { SITE_SUBJECT_TITLE } from "../../../services";
 import { BreadcrumbTrail } from "../../elements/TitleAndBreadcrumb";
 import { Col, Container, Row } from "reactstrap";
@@ -8,10 +8,13 @@ import IoECard from "./Section2/IoECard";
 import TestimonialComment from "../../elements/TestimonialComment";
 import CompetitionButton from "./CompetitionButton";
 import Accordion from "react-bootstrap/Accordion";
+import AccordionItem from "./Section4/AccordionItem";
 
-const { section1, section2 } = content;
+const { section1, section2, section4 } = content;
 
 export const IsaacCompetition = () => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
   useEffect(() => {
     document.title = "Isaac " + SITE_SUBJECT_TITLE;
   }, []);
@@ -95,26 +98,48 @@ export const IsaacCompetition = () => {
           <Row className="py-4">
             <Col lg={8}>
               <Accordion defaultActiveKey="0">
-                <Accordion.Item eventKey="0">
-                  <Accordion.Header className="p-3">Accordion Item #1</Accordion.Header>
-                  <Accordion.Body>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                    aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                    culpa qui officia deserunt mollit anim id est laborum.
-                  </Accordion.Body>
-                </Accordion.Item>
-                <Accordion.Item eventKey="1">
-                  <Accordion.Header>Accordion Item #2</Accordion.Header>
-                  <Accordion.Body>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                    aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                    culpa qui officia deserunt mollit anim id est laborum.
-                  </Accordion.Body>
-                </Accordion.Item>
+                <AccordionItem
+                  eventKey="0"
+                  title={section4.projectIdeas.title}
+                  section={section4.projectIdeas.section}
+                  isCollapsed={isCollapsed}
+                  setIsCollapsed={setIsCollapsed}
+                />
+                <AccordionItem
+                  eventKey="1"
+                  title={section4.availableSupport.title}
+                  section={section4.availableSupport.section}
+                  isCollapsed={isCollapsed}
+                  setIsCollapsed={setIsCollapsed}
+                />
+                <AccordionItem
+                  eventKey="2"
+                  title={section4.video.title}
+                  section={section4.video.section}
+                  isCollapsed={isCollapsed}
+                  setIsCollapsed={setIsCollapsed}
+                />
+                <AccordionItem
+                  eventKey="3"
+                  title={section4.groupEntry.title}
+                  section={section4.groupEntry.section}
+                  isCollapsed={isCollapsed}
+                  setIsCollapsed={setIsCollapsed}
+                />
+                <AccordionItem
+                  eventKey="4"
+                  title={section4.industry.title}
+                  section={section4.industry.section}
+                  isCollapsed={isCollapsed}
+                  setIsCollapsed={setIsCollapsed}
+                />
+                <AccordionItem
+                  eventKey="5"
+                  title={section4.termsAndConditions.title}
+                  section={section4.termsAndConditions.section}
+                  isCollapsed={isCollapsed}
+                  setIsCollapsed={setIsCollapsed}
+                />
               </Accordion>
             </Col>
           </Row>
