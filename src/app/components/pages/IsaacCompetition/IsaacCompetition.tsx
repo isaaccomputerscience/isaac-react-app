@@ -6,7 +6,7 @@ import content from "./content";
 import "../../../../scss/cs/competition.scss";
 import IoECard from "./Section2/IoECard";
 import TestimonialComment from "../../elements/TestimonialComment";
-import CompetitionButton from "./CompetitionButton";
+import CompetitionButton from "./Buttons/CompetitionButton";
 
 const { section1, section2 } = content;
 
