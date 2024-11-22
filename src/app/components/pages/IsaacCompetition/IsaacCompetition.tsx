@@ -7,8 +7,9 @@ import "../../../../scss/cs/competition.scss";
 import IoECard from "./Section2/IoECard";
 import TestimonialComment from "../../elements/TestimonialComment";
 import CompetitionButton from "./Buttons/CompetitionButton";
+import InformationCard from "./CompetitionInformation/InformationCard";
 
-const { section1, section2 } = content;
+const { section1, section2, section3 } = content;
 
 export const IsaacCompetition = () => {
   useEffect(() => {
@@ -88,6 +89,37 @@ export const IsaacCompetition = () => {
             </div>
           </Container>
         </div>
+      </section>
+      <section id="competition-information-section">
+        <Container className="pt-4 pb-4 z1">
+          <Row className="py-4">
+            <Col xs={12} lg={6}>
+              <InformationCard title={section3.howItWorks.title} content={section3.howItWorks.steps} isList />
+            </Col>
+            <Col xs={12} lg={6} className="mt-4 mt-lg-0">
+              <InformationCard
+                title={section3.whyJoin.title}
+                content={[section3.whyJoin.description, ...section3.whyJoin.benefits]}
+                isList
+              />
+            </Col>
+          </Row>
+          <Row className="py-4">
+            <Col xs={12} lg={6}>
+              <InformationCard
+                title={section3.eligibility.title}
+                content={[section3.eligibility.description, section3.eligibility.requirements]}
+              />
+            </Col>
+            <Col xs={12} lg={6} className="mt-4 mt-lg-0">
+              <InformationCard
+                title={section3.prizes.title}
+                content={[section3.prizes.description, ...section3.prizes.prizeList]}
+                isList
+              />
+            </Col>
+          </Row>
+        </Container>
       </section>
     </>
   );
