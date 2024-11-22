@@ -74,5 +74,10 @@ export default {
         "Isaac Computer Science merchandise to support students",
       ],
     },
+    timeline: {
+      title: "Competition Timeline",
+      content:
+        "Save the 2024/25 dates in your calendar and plan time for you or your team to develop your IoE idea before applications close.",
+    },
   },
 };
