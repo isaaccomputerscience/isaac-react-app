@@ -94,13 +94,13 @@ export const IsaacCompetition = () => {
         <Container className="pt-4 pb-4 z1">
           <Row className="py-4">
             <Col xs={12} lg={6}>
-              <InformationCard title={section3.howItWorks.title} content={section3.howItWorks.steps} isList />
+              <InformationCard title={section3.howItWorks.title} content={section3.howItWorks.steps} />
             </Col>
             <Col xs={12} lg={6} className="mt-4 mt-lg-0">
               <InformationCard
                 title={section3.whyJoin.title}
-                content={[section3.whyJoin.description, ...section3.whyJoin.benefits]}
-                isList
+                description={section3.whyJoin.description}
+                content={section3.whyJoin.benefits}
               />
             </Col>
           </Row>
@@ -114,7 +114,8 @@ export const IsaacCompetition = () => {
             <Col xs={12} lg={6} className="mt-4 mt-lg-0">
               <InformationCard
                 title={section3.prizes.title}
-                content={[section3.prizes.description, ...section3.prizes.prizeList]}
+                description={section3.prizes.description}
+                content={section3.prizes.prizeList}
                 isList
               />
             </Col>
