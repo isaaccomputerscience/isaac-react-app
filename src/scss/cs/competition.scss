@@ -37,3 +37,15 @@
     border: none;
   }
 }
+
+.competition-timeline {
+  &-title {
+    color: #120540;
+    font-size: 24px;
+  }
+
+  &-content {
+    color: #130019;
+    font-size: 19px;
+  }
+}

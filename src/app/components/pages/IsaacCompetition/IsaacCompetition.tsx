@@ -8,6 +8,7 @@ import IoECard from "./Section2/IoECard";
 import TestimonialComment from "../../elements/TestimonialComment";
 import CompetitionButton from "./Buttons/CompetitionButton";
 import InformationCard from "./CompetitionInformation/InformationCard";
+import CompetitionTimeline from "./CompetitionInformation/CompetitionTimeline";
 
 const { section1, section2, section3 } = content;
 
@@ -127,6 +128,9 @@ export const IsaacCompetition = () => {
               />
             </Col>
           </Row>
+          <div>
+            <CompetitionTimeline />
+          </div>
         </Container>
       </section>
     </>
