@@ -1,7 +1,5 @@
 import React, { memo } from "react";
 import { Card, CardBody, CardHeader, Collapse } from "reactstrap";
-import DownIcon from "../../../../../../public/assets/chevron_down.svg";
-import UpIcon from "../../../../../../public/assets/chevron_up.svg";
 
 interface AccordionItemProps {
   id: string;
@@ -41,7 +39,11 @@ const AccordionItem = memo(({ id, title, section, open, setOpenState }: Accordio
     <Card eventKey={id}>
       <CardHeader className={headerClasses} onClick={() => toggle(id)}>
         {title}
-        {open === id ? <img src={UpIcon} alt="Up Icon" className="" /> : <img src={DownIcon} alt="Down Icon" />}{" "}
+        {open === id ? (
+          <img src={"/assets/chevron_up.svg"} alt="Up Icon" className="" />
+        ) : (
+          <img src={"/assets/chevron_down.svg"} alt="Down Icon" />
+        )}{" "}
       </CardHeader>
 
       <Collapse isOpen={open === id}>
