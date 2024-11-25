@@ -56,6 +56,10 @@
 
   &-date {
     font-size: 20px;
+    
+    @media (max-width: 576px) {
+      text-align: right;
+    }
   }
 
   &-background-1 {
