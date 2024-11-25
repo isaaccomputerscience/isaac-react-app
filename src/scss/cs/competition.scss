@@ -44,8 +44,29 @@
     font-size: 24px;
   }
 
-  &-content {
+   &-header {
+    color: #120540;
+    font-size: 28px;
+  }
+
+  &-text {
     color: #130019;
     font-size: 19px;
+  }
+
+   &-background-1 {
+    background-color: #F9F9F9;
+  }
+
+  &-background-2 {
+    background-color: #FFBBDC;
+  }
+
+  &-background-3 {
+    background-color: #FFDF80;
+  }
+
+  &-background-4 {
+    background-color: #FFC000;
   }
 }

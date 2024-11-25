@@ -129,7 +129,40 @@ export const IsaacCompetition = () => {
             </Col>
           </Row>
           <div>
-            <CompetitionTimeline />
+            <section className="competition-timeline">
+              <h3 className="competition-timeline-title">{section3.timeline.title}</h3>
+              <p className="competition-timeline-content">{section3.timeline.content}</p>
+              <Row className="py-4">
+                <Col xs={12} sm={6} md={3}>
+                  <CompetitionTimeline
+                    title="Title 1"
+                    content={["Content for card 1"]}
+                    className="competition-timeline-background-1"
+                  />
+                </Col>
+                <Col xs={12} sm={6} md={3}>
+                  <CompetitionTimeline
+                    title="Title 2"
+                    content={["Content for card 2"]}
+                    className="competition-timeline-background-2"
+                  />
+                </Col>
+                <Col xs={12} sm={6} md={3}>
+                  <CompetitionTimeline
+                    title="Title 3"
+                    content={["Content for card 3"]}
+                    className="competition-timeline-background-3"
+                  />
+                </Col>
+                <Col xs={12} sm={6} md={3}>
+                  <CompetitionTimeline
+                    title="Title 4"
+                    content={["Content for card 4"]}
+                    className="competition-timeline-background-4"
+                  />
+                </Col>
+              </Row>
+            </section>
           </div>
         </Container>
       </section>
