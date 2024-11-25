@@ -23,10 +23,10 @@ export const IsaacCompetition = () => {
     },
   ];
 
-  const [open, setOpenState] = useState<string | null>("0");
+  const [open, setOpen] = useState<string | null>("0");
 
-  const setOpen = (id?: string) => {
-    setOpenState(id || null);
+  const setOpenState = (id?: string) => {
+    setOpen(id ?? null);
   };
 
   const accordionSections = [
@@ -111,7 +111,14 @@ export const IsaacCompetition = () => {
             <Col lg={8}>
               <div className="accordion">
                 {accordionSections.map(({ id, title, section }) => (
-                  <AccordionItem key={id} id={id} title={title} section={section} open={open} setOpen={setOpen} />
+                  <AccordionItem
+                    key={id}
+                    id={id}
+                    title={title}
+                    section={section}
+                    open={open}
+                    setOpenState={setOpenState}
+                  />
                 ))}
               </div>
             </Col>

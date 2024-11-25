@@ -8,24 +8,24 @@ interface AccordionItemProps {
   title: string;
   section: string[];
   open: string | null;
-  setOpen: (id?: string) => void;
+  setOpenState: (id?: string) => void;
 }
 
 const renderSectionContent = (section: string[]) => (
   <>
     {section[0]}
     <ul>
-      {section.slice(1, -1).map((item, index) => (
-        <li key={index}>{item}</li>
+      {section.slice(1, -1).map((item) => (
+        <li key={item}>{item}</li>
       ))}
     </ul>
     {section[section.length - 1]}
   </>
 );
 
-const AccordionItem = memo(({ id, title, section, open, setOpen }: AccordionItemProps) => {
+const AccordionItem = memo(({ id, title, section, open, setOpenState }: AccordionItemProps) => {
   const toggle = (id: string) => {
-    setOpen(open === id ? undefined : id);
+    setOpenState(open === id ? undefined : id);
   };
 
   const headerClasses = [
