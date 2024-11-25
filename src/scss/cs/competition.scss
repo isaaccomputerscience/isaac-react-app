@@ -44,17 +44,21 @@
     font-size: 24px;
   }
 
-   &-header {
-    color: #120540;
-    font-size: 28px;
-  }
-
   &-text {
     color: #130019;
     font-size: 19px;
   }
 
-   &-background-1 {
+  &-header {
+    color: #120540;
+    font-size: 28px;
+  }
+
+  &-date {
+    font-size: 20px;
+  }
+
+  &-background-1 {
     background-color: #F9F9F9;
   }
 

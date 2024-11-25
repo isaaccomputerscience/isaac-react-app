@@ -17,7 +17,7 @@ const CompetitionTimeline = ({ title, description, content, className = "" }: Ti
       <CardBody>
         {description && <CardText className="competition-timeline-text mb-3">{description}</CardText>}
         {content.map((text, index) => (
-          <CardText key={index} className="competition-timeline-text">
+          <CardText key={index} tag="h3" className="competition-timeline-date">
             {text}
           </CardText>
         ))}
