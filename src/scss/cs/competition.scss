@@ -79,8 +79,11 @@
   }
 
   &-box-container {
-    position: relative;
+  @media (max-width: 576px) {
+    margin-bottom: 15px;
   }
+
+}
 
   &-arrow {
     width: 111px;
