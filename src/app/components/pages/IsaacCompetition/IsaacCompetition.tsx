@@ -128,30 +128,28 @@ export const IsaacCompetition = () => {
               />
             </Col>
           </Row>
-          <div>
-            <section className="competition-timeline">
-              <h3 className="competition-timeline-title">{section3.timeline.title}</h3>
-              <p className="competition-timeline-content">{section3.timeline.content}</p>
-              <Row className="py-4">
-                {section3.timeline.entries.map((entry, index) => (
-                  <Col
-                    key={index}
-                    xs={12}
-                    sm={6}
-                    md={3}
-                    className={`competition-timeline-box-container competition-timeline-background-${index + 1}`}
-                  >
-                    <CompetitionTimeline
-                      title={`${entry.event}`}
-                      content={[`${entry.date}`]}
-                      className={`competition-timeline-background-${index + 1}`}
-                    />
-                    {index < section3.timeline.entries.length - 1 && <div className="competition-timeline-arrow"></div>}
-                  </Col>
-                ))}
-              </Row>
-            </section>
-          </div>
+          <section className="competition-timeline">
+            <h3 className="competition-timeline-title">{section3.timeline.title}</h3>
+            <p className="competition-timeline-content">{section3.timeline.content}</p>
+            <Row className="py-4">
+              {section3.timeline.entries.map((entry, index) => (
+                <Col
+                  key={index}
+                  xs={12}
+                  sm={6}
+                  md={3}
+                  className={`competition-timeline-box-container competition-timeline-background-${index + 1}`}
+                >
+                  <CompetitionTimeline
+                    title={`${entry.event}`}
+                    content={[`${entry.date}`]}
+                    className={`competition-timeline-background-${index + 1}`}
+                  />
+                  {index < section3.timeline.entries.length - 1 && <div className="competition-timeline-arrow"></div>}
+                </Col>
+              ))}
+            </Row>
+          </section>
         </Container>
       </section>
     </>
