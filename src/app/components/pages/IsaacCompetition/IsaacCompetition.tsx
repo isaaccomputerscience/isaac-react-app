@@ -133,20 +133,20 @@ export const IsaacCompetition = () => {
               <h3 className="competition-timeline-title">{section3.timeline.title}</h3>
               <p className="competition-timeline-content">{section3.timeline.content}</p>
               <Row className="py-4">
-                {[1, 2, 3, 4].map((index) => (
+                {section3.timeline.entries.map((entry, index) => (
                   <Col
                     key={index}
                     xs={12}
                     sm={6}
                     md={3}
-                    className={`competition-timeline-box-container competition-timeline-background-${index}`}
+                    className={`competition-timeline-box-container competition-timeline-background-${index + 1}`}
                   >
                     <CompetitionTimeline
-                      title={`Title ${index}`}
-                      content={[`Content for card ${index}`]}
-                      className={`competition-timeline-background-${index}`}
+                      title={`${entry.event}`}
+                      content={[`${entry.date}`]}
+                      className={`competition-timeline-background-${index + 1}`}
                     />
-                    {index < 4 && <div className="competition-timeline-arrow"></div>}
+                    {index < section3.timeline.entries.length - 1 && <div className="competition-timeline-arrow"></div>}
                   </Col>
                 ))}
               </Row>

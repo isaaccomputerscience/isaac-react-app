@@ -78,6 +78,12 @@ export default {
       title: "Competition Timeline",
       content:
         "Save the 2024/25 dates in your calendar and plan time for you or your team to develop your IoE idea before applications close.",
+      entries: [
+        { event: "Entries open", date: "January" },
+        { event: "Entries close", date: "17 March" },
+        { event: "Finalist selected", date: "May" },
+        { event: "The finals", date: "2 to 13 June" },
+      ],
     },
   },
 };
