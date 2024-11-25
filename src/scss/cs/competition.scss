@@ -82,13 +82,9 @@
     @media (min-width: 576px) {
       margin-left: 15px;
     }
-    @media (max-width: 576px) {
+    @media (max-width: 764px) {
       margin-bottom: 15px;
     }
-  }
-
-  .no-wrap {
-     flex-wrap: nowrap !important;
   }
 
   &-arrow {
@@ -103,11 +99,11 @@
     transform: translateY(-50%);
     z-index: 1;
 
-     @media (min-width: 577px) and (max-width: 992px) {
+     @media (min-width: 765px) and (max-width: 992px) {
       display: none;
     }
 
-     @media (max-width: 576px) {
+     @media (max-width: 764px) {
       top: auto;
       bottom: -95px;
       right: 50%;

@@ -131,12 +131,11 @@ export const IsaacCompetition = () => {
           <section className="competition-timeline">
             <h3 className="competition-timeline-title">{section3.timeline.title}</h3>
             <p className="competition-timeline-content">{section3.timeline.content}</p>
-            <Row className="py-4 justify-content-center no-wrap">
+            <Row className="py-4 p-4">
               {section3.timeline.entries.map((entry, index) => (
                 <Col
                   key={index}
-                  xs={11}
-                  sm={6}
+                  sm={11}
                   md={3}
                   className={`competition-timeline-box-container competition-timeline-background-${index + 1}`}
                 >
