@@ -2,11 +2,11 @@ import React from "react";
 import { Accordion } from "react-bootstrap";
 
 interface AccordionItemProps {
-  eventKey: string;
+  id: string;
   title: string;
-  section: any;
-  isCollapsed: boolean;
-  setIsCollapsed: (isCollapsed: boolean) => void;
+  section: string[];
+  open: string | null;
+  setOpen: (id?: string) => void;
 }
 
 const renderSectionContent = (section: string[]) => {
@@ -23,23 +23,28 @@ const renderSectionContent = (section: string[]) => {
   );
 };
 
-const AccordionItem = ({ eventKey, title, section, isCollapsed, setIsCollapsed }: AccordionItemProps) => (
-  <Accordion.Item eventKey={eventKey}>
-    <Accordion.Header
-      className={`accordion-button p-3 m-0 ${eventKey === "0" ? "rounded-top" : ""} ${
-        eventKey === "5" ? "rounded-bottom" : ""
-      } ${isCollapsed ? "" : "border-bottom border-dark"}`}
-      onClick={() => setIsCollapsed(!isCollapsed)}
-    >
-      {title}
-    </Accordion.Header>
-    <Accordion.Body
-      className={`p-4 bg-white ${isCollapsed ? "border-bottom border-dark" : ""}`}
-      onClick={() => setIsCollapsed(!isCollapsed)}
-    >
-      {renderSectionContent(section)}
-    </Accordion.Body>
-  </Accordion.Item>
-);
+const AccordionItem = ({ id, title, section, open, setOpen }: AccordionItemProps) => {
+  const toggle = (id: string) => {
+    if (open === id) {
+      setOpen();
+    } else {
+      setOpen(id);
+    }
+  };
+
+  return (
+    <Accordion.Item eventKey={id}>
+      <Accordion.Header
+        className={`accordion-button p-3 m-0 ${id === "0" ? "rounded-top" : ""} ${id === "5" ? "rounded-bottom" : ""} ${
+          open === id ? "" : "border-bottom border-dark"
+        }`}
+        onClick={() => toggle(id)}
+      >
+        {title}
+      </Accordion.Header>
+      <Accordion.Body className="p-4 bg-white">{renderSectionContent(section)}</Accordion.Body>
+    </Accordion.Item>
+  );
+};
 
 export default AccordionItem;

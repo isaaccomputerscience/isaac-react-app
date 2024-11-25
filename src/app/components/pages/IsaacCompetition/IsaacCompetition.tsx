@@ -13,7 +13,11 @@ import AccordionItem from "./Section4/AccordionItem";
 const { section1, section2, section4 } = content;
 
 export const IsaacCompetition = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [open, setOpenState] = useState<string | null>("0");
+
+  const setOpen = (id?: string) => {
+    setOpenState(id || null);
+  };
 
   useEffect(() => {
     document.title = "Isaac " + SITE_SUBJECT_TITLE;
@@ -99,46 +103,46 @@ export const IsaacCompetition = () => {
             <Col lg={8}>
               <Accordion defaultActiveKey="0">
                 <AccordionItem
-                  eventKey="0"
+                  id="0"
                   title={section4.projectIdeas.title}
                   section={section4.projectIdeas.section}
-                  isCollapsed={isCollapsed}
-                  setIsCollapsed={setIsCollapsed}
+                  open={open}
+                  setOpen={setOpen}
                 />
                 <AccordionItem
-                  eventKey="1"
+                  id="1"
                   title={section4.availableSupport.title}
                   section={section4.availableSupport.section}
-                  isCollapsed={isCollapsed}
-                  setIsCollapsed={setIsCollapsed}
+                  open={open}
+                  setOpen={setOpen}
                 />
                 <AccordionItem
-                  eventKey="2"
+                  id="2"
                   title={section4.video.title}
                   section={section4.video.section}
-                  isCollapsed={isCollapsed}
-                  setIsCollapsed={setIsCollapsed}
+                  open={open}
+                  setOpen={setOpen}
                 />
                 <AccordionItem
-                  eventKey="3"
+                  id="3"
                   title={section4.groupEntry.title}
                   section={section4.groupEntry.section}
-                  isCollapsed={isCollapsed}
-                  setIsCollapsed={setIsCollapsed}
+                  open={open}
+                  setOpen={setOpen}
                 />
                 <AccordionItem
-                  eventKey="4"
+                  id="4"
                   title={section4.industry.title}
                   section={section4.industry.section}
-                  isCollapsed={isCollapsed}
-                  setIsCollapsed={setIsCollapsed}
+                  open={open}
+                  setOpen={setOpen}
                 />
                 <AccordionItem
-                  eventKey="5"
+                  id="5"
                   title={section4.termsAndConditions.title}
                   section={section4.termsAndConditions.section}
-                  isCollapsed={isCollapsed}
-                  setIsCollapsed={setIsCollapsed}
+                  open={open}
+                  setOpen={setOpen}
                 />
               </Accordion>
             </Col>
