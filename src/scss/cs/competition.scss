@@ -74,7 +74,7 @@
     background-color: #FFC000;
   }
 
-   &-box-container {
+  &-box-container {
     position: relative;
   }
 
@@ -102,15 +102,19 @@
     }
   }
 
-  &-background-1 .competition-timeline-arrow {
+  &-background-1 &-arrow {
     border-left-color: #F9F9F9;
   }
 
-  &-background-2 .competition-timeline-arrow {
+  &-background-2 &-arrow {
     border-left-color: #FFBBDC;
   }
 
-  &-background-3 .competition-timeline-arrow {
+  &-background-3 &-arrow {
     border-left-color: #FFDF80;
+  }
+
+  &-background-4 &-arrow {
+    border-left-color: #FFC000;
   }
 }

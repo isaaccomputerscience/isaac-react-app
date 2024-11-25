@@ -133,34 +133,22 @@ export const IsaacCompetition = () => {
               <h3 className="competition-timeline-title">{section3.timeline.title}</h3>
               <p className="competition-timeline-content">{section3.timeline.content}</p>
               <Row className="py-4">
-                <Col xs={12} sm={6} md={3}>
-                  <CompetitionTimeline
-                    title="Title 1"
-                    content={["Content for card 1"]}
-                    className="competition-timeline-background-1"
-                  />
-                </Col>
-                <Col xs={12} sm={6} md={3}>
-                  <CompetitionTimeline
-                    title="Title 2"
-                    content={["Content for card 2"]}
-                    className="competition-timeline-background-2"
-                  />
-                </Col>
-                <Col xs={12} sm={6} md={3}>
-                  <CompetitionTimeline
-                    title="Title 3"
-                    content={["Content for card 3"]}
-                    className="competition-timeline-background-3"
-                  />
-                </Col>
-                <Col xs={12} sm={6} md={3}>
-                  <CompetitionTimeline
-                    title="Title 4"
-                    content={["Content for card 4"]}
-                    className="competition-timeline-background-4"
-                  />
-                </Col>
+                {[1, 2, 3, 4].map((index) => (
+                  <Col
+                    key={index}
+                    xs={12}
+                    sm={6}
+                    md={3}
+                    className={`competition-timeline-box-container competition-timeline-background-${index}`}
+                  >
+                    <CompetitionTimeline
+                      title={`Title ${index}`}
+                      content={[`Content for card ${index}`]}
+                      className={`competition-timeline-background-${index}`}
+                    />
+                    {index < 4 && <div className="competition-timeline-arrow"></div>}
+                  </Col>
+                ))}
               </Row>
             </section>
           </div>
