@@ -200,7 +200,7 @@ export const Accordion = withRouter(
                     <UncontrolledTooltip
                       placement="right"
                       target={`disabled-tooltip-${componentId}`}
-                      modifiers={{ preventOverflow: { boundariesElement: "viewport" } }}
+                      // modifiers={{ preventOverflow: { boundariesElement: "viewport" } }}
                     >
                       {disabled}
                     </UncontrolledTooltip>

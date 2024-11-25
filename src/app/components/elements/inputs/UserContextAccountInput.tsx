@@ -11,7 +11,7 @@ import {
   isTutorOrAbove,
   STAGE,
 } from "../../../services";
-import { Col, CustomInput, FormGroup, Input, Label, Row, UncontrolledTooltip } from "reactstrap";
+import { Col, FormGroup, Input, Label, Row, UncontrolledTooltip } from "reactstrap";
 import { UserContext } from "../../../../IsaacApiTypes";
 import { v4 as uuid_v4 } from "uuid";
 import { selectors, useAppSelector } from "../../../state";
@@ -224,7 +224,7 @@ export function UserContextAccountInput({
               {index === userContexts.length - 1 &&
                 userContexts.findIndex((p) => p.stage === STAGE.ALL && p.examBoard === EXAM_BOARD.ALL) === -1 && (
                   <Label className="m-0 mt-3">
-                    <CustomInput
+                    <Input
                       type="checkbox"
                       id={`hide-content-check-${componentId}`}
                       className="d-inline-block larger-checkbox"

@@ -15,11 +15,10 @@ import {
   CardBody,
   Col,
   Container,
-  CustomInput,
+  Input,
   Form,
   FormFeedback,
   FormGroup,
-  Input,
   Label,
   Row,
   UncontrolledTooltip,
@@ -318,7 +317,7 @@ export const LogIn = () => {
 
                     <Row className="mb-4">
                       <Col className={"col-5 mt-1"}>
-                        <CustomInput
+                        <Input
                           id="login-remember-me"
                           type="checkbox"
                           label="Remember me"

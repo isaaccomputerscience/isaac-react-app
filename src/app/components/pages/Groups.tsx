@@ -12,7 +12,6 @@ import {
   Form,
   Input,
   InputGroup,
-  InputGroupAddon,
   Nav,
   NavItem,
   NavLink,
@@ -334,16 +333,14 @@ const GroupEditor = ({ group, user, createNewGroup, groupNameInputRef }: GroupCr
               disabled={isDefined(group) && !(isUserGroupOwner || group.additionalManagerPrivileges)}
             />
             {(!isDefined(group) || isUserGroupOwner || group.additionalManagerPrivileges) && (
-              <InputGroupAddon addonType="append">
-                <Button
-                  color="primary"
-                  className="p-0 border-dark"
-                  disabled={newGroupName === "" || (isDefined(group) && newGroupName === group.groupName)}
-                  onClick={saveUpdatedGroup}
-                >
-                  {group ? "Update" : "Create"}
-                </Button>
-              </InputGroupAddon>
+              <Button
+                color="primary"
+                className="p-0 border-dark"
+                disabled={newGroupName === "" || (isDefined(group) && newGroupName === group.groupName)}
+                onClick={saveUpdatedGroup}
+              >
+                {group ? "Update" : "Create"}
+              </Button>
             )}
           </InputGroup>
         </Form>

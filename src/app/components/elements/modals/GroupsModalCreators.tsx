@@ -11,7 +11,7 @@ import {
 } from "../../../state";
 import { sortBy } from "lodash";
 import { history, isTeacherOrAbove } from "../../../services";
-import { Jumbotron, Row, Col, Form, Input, Table, CustomInput, Alert } from "reactstrap";
+import { Row, Col, Form, Input, Table, Alert } from "reactstrap";
 import { Button } from "reactstrap";
 import { RegisteredUserDTO, UserSummaryWithEmailAddressDTO } from "../../../../IsaacApiTypes";
 import { AppGroup } from "../../../../IsaacAppTypes";
@@ -81,7 +81,7 @@ const CurrentGroupInviteModal = ({ firstTime, group }: CurrentGroupInviteModalPr
         defaultErrorTitle={"Error fetching group joining token"}
         thenRender={(token) => (
           <>
-            <Jumbotron>
+            <div className="rounded px-3 px-sm-4 py-3 py-sm-5">
               <h2>Option 1: Share link</h2>
               <p>Share the following link with your students to have them join your group:</p>
               <span
@@ -90,9 +90,9 @@ const CurrentGroupInviteModal = ({ firstTime, group }: CurrentGroupInviteModalPr
               >
                 {location.origin}/account?authToken={token?.token}
               </span>
-            </Jumbotron>
+            </div>
 
-            <Jumbotron>
+            <div className="rounded px-3 px-sm-4 py-3 py-sm-5">
               <h2>Option 2: Share code</h2>
               <p>
                 Ask your students to enter the following code into the Teacher Connections tab on their &lsquo;My
@@ -101,7 +101,7 @@ const CurrentGroupInviteModal = ({ firstTime, group }: CurrentGroupInviteModalPr
               <h3 className="text-center user-select-all d-block border bg-light p-1" data-testid={"share-code"}>
                 {token?.token}
               </h3>
-            </Jumbotron>
+            </div>
           </>
         )}
       />
@@ -336,7 +336,7 @@ const CurrentGroupManagersModal = ({
 
       {userIsOwner && (
         <Alert className={"px-2 py-2 mb-2"} color={group.additionalManagerPrivileges ? "danger" : "warning"}>
-          <CustomInput
+          <Input
             id="additional-manager-privileges-check"
             checked={group.additionalManagerPrivileges}
             className={"mb-2"}

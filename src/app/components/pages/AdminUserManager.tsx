@@ -18,7 +18,6 @@ import {
   DropdownMenu,
   DropdownItem,
   InputGroup,
-  InputGroupAddon,
 } from "reactstrap";
 import { ShowLoading } from "../handlers/ShowLoading";
 import {
@@ -533,21 +532,19 @@ const MergeAccounts = () => {
                 value={mergeSourceId}
                 onChange={(e) => setMergeSourceId(e.target.value)}
               />
-              <InputGroupAddon addonType="append">
-                <Button
-                  type="button"
-                  className="p-0 border-dark"
-                  disabled={
-                    mergeTargetId === "" ||
-                    Number.isNaN(Number(mergeTargetId)) ||
-                    mergeSourceId === "" ||
-                    Number.isNaN(Number(mergeSourceId))
-                  }
-                  onClick={() => dispatch(mergeUsers(Number(mergeTargetId), Number(mergeSourceId)))}
-                >
-                  Merge
-                </Button>
-              </InputGroupAddon>
+              <Button
+                type="button"
+                className="p-0 border-dark"
+                disabled={
+                  mergeTargetId === "" ||
+                  Number.isNaN(Number(mergeTargetId)) ||
+                  mergeSourceId === "" ||
+                  Number.isNaN(Number(mergeSourceId))
+                }
+                onClick={() => dispatch(mergeUsers(Number(mergeTargetId), Number(mergeSourceId)))}
+              >
+                Merge
+              </Button>
             </InputGroup>
           </FormGroup>
         </CardBody>

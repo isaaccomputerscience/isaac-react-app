@@ -7,18 +7,7 @@ import {
   useAppSelector,
 } from "../../state";
 import { Link } from "react-router-dom";
-import {
-  Card,
-  CardBody,
-  CardTitle,
-  Container,
-  Form,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  ListGroup,
-  ListGroupItem,
-} from "reactstrap";
+import { Card, CardBody, CardTitle, Container, Form, Input, InputGroup, ListGroup, ListGroupItem } from "reactstrap";
 import { RegisteredUserDTO } from "../../../IsaacApiTypes";
 import { ShowLoading } from "../handlers/ShowLoading";
 import { EDITOR_COMPARE_URL, isAdmin } from "../../services";
@@ -102,19 +91,17 @@ export const Admin = ({ user }: { user: RegisteredUserDTO }) => {
                               onChange={(e) => setNewVersion(e.target.value)}
                               placeholder="Enter commit SHA"
                             />
-                            <InputGroupAddon addonType="append">
-                              <a
-                                className={classnames({
-                                  "p-1 border-dark btn btn-secondary": true,
-                                  disabled: displayVersion === contentVersion.liveVersion,
-                                })}
-                                href={`${EDITOR_COMPARE_URL}/${contentVersion?.liveVersion}/${displayVersion}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                Preview Changes
-                              </a>
-                            </InputGroupAddon>
+                            <a
+                              className={classnames({
+                                "p-1 border-dark btn btn-secondary": true,
+                                disabled: displayVersion === contentVersion.liveVersion,
+                              })}
+                              href={`${EDITOR_COMPARE_URL}/${contentVersion?.liveVersion}/${displayVersion}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Preview Changes
+                            </a>
                           </InputGroup>
                         </Form>
                       )

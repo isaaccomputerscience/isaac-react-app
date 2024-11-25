@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, Col, CustomInput, Form, Row } from "reactstrap";
+import { Button, Col, Input, Form, Row } from "reactstrap";
 import { closeActiveModal, selectors, store, useAppDispatch, useAppSelector } from "../../../state";
 import { useLocation } from "react-router-dom";
 import {
@@ -105,7 +105,7 @@ const LoginOrSignUpBody = () => {
                 small
               />
 
-              <CustomInput
+              <Input
                 id="login-remember-me"
                 className={"mb-2"}
                 type="checkbox"

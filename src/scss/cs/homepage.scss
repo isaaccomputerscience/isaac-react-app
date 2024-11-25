@@ -105,7 +105,7 @@
         @extend .h5;
       }
       .profile-subtitle {
-        @extend .font-weight-bold;
+        font-weight: bold;
       }
       .profile-description {
         font-size: inherit;
@@ -114,7 +114,7 @@
       .profile-title,
       .profile-subtitle,
       .profile-description {
-        @extend .text-left;
+        @extend .text-start;
       }
     }
   }

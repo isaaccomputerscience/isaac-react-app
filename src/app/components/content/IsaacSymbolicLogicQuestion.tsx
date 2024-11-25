@@ -13,7 +13,7 @@ import {
   useUserContext,
 } from "../../services";
 import _flattenDeep from "lodash/flattenDeep";
-import { Button, Input, InputGroup, InputGroupAddon, UncontrolledTooltip } from "reactstrap";
+import { Button, Input, InputGroup, UncontrolledTooltip } from "reactstrap";
 import { v4 as uuid_v4 } from "uuid";
 import { Inequality, makeInequality } from "inequality";
 import { parseBooleanExpression, ParsingError } from "inequality-grammar";
@@ -265,25 +265,23 @@ const IsaacSymbolicLogicQuestion = ({
           />
           <InputGroup className="my-2">
             <Input type="text" onChange={updateEquation} value={textInput} placeholder="or type your expression here" />
-            <InputGroupAddon addonType="append">
-              <Button type="button" className="eqn-editor-help" id={helpTooltipId}>
-                ?
-              </Button>
-              <UncontrolledTooltip placement="top" autohide={false} target={helpTooltipId}>
-                Here are some examples of expressions you can type:
-                <br />
-                <br />
-                A AND (B XOR NOT C)
-                <br />
-                A &amp; (B ^ !C)
-                <br />
-                T &amp; ~(F + A)
-                <br />
-                1 . ~(0 + A)
-                <br />
-                As you type, the box above will preview the result.
-              </UncontrolledTooltip>
-            </InputGroupAddon>
+            <Button type="button" className="eqn-editor-help" id={helpTooltipId}>
+              ?
+            </Button>
+            <UncontrolledTooltip placement="top" autohide={false} target={helpTooltipId}>
+              Here are some examples of expressions you can type:
+              <br />
+              <br />
+              A AND (B XOR NOT C)
+              <br />
+              A &amp; (B ^ !C)
+              <br />
+              T &amp; ~(F + A)
+              <br />
+              1 . ~(0 + A)
+              <br />
+              As you type, the box above will preview the result.
+            </UncontrolledTooltip>
           </InputGroup>
           {isDefined(errors) && Array.isArray(errors) && errors.length > 0 && (
             <div className="eqn-editor-input-errors">

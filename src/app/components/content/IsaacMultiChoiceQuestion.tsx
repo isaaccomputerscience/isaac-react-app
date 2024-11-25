@@ -1,7 +1,7 @@
 import React from "react";
 import { IsaacContentValueOrChildren } from "./IsaacContentValueOrChildren";
 import { IsaacMultiChoiceQuestionDTO } from "../../../IsaacApiTypes";
-import { CustomInput, Label } from "reactstrap";
+import { Input, Label } from "reactstrap";
 import { useCurrentQuestionAttempt } from "../../services";
 import { IsaacQuestionProps } from "../../../IsaacAppTypes";
 
@@ -19,7 +19,7 @@ const IsaacMultiChoiceQuestion = ({ doc, questionId, readonly }: IsaacQuestionPr
         {doc?.choices?.map((choice, index) => (
           <li key={choice.value} className="list-unstyled">
             <Label className="label-radio multichoice-option d-flex">
-              <CustomInput
+              <Input
                 id={`${questionId}${index}`}
                 color="secondary"
                 type="radio"

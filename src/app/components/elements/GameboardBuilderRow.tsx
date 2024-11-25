@@ -1,5 +1,5 @@
 import classnames from "classnames";
-import { CustomInput } from "reactstrap";
+import { Input } from "reactstrap";
 import {
   tags,
   AUDIENCE_DISPLAY_FIELDS,
@@ -79,7 +79,7 @@ const GameboardBuilderRow = ({
       {...provided?.dragHandleProps}
     >
       <td className="text-center align-middle w-5">
-        <CustomInput
+        <Input
           type="checkbox"
           id={`${provided ? "gameboard-builder" : "question-search-modal"}-include-${question.id}`}
           aria-label="Select question"

@@ -3,7 +3,7 @@ import AsyncCreatableSelect from "react-select/async-creatable";
 import { School, ValidationUser } from "../../../../IsaacAppTypes";
 import { api, schoolNameWithPostcode, throttledSchoolSearch, validateUserSchool } from "../../../services";
 import { Immutable } from "immer";
-import { CustomInput, FormGroup, Label } from "reactstrap";
+import { Input, FormGroup, Label } from "reactstrap";
 
 interface SchoolInputProps {
   userToUpdate: Immutable<ValidationUser>;
@@ -99,7 +99,7 @@ export const SchoolInput = ({
       {((userToUpdate.schoolOther == undefined && !(selectedSchoolObject && selectedSchoolObject.name)) ||
         userToUpdate.schoolOther == NOT_APPLICABLE) && (
         <div className={(userToUpdate.schoolOther === NOT_APPLICABLE ? "mt-1" : "mt-3") + " d-flex"}>
-          <CustomInput
+          <Input
             type="checkbox"
             id={`${idPrefix}-not-associated-with-school`}
             checked={userToUpdate.schoolOther === NOT_APPLICABLE}

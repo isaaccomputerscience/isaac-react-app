@@ -18,7 +18,7 @@
     }
 
     &.katex-preview {
-      border: 1px solid darken(theme-color("primary"), 10%);
+      border: 1px solid darken($primary, 10%);
     }
 
     &.menu-bar {
@@ -30,7 +30,7 @@
             &.input-box {
               .menu-item {
                 svg.v-hexagon {
-                  stroke: darken(theme-color("primary"), 10%);
+                  stroke: darken($primary, 10%);
                 }
               }
             }
@@ -38,7 +38,7 @@
             &.keypad-box {
               .key {
                 svg.v-hexagon {
-                  stroke: darken(theme-color("primary"), 10%);
+                  stroke: darken($primary, 10%);
                 }
               }
             }

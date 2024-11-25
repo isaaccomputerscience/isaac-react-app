@@ -1,5 +1,5 @@
 import React from "react";
-import { CustomInput, FormGroup, Input, Label, UncontrolledTooltip } from "reactstrap";
+import { Input, FormGroup, Label, UncontrolledTooltip } from "reactstrap";
 import {
   EXAM_BOARD,
   examBoardLabelMap,
@@ -45,7 +45,7 @@ export const UserContextPicker = ({ className, hideLabels = true }: { className?
           <Label className="d-inline-block pr-4" htmlFor="uc-show-other-content-check">
             Show other content?{" "}
           </Label>
-          <CustomInput
+          <Input
             className="w-auto d-inline-block pl-1 pr-0"
             type="checkbox"
             id="uc-show-other-content-check"

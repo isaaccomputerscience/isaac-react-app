@@ -1,5 +1,5 @@
 import React from "react";
-import { CustomInput, FormFeedback, FormGroup, Label, Row } from "reactstrap";
+import { Input, FormFeedback, FormGroup, Label, Row } from "reactstrap";
 import { DateInput } from "./DateInput";
 import { Immutable } from "immer";
 import { ValidationUser } from "../../../../IsaacAppTypes";
@@ -46,7 +46,7 @@ export const RegistrationDobInput = ({
           labelSuffix=" of birth"
         />
         {!teacherRegistration && (
-          <CustomInput
+          <Input
             id="age-over-13-confirmation-input"
             name="age-over-13-confirmation"
             type="checkbox"

@@ -1,16 +1,6 @@
 import React, { ChangeEvent, lazy, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { withRouter } from "react-router-dom";
-import {
-  Button,
-  Col,
-  Container,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  Label,
-  Row,
-  UncontrolledTooltip,
-} from "reactstrap";
+import { Button, Col, Container, Input, InputGroup, Label, Row, UncontrolledTooltip } from "reactstrap";
 import queryString from "query-string";
 import { ifKeyIsEnter, isDefined, isStaff, sanitiseInequalityState } from "../../services";
 import katex from "katex";
@@ -282,50 +272,48 @@ const Equality = withRouter(
                       value={textInput}
                       placeholder="Type your expression here"
                     />
-                    <InputGroupAddon addonType="append">
-                      <Button
-                        type="button"
-                        className="eqn-editor-help pt-2"
-                        id="inequality-help"
-                        size="sm"
-                        tag="a"
-                        href="/solving_problems#symbolic_text"
-                      >
-                        ?
-                      </Button>
-                      {editorMode === "maths" && (
-                        <UncontrolledTooltip placement="top" autohide={false} target="inequality-help">
-                          Here are some examples of expressions you can type:
-                          <br />
-                          <br />
-                          a*x^2 + b x + c<br />
-                          (-b ± sqrt(b**2 - 4ac)) / (2a)
-                          <br />
-                          1/2 mv**2
-                          <br />
-                          log(x_a, 2) == log(x_a) / log(2)
-                          <br />
-                          <br />
-                          As you type, the box below will preview the result.
-                        </UncontrolledTooltip>
-                      )}
-                      {editorMode === "logic" && (
-                        <UncontrolledTooltip placement="top" autohide={false} target="inequality-help">
-                          Here are some examples of expressions you can type:
-                          <br />
-                          <br />
-                          A AND (B XOR NOT C)
-                          <br />
-                          A &amp; (B ^ !C)
-                          <br />
-                          T &amp; ~(F + A)
-                          <br />
-                          1 . ~(0 + A)
-                          <br />
-                          As you type, the box below will preview the result.
-                        </UncontrolledTooltip>
-                      )}
-                    </InputGroupAddon>
+                    <Button
+                      type="button"
+                      className="eqn-editor-help pt-2"
+                      id="inequality-help"
+                      size="sm"
+                      tag="a"
+                      href="/solving_problems#symbolic_text"
+                    >
+                      ?
+                    </Button>
+                    {editorMode === "maths" && (
+                      <UncontrolledTooltip placement="top" autohide={false} target="inequality-help">
+                        Here are some examples of expressions you can type:
+                        <br />
+                        <br />
+                        a*x^2 + b x + c<br />
+                        (-b ± sqrt(b**2 - 4ac)) / (2a)
+                        <br />
+                        1/2 mv**2
+                        <br />
+                        log(x_a, 2) == log(x_a) / log(2)
+                        <br />
+                        <br />
+                        As you type, the box below will preview the result.
+                      </UncontrolledTooltip>
+                    )}
+                    {editorMode === "logic" && (
+                      <UncontrolledTooltip placement="top" autohide={false} target="inequality-help">
+                        Here are some examples of expressions you can type:
+                        <br />
+                        <br />
+                        A AND (B XOR NOT C)
+                        <br />
+                        A &amp; (B ^ !C)
+                        <br />
+                        T &amp; ~(F + A)
+                        <br />
+                        1 . ~(0 + A)
+                        <br />
+                        As you type, the box below will preview the result.
+                      </UncontrolledTooltip>
+                    )}
                   </InputGroup>
                   {isDefined(errors) && Array.isArray(errors) && errors.length > 0 && (
                     <div className="eqn-editor-input-errors">

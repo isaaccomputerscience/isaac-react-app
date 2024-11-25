@@ -16,19 +16,7 @@ import {
 } from "../../../state";
 import classnames from "classnames";
 import { extractTeacherName, isLoggedIn, isStudent, MEMBERSHIP_STATUS } from "../../../services";
-import {
-  Button,
-  CardBody,
-  Col,
-  Container,
-  Form,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  Row,
-  Table,
-  UncontrolledTooltip,
-} from "reactstrap";
+import { Button, CardBody, Col, Container, Form, Input, InputGroup, Row, Table, UncontrolledTooltip } from "reactstrap";
 
 interface TeacherConnectionsProps {
   user: PotentialUser;
@@ -94,16 +82,14 @@ export const TeacherConnections = ({ user, authToken, editingOtherUser, userToEd
                   value={authToken || undefined}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAuthenticationToken(e.target.value)}
                 />
-                <InputGroupAddon addonType="append">
-                  <Button
-                    onClick={processToken}
-                    className="p-0 border-dark"
-                    color="secondary"
-                    disabled={editingOtherUser}
-                  >
-                    Connect
-                  </Button>
-                </InputGroupAddon>
+                <Button
+                  onClick={processToken}
+                  className="p-0 border-dark"
+                  color="secondary"
+                  disabled={editingOtherUser}
+                >
+                  Connect
+                </Button>
               </InputGroup>
             </Form>
           </Col>
@@ -299,7 +285,7 @@ export const TeacherConnections = ({ user, authToken, editingOtherUser, userToEd
                               <UncontrolledTooltip
                                 placement="bottom"
                                 target={`leave-group-action-${membership.group.id}`}
-                                modifiers={{ preventOverflow: { boundariesElement: "viewport" } }}
+                                // modifiers={{ preventOverflow: { boundariesElement: "viewport" } }}
                               >
                                 If you leave a group you will no longer receive notifications of new assignments.
                               </UncontrolledTooltip>
@@ -324,7 +310,7 @@ export const TeacherConnections = ({ user, authToken, editingOtherUser, userToEd
                               <UncontrolledTooltip
                                 placement="bottom"
                                 target={`rejoin-group-action-${membership.group.id}`}
-                                modifiers={{ preventOverflow: { boundariesElement: "viewport" } }}
+                                // modifiers={{ preventOverflow: { boundariesElement: "viewport" } }}
                               >
                                 If you rejoin a group you will see all the assignments set since the group was created.
                               </UncontrolledTooltip>

@@ -10,7 +10,7 @@ import {
   STAGE,
   validateUserContexts,
 } from "../../../services";
-import { Col, FormFeedback, Label, Row, UncontrolledTooltip, CustomInput, Input } from "reactstrap";
+import { Col, FormFeedback, Label, Row, UncontrolledTooltip, Input } from "reactstrap";
 import { Role, UserContext } from "../../../../IsaacApiTypes";
 
 interface UserContextRowProps {
@@ -144,7 +144,7 @@ function UserContextRow({
 const ShowOtherContent = ({ displaySettings, setDisplaySettings, isStudent }: ShowOtherContentProps) => {
   return (
     <Label className={`m-0 pt-3 ${isStudent ? "pt-md-1" : ""}`}>
-      <CustomInput
+      <Input
         type="checkbox"
         id={`hide-content-check`}
         className="d-inline-block larger-checkbox"

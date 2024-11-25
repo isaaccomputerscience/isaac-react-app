@@ -1,5 +1,5 @@
 import React from "react";
-import { CustomInput, FormGroup, Label } from "reactstrap";
+import { Input, FormGroup, Label } from "reactstrap";
 
 interface TrueFalseRadioProps {
   id: string;
@@ -29,7 +29,7 @@ export function TrueFalseRadioInput({
           {trueLabel}
           <span className="sr-only"> for {propertyName}</span>
         </Label>
-        <CustomInput
+        <Input
           id={`${id}-t`}
           type="radio"
           name={id}
@@ -48,7 +48,7 @@ export function TrueFalseRadioInput({
           {falseLabel}
           <span className="sr-only"> for {propertyName}</span>
         </Label>
-        <CustomInput
+        <Input
           id={`${id}-f`}
           type="radio"
           name={id}

@@ -1,5 +1,5 @@
 import React, { ChangeEvent, lazy, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { Button, Input, InputGroup, InputGroupAddon, UncontrolledTooltip } from "reactstrap";
+import { Button, Input, InputGroup, UncontrolledTooltip } from "reactstrap";
 import { IsaacContentValueOrChildren } from "./IsaacContentValueOrChildren";
 import { FormulaDTO, IsaacSymbolicQuestionDTO } from "../../../IsaacApiTypes";
 import katex from "katex";
@@ -238,31 +238,29 @@ const IsaacSymbolicQuestion = ({ doc, questionId, readonly }: IsaacQuestionProps
           />
           <InputGroup className="my-2">
             <Input type="text" onChange={updateEquation} value={textInput} placeholder="Type your formula here" />
-            <InputGroupAddon addonType="append">
-              <Button
-                type="button"
-                className="eqn-editor-help"
-                id={helpTooltipId}
-                tag="a"
-                href="/solving_problems#symbolic_text"
-              >
-                ?
-              </Button>
-              <UncontrolledTooltip placement="top" autohide={false} target={helpTooltipId}>
-                Here are some examples of expressions you can type:
-                <br />
-                <br />
-                a*x^2 + b x + c<br />
-                (-b ± sqrt(b**2 - 4ac)) / (2a)
-                <br />
-                1/2 mv**2
-                <br />
-                log(x_a, 2) == log(x_a) / log(2)
-                <br />
-                <br />
-                As you type, the box below will preview the result.
-              </UncontrolledTooltip>
-            </InputGroupAddon>
+            <Button
+              type="button"
+              className="eqn-editor-help"
+              id={helpTooltipId}
+              tag="a"
+              href="/solving_problems#symbolic_text"
+            >
+              ?
+            </Button>
+            <UncontrolledTooltip placement="top" autohide={false} target={helpTooltipId}>
+              Here are some examples of expressions you can type:
+              <br />
+              <br />
+              a*x^2 + b x + c<br />
+              (-b ± sqrt(b**2 - 4ac)) / (2a)
+              <br />
+              1/2 mv**2
+              <br />
+              log(x_a, 2) == log(x_a) / log(2)
+              <br />
+              <br />
+              As you type, the box below will preview the result.
+            </UncontrolledTooltip>
           </InputGroup>
           {isDefined(errors) && Array.isArray(errors) && errors.length > 0 && (
             <div className="eqn-editor-input-errors">

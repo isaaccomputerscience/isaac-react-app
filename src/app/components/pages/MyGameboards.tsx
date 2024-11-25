@@ -9,7 +9,6 @@ import {
   CardTitle,
   Col,
   Container,
-  CustomInput,
   Input,
   Label,
   Row,
@@ -120,7 +119,7 @@ const Board = (props: BoardTableProps) => {
         </div>
       </td>
       <td>
-        <CustomInput
+        <Input
           id={`board-delete-${board.id}`}
           type="checkbox"
           checked={board && selectedBoards.some((e) => e.id === board.id)}

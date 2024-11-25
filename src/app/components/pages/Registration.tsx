@@ -1,17 +1,6 @@
 import React, { useState } from "react";
 import { selectors, useAppSelector } from "../../state";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-  Container,
-  CustomInput,
-  Label,
-  Row,
-  UncontrolledTooltip,
-} from "reactstrap";
+import { Button, Card, CardBody, CardTitle, Col, Container, Input, Label, Row, UncontrolledTooltip } from "reactstrap";
 import { TitleAndBreadcrumb } from "../elements/TitleAndBreadcrumb";
 import { Redirect, useLocation } from "react-router";
 import { MetaDescription } from "../elements/MetaDescription";
@@ -66,7 +55,7 @@ export const Registration = () => {
           <Row className="mt-4 mx-0">
             <Col className="mx-0 p-0">
               <Row className="m-0">
-                <CustomInput
+                <Input
                   id="student-input"
                   type="radio"
                   name="option"
@@ -79,7 +68,7 @@ export const Registration = () => {
                 <Label htmlFor="student-input">Student</Label>
               </Row>
               <Row className="m-0">
-                <CustomInput
+                <Input
                   id="teacher-input"
                   type="radio"
                   name="option"

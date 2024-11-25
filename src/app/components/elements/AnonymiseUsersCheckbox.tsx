@@ -1,6 +1,6 @@
 import React from "react";
 import { KEY, persistence } from "../../services";
-import { CustomInput } from "reactstrap";
+import { Input } from "reactstrap";
 
 interface AnonymiseUsersCheckboxProps {
   className?: string;
@@ -8,7 +8,7 @@ interface AnonymiseUsersCheckboxProps {
 
 export const AnonymiseUsersCheckbox = ({ className }: AnonymiseUsersCheckboxProps) => {
   return (
-    <CustomInput
+    <Input
       className={className}
       type="checkbox"
       id={"anonymise-users-checkbox"}

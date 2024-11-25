@@ -12,7 +12,6 @@ import {
   DropdownToggle,
   Input,
   InputGroup,
-  InputGroupAddon,
   Label,
   Row,
   UncontrolledTooltip,
@@ -170,7 +169,7 @@ const IsaacNumericQuestion = ({
                   </div>
                 )}
                 {!readonly && (
-                  <InputGroupAddon addonType="append">
+                  <>
                     <Button type="button" className="numeric-help" size="sm" id={helpTooltipId}>
                       ?
                     </Button>
@@ -187,7 +186,7 @@ const IsaacNumericQuestion = ({
                       <br />
                       Do not use commas or spaces.
                     </UncontrolledTooltip>
-                  </InputGroupAddon>
+                  </>
                 )}
               </InputGroup>
             </Label>

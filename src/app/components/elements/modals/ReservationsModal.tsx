@@ -11,7 +11,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from "../../../state";
-import { Button, Col, CustomInput, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Row, Table } from "reactstrap";
+import { Button, Col, Input, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Row, Table } from "reactstrap";
 import { ShowLoading } from "../../handlers/ShowLoading";
 import { ActiveModal, AppGroup, AppGroupMembership } from "../../../../IsaacAppTypes";
 import { RegisteredUserDTO } from "../../../../IsaacApiTypes";
@@ -292,7 +292,7 @@ const ReservationsModal = () => {
                       </tr>
                       <tr>
                         <th className="align-middle checkbox">
-                          <CustomInput
+                          <Input
                             id="check_all_reserved"
                             type="checkbox"
                             label="All"
@@ -316,7 +316,7 @@ const ReservationsModal = () => {
                               className={classNames({ "bg-light text-muted": bookingCancelled })}
                             >
                               <td className="align-middle text-center">
-                                <CustomInput
+                                <Input
                                   key={booking.userBooked.id}
                                   id={`${booking.userBooked.id}`}
                                   type="checkbox"
@@ -379,7 +379,7 @@ const ReservationsModal = () => {
                         </tr>
                         <tr>
                           <th className="w-auto text-nowrap align-middle checkbox">
-                            <CustomInput
+                            <Input
                               id="check_all_unbooked"
                               type="checkbox"
                               label="All"
@@ -398,7 +398,7 @@ const ReservationsModal = () => {
                               user.id && (
                                 <tr key={user.id}>
                                   <td className="w-auto align-middle text-center">
-                                    <CustomInput
+                                    <Input
                                       key={user.id}
                                       id={`${user.id}`}
                                       type="checkbox"
