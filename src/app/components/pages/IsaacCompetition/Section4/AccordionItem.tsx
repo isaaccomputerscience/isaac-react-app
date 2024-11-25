@@ -1,5 +1,7 @@
 import React, { memo } from "react";
-import { Accordion } from "react-bootstrap";
+import { Card, CardBody, CardHeader, Collapse } from "reactstrap";
+import DownIcon from "../../../../../../public/assets/chevron_down.svg";
+import UpIcon from "../../../../../../public/assets/chevron_up.svg";
 
 interface AccordionItemProps {
   id: string;
@@ -27,7 +29,7 @@ const AccordionItem = memo(({ id, title, section, open, setOpen }: AccordionItem
   };
 
   const headerClasses = [
-    "accordion-button p-3 m-0",
+    "accordion-button p-3 m-0 d-flex justify-content-between",
     id === "0" && "rounded-top",
     id === "5" && "rounded-bottom",
     open !== id && "border-bottom border-dark",
@@ -36,12 +38,16 @@ const AccordionItem = memo(({ id, title, section, open, setOpen }: AccordionItem
     .join(" ");
 
   return (
-    <Accordion.Item eventKey={id}>
-      <Accordion.Header className={headerClasses} onClick={() => toggle(id)}>
+    <Card eventKey={id}>
+      <CardHeader className={headerClasses} onClick={() => toggle(id)}>
         {title}
-      </Accordion.Header>
-      <Accordion.Body className="p-4 bg-white">{renderSectionContent(section)}</Accordion.Body>
-    </Accordion.Item>
+        {open === id ? <img src={UpIcon} alt="Up Icon" className="" /> : <img src={DownIcon} alt="Down Icon" />}{" "}
+      </CardHeader>
+
+      <Collapse isOpen={open === id}>
+        <CardBody className="p-3 bg-white border-bottom border-dark">{renderSectionContent(section)}</CardBody>
+      </Collapse>
+    </Card>
   );
 });
 

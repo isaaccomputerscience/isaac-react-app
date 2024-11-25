@@ -7,7 +7,6 @@ import "../../../../scss/cs/competition.scss";
 import IoECard from "./Section2/IoECard";
 import TestimonialComment from "../../elements/TestimonialComment";
 import CompetitionButton from "./CompetitionButton";
-import Accordion from "react-bootstrap/Accordion";
 import AccordionItem from "./Section4/AccordionItem";
 
 const { section1, section2, section4 } = content;
@@ -110,11 +109,11 @@ export const IsaacCompetition = () => {
         <Container>
           <Row className="py-4">
             <Col lg={8}>
-              <Accordion defaultActiveKey="0">
+              <div className="accordion">
                 {accordionSections.map(({ id, title, section }) => (
                   <AccordionItem key={id} id={id} title={title} section={section} open={open} setOpen={setOpen} />
                 ))}
-              </Accordion>
+              </div>
             </Col>
           </Row>
         </Container>
