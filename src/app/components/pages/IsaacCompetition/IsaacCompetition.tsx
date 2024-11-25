@@ -13,12 +13,6 @@ import AccordionItem from "./Section4/AccordionItem";
 const { section1, section2, section4 } = content;
 
 export const IsaacCompetition = () => {
-  const [open, setOpenState] = useState<string | null>("0");
-
-  const setOpen = (id?: string) => {
-    setOpenState(id || null);
-  };
-
   useEffect(() => {
     document.title = "Isaac " + SITE_SUBJECT_TITLE;
   }, []);
@@ -28,6 +22,21 @@ export const IsaacCompetition = () => {
       to: "https://forms.office.com/Pages/ResponsePage.aspx?id=8MSlGfdLSE2oGxZmua5L9cVFgGPyQM5Ft1X2dOwymT9UMjdaVzZWRjRFUEhYUlY1WTZJMERZSkJTSS4u",
       label: "Express your interest",
     },
+  ];
+
+  const [open, setOpenState] = useState<string | null>("0");
+
+  const setOpen = (id?: string) => {
+    setOpenState(id || null);
+  };
+
+  const accordionSections = [
+    { id: "0", title: section4.projectIdeas.title, section: section4.projectIdeas.section },
+    { id: "1", title: section4.availableSupport.title, section: section4.availableSupport.section },
+    { id: "2", title: section4.video.title, section: section4.video.section },
+    { id: "3", title: section4.groupEntry.title, section: section4.groupEntry.section },
+    { id: "4", title: section4.industry.title, section: section4.industry.section },
+    { id: "5", title: section4.termsAndConditions.title, section: section4.termsAndConditions.section },
   ];
 
   return (
@@ -102,48 +111,9 @@ export const IsaacCompetition = () => {
           <Row className="py-4">
             <Col lg={8}>
               <Accordion defaultActiveKey="0">
-                <AccordionItem
-                  id="0"
-                  title={section4.projectIdeas.title}
-                  section={section4.projectIdeas.section}
-                  open={open}
-                  setOpen={setOpen}
-                />
-                <AccordionItem
-                  id="1"
-                  title={section4.availableSupport.title}
-                  section={section4.availableSupport.section}
-                  open={open}
-                  setOpen={setOpen}
-                />
-                <AccordionItem
-                  id="2"
-                  title={section4.video.title}
-                  section={section4.video.section}
-                  open={open}
-                  setOpen={setOpen}
-                />
-                <AccordionItem
-                  id="3"
-                  title={section4.groupEntry.title}
-                  section={section4.groupEntry.section}
-                  open={open}
-                  setOpen={setOpen}
-                />
-                <AccordionItem
-                  id="4"
-                  title={section4.industry.title}
-                  section={section4.industry.section}
-                  open={open}
-                  setOpen={setOpen}
-                />
-                <AccordionItem
-                  id="5"
-                  title={section4.termsAndConditions.title}
-                  section={section4.termsAndConditions.section}
-                  open={open}
-                  setOpen={setOpen}
-                />
+                {accordionSections.map(({ id, title, section }) => (
+                  <AccordionItem key={id} id={id} title={title} section={section} open={open} setOpen={setOpen} />
+                ))}
               </Accordion>
             </Col>
           </Row>
