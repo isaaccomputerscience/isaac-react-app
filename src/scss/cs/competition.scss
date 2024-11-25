@@ -73,4 +73,44 @@
   &-background-4 {
     background-color: #FFC000;
   }
+
+   &-box-container {
+    position: relative;
+  }
+
+  &-arrow {
+    width: 111px;
+    height: 34px;
+    border-top: 50px solid transparent;
+    border-bottom: 50px solid transparent;
+    border-left: 50px solid;
+    position: absolute;
+    top: 50%;
+    right: -95px;
+    transform: translateY(-50%);
+    z-index: 1;
+
+     @media (min-width: 577px) and (max-width: 992px) {
+      display: none;
+    }
+
+     @media (max-width: 576px) {
+      top: auto;
+      bottom: -95px;
+      right: 50%;
+      transform: translateX(50%) rotate(90deg);
+    }
+  }
+
+  &-background-1 .competition-timeline-arrow {
+    border-left-color: #F9F9F9;
+  }
+
+  &-background-2 .competition-timeline-arrow {
+    border-left-color: #FFBBDC;
+  }
+
+  &-background-3 .competition-timeline-arrow {
+    border-left-color: #FFDF80;
+  }
 }
