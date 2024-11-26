@@ -97,14 +97,14 @@
   }
 
   &-arrow {
-    width: 111px;
-    height: 34px;
+    width: 110px;
+    height: 35px;
     border-top: 50px solid transparent;
     border-bottom: 50px solid transparent;
-    border-left: 50px solid;
+    border-left: 25px solid;
     position: absolute;
     top: 50%;
-    right: -95px;
+    right: -110px;
     transform: translateY(-50%);
     z-index: 1;
 
