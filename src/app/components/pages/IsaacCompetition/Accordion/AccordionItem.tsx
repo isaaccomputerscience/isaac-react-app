@@ -29,7 +29,7 @@ const AccordionItem = memo(({ id, title, section, open, setOpenState }: Accordio
   const headerClasses = [
     "accordion-button p-3 m-0 d-flex justify-content-between",
     id === "0" && "rounded-top",
-    id === "5" && "rounded-bottom",
+    id === "5" && "rounded-bottom border-bottom-0",
     open !== id && "border-bottom border-dark",
   ]
     .filter(Boolean)
