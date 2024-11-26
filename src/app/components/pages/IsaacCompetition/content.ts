@@ -15,7 +15,7 @@ export default {
       facebookLink: "https://www.facebook.com/IsaacComputerScience",
     },
   },
-  section2: {
+  internetOfEverything: {
     ioe: {
       title: "What is the Internet of Everything?",
       section: [
@@ -37,7 +37,7 @@ export default {
       text: "The Internet of Everything isn’t just about smart devices; it’s about connecting everything to make life easier, safer, and more enjoyable. It’s like a superpower that lets us make objects work together — but we must use this power responsibly and safely.",
     },
   },
-  section4: {
+  accordion: {
     projectIdeas: {
       title: "Project ideas to get started",
       section: [

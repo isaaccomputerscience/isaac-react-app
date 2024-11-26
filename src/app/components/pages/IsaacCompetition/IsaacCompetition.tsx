@@ -4,12 +4,12 @@ import { BreadcrumbTrail } from "../../elements/TitleAndBreadcrumb";
 import { Col, Container, Row } from "reactstrap";
 import content from "./content";
 import "../../../../scss/cs/competition.scss";
-import IoECard from "./Section2/IoECard";
+import IoECard from "./InternetOfEverything/IoECard";
 import TestimonialComment from "../../elements/TestimonialComment";
 import CompetitionButton from "./CompetitionButton";
-import AccordionItem from "./Section4/AccordionItem";
+import AccordionItem from "./Accordion/AccordionItem";
 
-const { section1, section2, section4 } = content;
+const { section1, internetOfEverything, accordion } = content;
 
 export const IsaacCompetition = () => {
   useEffect(() => {
@@ -30,12 +30,12 @@ export const IsaacCompetition = () => {
   };
 
   const accordionSections = [
-    { id: "0", title: section4.projectIdeas.title, section: section4.projectIdeas.section },
-    { id: "1", title: section4.availableSupport.title, section: section4.availableSupport.section },
-    { id: "2", title: section4.video.title, section: section4.video.section },
-    { id: "3", title: section4.groupEntry.title, section: section4.groupEntry.section },
-    { id: "4", title: section4.industry.title, section: section4.industry.section },
-    { id: "5", title: section4.termsAndConditions.title, section: section4.termsAndConditions.section },
+    { id: "0", title: accordion.projectIdeas.title, section: accordion.projectIdeas.section },
+    { id: "1", title: accordion.availableSupport.title, section: accordion.availableSupport.section },
+    { id: "2", title: accordion.video.title, section: accordion.video.section },
+    { id: "3", title: accordion.groupEntry.title, section: accordion.groupEntry.section },
+    { id: "4", title: accordion.industry.title, section: accordion.industry.section },
+    { id: "5", title: accordion.termsAndConditions.title, section: accordion.termsAndConditions.section },
   ];
 
   return (
@@ -93,14 +93,22 @@ export const IsaacCompetition = () => {
           <Container>
             <Row className="py-4">
               <Col xs={12} lg={6}>
-                <IoECard title={section2.ioe.title} content={section2.ioe.section} />
+                <IoECard title={internetOfEverything.ioe.title} content={internetOfEverything.ioe.section} />
               </Col>
               <Col xs={12} lg={6} className="mt-4 mt-lg-0">
-                <IoECard title={section2.examples.title} content={section2.examples.section} isList />
+                <IoECard
+                  title={internetOfEverything.examples.title}
+                  content={internetOfEverything.examples.section}
+                  isList
+                />
               </Col>
             </Row>
             <div className="pb-4">
-              <TestimonialComment imageSrc="/assets/star.svg" altText="Star" text={section2.testamonial.text} />
+              <TestimonialComment
+                imageSrc="/assets/star.svg"
+                altText="Star"
+                text={internetOfEverything.testamonial.text}
+              />
             </div>
           </Container>
         </div>
