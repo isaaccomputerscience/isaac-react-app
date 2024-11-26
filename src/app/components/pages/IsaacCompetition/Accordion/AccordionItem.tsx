@@ -40,9 +40,9 @@ const AccordionItem = memo(({ id, title, section, open, setOpenState }: Accordio
       <CardHeader className={headerClasses} onClick={() => toggle(id)}>
         {title}
         {open === id ? (
-          <img src={"/assets/chevron_up.svg"} alt="Up Icon" className="" />
+          <img src={"/assets/chevron_up.svg"} alt="Up Icon" className="p-2" />
         ) : (
-          <img src={"/assets/chevron_down.svg"} alt="Down Icon" />
+          <img src={"/assets/chevron_down.svg"} alt="Down Icon" className="p-2" />
         )}{" "}
       </CardHeader>
 
