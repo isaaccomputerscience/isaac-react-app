@@ -52,6 +52,10 @@
   &-header {
     color: #120540;
     font-size: 28px;
+
+    @media (min-width: 768px) and (max-width: 992px) {
+      font-size: 24px;
+    }
   }
 
   &-date {
@@ -101,7 +105,7 @@
     transform: translateY(-50%);
     z-index: 1;
 
-     @media (min-width: 765px) and (max-width: 992px) {
+    @media (min-width: 765px) and (max-width: 999px) {
       display: none;
     }
 

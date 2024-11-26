@@ -131,7 +131,7 @@ export const IsaacCompetition = () => {
           <section className="competition-timeline">
             <h3 className="competition-timeline-title">{section3.timeline.title}</h3>
             <p className="competition-timeline-content">{section3.timeline.content}</p>
-            <Row className="py-4 gx-3">
+            <Row className="p-4">
               {section3.timeline.entries.map((entry, index) => (
                 <Col
                   key={index}
