@@ -1,3 +1,4 @@
+
 .ioe {
   &-col {
     background-color: white;
@@ -12,6 +13,10 @@
     color: #1c1c1c;
     font-size: 19px;
   }
+}
+
+#competition-information-section {
+  background-color: #FFFFFF;
 }
 
 .competition-information{
@@ -39,6 +44,8 @@
 }
 
 .competition-timeline {
+  background-color: #FFFFFF;
+
   &-title {
     color: #120540;
     font-size: 24px;
