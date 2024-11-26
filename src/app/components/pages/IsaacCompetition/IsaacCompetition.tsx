@@ -135,9 +135,10 @@ export const IsaacCompetition = () => {
               {section3.timeline.entries.map((entry, index) => (
                 <Col
                   key={index}
+                  xs={12}
                   sm={12}
-                  md={3}
-                  lg={4}
+                  md={12}
+                  lg={3}
                   className={`competition-timeline-box-container competition-timeline-background-${index + 1}`}
                 >
                   <CompetitionTimeline

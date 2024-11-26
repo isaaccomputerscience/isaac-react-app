@@ -52,16 +52,12 @@
   &-header {
     color: #120540;
     font-size: 28px;
-
-    @media (min-width: 768px) and (max-width: 992px) {
-      font-size: 24px;
-    }
   }
 
   &-date {
     font-size: 20px;
     
-    @media (max-width: 765px) {
+    @media (max-width: 991px) {
       text-align: right;
     }
   }
@@ -87,7 +83,7 @@
       margin-right: 15px;
       max-width: calc(25% - 15px);
     }
-    @media (max-width: 764px) {
+    @media (max-width: 991px) {
       margin-bottom: 15px;
        max-width: none;
     }
@@ -105,11 +101,7 @@
     transform: translateY(-50%);
     z-index: 1;
 
-    @media (min-width: 765px) and (max-width: 999px) {
-      display: none;
-    }
-
-     @media (max-width: 764px) {
+     @media (max-width: 991px) {
       top: auto;
       bottom: -95px;
       right: 50%;
