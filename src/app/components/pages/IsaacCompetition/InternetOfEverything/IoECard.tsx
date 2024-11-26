@@ -15,15 +15,15 @@ const IoECard = ({ title, content, isList = false }: IoECardProps) => (
     <CardBody>
       {isList ? (
         <ul>
-          {content.map((text, item) => (
-            <CardText key={item} tag="li" className="ioe-text">
+          {content.map((text) => (
+            <CardText key={text} tag="li" className="ioe-text">
               {text}
             </CardText>
           ))}
         </ul>
       ) : (
-        content.map((text, item) => (
-          <CardText key={item} className="ioe-text">
+        content.map((text) => (
+          <CardText key={text} className="ioe-text">
             {text}
           </CardText>
         ))
