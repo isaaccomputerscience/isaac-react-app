@@ -118,7 +118,7 @@ export const IsaacCompetition = () => {
           <Row className="py-4">
             <Col lg={8}>
               <div className="accordion">
-                {accordionSections.map(({ id, title, section }) => (
+                {accordionSections.map(({ id, title, section }, index) => (
                   <AccordionItem
                     key={id}
                     id={id}
@@ -126,6 +126,7 @@ export const IsaacCompetition = () => {
                     section={section}
                     open={open}
                     setOpenState={setOpenState}
+                    isLast={index === accordionSections.length - 1}
                   />
                 ))}
               </div>
