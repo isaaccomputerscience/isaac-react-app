@@ -3,12 +3,9 @@
 # Allow: / allows crawlers to access everything else.
 
 # Block a specific crawler
-User-agent:
-Disallow:
+User-agent: AdsBot-Google
+Disallow: 
 
 # Allow Googlebot access to everything
 User-agent: Googlebot
-Disallow:
-
-User-agent: AdsBot-Google
 Disallow:
