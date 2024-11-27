@@ -21,7 +21,7 @@ const renderSectionContent = (section: string[], isList: boolean) => (
         ))}
       </ul>
     ) : (
-      section.slice(1, -1).map((item, index) => <p key={index}>{item}</p>)
+      section.slice(1, -1).map((item, index) => <p key={`${item}-${index}`}>{item}</p>)
     )}
     {section[section.length - 1]}
   </>
