@@ -17,18 +17,12 @@ const renderSectionContent = (section: (string | string[])[]) => (
         return (
           <ul key={`list-${index}`}>
             {item.map((listItem, listIndex) => (
-              <li key={`${listItem}-${listIndex}`}>
-                {listItem}-${listIndex}
-              </li>
+              <li key={`${listItem}-${listIndex}`}>{listItem}</li>
             ))}
           </ul>
         );
       } else {
-        return (
-          <p key={`${item}-${index}`}>
-            {item}-${index}
-          </p>
-        );
+        return <p key={`${item}-${index}`}>{item}</p>;
       }
     })}
   </>
