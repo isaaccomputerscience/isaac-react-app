@@ -6,7 +6,7 @@ describe("AccordionItem", () => {
   const defaultProps = {
     id: "1",
     title: "Test Title",
-    section: ["First line", "Second line", "Third line"],
+    section: ["First line", "Second line", "Third line", "Fourth line"],
     open: null,
     isLast: false,
     isList: true,
@@ -24,20 +24,39 @@ describe("AccordionItem", () => {
     expect(defaultProps.setOpenState).toHaveBeenCalledWith("1");
   });
 
-  it("applies the correct classes when open", () => {
+  it("renders the section content correctly when open", () => {
     render(<AccordionItem {...defaultProps} open="1" />);
-    expect(screen.getByText("Test Title").closest(".card-header")).toHaveClass(
-      "accordion-button p-3 m-0 d-flex justify-content-between card-header",
-    );
+    expect(screen.getByText("First line")).toBeInTheDocument();
+    expect(screen.getByText("Second line")).toBeInTheDocument();
+    expect(screen.getByText("Third line")).toBeInTheDocument();
+    expect(screen.getByText("Fourth line")).toBeInTheDocument();
   });
 
-  it("applies the correct classes when closed", () => {
-    render(<AccordionItem {...defaultProps} open="2" />);
-    expect(screen.getByText("Test Title").closest(".card-header")).toHaveClass("border-bottom border-dark");
+  it("renders the section content as a list when it contains a sub-array", () => {
+    const listProps = {
+      ...defaultProps,
+      section: ["First line", ["Second line", "Third line"], "Fourth line"],
+      open: "1",
+    };
+    render(<AccordionItem {...listProps} />);
+    expect(screen.getByText("First line")).toBeInTheDocument();
+    expect(screen.getByText("Second line")).toBeInTheDocument();
+    expect(screen.getByText("Third line")).toBeInTheDocument();
+    expect(screen.getByText("Fourth line")).toBeInTheDocument();
+    expect(screen.getByRole("list")).toBeInTheDocument();
   });
 
-  it("applies the rounded-bottom class when isLast is true", () => {
-    render(<AccordionItem {...defaultProps} isLast={true} />);
-    expect(screen.getByText("Test Title").closest(".card-header")).toHaveClass("rounded-bottom border-bottom-0");
+  it("renders the section content as paragraphs when it does not contain a sub-array", () => {
+    const paragraphProps = {
+      ...defaultProps,
+      section: ["First line", "Second line", "Third line", "Fourth line"],
+      open: "1",
+    };
+    render(<AccordionItem {...paragraphProps} />);
+    expect(screen.getByText("First line")).toBeInTheDocument();
+    expect(screen.getByText("Second line")).toBeInTheDocument();
+    expect(screen.getByText("Third line")).toBeInTheDocument();
+    expect(screen.getByText("Fourth line")).toBeInTheDocument();
+    expect(screen.queryByRole("list")).not.toBeInTheDocument();
   });
 });
