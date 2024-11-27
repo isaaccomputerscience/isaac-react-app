@@ -10,14 +10,18 @@ interface AccordionItemProps {
   setOpenState: (id?: string) => void;
 }
 
-const renderSectionContent = (section: string[]) => (
+const renderSectionContent = (section: string[], isList: boolean) => (
   <>
     {section[0]}
-    <ul>
-      {section.slice(1, -1).map((item) => (
-        <li key={item}>{item}</li>
-      ))}
-    </ul>
+    {isList ? (
+      <ul>
+        {section.slice(1, -1).map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+    ) : (
+      section.slice(1, -1).map((item, index) => <p key={index}>{item}</p>)
+    )}
     {section[section.length - 1]}
   </>
 );
@@ -48,7 +52,7 @@ const AccordionItem = memo(({ id, title, section, open, isLast, setOpenState }: 
       </CardHeader>
 
       <Collapse isOpen={open === id}>
-        <CardBody className="p-3 bg-white border-bottom border-dark">{renderSectionContent(section)}</CardBody>
+        <CardBody className="p-3 bg-white border-bottom border-dark">{renderSectionContent(section, true)}</CardBody>
       </Collapse>
     </Card>
   );
