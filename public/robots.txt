@@ -9,3 +9,6 @@ Disallow:
 # Allow Googlebot access to everything
 User-agent: Googlebot
 Disallow:
+
+User-agent: AdsBot-Google
+Disallow:
