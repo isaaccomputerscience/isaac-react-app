@@ -7,6 +7,7 @@ interface AccordionItemProps {
   section: string[];
   open: string | null;
   isLast: boolean;
+  isList: boolean;
   setOpenState: (id?: string) => void;
 }
 
@@ -26,7 +27,7 @@ const renderSectionContent = (section: string[], isList: boolean) => (
   </>
 );
 
-const AccordionItem = memo(({ id, title, section, open, isLast, setOpenState }: AccordionItemProps) => {
+const AccordionItem = memo(({ id, title, section, open, isLast, isList, setOpenState }: AccordionItemProps) => {
   const toggle = (id: string) => {
     setOpenState(open === id ? undefined : id);
   };
@@ -52,7 +53,7 @@ const AccordionItem = memo(({ id, title, section, open, isLast, setOpenState }: 
       </CardHeader>
 
       <Collapse isOpen={open === id}>
-        <CardBody className="p-3 bg-white border-bottom border-dark">{renderSectionContent(section, true)}</CardBody>
+        <CardBody className="p-3 bg-white border-bottom border-dark">{renderSectionContent(section, isList)}</CardBody>
       </Collapse>
     </Card>
   );

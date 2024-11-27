@@ -127,6 +127,7 @@ export const IsaacCompetition = () => {
                     open={open}
                     setOpenState={setOpenState}
                     isLast={index === accordionSections.length - 1}
+                    isList={true}
                   />
                 ))}
               </div>
