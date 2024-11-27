@@ -4,30 +4,31 @@ import { Card, CardBody, CardHeader, Collapse } from "reactstrap";
 interface AccordionItemProps {
   id: string;
   title: string;
-  section: string[];
+  section: (string | string[])[];
   open: string | null;
   isLast: boolean;
-  isList: boolean;
   setOpenState: (id?: string) => void;
 }
 
-const renderSectionContent = (section: string[], isList: boolean) => (
+const renderSectionContent = (section: (string | string[])[]) => (
   <>
-    {section[0]}
-    {isList ? (
-      <ul>
-        {section.slice(1, -1).map((item) => (
-          <li key={item}>{item}</li>
-        ))}
-      </ul>
-    ) : (
-      section.slice(1, -1).map((item, index) => <p key={`${item}-${index}`}>{item}</p>)
-    )}
-    {section[section.length - 1]}
+    {section.map((item, index) => {
+      if (Array.isArray(item)) {
+        return (
+          <ul key={`list-${index}`}>
+            {item.map((listItem, listIndex) => (
+              <li key={`list-item-${listIndex}`}>{listItem}</li>
+            ))}
+          </ul>
+        );
+      } else {
+        return <p key={`paragraph-${index}`}>{item}</p>;
+      }
+    })}
   </>
 );
 
-const AccordionItem = memo(({ id, title, section, open, isLast, isList, setOpenState }: AccordionItemProps) => {
+const AccordionItem = memo(({ id, title, section, open, isLast, setOpenState }: AccordionItemProps) => {
   const toggle = (id: string) => {
     setOpenState(open === id ? undefined : id);
   };
@@ -53,7 +54,7 @@ const AccordionItem = memo(({ id, title, section, open, isLast, isList, setOpenS
       </CardHeader>
 
       <Collapse isOpen={open === id}>
-        <CardBody className="p-3 bg-white border-bottom border-dark">{renderSectionContent(section, isList)}</CardBody>
+        <CardBody className="p-3 bg-white border-bottom border-dark">{renderSectionContent(section)}</CardBody>
       </Collapse>
     </Card>
   );
