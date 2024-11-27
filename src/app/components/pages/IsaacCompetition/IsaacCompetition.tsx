@@ -117,7 +117,7 @@ export const IsaacCompetition = () => {
         <Container>
           <Row className="py-4">
             <Col lg={8}>
-              <div className="accordion">
+              <div className="accordion accordion-body">
                 {accordionSections.map(({ id, title, section }, index) => (
                   <AccordionItem
                     key={id}
