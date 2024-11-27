@@ -6,6 +6,7 @@ interface AccordionItemProps {
   title: string;
   section: string[];
   open: string | null;
+  isLast: boolean;
   setOpenState: (id?: string) => void;
 }
 
@@ -21,7 +22,7 @@ const renderSectionContent = (section: string[]) => (
   </>
 );
 
-const AccordionItem = memo(({ id, title, section, open, setOpenState }: AccordionItemProps) => {
+const AccordionItem = memo(({ id, title, section, open, isLast, setOpenState }: AccordionItemProps) => {
   const toggle = (id: string) => {
     setOpenState(open === id ? undefined : id);
   };
@@ -29,7 +30,7 @@ const AccordionItem = memo(({ id, title, section, open, setOpenState }: Accordio
   const headerClasses = [
     "accordion-button p-3 m-0 d-flex justify-content-between",
     id === "0" && "rounded-top",
-    id === "5" && "rounded-bottom border-bottom-0",
+    isLast && "rounded-bottom border-bottom-0",
     open !== id && "border-bottom border-dark",
   ]
     .filter(Boolean)
@@ -43,7 +44,7 @@ const AccordionItem = memo(({ id, title, section, open, setOpenState }: Accordio
           <img src={"/assets/chevron_up.svg"} alt="Up Icon" className="p-2" />
         ) : (
           <img src={"/assets/chevron_down.svg"} alt="Down Icon" className="p-2" />
-        )}{" "}
+        )}
       </CardHeader>
 
       <Collapse isOpen={open === id}>
