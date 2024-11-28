@@ -16,21 +16,21 @@ const InformationCard = ({ title, description, content, isList = false, classNam
     </CardTitle>
     <CardBody>
       {description && <CardText className="competition-information-text mb-3">{description}</CardText>}
-      {isList && (
-        <ul style={{ listStyleType: "disc" }}>
+      {isList ? (
+        <ul>
           {content.map((text, index) => (
             <li key={index} className="competition-information-text">
               {text}
             </li>
           ))}
         </ul>
-      )}
-      {!isList &&
+      ) : (
         content.map((text, index) => (
           <CardText key={index} className="competition-information-text">
             {text}
           </CardText>
-        ))}
+        ))
+      )}
     </CardBody>
   </Card>
 );
