@@ -1,27 +1,46 @@
 import React from "react";
-import { Card, CardBody, CardText, CardTitle } from "reactstrap";
+import { Card, CardBody, CardText, CardTitle, Col, Row } from "reactstrap";
 
-interface TimelineCardProps {
-  title: string;
-  content: string[];
-  className?: string;
+interface TimelineEntry {
+  event: string;
+  date: string;
 }
 
-const CompetitionTimeline = ({ title, content, className = "" }: TimelineCardProps) => {
-  return (
-    <Card className={`h-100 ${className} competition-information-no-border`}>
-      <CardTitle tag="h3" className="competition-timeline-header pt-4 px-4">
-        {title}
-      </CardTitle>
-      <CardBody>
-        {content.map((text, index) => (
-          <CardText key={index} tag="h3" className="competition-timeline-date">
-            {text}
-          </CardText>
-        ))}
-      </CardBody>
-    </Card>
-  );
-};
+interface CompetitionTimelineProps {
+  title: string;
+  content: string;
+  entries: TimelineEntry[];
+}
+
+const CompetitionTimeline = ({ title, content, entries }: CompetitionTimelineProps) => (
+  <section className="competition-timeline">
+    <h3 className="competition-timeline-title">{title}</h3>
+    <p className="competition-timeline-content">{content}</p>
+    <Row className="p-4">
+      {entries.map((entry, index) => (
+        <Col
+          key={index}
+          xs={12}
+          sm={12}
+          md={12}
+          lg={3}
+          className={`competition-timeline-box-container competition-timeline-background-${index + 1}`}
+        >
+          <Card className={`h-100 competition-timeline-background-${index + 1} competition-information-no-border`}>
+            <CardTitle tag="h3" className="competition-timeline-header pt-4 px-4">
+              {entry.event}
+            </CardTitle>
+            <CardBody>
+              <CardText tag="h3" className="competition-timeline-date">
+                {entry.date}
+              </CardText>
+            </CardBody>
+          </Card>
+          {index < entries.length - 1 && <div className="competition-timeline-arrow"></div>}
+        </Col>
+      ))}
+    </Row>
+  </section>
+);
 
 export default CompetitionTimeline;
