@@ -142,8 +142,8 @@ export const IsaacCompetition = () => {
                   className={`competition-timeline-box-container competition-timeline-background-${index + 1}`}
                 >
                   <CompetitionTimeline
-                    title={`${entry.event}`}
-                    content={[`${entry.date}`]}
+                    title={entry.event}
+                    content={[entry.date]}
                     className={`competition-timeline-background-${index + 1}`}
                   />
                   {index < section3.timeline.entries.length - 1 && <div className="competition-timeline-arrow"></div>}
