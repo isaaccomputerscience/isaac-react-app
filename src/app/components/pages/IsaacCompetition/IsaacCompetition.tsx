@@ -164,9 +164,7 @@ export const IsaacCompetition = () => {
         <Container>
           <Row className="py-4">
             <Col lg={8}>
-              <div className="accordion accordion-body">
-                <Accordion sections={accordionSections} open={open} setOpenState={setOpenState} />
-              </div>
+              <Accordion sections={accordionSections} open={open} setOpenState={setOpenState} />
             </Col>
           </Row>
         </Container>
