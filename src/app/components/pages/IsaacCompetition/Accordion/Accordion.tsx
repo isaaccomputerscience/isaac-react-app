@@ -13,7 +13,7 @@ interface AccordionProps {
 
 const Accordion = ({ sections, open, setOpenState }: AccordionProps) => {
   return (
-    <div>
+    <div className="accordion accordion-body">
       {sections.map(({ id, title, section }, index) => (
         <AccordionItem
           key={id}
