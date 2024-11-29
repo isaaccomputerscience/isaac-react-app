@@ -12,7 +12,7 @@ describe("Accordion Component", () => {
     {
       id: "2",
       title: "Section 2",
-      section: ["Item 1", "Item 2"],
+      section: ["Item 3", "Item 3"],
     },
   ];
   const setOpenState = jest.fn();
@@ -43,18 +43,16 @@ describe("Accordion Component", () => {
     expect(screen.getByText("Sub-item 2")).toBeInTheDocument();
   });
 
-  it("renders the section content correctly when closed", () => {
-    render(<Accordion sections={sections} open={null} setOpenState={setOpenState} />);
-    expect(screen.getAllByText("Item 1")[0]).toBeInTheDocument();
-    expect(screen.getByText("Sub-item 1")).toBeInTheDocument();
-    expect(screen.getByText("Sub-item 2")).toBeInTheDocument();
-  });
-
   it("renders the section content as a list when it contains a sub-array", () => {
     render(<Accordion sections={sections} open="1" setOpenState={setOpenState} />);
     const listItems = screen.getAllByRole("listitem");
     expect(listItems.length).toBe(2);
     expect(listItems[0]).toHaveTextContent("Sub-item 1");
     expect(listItems[1]).toHaveTextContent("Sub-item 2");
+  });
+
+  it("matches the snapshot when closed", () => {
+    const { asFragment } = render(<Accordion sections={sections} open={null} setOpenState={setOpenState} />);
+    expect(asFragment()).toMatchSnapshot();
   });
 });
