@@ -7,7 +7,7 @@ interface AccordionItemProps {
   section: (string | string[])[];
   open: string | null;
   isLast: boolean;
-  setOpenState: (id?: string) => void;
+  setOpenState: (id: string | undefined) => void;
 }
 
 const renderSectionContent = (section: (string | string[])[]) => (
@@ -43,7 +43,7 @@ const AccordionItem = memo(({ id, title, section, open, isLast, setOpenState }: 
     .join(" ");
 
   return (
-    <Card eventKey={id}>
+    <Card eventKey={id} data-testid="accordion-item">
       <CardHeader className={headerClasses} onClick={() => toggle(id)}>
         {title}
         {open === id ? (

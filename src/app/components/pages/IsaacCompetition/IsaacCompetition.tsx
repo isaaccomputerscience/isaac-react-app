@@ -7,7 +7,7 @@ import "../../../../scss/cs/competition.scss";
 import IoECard from "./InternetOfEverything/IoECard";
 import TestimonialComment from "../../elements/TestimonialComment";
 import CompetitionButton from "./CompetitionButton";
-import AccordionItem from "./Accordion/AccordionItem";
+import Accordion from "./Accordion/Accordion";
 
 const { section1, internetOfEverything, accordion } = content;
 
@@ -23,7 +23,7 @@ export const IsaacCompetition = () => {
     },
   ];
 
-  const [open, setOpen] = useState<string | null>("0");
+  const [open, setOpen] = useState<string | null>(null);
 
   const setOpenState = (id?: string) => {
     setOpen(id ?? null);
@@ -118,17 +118,7 @@ export const IsaacCompetition = () => {
           <Row className="py-4">
             <Col lg={8}>
               <div className="accordion accordion-body">
-                {accordionSections.map(({ id, title, section }, index) => (
-                  <AccordionItem
-                    key={id}
-                    id={id}
-                    title={title}
-                    section={section}
-                    open={open}
-                    setOpenState={setOpenState}
-                    isLast={index === accordionSections.length - 1}
-                  />
-                ))}
+                <Accordion sections={accordionSections} open={open} setOpenState={setOpenState} />
               </div>
             </Col>
           </Row>
