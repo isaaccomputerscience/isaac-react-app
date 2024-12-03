@@ -2,6 +2,10 @@ import React from "react";
 import { Form, Row, Col, Button, Container, FormGroup, Label, Input } from "reactstrap";
 import { InputType } from "reactstrap/es/Input";
 
+interface CompetitionEntryFormProps {
+  handleTermsClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
+}
+
 const renderFormGroup = (label: string, type: string, id: string, options?: string[]) => (
   <FormGroup>
     <Label className="entry-form-sub-title">{label}</Label>
@@ -20,11 +24,9 @@ const renderFormGroup = (label: string, type: string, id: string, options?: stri
   </FormGroup>
 );
 
-const CompetitionEntryForm = () => {
+const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    // Form submission logic here
-    console.log("Form submitted");
   };
 
   return (
@@ -34,12 +36,12 @@ const CompetitionEntryForm = () => {
           <Form onSubmit={handleSubmit}>
             <h1 className="py-4 entry-form-title">Enter the competition</h1>
             <Row className="d-flex flex-column flex-md-row">
-              <Col lg={6}>
+              <Col>
                 {renderFormGroup("Name", "text", "formSubtitle1")}
                 {renderFormGroup("School", "text", "formSubtitle2")}
                 {renderFormGroup("Email", "text", "formSubtitle3")}
               </Col>
-              <Col lg={6}>
+              <Col>
                 {renderFormGroup("Link to submission", "text", "formSubtitle4")}
                 {renderFormGroup("Group", "select", "formSubtitle5", [
                   "Please select from the list",
@@ -56,7 +58,7 @@ const CompetitionEntryForm = () => {
                   <Col className="pl-0 mt-2 ml-3 mt-md-0">
                     <Label>
                       By entering the National Computer Science Competition you agree to the{" "}
-                      <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">
+                      <a href="#terms-and-conditions" onClick={handleTermsClick}>
                         Terms and Conditions
                       </a>
                       .

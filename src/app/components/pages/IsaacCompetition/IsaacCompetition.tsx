@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SITE_SUBJECT_TITLE } from "../../../services";
 import { BreadcrumbTrail } from "../../elements/TitleAndBreadcrumb";
 import { Col, Container, Row } from "reactstrap";
@@ -30,6 +30,16 @@ export const IsaacCompetition = () => {
 
   const setOpenState = (id?: string) => {
     setOpen(id ?? null);
+  };
+
+  const accordionRef = useRef<HTMLDivElement>(null);
+
+  const handleTermsClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    event.preventDefault();
+    if (accordionRef.current) {
+      accordionRef.current.scrollIntoView({ behavior: "smooth" });
+      setOpen("5");
+    }
   };
 
   const accordionSections = [
@@ -92,7 +102,7 @@ export const IsaacCompetition = () => {
         </Container>
       </section>
       <section id="entryForm">
-        <CompetitionEntryForm />
+        <CompetitionEntryForm handleTermsClick={handleTermsClick} />
       </section>
       <section id="internetOfEverything" className="event-section">
         <div className="event-section-background-img">
@@ -168,7 +178,9 @@ export const IsaacCompetition = () => {
         <Container>
           <Row className="py-4">
             <Col lg={8}>
-              <Accordion sections={accordionSections} open={open} setOpenState={setOpenState} />
+              <div ref={accordionRef}>
+                <Accordion sections={accordionSections} open={open} setOpenState={setOpenState} />
+              </div>
             </Col>
           </Row>
         </Container>
