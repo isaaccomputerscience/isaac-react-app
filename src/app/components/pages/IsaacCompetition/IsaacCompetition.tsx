@@ -10,6 +10,7 @@ import Accordion from "./Accordion/Accordion";
 import CompetitionButton from "./Buttons/CompetitionButton";
 import InformationCard from "./CompetitionInformation/InformationCard";
 import CompetitionTimeline from "./CompetitionInformation/CompetitionTimeline";
+import CompetitionEntryForm from "./EntryForm/CompetitionEntryForm";
 
 const { section1, internetOfEverything, section3, accordion } = content;
 
@@ -89,6 +90,9 @@ export const IsaacCompetition = () => {
             </Col>
           </Row>
         </Container>
+      </section>
+      <section id="entryForm">
+        <CompetitionEntryForm />
       </section>
       <section id="internetOfEverything" className="event-section">
         <div className="event-section-background-img">
