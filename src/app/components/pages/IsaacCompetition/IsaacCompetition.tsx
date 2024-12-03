@@ -35,6 +35,23 @@ export const IsaacCompetition = () => {
 
   const user = useAppSelector(selectors.user.orNull);
 
+  const renderEntryForm = () => {
+    if (isTeacher(user)) {
+      return <CompetitionEntryForm handleTermsClick={handleTermsClick} />;
+    } else if (isStudent(user)) {
+      return <p className="mt-4 body-text">Students, ask your teacher about submitting an entry.</p>;
+    } else {
+      return (
+        <Container>
+          <Col className="d-flex" xs="auto">
+            <CompetitionButton buttons={buttons} />
+          </Col>
+          <p className="mt-4 body-text">Teachers, login to enter the competition.</p>
+        </Container>
+      );
+    }
+  };
+
   const accordionRef = useRef<HTMLDivElement>(null);
 
   const handleTermsClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -98,19 +115,8 @@ export const IsaacCompetition = () => {
               />
             </Col>
           </Row>
-          {isTeacher(user) ? (
-            <CompetitionEntryForm handleTermsClick={handleTermsClick} />
-          ) : isStudent(user) ? (
-            <p className="mt-4 body-text">Students, ask your teacher about submitting an entry.</p>
-          ) : (
-            <>
-              <Col className="d-flex" xs="auto">
-                <CompetitionButton buttons={buttons} />
-              </Col>
-              <p className="mt-4 body-text">Teachers, login to enter the competition.</p>
-            </>
-          )}
         </Container>
+        {renderEntryForm()}
       </section>
       <section id="internetOfEverything" className="event-section">
         <div className="event-section-background-img">
