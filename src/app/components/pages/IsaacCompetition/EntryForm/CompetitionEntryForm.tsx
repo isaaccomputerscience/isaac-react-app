@@ -6,12 +6,12 @@ interface CompetitionEntryFormProps {
   handleTermsClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }
 
-const renderFormGroup = (label: string, type: string, id: string, options?: string[]) => (
+const renderFormGroup = (label: string, type: string, id: string, options: string[] = []) => (
   <FormGroup>
     <Label className="entry-form-sub-title">{label}</Label>
     {type === "select" ? (
       <Input type="select" id={id}>
-        {options &&
+        {options?.length > 0 &&
           options.map((option, index) => (
             <option key={`${option}-${index}`} value={option === "Please select from the list" ? "" : option}>
               {option}
