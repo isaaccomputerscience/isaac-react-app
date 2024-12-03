@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { SITE_SUBJECT_TITLE } from "../../../services";
+import { isStudent, isTeacher, SITE_SUBJECT_TITLE } from "../../../services";
 import { BreadcrumbTrail } from "../../elements/TitleAndBreadcrumb";
 import { Col, Container, Row } from "reactstrap";
 import content from "./content";
@@ -11,6 +11,7 @@ import CompetitionButton from "./Buttons/CompetitionButton";
 import InformationCard from "./CompetitionInformation/InformationCard";
 import CompetitionTimeline from "./CompetitionInformation/CompetitionTimeline";
 import CompetitionEntryForm from "./EntryForm/CompetitionEntryForm";
+import { useAppSelector, selectors } from "../../../state";
 
 const { section1, internetOfEverything, section3, accordion } = content;
 
@@ -21,8 +22,8 @@ export const IsaacCompetition = () => {
 
   const buttons = [
     {
-      to: "https://forms.office.com/Pages/ResponsePage.aspx?id=8MSlGfdLSE2oGxZmua5L9cVFgGPyQM5Ft1X2dOwymT9UMjdaVzZWRjRFUEhYUlY1WTZJMERZSkJTSS4u",
-      label: "Express your interest",
+      to: "/login",
+      label: "Enter the competition",
     },
   ];
 
@@ -31,6 +32,8 @@ export const IsaacCompetition = () => {
   const setOpenState = (id?: string) => {
     setOpen(id ?? null);
   };
+
+  const user = useAppSelector(selectors.user.orNull);
 
   const accordionRef = useRef<HTMLDivElement>(null);
 
@@ -84,11 +87,7 @@ export const IsaacCompetition = () => {
                 </a>
                 {` ${section1.note.callToAction}`}
               </p>
-              <Row className="justify-content-left mt-4">
-                <Col xs="auto">
-                  <CompetitionButton buttons={buttons} />
-                </Col>
-              </Row>
+              <Row className="justify-content-left mt-4"></Row>
             </Col>
             <Col lg={4} md={6} className="order-lg-2 order-3 mt-4 mt-lg-0 pb-md-0">
               <img
@@ -99,10 +98,19 @@ export const IsaacCompetition = () => {
               />
             </Col>
           </Row>
+          {isTeacher(user) ? (
+            <CompetitionEntryForm handleTermsClick={handleTermsClick} />
+          ) : isStudent(user) ? (
+            <p className="mt-4 body-text">Students, ask your teacher about submitting an entry.</p>
+          ) : (
+            <>
+              <Col className="d-flex" xs="auto">
+                <CompetitionButton buttons={buttons} />
+              </Col>
+              <p className="mt-4 body-text">Teachers, login to enter the competition.</p>
+            </>
+          )}
         </Container>
-      </section>
-      <section id="entryForm">
-        <CompetitionEntryForm handleTermsClick={handleTermsClick} />
       </section>
       <section id="internetOfEverything" className="event-section">
         <div className="event-section-background-img">
