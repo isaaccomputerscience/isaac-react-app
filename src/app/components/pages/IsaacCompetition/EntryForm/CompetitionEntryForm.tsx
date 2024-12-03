@@ -36,12 +36,12 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
           <Form onSubmit={handleSubmit}>
             <h1 className="py-4 entry-form-title">Enter the competition</h1>
             <Row className="d-flex flex-column flex-md-row">
-              <Col>
+              <Col lg={6}>
                 {renderFormGroup("Name", "text", "formSubtitle1")}
                 {renderFormGroup("School", "text", "formSubtitle2")}
                 {renderFormGroup("Email", "text", "formSubtitle3")}
               </Col>
-              <Col>
+              <Col lg={6}>
                 {renderFormGroup("Link to submission", "text", "formSubtitle4")}
                 {renderFormGroup("Group", "select", "formSubtitle5", [
                   "Please select from the list",
