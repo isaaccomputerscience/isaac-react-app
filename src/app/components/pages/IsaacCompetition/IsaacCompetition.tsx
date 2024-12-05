@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { SITE_SUBJECT_TITLE } from "../../../services";
+import React, { useEffect, useRef, useState } from "react";
+import { isStudent, isTeacher, SITE_SUBJECT_TITLE } from "../../../services";
 import { BreadcrumbTrail } from "../../elements/TitleAndBreadcrumb";
 import { Col, Container, Row } from "reactstrap";
 import content from "./content";
@@ -10,6 +10,8 @@ import Accordion from "./Accordion/Accordion";
 import CompetitionButton from "./Buttons/CompetitionButton";
 import InformationCard from "./CompetitionInformation/InformationCard";
 import CompetitionTimeline from "./CompetitionInformation/CompetitionTimeline";
+import CompetitionEntryForm from "./EntryForm/CompetitionEntryForm";
+import { useAppSelector, selectors } from "../../../state";
 
 const { section1, internetOfEverything, section3, accordion } = content;
 
@@ -20,8 +22,8 @@ export const IsaacCompetition = () => {
 
   const buttons = [
     {
-      to: "https://forms.office.com/Pages/ResponsePage.aspx?id=8MSlGfdLSE2oGxZmua5L9cVFgGPyQM5Ft1X2dOwymT9UMjdaVzZWRjRFUEhYUlY1WTZJMERZSkJTSS4u",
-      label: "Express your interest",
+      to: "/login",
+      label: "Enter the competition",
     },
   ];
 
@@ -29,6 +31,41 @@ export const IsaacCompetition = () => {
 
   const setOpenState = (id?: string) => {
     setOpen(id ?? null);
+  };
+
+  const user = useAppSelector(selectors.user.orNull);
+
+  const renderEntryForm = () => {
+    if (isTeacher(user)) {
+      return <CompetitionEntryForm handleTermsClick={handleTermsClick} />;
+    } else if (isStudent(user)) {
+      return (
+        <Container>
+          <Col className="d-flex flex-column align-items-start pb-4 pl-0" xs="auto">
+            <p className="body-text">Students, ask your teacher about submitting an entry.</p>
+          </Col>
+        </Container>
+      );
+    } else {
+      return (
+        <Container>
+          <Col className="d-flex flex-column align-items-start pb-4 pl-0" xs="auto">
+            <p className="pb-3 body-text">Teachers, login to enter the competition.</p>
+            <CompetitionButton buttons={buttons} />
+          </Col>
+        </Container>
+      );
+    }
+  };
+
+  const accordionRef = useRef<HTMLDivElement>(null);
+
+  const handleTermsClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    event.preventDefault();
+    if (accordionRef.current) {
+      accordionRef.current.scrollIntoView({ behavior: "smooth" });
+      setOpen("5");
+    }
   };
 
   const accordionSections = [
@@ -46,7 +83,7 @@ export const IsaacCompetition = () => {
         <BreadcrumbTrail currentPageTitle="Isaac Competition" />
       </Container>
       <section id="competition-headline-section">
-        <Container className="pt-4 pb-4 z1">
+        <Container className="pt-4  z1">
           <Row>
             <h1 className="primary-heading pl-3">National Computer Science Competition</h1>
             <Col xs={12} md={6} lg={8} className="pb-3">
@@ -73,11 +110,7 @@ export const IsaacCompetition = () => {
                 </a>
                 {` ${section1.note.callToAction}`}
               </p>
-              <Row className="justify-content-left mt-4">
-                <Col xs="auto">
-                  <CompetitionButton buttons={buttons} />
-                </Col>
-              </Row>
+              <Row className="justify-content-left mt-4"></Row>
             </Col>
             <Col lg={4} md={6} className="order-lg-2 order-3 mt-4 mt-lg-0 pb-md-0">
               <img
@@ -89,6 +122,7 @@ export const IsaacCompetition = () => {
             </Col>
           </Row>
         </Container>
+        {renderEntryForm()}
       </section>
       <section id="internetOfEverything" className="event-section">
         <div className="event-section-background-img">
@@ -164,7 +198,9 @@ export const IsaacCompetition = () => {
         <Container>
           <Row className="py-4">
             <Col lg={8}>
-              <Accordion sections={accordionSections} open={open} setOpenState={setOpenState} />
+              <div ref={accordionRef}>
+                <Accordion sections={accordionSections} open={open} setOpenState={setOpenState} />
+              </div>
             </Col>
           </Row>
         </Container>
