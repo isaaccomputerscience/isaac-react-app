@@ -39,14 +39,20 @@ export const IsaacCompetition = () => {
     if (isTeacher(user)) {
       return <CompetitionEntryForm handleTermsClick={handleTermsClick} />;
     } else if (isStudent(user)) {
-      return <p className="mt-4 body-text">Students, ask your teacher about submitting an entry.</p>;
+      return (
+        <Container>
+          <Col className="d-flex flex-column align-items-start pb-4 pl-0" xs="auto">
+            <p className="body-text">Students, ask your teacher about submitting an entry.</p>
+          </Col>
+        </Container>
+      );
     } else {
       return (
         <Container>
-          <Col className="d-flex" xs="auto">
+          <Col className="d-flex flex-column align-items-start pb-4 pl-0" xs="auto">
+            <p className="pb-3 body-text">Teachers, login to enter the competition.</p>
             <CompetitionButton buttons={buttons} />
           </Col>
-          <p className="mt-4 body-text">Teachers, login to enter the competition.</p>
         </Container>
       );
     }
@@ -77,7 +83,7 @@ export const IsaacCompetition = () => {
         <BreadcrumbTrail currentPageTitle="Isaac Competition" />
       </Container>
       <section id="competition-headline-section">
-        <Container className="pt-4 pb-4 z1">
+        <Container className="pt-4  z1">
           <Row>
             <h1 className="primary-heading pl-3">National Computer Science Competition</h1>
             <Col xs={12} md={6} lg={8} className="pb-3">

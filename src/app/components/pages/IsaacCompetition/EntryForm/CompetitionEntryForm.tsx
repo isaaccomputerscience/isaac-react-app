@@ -30,7 +30,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
   };
 
   return (
-    <div className="pb-5">
+    <div className="py-5">
       <div className="entry-form-background-img entry-form-section">
         <Container className="pb-2">
           <Form onSubmit={handleSubmit}>
