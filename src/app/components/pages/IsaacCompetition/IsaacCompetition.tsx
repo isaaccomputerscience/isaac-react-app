@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { isStudent, isTeacher, SITE_SUBJECT_TITLE } from "../../../services";
+import { SITE_SUBJECT_TITLE } from "../../../services";
 import { BreadcrumbTrail } from "../../elements/TitleAndBreadcrumb";
 import { Col, Container, Row } from "reactstrap";
 import content from "./content";
@@ -7,11 +7,9 @@ import "../../../../scss/cs/competition.scss";
 import IoECard from "./InternetOfEverything/IoECard";
 import TestimonialComment from "../../elements/TestimonialComment";
 import Accordion from "./Accordion/Accordion";
-import CompetitionButton from "./Buttons/CompetitionButton";
 import InformationCard from "./CompetitionInformation/InformationCard";
 import CompetitionTimeline from "./CompetitionInformation/CompetitionTimeline";
-import CompetitionEntryForm from "./EntryForm/CompetitionEntryForm";
-import { useAppSelector, selectors } from "../../../state";
+import EntryFormHandler from "./EntryForm/EntryFormHandler";
 
 const { section1, internetOfEverything, section3, accordion } = content;
 
@@ -31,42 +29,6 @@ export const IsaacCompetition = () => {
 
   const setOpenState = (id?: string) => {
     setOpen(id ?? null);
-  };
-
-  const user = useAppSelector(selectors.user.orNull);
-
-  const STUDENT_MESSAGE = "Students, ask your teacher about submitting an entry.";
-  const TEACHER_MESSAGE = "Teachers, login to enter the competition.";
-
-  const StudentMessage = () => (
-    <Container>
-      <Col className="d-flex flex-column align-items-start pb-4 pl-0" xs="auto">
-        <p className="body-text">{STUDENT_MESSAGE}</p>
-      </Col>
-    </Container>
-  );
-
-  interface DefaultMessageProps {
-    buttons: { to: string; label: string }[];
-  }
-
-  const DefaultMessage: React.FC<DefaultMessageProps> = ({ buttons }) => (
-    <Container>
-      <Col className="d-flex flex-column align-items-start pb-4 pl-0" xs="auto">
-        <p className="pb-3 body-text">{TEACHER_MESSAGE}</p>
-        <CompetitionButton buttons={buttons} />
-      </Col>
-    </Container>
-  );
-
-  const renderEntryForm = () => {
-    if (isTeacher(user)) {
-      return <CompetitionEntryForm handleTermsClick={handleTermsClick} />;
-    } else if (isStudent(user)) {
-      return <StudentMessage />;
-    } else {
-      return <DefaultMessage buttons={buttons} />;
-    }
   };
 
   const accordionRef = useRef<HTMLDivElement>(null);
@@ -133,7 +95,7 @@ export const IsaacCompetition = () => {
             </Col>
           </Row>
         </Container>
-        {renderEntryForm()}
+        <EntryFormHandler buttons={buttons} handleTermsClick={handleTermsClick} />
       </section>
       <section id="internetOfEverything" className="event-section">
         <div className="event-section-background-img">
