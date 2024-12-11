@@ -35,26 +35,37 @@ export const IsaacCompetition = () => {
 
   const user = useAppSelector(selectors.user.orNull);
 
+  const STUDENT_MESSAGE = "Students, ask your teacher about submitting an entry.";
+  const TEACHER_MESSAGE = "Teachers, login to enter the competition.";
+
+  const StudentMessage = () => (
+    <Container>
+      <Col className="d-flex flex-column align-items-start pb-4 pl-0" xs="auto">
+        <p className="body-text">{STUDENT_MESSAGE}</p>
+      </Col>
+    </Container>
+  );
+
+  interface DefaultMessageProps {
+    buttons: { to: string; label: string }[];
+  }
+
+  const DefaultMessage: React.FC<DefaultMessageProps> = ({ buttons }) => (
+    <Container>
+      <Col className="d-flex flex-column align-items-start pb-4 pl-0" xs="auto">
+        <p className="pb-3 body-text">{TEACHER_MESSAGE}</p>
+        <CompetitionButton buttons={buttons} />
+      </Col>
+    </Container>
+  );
+
   const renderEntryForm = () => {
     if (isTeacher(user)) {
       return <CompetitionEntryForm handleTermsClick={handleTermsClick} />;
     } else if (isStudent(user)) {
-      return (
-        <Container>
-          <Col className="d-flex flex-column align-items-start pb-4 pl-0" xs="auto">
-            <p className="body-text">Students, ask your teacher about submitting an entry.</p>
-          </Col>
-        </Container>
-      );
+      return <StudentMessage />;
     } else {
-      return (
-        <Container>
-          <Col className="d-flex flex-column align-items-start pb-4 pl-0" xs="auto">
-            <p className="pb-3 body-text">Teachers, login to enter the competition.</p>
-            <CompetitionButton buttons={buttons} />
-          </Col>
-        </Container>
-      );
+      return <DefaultMessage buttons={buttons} />;
     }
   };
 
@@ -83,7 +94,7 @@ export const IsaacCompetition = () => {
         <BreadcrumbTrail currentPageTitle="Isaac Competition" />
       </Container>
       <section id="competition-headline-section">
-        <Container className="pt-4  z1">
+        <Container className="pt-4 z1">
           <Row>
             <h1 className="primary-heading pl-3">National Computer Science Competition</h1>
             <Col xs={12} md={6} lg={8} className="pb-3">
