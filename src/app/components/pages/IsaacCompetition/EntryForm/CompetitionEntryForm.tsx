@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Row, Col, Button, Container, FormGroup, Label, Input } from "reactstrap";
 import { InputType } from "reactstrap/es/Input";
+import { AppGroup } from "../../../../../IsaacAppTypes";
+import { isaacApi } from "../../../../state";
 
 interface CompetitionEntryFormProps {
   handleTermsClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
@@ -25,6 +27,15 @@ const renderFormGroup = (label: string, type: string, id: string, options: strin
 );
 
 const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) => {
+  const [activeGroups, setActiveGroups] = useState<AppGroup[]>([]);
+  const { data: groups } = isaacApi.endpoints.getGroups.useQuery(false);
+
+  useEffect(() => {
+    if (groups) {
+      setActiveGroups(groups);
+    }
+  }, [groups]);
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
   };
@@ -45,9 +56,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                 {renderFormGroup("Link to submission", "text", "formSubtitle4")}
                 {renderFormGroup("Group", "select", "formSubtitle5", [
                   "Please select from the list",
-                  "Option 1",
-                  "Option 2",
-                  "Option 3",
+                  ...activeGroups.map((group) => group.groupName || ""),
                 ])}
                 <Row className="entry-form-button-label d-flex flex-column flex-md-row">
                   <Col xs="auto">
