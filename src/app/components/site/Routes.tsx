@@ -11,7 +11,6 @@ import { Redirect } from "react-router";
 import { isLoggedIn, isTutorOrAbove, STAGE } from "../../services";
 import { SingleAssignmentProgress } from "../pages/SingleAssignmentProgress";
 import { Glossary } from "../pages/Glossary";
-import GCSEProgrammingChallenges from "../pages/GCSEProgrammingChallenges";
 
 let key = 0;
 export const Routes = [
@@ -72,16 +71,6 @@ export const Routes = [
     component={Topic}
   />,
 
-  // Programming Challenges:
-  // GCSE
-  <TrackedRoute
-    key={key++}
-    exact
-    path="/gcse_programming_challenges"
-    ifUser={isLoggedIn}
-    component={GCSEProgrammingChallenges}
-  />,
-
   // Glossary:
   <TrackedRoute
     key={key++}
@@ -111,6 +100,7 @@ export const Routes = [
   />,
   <StaticPageRoute key={key++} exact ifUser={isTutorOrAbove} path="/teaching_order" pageId="teaching_order" />,
   <StaticPageRoute key={key++} exact path="/teachcomputing" pageId="teach_computing" />,
+  <StaticPageRoute key={key++} exact path="/gcse_programming_challenges" pageId="gcse_programming_challenges" />,
 
   <TrackedRoute key={key++} exact path="/coming_soon" component={ComingSoon} />,
 ];
