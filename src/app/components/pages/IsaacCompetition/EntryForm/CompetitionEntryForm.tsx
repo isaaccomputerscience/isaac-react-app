@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Form, Row, Col, Button, Container, FormGroup, Label, Input } from "reactstrap";
+import React, { Dispatch, useEffect, useState } from "react";
+import { Form, Row, Col, Container, FormGroup, Label, Input } from "reactstrap";
 import { InputType } from "reactstrap/es/Input";
-import { AppGroup } from "../../../../../IsaacAppTypes";
-import { isaacApi, useAppSelector } from "../../../../state";
+import { Action, AppGroup } from "../../../../../IsaacAppTypes";
+import { isaacApi, showAxiosErrorToastIfNeeded, showToast, useAppSelector } from "../../../../state";
 import { selectors } from "../../../../state/selectors";
 import { SchoolInput } from "../../../elements/inputs/SchoolInput";
+import { ACTION_TYPE, api } from "../../../../services";
 
+const COMPETITON_ID = "123123123_test_group_reservation";
 interface CompetitionEntryFormProps {
   handleTermsClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }
@@ -24,7 +26,7 @@ const renderFormGroup = (
       <Input type="select" id={id} disabled={disabled}>
         {options?.length > 0 &&
           options.map((option, index) => (
-            <option key={`${option}-${index}`} value={option === "Please select from the list" ? "" : option}>
+            <option key={index} value={option === "Please select from the list" ? "" : option}>
               {option}
             </option>
           ))}
@@ -46,8 +48,28 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
     }
   }, [groups]);
 
+  const reserveUsersOnCompetition = async (eventId: string, userIds: number[]) => {
+    await api.eventBookings.reserveUsersOnEvent(eventId, userIds);
+    //await dispatch(getEventBookingsForGroup(eventId, groupId) as any);
+    //await dispatch(getEvent(eventId) as any);
+    alert("Successfully reserved users on event");
+  };
+
   const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
+    {
+      event.preventDefault();
+      const form = event.target as HTMLFormElement;
+      const elements = form.elements as any;
+      const groupId = elements.formGroup.value;
+      const selectedGroup = activeGroups.find((group) => group.groupName === groupId);
+
+      if (selectedGroup && selectedGroup.id) {
+        const reservableIds = (selectedGroup.members?.map((member) => member.id) || []).filter(
+          (id): id is number => id !== undefined,
+        );
+        reserveUsersOnCompetition(COMPETITON_ID, reservableIds);
+      }
+    }
   };
 
   return (
@@ -89,15 +111,13 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
               </Col>
               <Col lg={6}>
                 {renderFormGroup("Link to submission", "text", "formSubtitle4")}
-                {renderFormGroup("Group", "select", "formSubtitle5", "", [
+                {renderFormGroup("Group", "select", "formGroup", "", [
                   "Please select from the list",
                   ...activeGroups.map((group) => group.groupName || ""),
                 ])}
                 <Row className="entry-form-button-label d-flex flex-column flex-md-row">
                   <Col xs="auto">
-                    <Button className="entry-form-button btn-sm py-2 px-4" type="submit">
-                      Submit
-                    </Button>
+                    <Input className="btn-sm entry-form-button" type="submit" value="submit" />
                   </Col>
                   <Col className="pl-0 mt-2 ml-3 mt-md-0">
                     <Label>
