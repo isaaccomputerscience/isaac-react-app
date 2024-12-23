@@ -1,46 +1,25 @@
-import React, { Dispatch, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Row, Col, Container, FormGroup, Label, Input } from "reactstrap";
 import { InputType } from "reactstrap/es/Input";
-import { Action, AppGroup } from "../../../../../IsaacAppTypes";
-import { isaacApi, showAxiosErrorToastIfNeeded, showToast, useAppSelector } from "../../../../state";
+import { AppGroup } from "../../../../../IsaacAppTypes";
+import { isaacApi, useAppSelector, useAppDispatch, AppDispatch } from "../../../../state";
 import { selectors } from "../../../../state/selectors";
 import { SchoolInput } from "../../../elements/inputs/SchoolInput";
-import { ACTION_TYPE, api } from "../../../../services";
+import { api } from "../../../../services";
+import { showErrorToast, showSuccessToast } from "../../../../state/actions/popups";
 
-const COMPETITON_ID = "123123123_test_group_reservation";
+const COMPETITON_ID = "20250212_discovery_cambridge_and_northamptonshire";
 interface CompetitionEntryFormProps {
   handleTermsClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }
 
-const renderFormGroup = (
-  label: string,
-  type: string,
-  id: string,
-  defaultValue: string = "",
-  options: string[] = [],
-  disabled: boolean = false,
-) => (
-  <FormGroup>
-    <Label className="entry-form-sub-title">{label}</Label>
-    {type === "select" ? (
-      <Input type="select" id={id} disabled={disabled}>
-        {options?.length > 0 &&
-          options.map((option, index) => (
-            <option key={index} value={option === "Please select from the list" ? "" : option}>
-              {option}
-            </option>
-          ))}
-      </Input>
-    ) : (
-      <Input type={type as InputType} id={id} defaultValue={defaultValue} disabled={disabled} />
-    )}
-  </FormGroup>
-);
-
 const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) => {
   const [activeGroups, setActiveGroups] = useState<AppGroup[]>([]);
   const { data: groups } = isaacApi.endpoints.getGroups.useQuery(false);
+  const [getGroupMembers] = isaacApi.endpoints.getGroupMembers.useLazyQuery();
   const targetUser = useAppSelector(selectors.user.orNull);
+  const [selectedGroup, setSelectedGroup] = useState<AppGroup | null>(null);
+  const dispatch: AppDispatch = useAppDispatch();
 
   useEffect(() => {
     if (groups) {
@@ -48,11 +27,56 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
     }
   }, [groups]);
 
-  const reserveUsersOnCompetition = async (eventId: string, userIds: number[]) => {
-    await api.eventBookings.reserveUsersOnEvent(eventId, userIds);
-    //await dispatch(getEventBookingsForGroup(eventId, groupId) as any);
-    //await dispatch(getEvent(eventId) as any);
-    alert("Successfully reserved users on event");
+  useEffect(() => {
+    if (selectedGroup?.id && !selectedGroup.members) {
+      getGroupMembers(selectedGroup.id);
+    }
+  }, [selectedGroup]);
+
+  const renderFormGroup = (
+    label: string,
+    type: string,
+    id: string,
+    defaultValue: string = "",
+    options: string[] = [],
+    disabled: boolean = false,
+  ) => (
+    <FormGroup>
+      <Label className="entry-form-sub-title">{label}</Label>
+      {type === "select" ? (
+        <Input
+          type="select"
+          id={id}
+          disabled={disabled}
+          onChange={(e) => setSelectedGroup(activeGroups.find((group) => group.groupName === e.target.value) || null)}
+        >
+          {options?.length > 0 &&
+            options.map((option, index) => (
+              <option key={index} value={option === "Please select from the list" ? "" : option}>
+                {option}
+              </option>
+            ))}
+        </Input>
+      ) : (
+        <Input type={type as InputType} id={id} defaultValue={defaultValue} disabled={disabled} />
+      )}
+    </FormGroup>
+  );
+
+  const reserveUsersOnCompetition = async (
+    eventId: string,
+    userIds: number[],
+    submissionLink: string,
+    groupName?: string,
+  ) => {
+    try {
+      await api.eventBookings.reserveUsersOnCompetition(eventId, userIds, submissionLink, groupName || "");
+      setSelectedGroup(null);
+      dispatch(showSuccessToast("Competition Entry Success", "Competition entry was successful."));
+    } catch (error) {
+      console.error("Error reserving users on competition:", error);
+      dispatch(showErrorToast("Competition Entry Failed", "Failed to make the competiton entry."));
+    }
   };
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -62,12 +86,14 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
       const elements = form.elements as any;
       const groupId = elements.formGroup.value;
       const selectedGroup = activeGroups.find((group) => group.groupName === groupId);
+      const submissionLink = elements.submissionLink.value;
+      const groupName = selectedGroup?.groupName;
 
       if (selectedGroup && selectedGroup.id) {
         const reservableIds = (selectedGroup.members?.map((member) => member.id) || []).filter(
           (id): id is number => id !== undefined,
         );
-        reserveUsersOnCompetition(COMPETITON_ID, reservableIds);
+        reserveUsersOnCompetition(COMPETITON_ID, reservableIds, submissionLink, groupName);
       }
     }
   };
@@ -110,14 +136,14 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                 )}
               </Col>
               <Col lg={6}>
-                {renderFormGroup("Link to submission", "text", "formSubtitle4")}
+                {renderFormGroup("Link to submission", "text", "submissionLink")}
                 {renderFormGroup("Group", "select", "formGroup", "", [
                   "Please select from the list",
                   ...activeGroups.map((group) => group.groupName || ""),
                 ])}
                 <Row className="entry-form-button-label d-flex flex-column flex-md-row">
                   <Col xs="auto">
-                    <Input className="btn-sm entry-form-button" type="submit" value="submit" />
+                    <Input className="btn-sm entry-form-button" type="submit" value="Submit" />
                   </Col>
                   <Col className="pl-0 mt-2 ml-3 mt-md-0">
                     <Label>
