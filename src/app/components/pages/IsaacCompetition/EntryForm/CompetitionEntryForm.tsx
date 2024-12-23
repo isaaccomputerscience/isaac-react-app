@@ -8,7 +8,7 @@ import { SchoolInput } from "../../../elements/inputs/SchoolInput";
 import { api } from "../../../../services";
 import { showErrorToast, showSuccessToast } from "../../../../state/actions/popups";
 
-const COMPETITON_ID = "20250212_discovery_cambridge_and_northamptonshire";
+const COMPETITON_ID = "isaac_competition_25";
 interface CompetitionEntryFormProps {
   handleTermsClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }
