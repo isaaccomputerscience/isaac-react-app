@@ -109,7 +109,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                 {renderFormGroup(
                   "First Name",
                   "text",
-                  "formSubtitle1",
+                  "firstName",
                   targetUser?.loggedIn ? targetUser.givenName || "" : "",
                   [],
                   true,
@@ -117,7 +117,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                 {renderFormGroup(
                   "Last Name",
                   "text",
-                  "formSubtitle2",
+                  "lastName",
                   targetUser?.loggedIn ? targetUser?.familyName || "" : "",
                   [],
                   true,
