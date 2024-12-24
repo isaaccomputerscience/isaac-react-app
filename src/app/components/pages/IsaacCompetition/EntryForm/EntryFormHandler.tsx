@@ -34,7 +34,7 @@ interface EntryFormHandlerProps {
   handleTermsClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }
 
-const EntryFormHandler: React.FC<EntryFormHandlerProps> = ({ buttons, handleTermsClick }) => {
+const EntryFormHandler = ({ buttons, handleTermsClick }: EntryFormHandlerProps) => {
   const user = useAppSelector(selectors.user.orNull);
 
   const renderEntryForm = () => {
@@ -47,7 +47,7 @@ const EntryFormHandler: React.FC<EntryFormHandlerProps> = ({ buttons, handleTerm
     }
   };
 
-  return <>{renderEntryForm()}</>;
+  return renderEntryForm();
 };
 
 export default EntryFormHandler;

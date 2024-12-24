@@ -78,7 +78,7 @@ export const SchoolInput = ({
   const isInvalid = submissionAttempted && required && !validateUserSchool(userToUpdate);
   return (
     <FormGroup className={`school ${className}`}>
-      {showLabel && <Label htmlFor={`school-input-${randomNumber}`}>My current school or college</Label>}{" "}
+      {showLabel && <Label htmlFor={`school-input-${randomNumber}`}>My current school or college</Label>}
       {userToUpdate.schoolOther !== NOT_APPLICABLE && (
         <React.Fragment>
           <AsyncCreatableSelect
