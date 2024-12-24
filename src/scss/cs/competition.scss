@@ -172,9 +172,18 @@
   &-button {
     background-color: #d60265;
     color: white !important;
+    border: none !important;
+    width: 109px;
+    height: 48px;
+    font-size: 18px;
+    font-family: "dm-sans-light", DMSans-Light, sans-serif;
   }
 
-  &-button-label{
+  &-button-label {
     padding-top: 34px;
+  }
+
+  &-button:focus {
+    background-color: #d60265;
   }
 }
