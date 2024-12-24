@@ -70,7 +70,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
     groupName?: string,
   ) => {
     try {
-      await api.eventBookings.reserveUsersOnCompetition(eventId, userIds, submissionLink, groupName || "");
+      await api.eventBookings.reserveUsersOnCompetition(eventId, userIds, submissionLink, groupName ?? "");
       setSelectedGroup(null);
       dispatch(showSuccessToast("Competition Entry Success", "Competition entry was successful."));
     } catch (error) {
@@ -80,21 +80,18 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
   };
 
   const handleSubmit = (event: React.FormEvent) => {
-    {
-      event.preventDefault();
-      const form = event.target as HTMLFormElement;
-      const elements = form.elements as any;
-      const groupId = elements.formGroup.value;
-      const selectedGroup = activeGroups.find((group) => group.groupName === groupId);
-      const submissionLink = elements.submissionLink.value;
-      const groupName = selectedGroup?.groupName;
+    event.preventDefault();
+    const form = event.target as HTMLFormElement;
+    const elements = form.elements as any;
+    const groupId = elements.formGroup.value;
+    const selectedGroup = activeGroups.find((group) => group.groupName === groupId);
+    const submissionLink = elements.submissionLink.value;
+    const groupName = selectedGroup?.groupName;
 
-      if (selectedGroup && selectedGroup.id) {
-        const reservableIds = (selectedGroup.members?.map((member) => member.id) || []).filter(
-          (id): id is number => id !== undefined,
-        );
-        reserveUsersOnCompetition(COMPETITON_ID, reservableIds, submissionLink, groupName);
-      }
+    if (selectedGroup?.id) {
+      const reservableIds =
+        selectedGroup.members?.map((member) => member.id).filter((id): id is number => id !== undefined) || [];
+      reserveUsersOnCompetition(COMPETITON_ID, reservableIds, submissionLink, groupName);
     }
   };
 
