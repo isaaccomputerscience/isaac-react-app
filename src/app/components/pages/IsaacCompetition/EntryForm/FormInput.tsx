@@ -13,7 +13,7 @@ interface FormInputProps {
   setSelectedGroup?: (group: { groupName: string } | null) => void;
 }
 
-const FormInput: React.FC<FormInputProps> = ({
+const FormInput = ({
   label,
   type,
   id,
@@ -22,7 +22,7 @@ const FormInput: React.FC<FormInputProps> = ({
   defaultValue,
   activeGroups = [],
   setSelectedGroup,
-}) => {
+}: FormInputProps) => {
   return (
     <FormGroup>
       <Label className="entry-form-sub-title">{label}</Label>

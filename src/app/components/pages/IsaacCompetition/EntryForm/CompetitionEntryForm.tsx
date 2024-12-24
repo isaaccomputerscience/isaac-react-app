@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Form, Row, Col, Container, FormGroup, Label, Input } from "reactstrap";
 import { AppGroup } from "../../../../../IsaacAppTypes";
-import { isaacApi, useAppSelector, useAppDispatch, AppDispatch } from "../../../../state";
+import { isaacApi, useAppSelector } from "../../../../state";
 import { selectors } from "../../../../state/selectors";
 import { SchoolInput } from "../../../elements/inputs/SchoolInput";
 import FormInput from "./FormInput";
@@ -18,8 +18,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
   const activeGroups = useActiveGroups();
   const [getGroupMembers] = isaacApi.endpoints.getGroupMembers.useLazyQuery();
   const targetUser = useAppSelector(selectors.user.orNull);
-  const dispatch: AppDispatch = useAppDispatch();
-  const reserveUsersOnCompetition = useReserveUsersOnCompetition(dispatch);
+  const reserveUsersOnCompetition = useReserveUsersOnCompetition();
 
   useEffect(() => {
     if (selectedGroup?.id && !selectedGroup.members) {

@@ -1,8 +1,10 @@
 import { api } from "../../../../services";
 import { showErrorToast, showSuccessToast } from "../../../../state/actions/popups";
-import { AppDispatch } from "../../../../state";
+import { useAppDispatch } from "../../../../state";
 
-export const useReserveUsersOnCompetition = (dispatch: AppDispatch) => {
+export const useReserveUsersOnCompetition = () => {
+  const dispatch = useAppDispatch();
+
   const reserveUsersOnCompetition = async (
     eventId: string,
     userIds: number[],
