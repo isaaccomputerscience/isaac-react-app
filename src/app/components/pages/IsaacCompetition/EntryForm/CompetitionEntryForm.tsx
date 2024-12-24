@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Form, Row, Col, Container, FormGroup, Label, Input } from "reactstrap";
-import { InputType } from "reactstrap/es/Input";
 import { AppGroup } from "../../../../../IsaacAppTypes";
 import { isaacApi, useAppSelector, useAppDispatch, AppDispatch } from "../../../../state";
 import { selectors } from "../../../../state/selectors";
 import { SchoolInput } from "../../../elements/inputs/SchoolInput";
-import { api } from "../../../../services";
-import { showErrorToast, showSuccessToast } from "../../../../state/actions/popups";
+import FormInput from "./FormInput";
+import { useReserveUsersOnCompetition } from "./useReserveUsersOnCompetition";
+import { useActiveGroups } from "./useActiveGroups";
 
 const COMPETITON_ID = "isaac_competition_25";
 interface CompetitionEntryFormProps {
@@ -14,70 +14,18 @@ interface CompetitionEntryFormProps {
 }
 
 const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) => {
-  const [activeGroups, setActiveGroups] = useState<AppGroup[]>([]);
-  const { data: groups } = isaacApi.endpoints.getGroups.useQuery(false);
+  const [selectedGroup, setSelectedGroup] = useState<AppGroup | null>(null);
+  const activeGroups = useActiveGroups();
   const [getGroupMembers] = isaacApi.endpoints.getGroupMembers.useLazyQuery();
   const targetUser = useAppSelector(selectors.user.orNull);
-  const [selectedGroup, setSelectedGroup] = useState<AppGroup | null>(null);
   const dispatch: AppDispatch = useAppDispatch();
-
-  useEffect(() => {
-    if (groups) {
-      setActiveGroups(groups);
-    }
-  }, [groups]);
+  const reserveUsersOnCompetition = useReserveUsersOnCompetition(dispatch);
 
   useEffect(() => {
     if (selectedGroup?.id && !selectedGroup.members) {
       getGroupMembers(selectedGroup.id);
     }
   }, [selectedGroup]);
-
-  const renderFormGroup = (
-    label: string,
-    type: string,
-    id: string,
-    defaultValue: string = "",
-    options: string[] = [],
-    disabled: boolean = false,
-  ) => (
-    <FormGroup>
-      <Label className="entry-form-sub-title">{label}</Label>
-      {type === "select" ? (
-        <Input
-          type="select"
-          id={id}
-          disabled={disabled}
-          onChange={(e) => setSelectedGroup(activeGroups.find((group) => group.groupName === e.target.value) || null)}
-        >
-          {options?.length > 0 &&
-            options.map((option, index) => (
-              <option key={index} value={option === "Please select from the list" ? "" : option}>
-                {option}
-              </option>
-            ))}
-        </Input>
-      ) : (
-        <Input type={type as InputType} id={id} defaultValue={defaultValue} disabled={disabled} />
-      )}
-    </FormGroup>
-  );
-
-  const reserveUsersOnCompetition = async (
-    eventId: string,
-    userIds: number[],
-    submissionLink: string,
-    groupName?: string,
-  ) => {
-    try {
-      await api.eventBookings.reserveUsersOnCompetition(eventId, userIds, submissionLink, groupName ?? "");
-      setSelectedGroup(null);
-      dispatch(showSuccessToast("Competition Entry Success", "Competition entry was successful."));
-    } catch (error) {
-      console.error("Error reserving users on competition:", error);
-      dispatch(showErrorToast("Competition Entry Failed", "Failed to make the competiton entry."));
-    }
-  };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -103,22 +51,20 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
             <h1 className="py-4 entry-form-title">Enter the competition</h1>
             <Row className="d-flex flex-column flex-md-row">
               <Col lg={6}>
-                {renderFormGroup(
-                  "First Name",
-                  "text",
-                  "firstName",
-                  targetUser?.loggedIn ? targetUser.givenName || "" : "",
-                  [],
-                  true,
-                )}
-                {renderFormGroup(
-                  "Last Name",
-                  "text",
-                  "lastName",
-                  targetUser?.loggedIn ? targetUser?.familyName || "" : "",
-                  [],
-                  true,
-                )}
+                <FormInput
+                  label="First Name"
+                  type="text"
+                  id="firstName"
+                  disabled={true}
+                  defaultValue={targetUser?.loggedIn ? targetUser.givenName || "" : ""}
+                />
+                <FormInput
+                  label="Last Name"
+                  type="text"
+                  id="lastName"
+                  disabled={true}
+                  defaultValue={targetUser?.loggedIn ? targetUser?.familyName || "" : ""}
+                />
                 {targetUser && (
                   <FormGroup>
                     <Label className="entry-form-sub-title">School</Label>
@@ -133,11 +79,18 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                 )}
               </Col>
               <Col lg={6}>
-                {renderFormGroup("Link to submission", "text", "submissionLink")}
-                {renderFormGroup("Group", "select", "formGroup", "", [
-                  "Please select from the list",
-                  ...activeGroups.map((group) => group.groupName || ""),
-                ])}
+                <FormInput label="Link to submission" type="text" id="submissionLink" disabled={false} />
+                <FormInput
+                  label="Group"
+                  type="select"
+                  id="formGroup"
+                  disabled={false}
+                  options={["Please select from the list", ...activeGroups.map((group) => group.groupName || "")]}
+                  activeGroups={activeGroups.filter(
+                    (group): group is { groupName: string } => group.groupName !== undefined,
+                  )}
+                  setSelectedGroup={setSelectedGroup}
+                />
                 <Row className="entry-form-button-label d-flex flex-column flex-md-row">
                   <Col xs="auto">
                     <Input className="btn-sm entry-form-button" type="submit" value="Submit" />
