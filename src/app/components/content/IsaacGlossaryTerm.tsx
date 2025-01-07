@@ -15,13 +15,7 @@ const IsaacGlossaryTermComponent = ({ doc, inPortal, linkToGlossary }: IsaacGlos
     <>
       <Col md={3} className="glossary_term_name">
         <p ref={ref}>
-          {linkToGlossary && (
-            <a href={`#${(doc.id && formatGlossaryTermId(doc.id)) ?? ""}`}>
-              <img src="/assets/link-variant.png" className="pr-2" alt="direct link" />
-              <strong>{doc.value}</strong>
-            </a>
-          )}
-          {!linkToGlossary && <strong>{doc.value}</strong>}
+          <strong>{doc.value}</strong>
           <span className="only-print">: </span>
         </p>
       </Col>
