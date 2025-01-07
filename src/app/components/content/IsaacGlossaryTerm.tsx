@@ -6,6 +6,7 @@ import { IsaacContent } from "./IsaacContent";
 interface IsaacGlossaryTermProps {
   doc: GlossaryTermDTO;
   inPortal?: boolean;
+  linkToGlossary?: boolean;
 }
 
 const IsaacGlossaryTermComponent = ({ doc, inPortal }: IsaacGlossaryTermProps, ref: Ref<any>) => {
