@@ -8,7 +8,7 @@ import FormInput from "./FormInput";
 import { useReserveUsersOnCompetition } from "./useReserveUsersOnCompetition";
 import { useActiveGroups } from "./useActiveGroups";
 
-const COMPETITON_ID = "isaac_competition_25";
+const COMPETITON_ID = "20250212_discovery_cambridge_and_northamptonshire";
 interface CompetitionEntryFormProps {
   handleTermsClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }
@@ -54,6 +54,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                   label="First Name"
                   type="text"
                   id="firstName"
+                  required={true}
                   disabled={true}
                   defaultValue={targetUser?.loggedIn ? targetUser.givenName || "" : ""}
                 />
@@ -61,12 +62,15 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                   label="Last Name"
                   type="text"
                   id="lastName"
+                  required={true}
                   disabled={true}
                   defaultValue={targetUser?.loggedIn ? targetUser?.familyName || "" : ""}
                 />
                 {targetUser && (
                   <FormGroup>
-                    <Label className="entry-form-sub-title">School</Label>
+                    <Label className="entry-form-sub-title">
+                      School <span className="entry-form-astrisk">*</span>
+                    </Label>
                     <SchoolInput
                       disableInput={true}
                       userToUpdate={{ ...targetUser, password: null }}
@@ -78,11 +82,18 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                 )}
               </Col>
               <Col lg={6}>
-                <FormInput label="Link to submission" type="text" id="submissionLink" disabled={false} />
+                <FormInput
+                  label="Link to submission"
+                  type="text"
+                  id="submissionLink"
+                  required={true}
+                  disabled={false}
+                />
                 <FormInput
                   label="Group"
                   type="select"
                   id="formGroup"
+                  required={true}
                   disabled={false}
                   options={["Please select from the list", ...activeGroups.map((group) => group.groupName || "")]}
                   activeGroups={activeGroups.filter(

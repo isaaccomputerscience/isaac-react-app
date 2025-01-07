@@ -9,6 +9,7 @@ interface FormInputProps {
   disabled: boolean;
   options?: string[];
   defaultValue?: string;
+  required?: boolean;
   activeGroups?: { groupName: string }[];
   setSelectedGroup?: (group: { groupName: string } | null) => void;
 }
@@ -20,17 +21,21 @@ const FormInput = ({
   disabled,
   options = [],
   defaultValue,
+  required = true,
   activeGroups = [],
   setSelectedGroup,
 }: FormInputProps) => {
   return (
     <FormGroup>
-      <Label className="entry-form-sub-title">{label}</Label>
+      <Label className="entry-form-sub-title">
+        {label} {required && <span className="entry-form-astrisk">*</span>}
+      </Label>
       {type === "select" ? (
         <Input
           type="select"
           id={id}
           disabled={disabled}
+          required={required}
           onChange={(e) => setSelectedGroup?.(activeGroups.find((group) => group.groupName === e.target.value) || null)}
         >
           {options.length > 0 &&
@@ -41,7 +46,7 @@ const FormInput = ({
             ))}
         </Input>
       ) : (
-        <Input type={type as InputType} id={id} defaultValue={defaultValue} disabled={disabled} />
+        <Input type={type as InputType} id={id} defaultValue={defaultValue} disabled={disabled} required={required} />
       )}
     </FormGroup>
   );
