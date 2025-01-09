@@ -10,8 +10,10 @@ interface FormInputProps {
   options?: string[];
   defaultValue?: string;
   required?: boolean;
+  value?: string;
   activeGroups?: { groupName: string }[];
   setSelectedGroup?: (group: { groupName: string } | null) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const FormInput = ({
@@ -22,8 +24,10 @@ const FormInput = ({
   options = [],
   defaultValue,
   required = true,
+  value,
   activeGroups = [],
   setSelectedGroup,
+  onChange,
 }: FormInputProps) => {
   return (
     <FormGroup>
@@ -46,7 +50,15 @@ const FormInput = ({
             ))}
         </Input>
       ) : (
-        <Input type={type as InputType} id={id} defaultValue={defaultValue} disabled={disabled} required={required} />
+        <Input
+          type={type as InputType}
+          id={id}
+          defaultValue={defaultValue}
+          disabled={disabled}
+          required={required}
+          value={value}
+          onChange={onChange}
+        />
       )}
     </FormGroup>
   );

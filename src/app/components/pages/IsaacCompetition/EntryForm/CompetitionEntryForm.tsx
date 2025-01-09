@@ -8,7 +8,7 @@ import FormInput from "./FormInput";
 import { useReserveUsersOnCompetition } from "./useReserveUsersOnCompetition";
 import { useActiveGroups } from "./useActiveGroups";
 
-const COMPETITON_ID = "20250212_discovery_cambridge_and_northamptonshire";
+const COMPETITON_ID = "isaac_competition_25";
 interface CompetitionEntryFormProps {
   handleTermsClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }
@@ -19,12 +19,15 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
   const [getGroupMembers] = isaacApi.endpoints.getGroupMembers.useLazyQuery();
   const targetUser = useAppSelector(selectors.user.orNull);
   const reserveUsersOnCompetition = useReserveUsersOnCompetition();
+  const [submissionLink, setSubmissionLink] = useState("");
 
   useEffect(() => {
     if (selectedGroup?.id && !selectedGroup.members) {
       getGroupMembers(selectedGroup.id);
     }
   }, [selectedGroup]);
+
+  const isSubmitDisabled = !submissionLink || !selectedGroup;
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -40,6 +43,9 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
         selectedGroup.members?.map((member) => member.id).filter((id): id is number => id !== undefined) || [];
       reserveUsersOnCompetition(COMPETITON_ID, reservableIds, submissionLink, groupName);
     }
+
+    setSubmissionLink("");
+    elements.formGroup.selectedIndex = 0;
   };
 
   return (
@@ -88,6 +94,8 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                   id="submissionLink"
                   required={true}
                   disabled={false}
+                  value={submissionLink}
+                  onChange={(e) => setSubmissionLink(e.target.value)}
                 />
                 <FormInput
                   label="Group"
@@ -103,7 +111,12 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                 />
                 <Row className="entry-form-button-label d-flex flex-column flex-md-row">
                   <Col xs="auto">
-                    <Input className="btn-sm entry-form-button" type="submit" value="Submit" />
+                    <Input
+                      className="btn-sm entry-form-button"
+                      type="submit"
+                      value="Submit"
+                      disabled={isSubmitDisabled}
+                    />
                   </Col>
                   <Col className="pl-0 mt-2 ml-3 mt-md-0">
                     <Label>
