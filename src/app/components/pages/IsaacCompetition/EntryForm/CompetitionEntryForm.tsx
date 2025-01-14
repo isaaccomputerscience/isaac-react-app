@@ -60,7 +60,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                   label="First Name"
                   type="text"
                   id="firstName"
-                  required={true}
+                  required
                   disabled={true}
                   defaultValue={targetUser?.loggedIn ? targetUser.givenName || "" : ""}
                 />
@@ -68,7 +68,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                   label="Last Name"
                   type="text"
                   id="lastName"
-                  required={true}
+                  required
                   disabled={true}
                   defaultValue={targetUser?.loggedIn ? targetUser?.familyName || "" : ""}
                 />
@@ -81,7 +81,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                       disableInput={true}
                       userToUpdate={{ ...targetUser, password: null }}
                       submissionAttempted={false}
-                      required={true}
+                      required
                       showLabel={false}
                     />
                   </FormGroup>
@@ -92,7 +92,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                   label="Link to submission"
                   type="text"
                   id="submissionLink"
-                  required={true}
+                  required
                   disabled={false}
                   value={submissionLink}
                   onChange={(e) => setSubmissionLink(e.target.value)}
@@ -101,7 +101,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                   label="Group"
                   type="select"
                   id="formGroup"
-                  required={true}
+                  required
                   disabled={false}
                   options={["Please select from the list", ...activeGroups.map((group) => group.groupName || "")]}
                   activeGroups={activeGroups.filter(
