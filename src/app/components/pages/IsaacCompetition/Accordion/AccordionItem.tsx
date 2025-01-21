@@ -1,28 +1,49 @@
 import React, { memo } from "react";
 import { Card, CardBody, CardHeader, Collapse } from "reactstrap";
 
+type NestedStringArray = string | NestedStringArray[];
 interface AccordionItemProps {
   id: string;
   title: string;
-  section: (string | string[])[];
+  section: NestedStringArray[];
   open: string | null;
   isLast: boolean;
   setOpenState: (id: string | undefined) => void;
 }
 
-const renderSectionContent = (section: (string | string[])[]) => (
+const renderSectionContent = (section: NestedStringArray[]) => (
   <>
     {section.map((item, index) => {
       if (Array.isArray(item)) {
         return (
           <ul key={`list-${index}`}>
-            {item.map((listItem, listIndex) => (
-              <li key={`${listItem}-${listIndex}`}>{listItem}</li>
-            ))}
+            {item.map((nestedItem, nestedIndex) => {
+              if (Array.isArray(nestedItem)) {
+                return (
+                  <ul key={`nested-list-${nestedIndex}`}>
+                    {nestedItem.map((nestedNestedItem, nestedNestedIndex) => {
+                      if (Array.isArray(nestedNestedItem)) {
+                        return (
+                          <ul key={`nested-nested-list-${nestedNestedIndex}`}>
+                            {nestedNestedItem.map((listItem, listIndex) => (
+                              <li key={`nested-nested-list-item-${listIndex}`}>{listItem}</li>
+                            ))}
+                          </ul>
+                        );
+                      } else {
+                        return <li key={`nested-list-item-${nestedNestedIndex}`}>{nestedNestedItem}</li>;
+                      }
+                    })}
+                  </ul>
+                );
+              } else {
+                return <li key={`list-item-${nestedIndex}`}>{nestedItem}</li>;
+              }
+            })}
           </ul>
         );
       } else {
-        return <p key={`${item}-${index}`}>{item}</p>;
+        return <p key={`item-${index}`}>{item}</p>;
       }
     })}
   </>
