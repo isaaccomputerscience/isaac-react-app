@@ -163,7 +163,7 @@ export const IsaacCompetition = () => {
       <section id="accordion" className="event-section">
         <Container>
           <Row className="py-4">
-            <Col lg={8}>
+            <Col>
               <Accordion sections={accordionSections} open={open} setOpenState={setOpenState} />
             </Col>
           </Row>
