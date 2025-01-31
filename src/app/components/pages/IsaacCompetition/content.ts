@@ -117,12 +117,80 @@ export default {
       ],
     },
     video: {
-      title: "Video entry requirements (Coming Soon)",
-      section: ["", []],
+      title: "Video entry requirements",
+      section: [
+        "Video content requirements:",
+        [
+          "The video must introduce the team or an individual and give an overview of the project outlining the global problem addressed by the IoE device. Introduce yourself using the first names only and the title of your video, if required. Think about how you can stand out and be creative!",
+          "The video must describe the device and its features showcasing a design or prototype.",
+          "The video must explain how the IoE device will improve lives globally.",
+          "If a group Entry is submitted, the video must discuss the collaboration skills and methods used when working on the project. In case of an individual Entry, a student must explain their approach when working on the project.",
+        ],
+        "Video technical requirements:",
+        [
+          "The video must be recorded in a landscape mode if possible.",
+          "The video must have clear audio and video with good lighting.",
+          "The video must be in one of the accepted formats such as MP4, MOV, AVI.",
+          "The video must not include inappropriate content, copyrighted music, or videos.",
+          "If using a PowerPoint presentation for the video, a Student(s) must record a voiceover.",
+          "Name your file with your group name and entry title. For example: NameofGroup_CompetitionEntry.mp4.",
+          "The video and any additional supporting materials must be uploaded to a cloud storage folder (e.g., Google Drive, Dropbox) ensuring that it is accessible by the Organiser for the duration of the Competition.",
+        ],
+        "Supporting Documents",
+        [
+          "While not mandatory, supporting documents can enhance your submission. Consider including:",
+          [
+            "Diagrams or sketches of your device.",
+            "A brief written summary of your project.",
+            "Evidence of research or data that supports your concept.",
+            "Reflections on collaboration and teamwork.",
+          ],
+        ],
+        "Tips for Success",
+        [
+          "Identify a Global Challenge: Consider issues like climate change, health crises, education gaps, or social isolation.",
+          "Innovative Design: Think creatively about how your device can uniquely address the problem.",
+          "Collaboration Skills: Highlight how you worked together as a team, including communication, conflict resolution, and decision-making processes.",
+          "Practice Your Presentation: Rehearse your video to ensure clarity and confidence.",
+        ],
+        "Resources",
+        [
+          "Workshops: Attend any available workshops or information sessions to help refine your ideas.",
+          "Online Resources: Explore websites and articles on IoE technology, design thinking, and teamwork strategies.",
+          "Teacher Support: Work closely with your teacher to guide your project and provide insights.",
+        ],
+        "If you have any questions or run into problems, contact <a href='https://isaaccomputerscience.org/contact?examBoard=all&stage=all'>here</a>. Good luck — we can’t wait to see your video!",
+      ],
     },
     groupEntry: {
-      title: "How to create a group and submit your entry (Coming Soon)",
-      section: ["", []],
+      title: "How to create a group and submit your entry",
+      section: [
+        "How to create a group:",
+        [
+          "Only users with a teacher account can create a group. If you don’t have a teacher account, you can request one when signing up on the platform or through your student account settings. We aim to process all requests as quickly as possible, but it may take up to 5 working days. More information about teacher accounts <a href = 'https://isaaccomputerscience.org/support/teacher/general?amp;stage=all&examBoard=all&stage=all'>here</a>.",
+          "Click on Teachers on the menu bar, then click on <a href = 'https://isaaccomputerscience.org/groups?examBoard=aqa&stage=a_level'>Manage groups</a>",
+          [
+            "Enter a name for your new group. The group name will be shared with your students, so make it useful for them too.",
+            "For a student group entry, the Competition requires each group to consist of 2 to 4 students. If a student is working on the application individually, a teacher must create a separate group for them.",
+            "Click on Create.",
+          ],
+        ],
+        "How to invite students to join a group",
+        [
+          "To invite your students to join a group, click on the 'Invite Users' button on the Manage groups page.",
+          "Choose between a URL or an authentication code to share with the students.",
+          "Find details about <a href='https://isaaccomputerscience.org/support/student/homework?examBoard=aqa&stage=a_level'>how students join groups here</a>. When students use the URL or code, they will be shown your first initial, last name, and email address, and they’ll be asked to confirm they want to share their progress with you.",
+          "We recommend that you access your <a href='https://isaaccomputerscience.org/groups?examBoard=aqa&stage=a_level'>Manage groups</a> page when students first join your group to make sure that they’ve all verified their account email addresses before they log out.",
+        ],
+        "How to submit a Competition entry",
+        [
+          "Teachers are responsible for submitting the work of students on their behalf.",
+          "Go to the entry form and enter your full first and last name. If needed, you can update your name in your account settings.",
+          "In the URL box, provide a link to the cloud storage where your video and any supporting materials are saved. Ensure the link is accessible to the Organiser by setting the correct permissions (e.g., open to anyone with the link).",
+          "From the dropdown, select a group that you created for this competition",
+        ],
+        "If you have any questions or run into problems, contact <a href='https://isaaccomputerscience.org/contact?examBoard=all&stage=all'>here</a>.",
+      ],
     },
     industry: {
       title: "Industry Partners",
@@ -280,7 +348,7 @@ export default {
         ],
         "10. Data Protection",
         [
-          "10.1. We will only process personal data in accordance with Our Privacy Policy and Competition terms.",
+          "10.1. We will only process personal data in accordance with Our <a href='https://isaaccomputerscience.org/privacy?examBoard=all&stage=all'>Privacy Policy</a> and Competition terms.",
           "10.2. Student(s)’s first names and school names may be used in publicity associated with the Competition.",
         ],
         "11. General",

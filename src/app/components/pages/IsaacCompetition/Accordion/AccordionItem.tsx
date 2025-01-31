@@ -17,43 +17,33 @@ const renderSectionContent = (section: NestedStringArray[]) => (
       if (Array.isArray(item)) {
         return (
           <ul key={`list-${index}`}>
-            {item.map((nestedItem, nestedIndex) => {
-              if (Array.isArray(nestedItem)) {
-                return (
-                  <ul key={`nested-list-${nestedIndex}`}>
-                    {nestedItem.map((nestedNestedItem, nestedNestedIndex) => {
-                      if (Array.isArray(nestedNestedItem)) {
-                        return (
-                          <ul key={`nested-nested-list-${nestedNestedIndex}`}>
-                            {nestedNestedItem.map((listItem, listIndex) => (
-                              <li key={`nested-nested-list-item-${listIndex}`}>{listItem}</li>
-                            ))}
-                          </ul>
-                        );
-                      } else {
-                        return <li key={`nested-list-item-${nestedNestedIndex}`}>{nestedNestedItem}</li>;
-                      }
-                    })}
-                  </ul>
-                );
-              } else {
-                return <li key={`list-item-${nestedIndex}`}>{nestedItem}</li>;
-              }
-            })}
+            {item.map((nestedItem, nestedIndex) => (
+              <li key={`nested-list-item-${nestedIndex}`}>
+                {typeof nestedItem === "string" && nestedItem.includes("<a") ? (
+                  <span dangerouslySetInnerHTML={{ __html: nestedItem }} />
+                ) : (
+                  nestedItem
+                )}
+              </li>
+            ))}
           </ul>
         );
       } else {
-        return <p key={`item-${index}`}>{item}</p>;
+        return (
+          <p key={`item-${index}`}>
+            {typeof item === "string" && item.includes("<a") ? (
+              <span dangerouslySetInnerHTML={{ __html: item }} />
+            ) : (
+              item
+            )}
+          </p>
+        );
       }
     })}
   </>
 );
 
-const AccordionItem = memo(({ id, title, section, open, isLast, setOpenState }: AccordionItemProps) => {
-  const toggle = (id: string) => {
-    setOpenState(open === id ? undefined : id);
-  };
-
+const AccordionItem: React.FC<AccordionItemProps> = ({ id, title, section, open, isLast, setOpenState }) => {
   const headerClasses = [
     "accordion-button p-3 m-0 d-flex justify-content-between",
     id === "0" && "rounded-top",
@@ -65,7 +55,7 @@ const AccordionItem = memo(({ id, title, section, open, isLast, setOpenState }: 
 
   return (
     <Card eventKey={id} data-testid="accordion-item">
-      <CardHeader className={headerClasses} onClick={() => toggle(id)}>
+      <CardHeader className={headerClasses} onClick={() => setOpenState(open === id ? undefined : id)}>
         {title}
         {open === id ? (
           <img src={"/assets/chevron_up.svg"} alt="Up Icon" className="p-2" />
@@ -79,8 +69,6 @@ const AccordionItem = memo(({ id, title, section, open, isLast, setOpenState }: 
       </Collapse>
     </Card>
   );
-});
+};
 
-AccordionItem.displayName = "AccordionItem";
-
-export default AccordionItem;
+export default memo(AccordionItem);
