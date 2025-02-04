@@ -13,7 +13,7 @@ const CompetitionButton = ({ buttons }: CompetitionButtonProps) => (
           size="lg"
           tag="a"
           href={to}
-          target="_blank"
+          target="_self"
           rel="noopener noreferrer"
           block
           className="primary-button text-light"
