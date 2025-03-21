@@ -55,7 +55,7 @@ const EntryFormHandler = ({ buttons, handleTermsClick }: EntryFormHandlerProps) 
 
   return (
     <CompetitionWrapper
-      afterEndDateChildren={
+      closedCompetitionContent={
         <Container>
           <Col className="d-flex flex-column align-items-start pb-4 pl-0" xs="auto">
             <p className="pb-3 body-text">{CLOSED_MESSAGE}</p>

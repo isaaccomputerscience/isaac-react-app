@@ -25,7 +25,7 @@ describe("CompetitionWrapper", () => {
   it("renders afterEndDateChildren within 4 weeks after the end date", () => {
     jest.setSystemTime(new Date("2025-04-15T12:00:00")); // Within 4 weeks after the end date
     const { getByText } = render(
-      <CompetitionWrapper afterEndDateChildren={<div>Entries for this competition have now closed</div>}>
+      <CompetitionWrapper closedCompetitionContent={<div>Entries for this competition have now closed</div>}>
         <div>Competition is open</div>
       </CompetitionWrapper>,
     );
@@ -35,7 +35,7 @@ describe("CompetitionWrapper", () => {
   it("renders nothing after 4 weeks from the end date", () => {
     jest.setSystemTime(new Date("2025-05-01T12:00:00")); // After 4 weeks from the end date
     const { queryByText } = render(
-      <CompetitionWrapper afterEndDateChildren={<div>Entries for this competition have now closed</div>}>
+      <CompetitionWrapper closedCompetitionContent={<div>Entries for this competition have now closed</div>}>
         <div>Competition is open</div>
       </CompetitionWrapper>,
     );

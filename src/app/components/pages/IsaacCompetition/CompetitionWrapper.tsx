@@ -1,21 +1,19 @@
 import React from "react";
-
-const endDate = new Date("2025-03-28T16:00:00"); // 4 PM on Friday, March 28, 2025
-const fourWeeksAfterEndDate = new Date(endDate.getTime() + 4 * 7 * 24 * 60 * 60 * 1000); // 4 weeks after end date
+import { isWithinFourWeeksAfterEndDate, isAfterFourWeeksFromEndDate } from "../../pages/IsaacCompetition/dateUtils";
 
 interface CompetitionWrapperProps {
   children: React.ReactNode;
-  afterEndDateChildren?: React.ReactNode;
+  closedCompetitionContent?: React.ReactNode;
 }
 
-const CompetitionWrapper = ({ children, afterEndDateChildren }: CompetitionWrapperProps) => {
+const CompetitionWrapper = ({ children, closedCompetitionContent }: CompetitionWrapperProps) => {
   const currentDate = new Date();
 
-  if (currentDate > endDate && currentDate <= fourWeeksAfterEndDate) {
-    return <>{afterEndDateChildren}</>;
+  if (isWithinFourWeeksAfterEndDate(currentDate)) {
+    return <>{closedCompetitionContent}</>;
   }
 
-  if (currentDate > endDate) {
+  if (isAfterFourWeeksFromEndDate(currentDate)) {
     return null;
   }
 
