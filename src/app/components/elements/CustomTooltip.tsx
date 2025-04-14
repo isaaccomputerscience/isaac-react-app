@@ -11,7 +11,7 @@ interface CustomTooltipProps {
 const CustomTooltip = ({ id, message, placement = "bottom", className }: CustomTooltipProps) => {
   return (
     <>
-      <span id={id} className={`icon-help ml-1 ${className || ""}`} />
+      <span id={id} className={`icon-help ml-1 ${className ?? ""}`} />
       <UncontrolledTooltip target={id} placement={placement}>
         {message}
       </UncontrolledTooltip>
