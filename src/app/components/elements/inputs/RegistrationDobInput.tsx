@@ -55,7 +55,7 @@ export const RegistrationDobInput = ({
             required
             label={
               <>
-                I am at least 13 years old <span className="astrisk">*</span>
+                I am at least 13 years old <span className="asterisk">*</span>
               </>
             }
             disabled={!!userToUpdate.dateOfBirth}

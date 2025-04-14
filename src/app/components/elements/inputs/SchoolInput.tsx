@@ -81,7 +81,7 @@ export const SchoolInput = ({
     <FormGroup className={`school ${className}`}>
       {showLabel && (
         <Label htmlFor="school-input-id">
-          My current school or college <span className="astrisk">*</span>{" "}
+          My current school or college <span className="asterisk">*</span>{" "}
           <CustomTooltip
             id="school-input-id-tooltip"
             message="Please start typing the name of your school or college and select it from the dropdown list. If you are not currently associated with a school or college, check the box below instead."
