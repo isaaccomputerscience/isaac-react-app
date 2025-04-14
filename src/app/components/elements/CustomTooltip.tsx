@@ -8,7 +8,7 @@ interface CustomTooltipProps {
   className?: string;
 }
 
-const CustomTooltip: React.FC<CustomTooltipProps> = ({ id, message, placement = "bottom", className }) => {
+const CustomTooltip = ({ id, message, placement = "bottom", className }: CustomTooltipProps) => {
   return (
     <>
       <span id={id} className={`icon-help ml-1 ${className || ""}`} />
