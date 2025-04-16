@@ -80,7 +80,7 @@ export const SchoolInput = ({
   return (
     <FormGroup className={`school ${className}`}>
       {showLabel && (
-        <Label htmlFor="school-input-id">
+        <Label htmlFor={`school-input-${randomNumber}`}>
           My current school or college <span className="asterisk">*</span>{" "}
           <CustomTooltip
             id="school-input-id-tooltip"

@@ -132,11 +132,6 @@ export const StudentRegistration = () => {
                   setUserToUpdate={setRegistrationUser}
                   submissionAttempted={attemptedSignUp}
                   emailDefault={email}
-                  label={
-                    <>
-                      Email Address <span className="asterisk">*</span>
-                    </>
-                  }
                 />
               </Col>
               <Col md={6}>
@@ -145,11 +140,6 @@ export const StudentRegistration = () => {
                   setUserToUpdate={setRegistrationUser}
                   submissionAttempted={attemptedSignUp}
                   idPrefix="registration"
-                  label={
-                    <>
-                      Gender <span className="asterisk">*</span>
-                    </>
-                  }
                 />
               </Col>
             </Row>

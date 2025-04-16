@@ -10,19 +10,18 @@ interface GenderInputProps {
   setUserToUpdate: (user: Immutable<ValidationUser>) => void;
   submissionAttempted: boolean;
   idPrefix?: string;
-  label?: React.ReactNode;
 }
-
 export const GenderInput = ({
   userToUpdate,
   setUserToUpdate,
   submissionAttempted,
   idPrefix = "account",
-  label,
 }: GenderInputProps) => {
   return (
     <FormGroup>
-      {label && <Label htmlFor={`${idPrefix}-gender-select`}>{label}</Label>}
+      <Label htmlFor={`${idPrefix}-gender-select`}>
+        Gender <span className="asterisk">*</span>
+      </Label>
       <Input
         className="pl-2"
         type="select"

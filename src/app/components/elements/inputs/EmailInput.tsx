@@ -10,7 +10,6 @@ interface EmailInputProps {
   setUserToUpdate: (user: Immutable<ValidationUser>) => void;
   emailDefault?: string;
   teacherRegistration?: true;
-  label?: React.ReactNode;
 }
 
 export const EmailInput = ({
@@ -19,13 +18,14 @@ export const EmailInput = ({
   setUserToUpdate,
   emailDefault,
   teacherRegistration,
-  label,
 }: EmailInputProps) => {
   const emailIsValid = userToUpdate.email && validateEmail(userToUpdate.email);
 
   return (
     <FormGroup>
-      {label && <Label htmlFor="email-input">{label}</Label>}
+      <Label htmlFor="email-input">
+        Email address <span className="asterisk">*</span>
+      </Label>
       <Input
         id="email-input"
         name="email"
