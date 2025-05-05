@@ -354,6 +354,11 @@ describe("EventDetails", () => {
 
     [firstNameInput, familyNameInput, stageInput, examBoardInput].forEach((each) => expect(each).toBeValid());
 
+    const consentCheckbox = screen.getByRole("checkbox", {
+      name: /I agree to provide the/i,
+    });
+    await userEvent.click(consentCheckbox);
+
     const bookNowButton = screen.getByRole("button", { name: "Book now" });
     expect(bookNowButton).toBeEnabled();
   });

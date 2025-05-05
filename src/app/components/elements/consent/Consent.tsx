@@ -9,6 +9,7 @@ interface ConsentProps {
 
 const Consent = ({ consentText, required = true, onConsentChange }: ConsentProps) => {
   const [isChecked, setIsChecked] = useState(false);
+  const inputId = "consent-checkbox"; // Add an ID for the input
 
   const handleCheckboxChange = () => {
     const newCheckedState = !isChecked;
@@ -22,6 +23,9 @@ const Consent = ({ consentText, required = true, onConsentChange }: ConsentProps
     <Row className="mt-2">
       <Col xs="auto" className="d-flex align-items-center">
         <input
+          id={inputId}
+          name="consent"
+          aria-label={consentText}
           className="large-checkbox"
           type="checkbox"
           checked={isChecked}
@@ -32,7 +36,7 @@ const Consent = ({ consentText, required = true, onConsentChange }: ConsentProps
         {required && <span className="asterisk ml-2 text-danger">*</span>}
       </Col>
       <Col>
-        <label>{consentText}</label>
+        <label htmlFor={inputId}>{consentText}</label>
       </Col>
     </Row>
   );
