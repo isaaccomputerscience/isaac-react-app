@@ -29,7 +29,6 @@ import {
   isLoggedIn,
   isTeacherOrAbove,
   KEY,
-  SITE_SUBJECT_TITLE,
   studentOnlyEventMessage,
   userCanBeAddedToEventWaitingList,
   userCanMakeEventBooking,
