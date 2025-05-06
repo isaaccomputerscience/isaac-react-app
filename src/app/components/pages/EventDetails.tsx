@@ -54,7 +54,7 @@ import * as L from "leaflet";
 import ReactGA from "react-ga4";
 import { UserSummaryWithEmailAddressAndGenderDTO } from "../../../IsaacApiTypes";
 import { Immutable } from "immer";
-import Consent from "../elements/consent/Consent";
+import Consent from "../elements/consent/InPersonEventConsent";
 import { consentData } from "../elements/consent/consentData";
 
 interface EventDetailsProps {
