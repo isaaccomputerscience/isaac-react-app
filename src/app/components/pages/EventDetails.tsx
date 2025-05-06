@@ -355,14 +355,6 @@ const EventDetails = ({
 
                               <div>
                                 <p className="my-3">
-                                  {
-                                    "By requesting to book on this event, I also agree to grant event organisers access to the information provided in this form so they can set me pre-event work, view my progress, send event materials, and record my attendance. I understand that my data will be processed in accordance with the  "
-                                  }
-                                  <Link to="/privacy" target="_blank">
-                                    Isaac Computer Science Privacy Policy
-                                  </Link>
-                                  .
-                                  <br />
                                   {"You can manage access to your progress data in your "}
                                   <Link to="/account#emailpreferences" target="_blank">
                                     account settings
