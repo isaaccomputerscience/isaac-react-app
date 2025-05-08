@@ -62,7 +62,7 @@ const Consent = ({ consentText, required = true, onConsentChange }: ConsentProps
       <Col>
         <label htmlFor={inputId}>
           {consentText.map((text, index) => (
-            <React.Fragment key={index}>
+            <React.Fragment key={`consent-${typeof text === "string" ? "text" : "link"}-${index}`}>
               {renderConsentText(text)}
               {index < consentText.length - 1 && <div className="mt-2" />}
             </React.Fragment>
