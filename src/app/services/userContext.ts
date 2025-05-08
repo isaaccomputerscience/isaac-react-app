@@ -7,7 +7,6 @@ import {
   EXAM_BOARDS_CS_GCSE,
   examBoardBooleanNotationMap,
   examBoardLabelMap,
-  history,
   isDefined,
   isLoggedIn,
   PROGRAMMING_LANGUAGE,
@@ -21,11 +20,11 @@ import {
   useQueryParams,
 } from "./";
 import { AudienceContext, ContentBaseDTO, ContentDTO, Role, Stage, UserContext } from "../../IsaacApiTypes";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { AppState, useAppSelector } from "../state";
 import { GameboardContext, PotentialUser, ViewingContext } from "../../IsaacAppTypes";
-import queryString from "query-string";
-import { useContext, useEffect } from "react";
+
+import { useContext } from "react";
 import { Immutable } from "immer";
 
 export interface UseUserContextReturnType {
@@ -41,7 +40,6 @@ const urlMessage = "URL query parameters";
 const gameboardMessage = "gameboard settings";
 
 export function useUserContext(): UseUserContextReturnType {
-  const existingLocation = useLocation();
   const queryParams = useQueryParams(true);
 
   const user = useAppSelector((state: AppState) => state && state.user);
