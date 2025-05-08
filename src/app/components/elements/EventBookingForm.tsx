@@ -120,7 +120,7 @@ export const AccessibilityAndDietaryRequirements = ({
               id={`${id}-reqs`}
               name={`${id}-reqs`}
               type="text"
-              value={additionalInformation[type] || ""}
+              value={String(additionalInformation[type] || "")}
               onChange={(event) => updateAdditionalInformation({ [`${type}`]: event.target.value })}
             />
           </div>

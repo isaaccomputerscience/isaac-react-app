@@ -81,6 +81,7 @@ const EventDetails = ({
 
   const handleConsentChange = (checked: boolean) => {
     setIsConsentChecked(checked);
+    updateAdditionalInformation({ consentGranted: checked });
   };
 
   const [bookingFormOpen, setBookingFormOpen] = useState(false);

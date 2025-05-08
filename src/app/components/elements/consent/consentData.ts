@@ -5,7 +5,7 @@ export const consentData = {
       {
         beforeLink:
           "By requesting to book on this event, I also agree to grant event organisers access to the information provided in this form so they can set me pre-event work, view my progress, send event materials, and record my attendance. I understand that my data will be processed in accordance with the ",
-        linkText: "Isaac Computer Science Privacy Policy",
+        linkText: "Privacy Policy",
         afterLink: ".",
       },
     ],
