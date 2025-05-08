@@ -43,7 +43,7 @@ const Consent = ({ consentText, required = true, onConsentChange }: ConsentProps
 
   return (
     <Row className="mt-2">
-      <Col xs="auto" className="d-flex align-items-center">
+      <Col xs="auto" className="d-flex pt-4">
         <input
           id={inputId}
           name="consent"
