@@ -52,6 +52,32 @@ describe("EventDetails", () => {
     await userEvent.click(eventCardViewDetails);
   };
 
+  //Helper function to setup the virtual or in-person booking form
+  // Check if the consent checkbox and book now button are valid
+  const setupBookingForm = async (isVirtual: boolean) => {
+    const event = {
+      ...mockEvent,
+      placesAvailable: 10,
+      tags: isVirtual ? ["virtual"] : ["student"],
+    };
+    await setupTest({ role: "STUDENT", event });
+
+    const bookButton = screen.getByRole("button", { name: "Book a place" });
+    await userEvent.click(bookButton);
+
+    const firstNameInput = screen.getByRole("textbox", { name: "First name" });
+    const familyNameInput = screen.getByRole("textbox", { name: "Last name" });
+    const stageInput = screen.getByRole("textbox", { name: "Stage" });
+    const examBoardInput = screen.getByRole("textbox", { name: "Exam board" });
+
+    [firstNameInput, familyNameInput, stageInput, examBoardInput].forEach((each) => expect(each).toBeValid());
+
+    return {
+      consentCheckbox: screen.getByRole("checkbox", { name: "Consent checkbox for event registration" }),
+      bookNowButton: screen.getByRole("button", { name: "Book now" }),
+    };
+  };
+
   it("renders without crashing", async () => {
     await setupTest({ role: "STUDENT", event: mockEvent });
     checkPageTitle(mockEvent.title!);
@@ -343,58 +369,15 @@ describe("EventDetails", () => {
   it.each([{ isVirtual: false }])(
     "if details are present, 'book now' button should be valid for $isVirtual events",
     async ({ isVirtual }) => {
-      const event = {
-        ...mockEvent,
-        placesAvailable: 10,
-        // student means inperson events, as reflected within the codebase
-        tags: isVirtual ? ["virtual"] : ["student"],
-      };
-      await setupTest({ role: "STUDENT", event });
-
-      const bookButton = screen.getByRole("button", { name: "Book a place" });
-      await userEvent.click(bookButton);
-
-      const firstNameInput = screen.getByRole("textbox", { name: "First name" });
-      const familyNameInput = screen.getByRole("textbox", { name: "Last name" });
-      const stageInput = screen.getByRole("textbox", { name: "Stage" });
-      const examBoardInput = screen.getByRole("textbox", { name: "Exam board" });
-
-      [firstNameInput, familyNameInput, stageInput, examBoardInput].forEach((each) => expect(each).toBeValid());
-
-      const consentCheckbox = screen.getByRole("checkbox", {
-        name: "Consent checkbox for event registration",
-      });
+      const { consentCheckbox, bookNowButton } = await setupBookingForm(isVirtual);
       await userEvent.click(consentCheckbox);
-
-      const bookNowButton = screen.getByRole("button", { name: "Book now" });
       expect(bookNowButton).toBeEnabled();
     },
   );
 
   it("'book now' button should remain disabled for in-person events when consent is not checked", async () => {
-    const event = {
-      ...mockEvent,
-      placesAvailable: 10,
-      tags: ["student"], // in-person event
-    };
-    await setupTest({ role: "STUDENT", event });
-
-    const bookButton = screen.getByRole("button", { name: "Book a place" });
-    await userEvent.click(bookButton);
-
-    const firstNameInput = screen.getByRole("textbox", { name: "First name" });
-    const familyNameInput = screen.getByRole("textbox", { name: "Last name" });
-    const stageInput = screen.getByRole("textbox", { name: "Stage" });
-    const examBoardInput = screen.getByRole("textbox", { name: "Exam board" });
-
-    [firstNameInput, familyNameInput, stageInput, examBoardInput].forEach((each) => expect(each).toBeValid());
-
-    const consentCheckbox = screen.getByRole("checkbox", {
-      name: "Consent checkbox for event registration",
-    });
+    const { consentCheckbox, bookNowButton } = await setupBookingForm(false);
     expect(consentCheckbox).not.toBeChecked();
-
-    const bookNowButton = screen.getByRole("button", { name: "Book now" });
     expect(bookNowButton).toBeDisabled();
   });
 });
