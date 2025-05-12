@@ -340,12 +340,13 @@ describe("EventDetails", () => {
     expect(bookNowButton).toBeDisabled();
   });
 
-  it.each([{ isVirtual: false, consentText: /I agree to provide the/i }])(
+  it.each([{ isVirtual: false }])(
     "if details are present, 'book now' button should be valid for $isVirtual events",
-    async ({ isVirtual, consentText }) => {
+    async ({ isVirtual }) => {
       const event = {
         ...mockEvent,
         placesAvailable: 10,
+        // student means inperson events, as reflected within the codebase
         tags: isVirtual ? ["virtual"] : ["student"],
       };
       await setupTest({ role: "STUDENT", event });
@@ -361,7 +362,7 @@ describe("EventDetails", () => {
       [firstNameInput, familyNameInput, stageInput, examBoardInput].forEach((each) => expect(each).toBeValid());
 
       const consentCheckbox = screen.getByRole("checkbox", {
-        name: consentText,
+        name: "Consent checkbox for event registration",
       });
       await userEvent.click(consentCheckbox);
 
@@ -369,4 +370,31 @@ describe("EventDetails", () => {
       expect(bookNowButton).toBeEnabled();
     },
   );
+
+  it("'book now' button should remain disabled for in-person events when consent is not checked", async () => {
+    const event = {
+      ...mockEvent,
+      placesAvailable: 10,
+      tags: ["student"], // in-person event
+    };
+    await setupTest({ role: "STUDENT", event });
+
+    const bookButton = screen.getByRole("button", { name: "Book a place" });
+    await userEvent.click(bookButton);
+
+    const firstNameInput = screen.getByRole("textbox", { name: "First name" });
+    const familyNameInput = screen.getByRole("textbox", { name: "Last name" });
+    const stageInput = screen.getByRole("textbox", { name: "Stage" });
+    const examBoardInput = screen.getByRole("textbox", { name: "Exam board" });
+
+    [firstNameInput, familyNameInput, stageInput, examBoardInput].forEach((each) => expect(each).toBeValid());
+
+    const consentCheckbox = screen.getByRole("checkbox", {
+      name: "Consent checkbox for event registration",
+    });
+    expect(consentCheckbox).not.toBeChecked();
+
+    const bookNowButton = screen.getByRole("button", { name: "Book now" });
+    expect(bookNowButton).toBeDisabled();
+  });
 });

@@ -50,9 +50,7 @@ const Consent = ({ consentText, required = true, onConsentChange }: ConsentProps
         <input
           id={inputId}
           name="consent"
-          aria-label={consentText
-            .map((text) => (typeof text === "string" ? text : `${text.beforeLink}${text.linkText}${text.afterLink}`))
-            .join(" ")}
+          aria-label="Consent checkbox for event registration"
           className="large-checkbox"
           type="checkbox"
           checked={isChecked}
