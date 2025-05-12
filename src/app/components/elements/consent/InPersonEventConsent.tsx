@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { Col, Row } from "reactstrap";
 import { Link } from "react-router-dom";
 
+//Props for the Consent component
+// This component is used to display a consent checkbox with customisable text
+//The text contains beforeLink, linkText, and afterLink properties
 interface ConsentText {
   beforeLink: string;
   linkText: string;

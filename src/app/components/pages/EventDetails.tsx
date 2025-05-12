@@ -403,7 +403,8 @@ const EventDetails = ({
                                 <Input
                                   type="submit"
                                   value={formatBookingModalConfirmMessage(event, canMakeABooking)}
-                                  disabled={!isUserInfoValid(user) || !isConsentChecked}
+                                  // Only check consent for in-person events, always check user info validity
+                                  disabled={!isUserInfoValid(user) || (!isVirtual && !isConsentChecked)}
                                   className="btn btn-xl btn-secondary border-0"
                                 />
                               </div>
@@ -457,6 +458,7 @@ const EventDetails = ({
                               outline
                               onClick={() => {
                                 dispatch(cancelMyBooking(eventId)).then(() => {
+                                  //setIsConsentChecked set to false to ensure that the user has to re-consent if they want to book again
                                   setIsConsentChecked(false);
                                   setBookingFormOpen(false);
                                 });
