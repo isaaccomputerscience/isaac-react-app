@@ -198,6 +198,7 @@ export const Events = withRouter(({ history, location }: RouteComponentProps) =>
                             return eventBDate - eventADate;
                           }
 
+                          // If both events are current, put the one with the latest date first
                           return eventADate - eventBDate;
                         })
                       : events
