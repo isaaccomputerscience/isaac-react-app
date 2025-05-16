@@ -192,6 +192,12 @@ export const Events = withRouter(({ history, location }: RouteComponentProps) =>
                           if (eventAPastOrCancelled && eventBPastOrCancelled) {
                             return eventBDate - eventADate;
                           }
+
+                          // If one event is cancelled or past and other is current event, put past event to the bottom
+                          if (eventAPastOrCancelled || eventBPastOrCancelled) {
+                            return eventBDate - eventADate;
+                          }
+
                           return eventADate - eventBDate;
                         })
                       : events
