@@ -356,13 +356,11 @@ const EventDetails = ({
                                     onConsentChange={handleConsentChange}
                                   />
                                 ) : (
-                                  <>
-                                    <EventConsent
-                                      consentText={InPersonEventConsent}
-                                      required={true}
-                                      onConsentChange={handleConsentChange}
-                                    />
-                                  </>
+                                  <EventConsent
+                                    consentText={InPersonEventConsent}
+                                    required={true}
+                                    onConsentChange={handleConsentChange}
+                                  />
                                 )}
                                 <p className="mt-2">
                                   You can manage access to your progress data in your{" "}
