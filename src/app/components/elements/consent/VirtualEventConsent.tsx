@@ -2,9 +2,6 @@ import React, { useState } from "react";
 import { Col, Row } from "reactstrap";
 import { Link } from "react-router-dom";
 
-//Props for the Consent component
-// This component is used to display a consent checkbox with customisable text
-//The text contains beforeLink, linkText, and afterLink properties
 interface ConsentText {
   beforeLink: string;
   linkText: string;
@@ -17,9 +14,9 @@ interface ConsentProps {
   onConsentChange?: (checked: boolean) => void;
 }
 
-const InPersonConsent = ({ consentText, required = true, onConsentChange }: ConsentProps) => {
+const VirtualConsent = ({ consentText, required = true, onConsentChange }: ConsentProps) => {
   const [isChecked, setIsChecked] = useState(false);
-  const inputId = "consent-checkbox";
+  const inputId = "virtual-consent-checkbox";
 
   const handleCheckboxChange = () => {
     const newCheckedState = !isChecked;
@@ -36,7 +33,7 @@ const InPersonConsent = ({ consentText, required = true, onConsentChange }: Cons
     return (
       <>
         {text.beforeLink}
-        <Link to="/privacy" target="_blank">
+        <Link to="/account-settings" target="_blank">
           {text.linkText}
         </Link>
         {text.afterLink}
@@ -50,7 +47,7 @@ const InPersonConsent = ({ consentText, required = true, onConsentChange }: Cons
         <input
           id={inputId}
           name="consent"
-          aria-label="Consent checkbox for event registration"
+          aria-label="Consent checkbox for virtual event registration"
           className="large-checkbox"
           type="checkbox"
           checked={isChecked}
@@ -74,4 +71,4 @@ const InPersonConsent = ({ consentText, required = true, onConsentChange }: Cons
   );
 };
 
-export default InPersonConsent;
+export default VirtualConsent;
