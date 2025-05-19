@@ -874,6 +874,44 @@ export const mockEventBooking: DetailedEventBookingDTO = {
   updated: 1695897589235,
 };
 
+// Add these after the existing mockEvent definition
+
+export const mockEventsForSortingMyBookedEvents = {
+  currentDate: new Date().getTime(),
+  events: [
+    {
+      id: "future_event_1",
+      title: "Future Event 1",
+      date: new Date().getTime() + 24 * 60 * 60 * 1000, // 1 day in future
+      isCancelled: false,
+    },
+    {
+      id: "future_event_2",
+      title: "Future Event 2",
+      date: new Date().getTime() + 2 * 24 * 60 * 60 * 1000, // 2 days in future
+      isCancelled: false,
+    },
+    {
+      id: "past_event_1",
+      title: "Past Event 1",
+      date: new Date().getTime() - 24 * 60 * 60 * 1000, // 1 day ago
+      isCancelled: false,
+    },
+    {
+      id: "past_event_2",
+      title: "Past Event 2",
+      date: new Date().getTime() - 2 * 24 * 60 * 60 * 1000, // 2 days ago
+      isCancelled: false,
+    },
+    {
+      id: "cancelled_event",
+      title: "Cancelled Event",
+      date: new Date().getTime() + 24 * 60 * 60 * 1000, // 1 day in future
+      isCancelled: true,
+    },
+  ],
+};
+
 export const mockEvent: IsaacEventPageDTO = {
   id: "example_event",
   title: "Example Event",
