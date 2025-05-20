@@ -18,6 +18,7 @@ import { registrationMockUser, registrationUserData } from "../../mocks/data";
 
 const registerUserSpy = jest.spyOn(actions, "registerUser");
 const upgradeAccountSpy = jest.spyOn(actions, "upgradeAccount");
+const consentCheckbox = screen.getByRole("checkbox", { name: "Consent checkbox" });
 
 const confirmTeacherAndAcceptTerms = async () => {
   await clickButton("Yes, I am a teacher");
@@ -154,6 +155,7 @@ describe("Teacher Registration", () => {
     renderTeacherRegistration();
     await confirmTeacherAndAcceptTerms();
     await fillFormCorrectly(true, "teacher");
+    await userEvent.click(consentCheckbox);
     await clickButton("Register my account");
     expect(registerUserSpy).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -191,6 +193,7 @@ describe("Teacher Registration", () => {
     renderTeacherRegistration();
     await confirmTeacherAndAcceptTerms();
     await fillFormCorrectly(true, "teacher");
+    await userEvent.click(consentCheckbox);
     await clickButton("Register my account");
     const newPage = location.pathname;
     expect(newPage).toBe("/register/success");

@@ -8,6 +8,7 @@ import { API_PATH } from "../../app/services";
 import { registrationMockUser, registrationUserData } from "../../mocks/data";
 
 const registerUserSpy = jest.spyOn(actions, "registerUser");
+const consentCheckbox = screen.getByRole("checkbox", { name: "Consent checkbox" });
 
 const checkPasswordInputTypes = (expectedType: string) => {
   const formFields = getFormFields();
@@ -132,6 +133,7 @@ describe("Student Registration", () => {
     const formFields = getFormFields();
     const { submitButton, recaptcha } = formFields;
     expect(submitButton()).toBeDisabled();
+    await userEvent.click(consentCheckbox);
     await userEvent.click(recaptcha());
     expect(submitButton()).toBeEnabled();
   });
