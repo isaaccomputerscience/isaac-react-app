@@ -54,7 +54,7 @@ const Consent = ({ consentText, required = true, onConsentChange }: ConsentProps
         <input
           id={inputId}
           name="consent"
-          aria-label="Consent checkbox for event registration"
+          aria-label="Consent checkbox"
           className="large-checkbox"
           type="checkbox"
           checked={isChecked}
