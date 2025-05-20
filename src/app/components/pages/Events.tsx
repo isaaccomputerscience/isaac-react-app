@@ -25,6 +25,7 @@ import { RenderNothing } from "../elements/RenderNothing";
 import { MetaDescription } from "../elements/MetaDescription";
 import { Banner } from "../elements/panels/Banner";
 import { Button, Container, Form, Input, Label, Row } from "reactstrap";
+import { AugmentedEvent } from "../../../IsaacAppTypes";
 
 interface EventsPageQueryParams {
   show_booked_only?: boolean;
@@ -35,6 +36,30 @@ interface EventsPageQueryParams {
 }
 
 const EVENTS_PER_PAGE = 6;
+
+const sortBookedEvents = (events: AugmentedEvent[]): AugmentedEvent[] => {
+  return events.sort((a, b): number => {
+    const currentDate = new Date().getTime();
+    const eventADate = a.date ? new Date(a.date).getTime() : 0;
+    const eventBDate = b.date ? new Date(b.date).getTime() : 0;
+
+    const eventAPastOrCancelled = a.isCancelled ?? eventADate < currentDate;
+    const eventBPastOrCancelled = b.isCancelled ?? eventBDate < currentDate;
+
+    // If both events are cancelled or past
+    if (eventAPastOrCancelled && eventBPastOrCancelled) {
+      return eventBDate - eventADate;
+    }
+
+    // If one event is cancelled or past and other is current event, put past event to the bottom
+    if (eventAPastOrCancelled || eventBPastOrCancelled) {
+      return eventBDate - eventADate;
+    }
+
+    // If both events are current, put the one with the latest date first
+    return eventADate - eventBDate;
+  });
+};
 
 const TeacherEventsDescription = () => (
   <div className="text-left">
@@ -163,34 +188,13 @@ export const Events = withRouter(({ history, location }: RouteComponentProps) =>
               thenRender={({ events, total }) => (
                 <div className="my-4">
                   <Row>
-                    {(statusFilter === EventStatusFilter["My booked events"]
-                      ? events.sort((a, b): number => {
-                          const currentDate = new Date().getTime();
-                          const eventADate = a.date ? new Date(a.date).getTime() : 0;
-                          const eventBDate = b.date ? new Date(b.date).getTime() : 0;
-
-                          const eventAPastOrCancelled = a.isCancelled ?? eventADate < currentDate;
-                          const eventBPastOrCancelled = b.isCancelled ?? eventBDate < currentDate;
-
-                          // If both events are cancelled or past
-                          if (eventAPastOrCancelled && eventBPastOrCancelled) {
-                            return eventBDate - eventADate;
-                          }
-
-                          // If one event is cancelled or past and other is current event, put past event to the bottom
-                          if (eventAPastOrCancelled || eventBPastOrCancelled) {
-                            return eventBDate - eventADate;
-                          }
-
-                          // If both events are current, put the one with the latest date first
-                          return eventADate - eventBDate;
-                        })
-                      : events
-                    ).map((event) => (
-                      <div key={event.id} className="col-xs-12 col-sm-6 col-md-4 d-flex">
-                        <EventCard event={event} />
-                      </div>
-                    ))}
+                    {(statusFilter === EventStatusFilter["My booked events"] ? sortBookedEvents(events) : events).map(
+                      (event) => (
+                        <div key={event.id} className="col-xs-12 col-sm-6 col-md-4 d-flex">
+                          <EventCard event={event} />
+                        </div>
+                      ),
+                    )}
                   </Row>
 
                   {/* Load More Button */}
