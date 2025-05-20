@@ -1,15 +1,12 @@
-import { renderTestEnvironment } from "../utils";
+import { renderTestEnvironment, DAYS_AGO, DAYS_IN_FUTURE } from "../utils";
 import { screen, within } from "@testing-library/react";
-// import { EventStatusFilter } from "../../app/services";
 
 import { rest } from "msw";
 import { API_PATH } from "../../app/services";
 import { IsaacEventPageDTO } from "../../IsaacApiTypes";
-import { DAYS_AGO, DAYS_IN_FUTURE } from "../utils";
 
 // Helper functions
 const getEventCards = () => screen.getAllByTestId("event-card");
-// const getEventDate = (card: HTMLElement) => within(card).getByTestId("event-card-date");
 const getEventTitle = (card: HTMLElement) => within(card).getByTestId("event-card-title");
 const getCancelledBadge = (card: HTMLElement) => within(card).queryByText("Cancelled");
 
