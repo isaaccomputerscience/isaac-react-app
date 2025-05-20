@@ -8,7 +8,6 @@ import { API_PATH } from "../../app/services";
 import { registrationMockUser, registrationUserData } from "../../mocks/data";
 
 const registerUserSpy = jest.spyOn(actions, "registerUser");
-const consentCheckbox = screen.getByRole("checkbox", { name: "Consent checkbox" });
 
 const checkPasswordInputTypes = (expectedType: string) => {
   const formFields = getFormFields();
@@ -80,6 +79,8 @@ describe("Student Registration", () => {
   it("displays error messages if fields are filled in wrong", async () => {
     renderStudentRegistration();
     await fillFormCorrectly(false, "student");
+    const consentCheckbox = screen.getByRole("checkbox", { name: "Consent checkbox" });
+    await userEvent.click(consentCheckbox);
     await clickButton("Register my account");
     const pwErrorMessage = screen.getByText(/Passwords must be at least 12 characters/i);
     expect(pwErrorMessage).toBeVisible();
@@ -92,6 +93,8 @@ describe("Student Registration", () => {
   it("attempts to create a user when submit is pressed, if fields are filled in correctly", async () => {
     renderStudentRegistration();
     await fillFormCorrectly(true, "student");
+    const consentCheckbox = screen.getByRole("checkbox", { name: "Consent checkbox" });
+    await userEvent.click(consentCheckbox);
     await clickButton("Register my account");
 
     expect(registerUserSpy).toHaveBeenCalledWith(
@@ -122,6 +125,8 @@ describe("Student Registration", () => {
   it("redirects to registration success page after form submission", async () => {
     renderStudentRegistration();
     await fillFormCorrectly(true, "student");
+    const consentCheckbox = screen.getByRole("checkbox", { name: "Consent checkbox" });
+    await userEvent.click(consentCheckbox);
     await clickButton("Register my account");
     const newPage = location.pathname;
     expect(newPage).toBe("/register/success");
@@ -133,6 +138,7 @@ describe("Student Registration", () => {
     const formFields = getFormFields();
     const { submitButton, recaptcha } = formFields;
     expect(submitButton()).toBeDisabled();
+    const consentCheckbox = screen.getByRole("checkbox", { name: "Consent checkbox" });
     await userEvent.click(consentCheckbox);
     await userEvent.click(recaptcha());
     expect(submitButton()).toBeEnabled();

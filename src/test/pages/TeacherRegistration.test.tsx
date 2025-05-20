@@ -18,7 +18,6 @@ import { registrationMockUser, registrationUserData } from "../../mocks/data";
 
 const registerUserSpy = jest.spyOn(actions, "registerUser");
 const upgradeAccountSpy = jest.spyOn(actions, "upgradeAccount");
-const consentCheckbox = screen.getByRole("checkbox", { name: "Consent checkbox" });
 
 const confirmTeacherAndAcceptTerms = async () => {
   await clickButton("Yes, I am a teacher");
@@ -133,6 +132,8 @@ describe("Teacher Registration", () => {
     expect(newPwErrorMessage).toBeVisible();
     // update PW to meet requirements and try to submit, observe error messages for school, stage and email address
     await fillTextField(password(), registrationUserData.password);
+    const consentCheckbox = screen.getByRole("checkbox", { name: "Consent checkbox" });
+    await userEvent.click(consentCheckbox);
     await clickButton("Register my account");
     const schoolErrorMessage = screen.getByText(/Please specify a school or college/i);
     const stageErrorMessage = getById("user-context-feedback");
@@ -155,6 +156,7 @@ describe("Teacher Registration", () => {
     renderTeacherRegistration();
     await confirmTeacherAndAcceptTerms();
     await fillFormCorrectly(true, "teacher");
+    const consentCheckbox = screen.getByRole("checkbox", { name: "Consent checkbox" });
     await userEvent.click(consentCheckbox);
     await clickButton("Register my account");
     expect(registerUserSpy).toHaveBeenCalledWith(
@@ -193,6 +195,7 @@ describe("Teacher Registration", () => {
     renderTeacherRegistration();
     await confirmTeacherAndAcceptTerms();
     await fillFormCorrectly(true, "teacher");
+    const consentCheckbox = screen.getByRole("checkbox", { name: "Consent checkbox" });
     await userEvent.click(consentCheckbox);
     await clickButton("Register my account");
     const newPage = location.pathname;
