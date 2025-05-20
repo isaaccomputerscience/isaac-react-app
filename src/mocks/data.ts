@@ -7,8 +7,6 @@ import {
   DetailedEventBookingDTO,
 } from "../IsaacApiTypes";
 
-const addDays = (days: number) => new Date(Date.now() + days * 24 * 60 * 60 * 1000).getTime();
-
 export const mockRandomQuestions = [
   {
     id: "question_01",
