@@ -874,8 +874,6 @@ export const mockEventBooking: DetailedEventBookingDTO = {
   updated: 1695897589235,
 };
 
-// Add these after the existing mockEvent definition
-
 export const mockEvent: IsaacEventPageDTO = {
   id: "example_event",
   title: "Example Event",
