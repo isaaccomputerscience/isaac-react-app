@@ -101,8 +101,8 @@ describe("Events sorting", () => {
       const eventCards = getEventCards();
 
       expect(getEventTitle(eventCards[0])).toHaveTextContent("Future Event");
-      expect(getEventTitle(eventCards[1])).toHaveTextContent("Past Event 1");
-      expect(getEventTitle(eventCards[2])).toHaveTextContent("Past Event 2");
+      expect(getEventTitle(eventCards[1])).toHaveTextContent("Past Event 2");
+      expect(getEventTitle(eventCards[2])).toHaveTextContent("Past Event 1");
     });
 
     it.each([
