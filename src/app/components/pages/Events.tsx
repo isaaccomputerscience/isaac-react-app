@@ -43,8 +43,8 @@ const sortBookedEvents = (events: AugmentedEvent[]): AugmentedEvent[] => {
     const eventADate = a.date ? new Date(a.date).getTime() : 0;
     const eventBDate = b.date ? new Date(b.date).getTime() : 0;
 
-    const eventAPastOrCancelled = a.isCancelled ?? eventADate < currentDate;
-    const eventBPastOrCancelled = b.isCancelled ?? eventBDate < currentDate;
+    const eventAPastOrCancelled = Boolean(a.isCancelled) || eventADate < currentDate;
+    const eventBPastOrCancelled = Boolean(b.isCancelled) || eventBDate < currentDate;
 
     // If both events are cancelled or past
     if (eventAPastOrCancelled && eventBPastOrCancelled) {
