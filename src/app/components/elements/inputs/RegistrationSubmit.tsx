@@ -29,6 +29,7 @@ export const RegistrationSubmit: React.FC<RegistrationSubmitProps> = ({ isRecapt
           <Input
             type="submit"
             value="Register my account"
+            //Button is disabled if recaptcha is not ticked and consent is not given
             disabled={!isRecaptchaTicked || !isConsented}
             className="btn btn-block btn-secondary border-0"
           />
