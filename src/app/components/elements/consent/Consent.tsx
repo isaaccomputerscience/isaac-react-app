@@ -40,7 +40,7 @@ const Consent = ({ consentText, required = true, onConsentChange }: ConsentProps
     return (
       <>
         {text.beforeLink}
-        <Link to={text.linkTo ?? "/privacy"} target="_blank">
+        <Link to={text.linkTo ? text.linkTo : "/privacy"} target="_blank">
           {text.linkText}
         </Link>
         {text.afterLink}
