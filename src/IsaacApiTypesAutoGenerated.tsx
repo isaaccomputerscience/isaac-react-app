@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2024-12-23 12:45:08.
+// Generated using typescript-generator version 3.2.1263 on 2025-06-11 15:44:03.
 
 export interface AssignmentDTO extends IAssignmentLike {
   gameboardId?: string;
@@ -114,6 +114,7 @@ export interface IsaacEventPageDTO extends ContentDTO {
   publicationDate?: EpochTimeStamp;
   preResources?: ExternalReference[];
   postResources?: ExternalReference[];
+  eventSurveyTitle?: string;
   eventSurvey?: string;
   EventStatus?: EventStatus;
 }
@@ -489,6 +490,7 @@ export interface VideoDTO extends MediaDTO {
 export interface CompetitionEntryDTO {
   entrantIds?: number[];
   submissionURL?: string;
+  groupName?: string;
 }
 
 export interface DetailedEventBookingDTO extends EventBookingDTO {
@@ -595,9 +597,9 @@ export interface UserSummaryWithGroupMembershipDTO extends UserSummaryDTO {
 export interface IAssignmentLike {
   id?: number;
   creationDate?: EpochTimeStamp;
+  groupId?: number;
   ownerUserId?: number;
   dueDate?: EpochTimeStamp;
-  groupId?: number;
 }
 
 export interface GameboardItem {

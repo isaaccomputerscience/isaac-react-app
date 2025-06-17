@@ -29,7 +29,6 @@ import {
   isLoggedIn,
   isTeacherOrAbove,
   KEY,
-  SITE_SUBJECT_TITLE,
   studentOnlyEventMessage,
   userCanBeAddedToEventWaitingList,
   userCanMakeEventBooking,
@@ -55,11 +54,15 @@ import * as L from "leaflet";
 import ReactGA from "react-ga4";
 import { UserSummaryWithEmailAddressAndGenderDTO } from "../../../IsaacApiTypes";
 import { Immutable } from "immer";
+import Consent from "../elements/consent/Consent";
+import { consentData } from "../elements/consent/consentData";
 
 interface EventDetailsProps {
   match: { params: { eventId: string } };
   location: { pathname: string };
 }
+
+const { InPersonEventConsent, VirtualEventConsent } = consentData.consent;
 
 const EventDetails = ({
   match: {
@@ -73,6 +76,13 @@ const EventDetails = ({
   useEffect(() => {
     dispatch(getEvent(eventId));
   }, [dispatch, eventId]);
+
+  const [isConsentChecked, setIsConsentChecked] = useState(false);
+
+  const handleConsentChange = (checked: boolean) => {
+    setIsConsentChecked(checked);
+    updateAdditionalInformation({ consentGranted: checked });
+  };
 
   const [bookingFormOpen, setBookingFormOpen] = useState(false);
   const [additionalInformation, setAdditionalInformation] = useState<AdditionalInformation>({});
@@ -337,41 +347,42 @@ const EventDetails = ({
                                 additionalInformation={additionalInformation}
                                 updateAdditionalInformation={updateAdditionalInformation}
                               />
-                              <div>
-                                <p className="mb-3">
-                                  <small>
-                                    {
-                                      "By requesting to book on this event, you are granting event organisers access to the information provided in the form above. You are also giving them permission to set you pre-event work and view your progress. You can manage access to your progress data in your "
-                                    }
-                                    <Link to="/account#teacherconnections" target="_blank">
-                                      account settings
-                                    </Link>
-                                    .
-                                    <br />
-                                    {`Your data will be processed in accordance with Isaac ${SITE_SUBJECT_TITLE}'s `}
-                                    <Link to="/privacy" target="_blank">
-                                      privacy policy
-                                    </Link>
-                                    .
-                                    <br />
-                                    {
-                                      "If you have unsubscribed from assignment email notifications you may miss out on pre-work set for the event. You can enable this in your "
-                                    }
-                                    <Link to="/account#emailpreferences" target="_blank">
-                                      account settings
-                                    </Link>
-                                    .
-                                  </small>
-                                </p>
 
-                                <div className="text-center mt-4 mb-2">
-                                  <Input
-                                    type="submit"
-                                    value={formatBookingModalConfirmMessage(event, canMakeABooking)}
-                                    disabled={!isUserInfoValid(user)}
-                                    className="btn btn-xl btn-secondary border-0"
+                              <div className="mb-3">
+                                {isVirtual ? (
+                                  <Consent
+                                    consentText={VirtualEventConsent}
+                                    required={true}
+                                    onConsentChange={handleConsentChange}
                                   />
-                                </div>
+                                ) : (
+                                  <Consent
+                                    consentText={InPersonEventConsent}
+                                    required={true}
+                                    onConsentChange={handleConsentChange}
+                                  />
+                                )}
+                                <p className="mt-2">
+                                  You can manage access to your progress data in your{" "}
+                                  <Link to="/account#emailpreferences" target="_blank">
+                                    account settings
+                                  </Link>
+                                  . If you have unsubscribed from assignment email notifications, you may miss out on
+                                  pre-work set for the event. You can enable this in your{" "}
+                                  <Link to="/account#emailpreferences" target="_blank">
+                                    account settings
+                                  </Link>
+                                  .
+                                </p>
+                              </div>
+
+                              <div className="text-center mt-4 mb-2">
+                                <Input
+                                  type="submit"
+                                  value={formatBookingModalConfirmMessage(event, canMakeABooking)}
+                                  disabled={!isUserInfoValid(user) || !isConsentChecked}
+                                  className="btn btn-xl btn-secondary border-0"
+                                />
                               </div>
                             </Form>
                           </CardBody>
@@ -422,7 +433,11 @@ const EventDetails = ({
                               color="primary"
                               outline
                               onClick={() => {
-                                dispatch(cancelMyBooking(eventId));
+                                dispatch(cancelMyBooking(eventId)).then(() => {
+                                  //setIsConsentChecked set to false to ensure that the user has to re-consent if they want to book again
+                                  setIsConsentChecked(false);
+                                  setBookingFormOpen(false);
+                                });
                               }}
                             >
                               {formatCancelBookingButtonMessage(event)}
