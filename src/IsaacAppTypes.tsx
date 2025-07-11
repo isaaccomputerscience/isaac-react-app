@@ -507,6 +507,7 @@ export interface ActiveModal {
   body: any;
   buttons?: any[];
   overflowVisible?: boolean;
+  isCloseable?: boolean;
 }
 
 export enum BoardOrder {
