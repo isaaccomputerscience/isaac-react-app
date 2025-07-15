@@ -21,6 +21,8 @@ import { requiredAccountInformationModal } from "../../components/elements/modal
 import { emailConfirmationModal } from "../../components/elements/modals/EmailConfirmationModal";
 import { loginOrSignUpModal } from "../../components/elements/modals/LoginOrSignUpModal";
 import { userContextReconfirmationModal } from "../../components/elements/modals/UserContextReconfirmationModal";
+import { policyUpdateModal } from "../../components/elements/modals/PolicyUpdateModal";
+import { POLICY_UPDATE_TIME } from "../../components/elements/modals/inequality/constants";
 
 export const notificationCheckerMiddleware: Middleware =
   (middlewareApi: MiddlewareAPI) => (dispatch: Dispatch) => async (action: Action) => {
@@ -35,6 +37,10 @@ export const notificationCheckerMiddleware: Middleware =
       }
 
       if (isDefined(user)) {
+        // If policy is updated then get user to accept it.
+        if (user.lastSeen < POLICY_UPDATE_TIME) {
+          dispatch(openActiveModal(policyUpdateModal()));
+        }
         // email confirmation modal to take precedence over other modals, only for teacherPending accounts
         if (
           needToVerifyEmail(user.teacherPending, user.emailVerificationStatus) &&
