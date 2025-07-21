@@ -35,12 +35,17 @@ export const notificationCheckerMiddleware: Middleware =
       } else if (isLoggedIn(state?.user)) {
         user = state.user;
       }
-      // console.log("user => ", user);
+      console.log("user => ", user);
 
       if (isDefined(user)) {
         // privacyPolicyAcceptedTime will be null for new users. If policy is updated then get user to accept it.
-        if (user.privacyPolicyAcceptedTime === null || user.privacyPolicyAcceptedTime < POLICY_UPDATE_TIME) {
-          dispatch(openActiveModal(policyUpdateModal()));
+
+        if (
+          user.privacyPolicyAcceptedTime === null ||
+          user.privacyPolicyAcceptedTime === undefined ||
+          user.privacyPolicyAcceptedTime < POLICY_UPDATE_TIME
+        ) {
+          dispatch(openActiveModal(policyUpdateModal));
         }
         // email confirmation modal to take precedence over other modals, only for teacherPending accounts
         if (

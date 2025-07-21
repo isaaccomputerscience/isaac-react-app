@@ -177,6 +177,7 @@ export const submitTotpChallengeResponse =
       // Request user preferences, as we do in the requestCurrentUser action:
       await Promise.all([dispatch(getUserAuthSettings() as any), dispatch(getUserPreferences() as any)]);
       dispatch({ type: ACTION_TYPE.USER_AUTH_MFA_CHALLENGE_SUCCESS });
+      // console.log("*****result.data => ", result.data);
       dispatch({ type: ACTION_TYPE.USER_LOG_IN_RESPONSE_SUCCESS, user: result.data });
       history.replace(persistence.pop(KEY.AFTER_AUTH_PATH) || "/");
     } catch (e: any) {
