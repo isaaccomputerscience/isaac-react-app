@@ -46,7 +46,7 @@ export const notificationCheckerMiddleware: Middleware =
           user.privacyPolicyAcceptedTime < POLICY_UPDATE_TIME
         ) {
           setTimeout(() => {
-            dispatch(openActiveModal(policyUpdateModal()));
+            dispatch(openActiveModal(policyUpdateModal)); // Remove the () here
           }, 1000); // 100ms delay
         }
         // email confirmation modal to take precedence over other modals, only for teacherPending accounts
