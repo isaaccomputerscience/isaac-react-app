@@ -45,7 +45,9 @@ export const notificationCheckerMiddleware: Middleware =
           user.privacyPolicyAcceptedTime === undefined ||
           user.privacyPolicyAcceptedTime < POLICY_UPDATE_TIME
         ) {
-          dispatch(openActiveModal(policyUpdateModal));
+          setTimeout(() => {
+            dispatch(openActiveModal(policyUpdateModal));
+          }, 1000); // 100ms delay
         }
         // email confirmation modal to take precedence over other modals, only for teacherPending accounts
         if (
@@ -60,7 +62,9 @@ export const notificationCheckerMiddleware: Middleware =
           isDefined(state.userPreferences) &&
           !allRequiredInformationIsPresent(user, state.userPreferences, user.registeredContexts)
         ) {
-          dispatch(openActiveModal(requiredAccountInformationModal));
+          setTimeout(() => {
+            dispatch(openActiveModal(requiredAccountInformationModal));
+          }, 1000); // 100ms delay
         }
         // User context re-confirmation modal - used to request a user to update their stage and exam board
         else if (
