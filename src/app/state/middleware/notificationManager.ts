@@ -37,16 +37,21 @@ export const notificationCheckerMiddleware: Middleware =
       }
       console.log("user => ", user);
 
+      // Check if user is currently on the privacy policy page
+      const currentPath = state?.router?.location?.pathname || window.location.pathname;
+      const isOnPrivacyPage = currentPath === "/privacy";
+
       if (isDefined(user)) {
         // privacyPolicyAcceptedTime will be null for new users. If policy is updated then get user to accept it.
-
+        // Don't show modal if user is on privacy policy page
         if (
-          user.privacyPolicyAcceptedTime === null ||
-          user.privacyPolicyAcceptedTime === undefined ||
-          user.privacyPolicyAcceptedTime < POLICY_UPDATE_TIME
+          !isOnPrivacyPage &&
+          (user.privacyPolicyAcceptedTime === null ||
+            user.privacyPolicyAcceptedTime === undefined ||
+            user.privacyPolicyAcceptedTime < POLICY_UPDATE_TIME)
         ) {
           setTimeout(() => {
-            dispatch(openActiveModal(policyUpdateModal)); // Remove the () here
+            dispatch(openActiveModal(policyUpdateModal));
           }, 1000); // 100ms delay
         }
         // email confirmation modal to take precedence over other modals, only for teacherPending accounts

@@ -18,10 +18,15 @@ export const policyUpdateModal = {
       </p>
       <p>
         To continue using the platform, you&apos;ll need to review and accept the updated{" "}
-        <a href="/privacy">Privacy Policy</a>.
+        <a href="/privacy" rel="noopener noreferrer">
+          Privacy Policy
+        </a>
+        .
       </p>
       <p>
-        <a href="/privacy">View Privacy Policy</a>
+        <a href="/privacy" rel="noopener noreferrer">
+          View Privacy Policy
+        </a>
       </p>
     </>
   ),
