@@ -67,9 +67,7 @@ export const notificationCheckerMiddleware: Middleware =
           isDefined(state.userPreferences) &&
           !allRequiredInformationIsPresent(user, state.userPreferences, user.registeredContexts)
         ) {
-          setTimeout(() => {
-            dispatch(openActiveModal(requiredAccountInformationModal));
-          }, 1000); // 100ms delay
+          dispatch(openActiveModal(requiredAccountInformationModal));
         }
         // User context re-confirmation modal - used to request a user to update their stage and exam board
         else if (
