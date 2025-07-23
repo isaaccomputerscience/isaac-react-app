@@ -1,5 +1,5 @@
 import React from "react";
-import { closeActiveModal, store } from "../../../state";
+import { closeActiveModal, store, updatePrivacyPolicyAcceptedTime } from "../../../state";
 import { Button } from "reactstrap";
 
 // N.B. This modal must not be referenced in index.tsx to avoid circular dependencies
@@ -41,6 +41,12 @@ export const policyUpdateModal = {
         fontWeight: "800 !important",
       }}
       onClick={() => {
+        // Update privacy policy acceptance with current timestamp
+        store.dispatch(
+          updatePrivacyPolicyAcceptedTime({
+            privacyPolicyAcceptedTime: Date.now(),
+          }),
+        );
         store.dispatch(closeActiveModal());
       }}
     >

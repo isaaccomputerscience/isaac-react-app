@@ -46,13 +46,14 @@ export const notificationCheckerMiddleware: Middleware =
         // Don't show modal if user is on privacy policy page
         if (
           !isOnPrivacyPage &&
+          isLoggedIn(user) &&
           (user.privacyPolicyAcceptedTime === null ||
             user.privacyPolicyAcceptedTime === undefined ||
-            user.privacyPolicyAcceptedTime < POLICY_UPDATE_TIME)
+            user.privacyPolicyAcceptedTime <= POLICY_UPDATE_TIME)
         ) {
           setTimeout(() => {
             dispatch(openActiveModal(policyUpdateModal));
-          }, 1000); // 100ms delay
+          }, 1000); // 1000ms delay (not 100ms as the comment says)
         }
         // email confirmation modal to take precedence over other modals, only for teacherPending accounts
         if (
