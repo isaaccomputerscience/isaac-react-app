@@ -44,16 +44,16 @@ export const notificationCheckerMiddleware: Middleware =
       if (isDefined(user)) {
         // privacyPolicyAcceptedTime will be null for new users. If policy is updated then get user to accept it.
         // Don't show modal if user is on privacy policy page
+        const acceptedTime = user.privacyPolicyAcceptedTime ? new Date(user.privacyPolicyAcceptedTime).getTime() : null;
+
         if (
           !isOnPrivacyPage &&
           isLoggedIn(user) &&
-          (user.privacyPolicyAcceptedTime === null ||
-            user.privacyPolicyAcceptedTime === undefined ||
-            user.privacyPolicyAcceptedTime <= POLICY_UPDATE_TIME)
+          (acceptedTime === null || acceptedTime === undefined || acceptedTime <= POLICY_UPDATE_TIME)
         ) {
           setTimeout(() => {
             dispatch(openActiveModal(policyUpdateModal));
-          }, 1000); // 1000ms delay (not 100ms as the comment says)
+          }, 1000);
         }
         // email confirmation modal to take precedence over other modals, only for teacherPending accounts
         if (

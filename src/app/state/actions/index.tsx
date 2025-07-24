@@ -444,6 +444,7 @@ export const updatePrivacyPolicyAcceptedTime =
     try {
       dispatch({ type: ACTION_TYPE.USER_PRIVACY_POLICY_UPDATE_REQUEST });
       await api.users.updatePrivacyPolicyAcceptedTime(params);
+      dispatch(requestCurrentUser() as any);
       dispatch({ type: ACTION_TYPE.USER_PRIVACY_POLICY_UPDATE_RESPONSE_SUCCESS });
       dispatch(
         showToast({
