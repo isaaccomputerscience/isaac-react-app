@@ -83,7 +83,7 @@ describe("Groups", () => {
     // Handle privacy policy modal if it appears at the start of any test
     const handlePrivacyPolicyModal = async () => {
       const modal = screen.queryByTestId("active-modal");
-      if (modal && modal.textContent?.includes("Privacy Policy")) {
+      if (modal?.textContent?.includes("Privacy Policy")) {
         const agreeButton = within(modal).getByRole("button", { name: "Agree and Continue" });
         await userEvent.click(agreeButton);
         // Wait for modal to close
