@@ -515,6 +515,21 @@ describe("Groups", () => {
       ownerSummary: buildMockUserSummary(mockUser, false),
       archived: false,
     };
+
+    const privacyModal = screen.queryByTestId("active-modal");
+    if (privacyModal?.textContent?.includes("Privacy Policy")) {
+      const agreeButton = within(privacyModal).getByRole("button", { name: "Agree and Continue" });
+      await userEvent.click(agreeButton);
+      // Wait for modal to close
+      await waitFor(() => {
+        expect(privacyModal).not.toBeInTheDocument();
+      });
+    }
+
+    // Now look for the expected modal
+    const firstModal = await screen.findByTestId("active-modal");
+    const addGroupManagersButton = await within(firstModal).findByRole("button", { name: "Add group managers" });
+    await userEvent.click(addGroupManagersButton);
     const mockNewManager = buildMockTeacher(2);
     const newGroupManagerHandler = buildNewManagerHandler(mockNewGroup, mockNewManager);
     renderTestEnvironment({
