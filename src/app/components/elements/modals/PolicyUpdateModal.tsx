@@ -21,7 +21,7 @@ export const policyUpdateModal = {
         <a href="/privacy" rel="noopener noreferrer">
           Privacy Policy
         </a>
-        .
+        {"."}
       </p>
       <p>
         <a href="/privacy" rel="noopener noreferrer">

@@ -82,18 +82,14 @@ describe("Groups", () => {
   beforeEach(async () => {
     // Handle privacy policy modal if it appears at the start of any test
     const handlePrivacyPolicyModal = async () => {
-      try {
-        const modal = await screen.findByTestId("active-modal", undefined, { timeout: 1000 });
-        if (modal.textContent?.includes("Privacy Policy")) {
-          const agreeButton = within(modal).getByRole("button", { name: "Agree and Continue" });
-          await userEvent.click(agreeButton);
-          // Wait for modal to close
-          await waitFor(() => {
-            expect(modal).not.toBeInTheDocument();
-          });
-        }
-      } catch (error) {
-        // No modal found or not privacy policy modal, continue
+      const modal = screen.queryByTestId("active-modal");
+      if (modal && modal.textContent?.includes("Privacy Policy")) {
+        const agreeButton = within(modal).getByRole("button", { name: "Agree and Continue" });
+        await userEvent.click(agreeButton);
+        // Wait for modal to close
+        await waitFor(() => {
+          expect(modal).not.toBeInTheDocument();
+        });
       }
     };
 

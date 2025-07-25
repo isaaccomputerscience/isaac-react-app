@@ -35,7 +35,6 @@ export const notificationCheckerMiddleware: Middleware =
       } else if (isLoggedIn(state?.user)) {
         user = state.user;
       }
-      // console.log("user => ", user);
 
       // Check if user is currently on the privacy policy page
       const currentPath = state?.router?.location?.pathname || window.location.pathname;
