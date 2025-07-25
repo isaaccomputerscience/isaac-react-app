@@ -33,6 +33,7 @@ export const policyUpdateModal = {
   buttons: [
     // eslint-disable-next-line react/jsx-key
     <Button
+      key={0}
       size="lg"
       color="secondary"
       target="_blank"
