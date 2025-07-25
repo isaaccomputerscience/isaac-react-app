@@ -47,10 +47,12 @@ const switchGroupsTab = async (activeOrArchived: "active" | "archived", expected
 
 // Reusable test for adding a manager in the additional manager modal
 const testAddAdditionalManagerInModal = async (managerHandler: ResponseResolver, newManager: any) => {
-  let groupManagersModal: HTMLElement | undefined;
-  await waitFor(() => {
-    groupManagersModal = screen.getByTestId("active-modal");
-    expect(groupManagersModal).toHaveModalTitle("Share your group");
+  const groupManagersModal = await waitFor(async () => {
+    const modals = await screen.findAllByTestId("active-modal");
+    const modal = modals.find((modal) => within(modal).queryByText("Share your group"));
+    expect(modal).toBeTruthy();
+    expect(modal).toHaveModalTitle("Share your group");
+    return modal;
   });
   if (!groupManagersModal) fail(); // Shouldn't happen because of the above `waitFor`
   const addManagerInput = within(groupManagersModal).getByPlaceholderText("Enter email address here");
