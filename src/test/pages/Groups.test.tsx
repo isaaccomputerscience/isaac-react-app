@@ -145,9 +145,7 @@ describe("Groups", () => {
     // Find the specific modal with "Group Created" title by filtering all modals
     const modal = await waitFor(async () => {
       const modals = await screen.findAllByTestId("active-modal");
-      const groupCreatedModal = modals.find((modal) => within(modal).queryByText("Group Created"));
-      expect(groupCreatedModal).toBeTruthy();
-      return groupCreatedModal;
+      return findModalByTitle(modals, "Group Created");
     });
     // Expect that the auth token GET request is made exactly once
     expect(modal).toHaveModalTitle("Group Created");
@@ -575,12 +573,15 @@ describe("Groups", () => {
       expect(newGroupHandler).toHaveBeenCalledTimes(1);
       // Find the specific modal with "Group Created" title by filtering all modals
       const modals = screen.getAllByTestId("active-modal");
-      const groupCreatedModal = modals.find((modal) => within(modal).queryByText("Group Created"));
+      const groupCreatedModal = findModalByTitle(modals, "Group Created");
+
+      // Make sure the modal exists before continuing
       expect(groupCreatedModal).toBeTruthy();
+
+      // Now TypeScript knows groupCreatedModal is not undefined within this block
       // Expect the "add group managers" button NOT to be shown on the modal
-      expect(groupCreatedModal!).toHaveModalTitle("Group Created");
-      expect(authTokenHandler).toHaveBeenCalledTimes(1);
       expect(within(groupCreatedModal!).queryByRole("button", { name: "Add group managers" })).toBeNull();
+      expect(authTokenHandler).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -630,17 +631,22 @@ describe("Groups", () => {
       expect(modal).toBeTruthy();
       return modal;
     });
-    expect(groupManagersModal!).toHaveModalTitle("Shared group");
-    // Ensure owner is correct
-    const ownerElement = within(groupManagersModal!).getByTestId("group-owner");
+
+    if (!groupManagersModal) {
+      fail("Group manager modal not found");
+      return;
+    }
+
+    expect(groupManagersModal).toHaveModalTitle("Shared group"); // Ensure owner is correct
+    const ownerElement = within(groupManagersModal).getByTestId("group-owner");
     expect(ownerElement).toHaveTextContent(mockOwner.email);
     // Check that we can remove ourselves as an additional manager, but not any other managers
-    const additionalManagerElements = within(groupManagersModal!).getAllByTestId("group-manager");
+    const additionalManagerElements = within(groupManagersModal).getAllByTestId("group-manager");
     expect(additionalManagerElements).toHaveLength(2);
     // Make sure that we cannot add any more members ourselves
-    const addManagerInput = within(groupManagersModal!).queryByPlaceholderText("Enter email address here");
+    const addManagerInput = within(groupManagersModal).queryByPlaceholderText("Enter email address here");
     expect(addManagerInput).toBeNull();
-    const addManagerButton = within(groupManagersModal!).queryByRole("button", { name: "Add group manager" });
+    const addManagerButton = within(groupManagersModal).queryByRole("button", { name: "Add group manager" });
     expect(addManagerButton).toBeNull();
 
     // "Remove" button should not be visible for the other additional manager
@@ -668,9 +674,13 @@ describe("Groups", () => {
       expect(modal).toBeTruthy();
       return modal;
     });
-    expect(selfRemovalModal!).toHaveModalTitle("Remove yourself as a group manager");
+    if (!selfRemovalModal) {
+      fail("Self removal modal not found");
+      return;
+    }
 
-    const removeSelfButton = within(selfRemovalModal!).getByRole("button", { name: "Confirm" });
+    expect(selfRemovalModal).toHaveModalTitle("Remove yourself as a group manager");
+    const removeSelfButton = within(selfRemovalModal).getByRole("button", { name: "Confirm" });
     await userEvent.click(removeSelfButton);
 
     // Wait for the API request to complete
