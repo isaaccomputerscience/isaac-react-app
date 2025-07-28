@@ -76,6 +76,10 @@ const testAddAdditionalManagerInModal = async (managerHandler: ResponseResolver,
   });
 };
 
+const findModalByTitle = (modals: HTMLElement[], title: string): HTMLElement | undefined => {
+  return modals.find((modal) => within(modal).queryByText(title));
+};
+
 describe("Groups", () => {
   const roles = ["TUTOR", "TEACHER"] as const;
 
@@ -522,18 +526,22 @@ describe("Groups", () => {
 
     await act(async () => {
       await userEvent.click(createButton);
-      // Find the specific modal with "Group Created" title by filtering all modals
+
+      // Find the specific modal with "Group Created" title using the helper function
       const groupCreatedModal = await waitFor(async () => {
         const modals = await screen.findAllByTestId("active-modal");
-        const modal = modals.find((modal) => within(modal).queryByText("Group Created"));
+        const modal = findModalByTitle(modals, "Group Created");
         expect(modal).toBeTruthy();
         return modal;
       });
+
       expect(groupCreatedModal).toHaveModalTitle("Group Created");
+
       // Expect the "add group managers" button to be shown on the modal
-      const addGroupManagersButton = await within(groupCreatedModal!).findByRole("button", {
+      const addGroupManagersButton = await within(groupCreatedModal as HTMLElement).findByRole("button", {
         name: "Add group managers",
       });
+
       await userEvent.click(addGroupManagersButton);
       await testAddAdditionalManagerInModal(newGroupManagerHandler, mockNewManager);
     });
