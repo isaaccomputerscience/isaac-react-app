@@ -1,4 +1,4 @@
-import { screen, within } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import { getById, renderTestEnvironment } from "../utils";
 import userEvent from "@testing-library/user-event";
 import { PASSWORD_REQUIREMENTS } from "../../app/services";
@@ -23,6 +23,7 @@ describe("My Account", () => {
     const saveButton = screen.getByRole("button", { name: /save/i });
     expect(saveButton).toBeDisabled();
     // Find the current password field and enter a password
+    // Find the current password field and enter a password
     const currentPasswordField = screen.getByLabelText("Current password");
     await userEvent.type(currentPasswordField, invalidPassword);
     // Find the new password field and enter a password
@@ -31,7 +32,14 @@ describe("My Account", () => {
     // Find the confirm password field and enter a password
     const confirmPasswordField = screen.getByLabelText("Re-enter new password");
     await userEvent.type(confirmPasswordField, validPassword);
-    expect(saveButton).toBeEnabled();
+
+    // Wait for validation to complete and button to become enabled
+    await waitFor(
+      () => {
+        expect(screen.getByRole("button", { name: /save/i })).toBeEnabled();
+      },
+      { timeout: 3000 },
+    );
   });
 
   it("If passwords do not match, Save button stays disabled and informative error appears", async () => {
