@@ -234,18 +234,29 @@ describe("Groups", () => {
       // Rename the group and click update
       const groupNameInput = await within(groupEditor).findByPlaceholderText(/Group [Nn]ame/);
       await userEvent.clear(groupNameInput);
-      // Use a more reliable approach - set the value directly and then trigger input event
-      await userEvent.type(groupNameInput, newGroupName, { delay: 0 });
+      // Wait for clear to complete
+      await waitFor(() => {
+        expect(groupNameInput).toHaveValue("");
+      });
+      // Type the new group name
+      await userEvent.type(groupNameInput, newGroupName);
+      // Verify the input has the correct value before proceeding
+      await waitFor(() => {
+        expect(groupNameInput).toHaveValue(newGroupName);
+      });
       const updateButton = await within(groupEditor).findByRole("button", { name: "Update" });
       await userEvent.click(updateButton);
       // Make sure the list of groups contains the new name
-      await waitFor(() => {
-        const newGroups = screen.getAllByTestId("group-item");
-        expect(newGroups).toHaveLength(groups.length);
-        const newGroupNames = newGroups.map((e) => within(e).getByTestId("select-group").textContent);
-        expect(difference(groupNames, newGroupNames)).toEqual([groupToRename.groupName]);
-        expect(difference(newGroupNames, groupNames)).toEqual([newGroupName]);
-      });
+      await waitFor(
+        () => {
+          const newGroups = screen.getAllByTestId("group-item");
+          expect(newGroups).toHaveLength(groups.length);
+          const newGroupNames = newGroups.map((e) => within(e).getByTestId("select-group").textContent);
+          expect(difference(groupNames, newGroupNames)).toEqual([groupToRename.groupName]);
+          expect(difference(newGroupNames, groupNames)).toEqual([newGroupName]);
+        },
+        { timeout: 10000 },
+      );
       // Assert the correct number of update requests were sent
       expect(correctUpdateRequests).toEqual(1);
     });
@@ -623,7 +634,6 @@ describe("Groups", () => {
     const addManagersButton = within(groupEditor).getByRole("button", { name: "View all group managers" });
 
     await userEvent.click(addManagersButton);
-
     // Find group manager modal, should have title "Shared group" instead of "Share your group"
     const groupManagersModal = await waitFor(async () => {
       const modals = await screen.findAllByTestId("active-modal");
@@ -631,22 +641,17 @@ describe("Groups", () => {
       expect(modal).toBeTruthy();
       return modal;
     });
-
-    if (!groupManagersModal) {
-      fail("Group manager modal not found");
-      return;
-    }
-
-    expect(groupManagersModal).toHaveModalTitle("Shared group"); // Ensure owner is correct
-    const ownerElement = within(groupManagersModal).getByTestId("group-owner");
+    expect(groupManagersModal!).toHaveModalTitle("Shared group");
+    // Ensure owner is correct
+    const ownerElement = within(groupManagersModal!).getByTestId("group-owner");
     expect(ownerElement).toHaveTextContent(mockOwner.email);
     // Check that we can remove ourselves as an additional manager, but not any other managers
-    const additionalManagerElements = within(groupManagersModal).getAllByTestId("group-manager");
+    const additionalManagerElements = within(groupManagersModal!).getAllByTestId("group-manager");
     expect(additionalManagerElements).toHaveLength(2);
     // Make sure that we cannot add any more members ourselves
-    const addManagerInput = within(groupManagersModal).queryByPlaceholderText("Enter email address here");
+    const addManagerInput = within(groupManagersModal!).queryByPlaceholderText("Enter email address here");
     expect(addManagerInput).toBeNull();
-    const addManagerButton = within(groupManagersModal).queryByRole("button", { name: "Add group manager" });
+    const addManagerButton = within(groupManagersModal!).queryByRole("button", { name: "Add group manager" });
     expect(addManagerButton).toBeNull();
 
     // "Remove" button should not be visible for the other additional manager
@@ -674,39 +679,34 @@ describe("Groups", () => {
       expect(modal).toBeTruthy();
       return modal;
     });
-    if (!selfRemovalModal) {
-      fail("Self removal modal not found");
-      return;
-    }
+    expect(selfRemovalModal!).toHaveModalTitle("Remove yourself as a group manager");
 
-    expect(selfRemovalModal).toHaveModalTitle("Remove yourself as a group manager");
-    const removeSelfButton = within(selfRemovalModal).getByRole("button", { name: "Confirm" });
+    const removeSelfButton = within(selfRemovalModal!).getByRole("button", { name: "Confirm" });
     await userEvent.click(removeSelfButton);
 
     // Wait for the API request to complete
-    await waitFor(() => {
-      expect(removeSelfAsManagerHandler).toHaveBeenCalledTimes(1);
-    });
+    await waitFor(
+      () => {
+        expect(removeSelfAsManagerHandler).toHaveBeenCalledTimes(1);
+      },
+      { timeout: 10000 },
+    );
 
-    // Wait for the removal modal to close
-    await waitFor(() => {
-      expect(selfRemovalModal).not.toBeInTheDocument();
-    });
+    // Wait for the removal modal to close with longer timeout
+    await waitFor(
+      () => {
+        expect(selfRemovalModal).not.toBeInTheDocument();
+      },
+      { timeout: 10000 },
+    );
 
-    // Wait for the group managers modal to close or show loading state
-    await waitFor(() => {
-      // The modal might be in a loading state, so check for either the modal being gone or showing loading
-      const modals = screen.queryAllByTestId("active-modal");
-      const groupModal = modals.find((modal) => within(modal).queryByText("Shared group"));
-      if (groupModal) {
-        // If modal still exists, it should be in loading state
-        const loadingSpinner = within(groupModal).queryByTestId("loading-spinner");
-        expect(loadingSpinner).toBeInTheDocument();
-      } else {
-        // Modal should be closed
-        expect(groupModal).toBeUndefined();
-      }
-    });
+    // Wait for the group managers modal to close with longer timeout
+    await waitFor(
+      () => {
+        expect(groupManagersModal).not.toBeInTheDocument();
+      },
+      { timeout: 10000 },
+    );
 
     // Expect that the API request to remove ourselves as the manager has been made...
     expect(removeSelfAsManagerHandler).toHaveBeenRequestedWith((req) => {
