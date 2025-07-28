@@ -149,8 +149,8 @@ describe("Groups", () => {
     expect(modal).toHaveModalTitle("Group Created");
     expect(authTokenHandler).toHaveBeenCalledTimes(1);
     // Expect the share link and share code to be shown on the modal
-    const link = await within(modal!).findByTestId("share-link");
-    const code = await within(modal!).findByTestId("share-code");
+    const link = await within(modal as HTMLElement).findByTestId("share-link");
+    const code = await within(modal as HTMLElement).findByTestId("share-code");
     expect(link).toHaveTextContent(`/account?authToken=${mockToken}`);
     expect(code.textContent).toEqual(mockToken);
   });
