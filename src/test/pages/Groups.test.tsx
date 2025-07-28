@@ -81,23 +81,6 @@ const testAddAdditionalManagerInModal = async (managerHandler: ResponseResolver,
 describe("Groups", () => {
   const roles = ["TUTOR", "TEACHER"] as const;
 
-  beforeEach(async () => {
-    // Handle privacy policy modal if it appears at the start of any test
-    const handlePrivacyPolicyModal = async () => {
-      const modal = screen.queryByTestId("active-modal");
-      if (modal?.textContent?.includes("Privacy Policy")) {
-        const agreeButton = within(modal).getByRole("button", { name: "Agree and Continue" });
-        await userEvent.click(agreeButton);
-        // Wait for modal to close
-        await waitFor(() => {
-          expect(modal).not.toBeInTheDocument();
-        });
-      }
-    };
-
-    await handlePrivacyPolicyModal();
-  });
-
   it.each(roles)(
     `displays all active groups on load if the user is a %s, and all archived groups when Archived tab is clicked`,
     async (role) => {
@@ -515,16 +498,6 @@ describe("Groups", () => {
       ownerSummary: buildMockUserSummary(mockUser, false),
       archived: false,
     };
-
-    const privacyModal = screen.queryByTestId("active-modal");
-    if (privacyModal?.textContent?.includes("Privacy Policy")) {
-      const agreeButton = within(privacyModal).getByRole("button", { name: "Agree and Continue" });
-      await userEvent.click(agreeButton);
-      // Wait for modal to close
-      await waitFor(() => {
-        expect(privacyModal).not.toBeInTheDocument();
-      });
-    }
 
     // Now look for the expected modal
     const firstModal = await screen.findByTestId("active-modal");
