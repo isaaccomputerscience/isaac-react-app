@@ -52,7 +52,7 @@ export const notificationCheckerMiddleware: Middleware =
         ) {
           setTimeout(() => {
             dispatch(openActiveModal(policyUpdateModal));
-          }, 1000);
+          }, 6000);
         }
         // email confirmation modal to take precedence over other modals, only for teacherPending accounts
         if (
