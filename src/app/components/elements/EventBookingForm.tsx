@@ -352,7 +352,6 @@ export const EventBookingForm = ({
               <AccessibilityAndDietaryRequirements
                 additionalInformation={additionalInformation}
                 updateAdditionalInformation={updateAdditionalInformation}
-                required
               />
 
               {additionalInformation.yearGroup != "TEACHER" && additionalInformation.yearGroup != "OTHER" && (
