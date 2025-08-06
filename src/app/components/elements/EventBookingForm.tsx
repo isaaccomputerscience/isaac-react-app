@@ -127,7 +127,6 @@ export const AccessibilityAndDietaryRequirements = ({
               type="text"
               value={String(additionalInformation[type] || "")}
               onChange={(event) => updateAdditionalInformation({ [`${type}`]: event.target.value })}
-              required={required}
             />
           </div>
         );
