@@ -157,7 +157,7 @@ const InputWithLabel = ({
 
   return (
     <>
-      <Label htmlFor={id} className="form-required">
+      <Label htmlFor={id} className={required ? "form-required" : ""}>
         {label}
       </Label>
       <Input
@@ -368,7 +368,6 @@ export const EventBookingForm = ({
                       type="emergencyName"
                       additionalInformation={additionalInformation}
                       updateAdditionalInformation={updateAdditionalInformation}
-                      required
                     />
                   </Col>
                   <Col md={6}>
@@ -376,7 +375,6 @@ export const EventBookingForm = ({
                       type="emergencyNumber"
                       additionalInformation={additionalInformation}
                       updateAdditionalInformation={updateAdditionalInformation}
-                      required
                     />
                   </Col>
                 </Row>
