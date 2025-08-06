@@ -86,11 +86,9 @@ const SchoolYearGroup = ({
 export const AccessibilityAndDietaryRequirements = ({
   additionalInformation,
   updateAdditionalInformation,
-  required,
 }: {
   additionalInformation: AdditionalInformation;
   updateAdditionalInformation: (update: AdditionalInformation) => void;
-  required?: boolean;
 }) => {
   const requirementsList = [
     {
