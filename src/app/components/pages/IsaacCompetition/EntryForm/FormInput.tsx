@@ -1,6 +1,7 @@
 import React from "react";
 import { FormGroup, Label, Input } from "reactstrap";
 import { InputType } from "reactstrap/es/Input";
+import { AppGroup } from "../../../../../IsaacAppTypes";
 
 interface FormInputProps {
   label: string;
@@ -12,8 +13,8 @@ interface FormInputProps {
   defaultValue?: string;
   required?: boolean;
   value?: string;
-  activeGroups?: { groupName: string }[];
-  setSelectedGroup?: (group: { groupName: string } | null) => void;
+  activeGroups?: AppGroup[];
+  setSelectedGroup?: (group: AppGroup | null) => void;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
