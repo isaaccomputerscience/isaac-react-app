@@ -48,11 +48,11 @@ const HomepageHighlight = () => {
           {bannerContent.titleBelowSubtitle ? (
             <>
               <h1 className="homepage-highlight-sub-title py-4">{bannerContent.subtitle}</h1>
-              <h1 className="homepage-highlight-title pb-4">{bannerContent.title}</h1>
+              <h1 className="homepage-highlight-title">{bannerContent.title}</h1>
             </>
           ) : (
             <>
-              <h1 className="homepage-highlight-title pb-4">{bannerContent.title}</h1>
+              <h1 className="homepage-highlight-title py-4">{bannerContent.title}</h1>
               <h1 className="homepage-highlight-sub-title py-4">{bannerContent.subtitle}</h1>
             </>
           )}
