@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Form, Row, Col, Container, FormGroup, Label, Input } from "reactstrap";
+import { Form, Row, Col, Container, FormGroup, Label, Input, Alert } from "reactstrap";
 import { isaacApi, useAppSelector } from "../../../../state";
 import { selectors } from "../../../../state/selectors";
 import { SchoolInput } from "../../../elements/inputs/SchoolInput";
 import FormInput from "./FormInput";
 import { useReserveUsersOnCompetition } from "./useReserveUsersOnCompetition";
 import { useActiveGroups } from "./useActiveGroups";
-import MultiSelect from "../MultiSelect/MultiSelect";
+import Select from "react-select";
 
 const COMPETITON_ID = "20250131_isaac_competition";
 interface CompetitionEntryFormProps {
@@ -21,6 +21,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
   const targetUser = useAppSelector(selectors.user.orNull);
   const reserveUsersOnCompetition = useReserveUsersOnCompetition();
   const [submissionLink, setSubmissionLink] = useState("");
+  const [memberSelectionError, setMemberSelectionError] = useState<string>("");
 
   // Get the selected group from activeGroups (which gets updated with members from Redux)
   const selectedGroup = selectedGroupId ? activeGroups.find((group) => group.id === selectedGroupId) || null : null;
@@ -35,6 +36,18 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
     // Clear selected members when group changes
     setSelectedMembers([]);
   }, [selectedGroupId]);
+
+  const handleMemberSelection = (selectedOptions: any) => {
+    const selectedValues = selectedOptions ? selectedOptions.map((option: any) => option.value) : [];
+
+    if (selectedValues.length > 4) {
+      setMemberSelectionError("You can only select up to 4 students");
+      return;
+    }
+
+    setMemberSelectionError("");
+    setSelectedMembers(selectedValues);
+  };
 
   const isSubmitDisabled = !submissionLink || !selectedGroup || selectedMembers.length === 0;
 
@@ -115,34 +128,69 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                   id="formGroup"
                   required
                   disabled={false}
-                  options={["Please select from the list", ...activeGroups.map((group) => group.groupName || "")]}
+                  options={[
+                    "Choose from the groups you've created or create one first",
+                    ...activeGroups.map((group) => group.groupName || ""),
+                  ]}
                   activeGroups={activeGroups}
                   setSelectedGroup={(group) => setSelectedGroupId(group?.id || null)}
                 />
-                <MultiSelect
-                  label="Select Group Members"
-                  options={
-                    selectedGroup?.members
-                      ? selectedGroup.members.map((member) => ({
-                          value: member.id?.toString() || "",
-                          label:
-                            `${member.givenName || ""} ${member.familyName || ""}`.trim() ||
-                            `User ${member.id}` ||
-                            "Unknown",
-                        }))
-                      : []
-                  }
-                  selectedValues={selectedMembers}
-                  onChange={setSelectedMembers}
-                  placeholder={
-                    selectedGroup
-                      ? selectedGroup.members && selectedGroup.members.length > 0
-                        ? "Select group members to include in the competition..."
-                        : "No members found in this group"
-                      : "Please select a group first"
-                  }
-                  isRequired={true}
-                />
+                <Label className="w-100 pb-2">
+                  Select Group Members:
+                  {memberSelectionError && (
+                    <Alert color="danger" className="mb-2" style={{ zIndex: 9999, position: "relative" }}>
+                      {memberSelectionError}
+                    </Alert>
+                  )}
+                  <Select
+                    inputId="group-members-select"
+                    isMulti
+                    isClearable
+                    placeholder={
+                      memberSelectionError
+                        ? memberSelectionError
+                        : selectedGroup
+                        ? selectedGroup.members && selectedGroup.members.length > 0
+                          ? "Choose students from your selected group"
+                          : "No members found in this group"
+                        : "Please select a group first"
+                    }
+                    value={
+                      selectedGroup?.members
+                        ? selectedGroup.members
+                            .filter((member) => selectedMembers.includes(member.id?.toString() || ""))
+                            .map((member) => ({
+                              value: member.id?.toString() || "",
+                              label:
+                                `${member.givenName || ""} ${member.familyName || ""}`.trim() ||
+                                `User ${member.id}` ||
+                                "Unknown",
+                            }))
+                        : []
+                    }
+                    onChange={handleMemberSelection}
+                    options={
+                      selectedGroup?.members
+                        ? selectedGroup.members.map((member) => ({
+                            value: member.id?.toString() || "",
+                            label:
+                              `${member.givenName || ""} ${member.familyName || ""}`.trim() ||
+                              `User ${member.id}` ||
+                              "Unknown",
+                          }))
+                        : []
+                    }
+                    isDisabled={!selectedGroup || !selectedGroup.members || selectedGroup.members.length === 0}
+                    closeMenuOnSelect={false}
+                    maxMenuHeight={200}
+                    styles={{
+                      menu: (provided) => ({
+                        ...provided,
+                        zIndex: 9998,
+                      }),
+                    }}
+                  />
+                </Label>
                 <Row className="entry-form-button-label d-flex flex-column flex-md-row">
                   <Col xs="auto">
                     <Input
