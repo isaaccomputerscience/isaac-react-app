@@ -5,10 +5,7 @@ import CompetitionButton from "../Buttons/CompetitionButton";
 import { selectors, useAppSelector } from "../../../../state";
 import { isStudent, isTeacher } from "../../../../services";
 import CompetitionWrapper from "../CompetitionWrapper";
-
-const STUDENT_MESSAGE = "Students, ask your teacher about submitting an entry.";
-const TEACHER_MESSAGE = "Teachers, login to submit a student project.";
-const CLOSED_MESSAGE = "Entries for this competition have now closed.";
+import { CLOSED_MESSAGE, STUDENT_MESSAGE, TEACHER_MESSAGE } from "../constants";
 
 const StudentMessage = () => (
   <Container>

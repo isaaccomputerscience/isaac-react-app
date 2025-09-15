@@ -305,10 +305,26 @@
   &-title {
     font-size: 78px;
     color: #120540;
+    
+    @include respond-below(md) {
+      font-size: 48px;
+    }
+    
+    @include respond-below(sm) {
+      font-size: 32px;
+    }
   }
 
   &-sub-title {
     color: #120540;
     font-size: 32px;
+    
+    @include respond-below(md) {
+      font-size: 24px;
+    }
+    
+    @include respond-below(sm) {
+      font-size: 18px;
+    }
   }
 }
