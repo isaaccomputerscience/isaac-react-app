@@ -2,7 +2,6 @@ import React from "react";
 import { Container, Row, Col } from "reactstrap";
 import CompetitionButton from "../Buttons/CompetitionButton";
 import { isBeforeCompetitionOpenDate, isBeforeEndDate, isWithinFourWeeksAfterEndDate } from "../dateUtils";
-import { CLOSED_MESSAGE } from "../constants";
 
 const HomepageHighlight = () => {
   const currentDate = new Date();
@@ -30,8 +29,10 @@ const HomepageHighlight = () => {
     } else if (isWithinFourWeeksAfterEndDate(currentDate)) {
       return {
         title: "National Computer Science Competition 2025/26",
-        subtitle: CLOSED_MESSAGE,
+        subtitle1: "Entries for this competition have now closed.",
+        subtitle2: "The finalists will be announced in March 2026",
         button: null,
+        isClosedState: true, // Special flag for closed state styling
       };
     }
     return null;
@@ -43,17 +44,27 @@ const HomepageHighlight = () => {
 
   return (
     <Container className="pt-2 pb-5">
-      <Row className="homepage-highlight rounded justify-content-center">
+      <Row
+        className={`homepage-highlight rounded justify-content-center ${
+          bannerContent.isClosedState ? "closed-state" : ""
+        }`}
+      >
         <Col xs={12} className="text-center">
           {bannerContent.titleBelowSubtitle ? (
             <>
               <h1 className="homepage-highlight-sub-title px-4 pt-4 pb-2">{bannerContent.subtitle}</h1>
               <h1 className="homepage-highlight-title px-4">{bannerContent.title}</h1>
             </>
+          ) : bannerContent.isClosedState ? (
+            <>
+              <h1 className="homepage-highlight-title pb-3 pt-4">{bannerContent.title}</h1>
+              <h1 className="homepage-highlight-sub-title px-2">{bannerContent.subtitle1}</h1>
+              <h1 className="homepage-highlight-sub-title px-2 pb-4">{bannerContent.subtitle2}</h1>
+            </>
           ) : (
             <>
-              <h1 className="homepage-highlight-title px-2 pt-4">{bannerContent.title}</h1>
-              <h1 className="homepage-highlight-sub-title px-2 pt-2 pb-2">{bannerContent.subtitle}</h1>
+              <h1 className="homepage-highlight-title pt-4">{bannerContent.title}</h1>
+              <h1 className="homepage-highlight-sub-title p-2">{bannerContent.subtitle}</h1>
             </>
           )}
         </Col>

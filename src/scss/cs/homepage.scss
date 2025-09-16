@@ -327,4 +327,35 @@
       font-size: 15px;
     }
   }
+
+  // Special styling for closed state
+  &.closed-state {
+    .homepage-highlight-title {
+      font-size: 48px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+      
+      @include respond-below(md) {
+        font-size: 40px;
+      }
+      
+      @include respond-below(sm) {
+        font-size: 25px;
+      }
+    }
+    
+    .homepage-highlight-sub-title {
+      font-size: 24px;
+      font-weight: 500;
+      
+      @include respond-below(md) {
+        font-size: 20px;
+      }
+      
+      @include respond-below(sm) {
+        font-size: 18px;
+      }
+    }
+  }
 }
