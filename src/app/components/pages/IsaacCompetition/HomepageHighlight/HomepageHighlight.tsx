@@ -42,6 +42,34 @@ const HomepageHighlight = () => {
     return null;
   };
 
+  const renderBannerContent = (bannerContent: NonNullable<ReturnType<typeof getBannerContent>>) => {
+    if (bannerContent.titleBelowSubtitle) {
+      return (
+        <>
+          <h1 className="homepage-highlight-sub-title px-4 pt-4 pb-2">{bannerContent.subtitle}</h1>
+          <h1 className="homepage-highlight-title px-4">{bannerContent.title}</h1>
+        </>
+      );
+    }
+
+    if (bannerContent.isClosedState) {
+      return (
+        <>
+          <h1 className="homepage-highlight-title pb-3 pt-4">{bannerContent.title}</h1>
+          <h1 className="homepage-highlight-sub-title px-2 ">{bannerContent.subtitle1}</h1>
+          <h1 className="homepage-highlight-sub-title px-2  pb-4">{bannerContent.subtitle2}</h1>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <h1 className="homepage-highlight-title px-1 pt-4">{bannerContent.title}</h1>
+        <h1 className="homepage-highlight-sub-title p-2">{bannerContent.subtitle}</h1>
+      </>
+    );
+  };
+
   const bannerContent = getBannerContent();
 
   if (!bannerContent) return null;
@@ -53,25 +81,7 @@ const HomepageHighlight = () => {
           bannerContent.isClosedState ? "closed-state" : ""
         }`}
       >
-        <div className="text-center">
-          {bannerContent.titleBelowSubtitle ? (
-            <>
-              <h1 className="homepage-highlight-sub-title px-4 pt-4 pb-2">{bannerContent.subtitle}</h1>
-              <h1 className="homepage-highlight-title px-4">{bannerContent.title}</h1>
-            </>
-          ) : bannerContent.isClosedState ? (
-            <>
-              <h1 className="homepage-highlight-title pb-3 pt-4">{bannerContent.title}</h1>
-              <h1 className="homepage-highlight-sub-title px-2 ">{bannerContent.subtitle1}</h1>
-              <h1 className="homepage-highlight-sub-title px-2  pb-4">{bannerContent.subtitle2}</h1>
-            </>
-          ) : (
-            <>
-              <h1 className="homepage-highlight-title px-1 pt-4">{bannerContent.title}</h1>
-              <h1 className="homepage-highlight-sub-title p-2">{bannerContent.subtitle}</h1>
-            </>
-          )}
-        </div>
+        <div className="text-center">{renderBannerContent(bannerContent)}</div>
         {bannerContent.button && (
           <div className="pb-4 text-center d-flex justify-content-center">
             <CompetitionButton buttons={[bannerContent.button]} />
