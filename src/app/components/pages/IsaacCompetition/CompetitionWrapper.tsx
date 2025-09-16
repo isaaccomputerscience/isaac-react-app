@@ -9,15 +9,15 @@ interface CompetitionWrapperProps {
   children: React.ReactNode;
   beforeCompetitionOpenContent?: React.ReactNode;
   closedCompetitionContent?: React.ReactNode;
+  currentDate?: Date; // Add this for testing
 }
 
 const CompetitionWrapper = ({
   children,
   beforeCompetitionOpenContent,
   closedCompetitionContent,
+  currentDate = new Date(), // Use provided date or current date
 }: CompetitionWrapperProps) => {
-  const currentDate = new Date();
-
   // Hide entry form before competition opens (before Nov 2 midnight)
   if (isBeforeCompetitionOpenDate(currentDate)) {
     return <>{beforeCompetitionOpenContent}</>;
