@@ -5,7 +5,7 @@ import CompetitionButton from "../Buttons/CompetitionButton";
 import { selectors, useAppSelector } from "../../../../state";
 import { isStudent, isTeacher } from "../../../../services";
 import CompetitionWrapper from "../CompetitionWrapper";
-import { CLOSED_MESSAGE, STUDENT_MESSAGE, TEACHER_MESSAGE } from "../constants";
+import { BEFORE_COMPETITION_OPEN_MESSAGE, CLOSED_MESSAGE, STUDENT_MESSAGE, TEACHER_MESSAGE } from "../constants";
 
 const StudentMessage = () => (
   <Container>
@@ -52,6 +52,13 @@ const EntryFormHandler = ({ buttons, handleTermsClick }: EntryFormHandlerProps) 
 
   return (
     <CompetitionWrapper
+      beforeCompetitionOpenContent={
+        <Container>
+          <Col className="d-flex flex-column align-items-start pb-4 pl-0" xs="auto">
+            <p className="pb-3 body-text">{BEFORE_COMPETITION_OPEN_MESSAGE}</p>
+          </Col>
+        </Container>
+      }
       closedCompetitionContent={
         <Container>
           <Col className="d-flex flex-column align-items-start pb-4 pl-0" xs="auto">

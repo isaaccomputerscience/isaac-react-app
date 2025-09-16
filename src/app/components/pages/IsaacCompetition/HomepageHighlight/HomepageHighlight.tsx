@@ -1,7 +1,11 @@
 import React from "react";
-import { Container, Row, Col } from "reactstrap";
+import { Col } from "reactstrap";
 import CompetitionButton from "../Buttons/CompetitionButton";
-import { isBeforeCompetitionOpenDate, isBeforeEndDate, isWithinFourWeeksAfterEndDate } from "../dateUtils";
+import {
+  isBeforeCompetitionOpenDate,
+  isAfterCompetitionOpenDateAndBeforeCompetitionEndDate,
+  isAfterCompetitionEndDateAndBeforeEntriesClosedBannerEndDate,
+} from "../dateUtils";
 
 const HomepageHighlight = () => {
   const currentDate = new Date();
@@ -16,7 +20,7 @@ const HomepageHighlight = () => {
           label: "Be the first one to know",
         },
       };
-    } else if (isBeforeEndDate(currentDate)) {
+    } else if (isAfterCompetitionOpenDateAndBeforeCompetitionEndDate(currentDate)) {
       return {
         title: "Entries are now open",
         subtitle: "National Computer Science Competition 2025/26",
@@ -26,7 +30,7 @@ const HomepageHighlight = () => {
         },
         titleBelowSubtitle: true, // Special flag for this case
       };
-    } else if (isWithinFourWeeksAfterEndDate(currentDate)) {
+    } else if (isAfterCompetitionEndDateAndBeforeEntriesClosedBannerEndDate(currentDate)) {
       return {
         title: "National Computer Science Competition 2025/26",
         subtitle1: "Entries for this competition have now closed.",
@@ -43,13 +47,13 @@ const HomepageHighlight = () => {
   if (!bannerContent) return null;
 
   return (
-    <Container className="pt-2 pb-5">
-      <Row
+    <Col xs={12} className="pt-2 pb-5">
+      <div
         className={`homepage-highlight rounded justify-content-center ${
           bannerContent.isClosedState ? "closed-state" : ""
         }`}
       >
-        <Col xs={12} className="text-center">
+        <div className="text-center">
           {bannerContent.titleBelowSubtitle ? (
             <>
               <h1 className="homepage-highlight-sub-title px-4 pt-4 pb-2">{bannerContent.subtitle}</h1>
@@ -58,23 +62,23 @@ const HomepageHighlight = () => {
           ) : bannerContent.isClosedState ? (
             <>
               <h1 className="homepage-highlight-title pb-3 pt-4">{bannerContent.title}</h1>
-              <h1 className="homepage-highlight-sub-title px-2">{bannerContent.subtitle1}</h1>
-              <h1 className="homepage-highlight-sub-title px-2 pb-4">{bannerContent.subtitle2}</h1>
+              <h1 className="homepage-highlight-sub-title px-2 ">{bannerContent.subtitle1}</h1>
+              <h1 className="homepage-highlight-sub-title px-2  pb-4">{bannerContent.subtitle2}</h1>
             </>
           ) : (
             <>
-              <h1 className="homepage-highlight-title pt-4">{bannerContent.title}</h1>
+              <h1 className="homepage-highlight-title px-1 pt-4">{bannerContent.title}</h1>
               <h1 className="homepage-highlight-sub-title p-2">{bannerContent.subtitle}</h1>
             </>
           )}
-        </Col>
+        </div>
         {bannerContent.button && (
-          <Col xs={12} className="pb-4 text-center d-flex justify-content-center">
+          <div className="pb-4 text-center d-flex justify-content-center">
             <CompetitionButton buttons={[bannerContent.button]} />
-          </Col>
+          </div>
         )}
-      </Row>
-    </Container>
+      </div>
+    </Col>
   );
 };
 

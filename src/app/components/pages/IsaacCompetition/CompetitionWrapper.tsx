@@ -1,22 +1,39 @@
 import React from "react";
-import { isWithinFourWeeksAfterEndDate, isAfterFourWeeksFromEndDate } from "../../pages/IsaacCompetition/dateUtils";
+import {
+  isBeforeCompetitionOpenDate,
+  isAfterCompetitionEndDateAndBeforeEntriesClosedBannerEndDate,
+  ENTRIES_CLOSED_BANNER_END_DATE,
+} from "./dateUtils";
 
 interface CompetitionWrapperProps {
   children: React.ReactNode;
+  beforeCompetitionOpenContent?: React.ReactNode;
   closedCompetitionContent?: React.ReactNode;
 }
 
-const CompetitionWrapper = ({ children, closedCompetitionContent }: CompetitionWrapperProps) => {
+const CompetitionWrapper = ({
+  children,
+  beforeCompetitionOpenContent,
+  closedCompetitionContent,
+}: CompetitionWrapperProps) => {
   const currentDate = new Date();
 
-  if (isWithinFourWeeksAfterEndDate(currentDate)) {
+  // Hide entry form before competition opens (before Nov 2 midnight)
+  if (isBeforeCompetitionOpenDate(currentDate)) {
+    return <>{beforeCompetitionOpenContent}</>;
+  }
+
+  // Show closed content from Feb 1 to Mar 13, 2026
+  if (isAfterCompetitionEndDateAndBeforeEntriesClosedBannerEndDate(currentDate)) {
     return <>{closedCompetitionContent}</>;
   }
 
-  if (isAfterFourWeeksFromEndDate(currentDate)) {
+  // Hide everything after Mar 13, 2026
+  if (currentDate > ENTRIES_CLOSED_BANNER_END_DATE) {
     return null;
   }
 
+  // Show normal content during competition period
   return <>{children}</>;
 };
 
