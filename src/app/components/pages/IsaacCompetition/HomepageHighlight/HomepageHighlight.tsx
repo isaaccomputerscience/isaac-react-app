@@ -47,13 +47,13 @@ const HomepageHighlight = () => {
         <Col xs={12} className="text-center">
           {bannerContent.titleBelowSubtitle ? (
             <>
-              <h1 className="homepage-highlight-sub-title py-4">{bannerContent.subtitle}</h1>
-              <h1 className="homepage-highlight-title">{bannerContent.title}</h1>
+              <h1 className="homepage-highlight-sub-title px-4 pt-4 pb-2">{bannerContent.subtitle}</h1>
+              <h1 className="homepage-highlight-title px-4">{bannerContent.title}</h1>
             </>
           ) : (
             <>
-              <h1 className="homepage-highlight-title py-4">{bannerContent.title}</h1>
-              <h1 className="homepage-highlight-sub-title py-4">{bannerContent.subtitle}</h1>
+              <h1 className="homepage-highlight-title px-2 pt-4">{bannerContent.title}</h1>
+              <h1 className="homepage-highlight-sub-title px-2 pt-2 pb-2">{bannerContent.subtitle}</h1>
             </>
           )}
         </Col>

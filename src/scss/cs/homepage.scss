@@ -303,7 +303,7 @@
   background-color: #ffdf80;
 
   &-title {
-    font-size: 78px;
+    font-size: 40px;
     color: #120540;
     
     @include respond-below(md) {
@@ -324,7 +324,7 @@
     }
     
     @include respond-below(sm) {
-      font-size: 18px;
+      font-size: 15px;
     }
   }
 }
