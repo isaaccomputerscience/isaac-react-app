@@ -1,4 +1,5 @@
 //Expression of interest banner will be shown till midnight on 2 Nov 2025. Entries open banner will be displayed after this till COMPETITION_END_DATE
+//The competition entry form will be displayed on the Events -> National Competition page after this date.
 export const COMPETITION_OPEN_DATE = new Date("2025-11-02T23:59:59");
 
 //The Entries open banner will be displayed till midnight on 31 Jan 2026. Entries closed banner will be displayed after this till ENTRIES_CLOSED_BANNER_END_DATE
