@@ -191,7 +191,9 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                           }))
                         : []
                     }
-                    isDisabled={!selectedGroup || !selectedGroup.members || selectedGroup.members.length === 0}
+                    // isDisabled={!selectedGroup || !selectedGroup.members || selectedGroup.members.length === 0}
+                    //below code is consise version of the above code. Please revert to the above code if its confusing to read and understand. SonarQube complained about the above code.
+                    isDisabled={!selectedGroup?.members?.length}
                     closeMenuOnSelect={false}
                     maxMenuHeight={200}
                     styles={{
