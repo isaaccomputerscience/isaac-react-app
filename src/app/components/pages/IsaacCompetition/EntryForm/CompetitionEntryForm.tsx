@@ -54,7 +54,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
-    const elements = form.elements as HTMLFormControlsCollection;
+    const elements = form.elements;
     const groupId = (elements.namedItem("formGroup") as HTMLSelectElement).value;
     const selectedGroup = activeGroups.find((group) => group.groupName === groupId);
     const submissionLink = (elements.namedItem("submissionLink") as HTMLInputElement).value;
@@ -62,7 +62,9 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
 
     if (selectedGroup?.id && selectedMembers.length > 0) {
       // Convert selected member IDs from strings to numbers
-      const reservableIds = selectedMembers.map((memberId) => parseInt(memberId, 10)).filter((id) => !isNaN(id));
+      const reservableIds = selectedMembers
+        .map((memberId) => Number.parseInt(memberId, 10))
+        .filter((id) => !Number.isNaN(id));
       reserveUsersOnCompetition(COMPETITON_ID, reservableIds, submissionLink, groupName);
     }
 
@@ -70,6 +72,22 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
     setSelectedMembers([]);
     setSelectedGroupId(null);
     (elements.namedItem("formGroup") as HTMLSelectElement).selectedIndex = 0;
+  };
+
+  // Extract the nested ternary into a function
+  const getPlaceholderText = () => {
+    if (memberSelectionError) {
+      return memberSelectionError;
+    }
+
+    if (selectedGroup) {
+      if (selectedGroup.members && selectedGroup.members.length > 0) {
+        return "Choose students from your selected group";
+      }
+      return "No members found in this group";
+    }
+
+    return "Please select a group first";
   };
 
   return (
@@ -147,15 +165,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                     isMulti
                     required
                     isClearable
-                    placeholder={
-                      memberSelectionError
-                        ? memberSelectionError
-                        : selectedGroup
-                        ? selectedGroup.members && selectedGroup.members.length > 0
-                          ? "Choose students from your selected group"
-                          : "No members found in this group"
-                        : "Please select a group first"
-                    }
+                    placeholder={getPlaceholderText()}
                     value={
                       selectedGroup?.members
                         ? selectedGroup.members
