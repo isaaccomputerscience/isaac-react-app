@@ -5,10 +5,7 @@ import CompetitionButton from "../Buttons/CompetitionButton";
 import { selectors, useAppSelector } from "../../../../state";
 import { isStudent, isTeacher } from "../../../../services";
 import CompetitionWrapper from "../CompetitionWrapper";
-
-const STUDENT_MESSAGE = "Students, ask your teacher about submitting an entry.";
-const TEACHER_MESSAGE = "Teachers, login to submit a student project.";
-const CLOSED_MESSAGE = "Entries for this competition have now closed.";
+import { CLOSED_MESSAGE, STUDENT_MESSAGE, TEACHER_MESSAGE } from "../constants";
 
 const StudentMessage = () => (
   <Container>
@@ -39,6 +36,12 @@ interface EntryFormHandlerProps {
 const EntryFormHandler = ({ buttons, handleTermsClick }: EntryFormHandlerProps) => {
   const user = useAppSelector(selectors.user.orNull);
 
+  // EOI button configuration - same as HomepageHighlight
+  const eoiButton = {
+    to: "https://forms.office.com/e/23bsQuZfjm",
+    label: "Express your interest",
+  };
+
   const renderEntryForm = () => {
     if (isTeacher(user)) {
       return (
@@ -55,6 +58,13 @@ const EntryFormHandler = ({ buttons, handleTermsClick }: EntryFormHandlerProps) 
 
   return (
     <CompetitionWrapper
+      beforeCompetitionOpenContent={
+        <Container>
+          <Col className="d-flex flex-column align-items-start pb-4 pl-0" xs="auto">
+            <CompetitionButton buttons={[eoiButton]} />
+          </Col>
+        </Container>
+      }
       closedCompetitionContent={
         <Container>
           <Col className="d-flex flex-column align-items-start pb-4 pl-0" xs="auto">
