@@ -99,7 +99,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                 {targetUser && (
                   <FormGroup>
                     <Label className="entry-form-sub-title">
-                      School <span className="entry-form-asterisk">*</span>
+                      My current school or college <span className="entry-form-asterisk">*</span>
                     </Label>
                     <SchoolInput
                       disableInput={true}
@@ -113,7 +113,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
               </Col>
               <Col lg={6}>
                 <FormInput
-                  label="Link to a students' project"
+                  label="URL link to a students project"
                   type="text"
                   id="submissionLink"
                   required
@@ -122,7 +122,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                   onChange={(e) => setSubmissionLink(e.target.value)}
                 />
                 <FormInput
-                  label="Group"
+                  label="Select a group"
                   subLabel="Please ensure each group has no more than 4 students."
                   type="select"
                   id="formGroup"
@@ -135,8 +135,8 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                   activeGroups={activeGroups}
                   setSelectedGroup={(group) => setSelectedGroupId(group?.id || null)}
                 />
-                <Label className="w-100 pb-2">
-                  Select Group Members:
+                <Label className="entry-form-sub-title">
+                  Select student(s) <span className="entry-form-asterisk">*</span>
                   {memberSelectionError && (
                     <Alert color="danger" className="mb-2" style={{ zIndex: 9999, position: "relative" }}>
                       {memberSelectionError}
@@ -145,6 +145,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                   <Select
                     inputId="group-members-select"
                     isMulti
+                    required
                     isClearable
                     placeholder={
                       memberSelectionError
