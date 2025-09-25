@@ -187,17 +187,9 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
             <h2 className="py-3 entry-form-section-title">Your students</h2>
             <Row>
               <Col lg={12}>
-                <p className="mb-3">
-                  <button
-                    type="button"
-                    className="btn btn-link p-0 text-decoration-underline"
-                    onClick={() => {
-                      /* handle navigation to groups page */
-                    }}
-                  >
-                    Manage students and groups here.
-                  </button>
-                </p>
+                <a href="/groups" className="mb-3" style={{ color: "#1D70B8", textDecoration: "underline" }}>
+                  Manage students and groups here
+                </a>
               </Col>
             </Row>
             <Row>
