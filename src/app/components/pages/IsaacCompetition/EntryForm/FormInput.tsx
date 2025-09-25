@@ -13,6 +13,7 @@ interface FormInputProps {
   defaultValue?: string;
   required?: boolean;
   value?: string;
+  placeholder?: string;
   activeGroups?: AppGroup[];
   setSelectedGroup?: (group: AppGroup | null) => void;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -28,6 +29,7 @@ const FormInput = ({
   defaultValue,
   required = true,
   value,
+  placeholder,
   activeGroups = [],
   setSelectedGroup,
   onChange,
@@ -61,6 +63,7 @@ const FormInput = ({
           disabled={disabled}
           required={required}
           value={value}
+          placeholder={placeholder}
           onChange={onChange}
         />
       )}

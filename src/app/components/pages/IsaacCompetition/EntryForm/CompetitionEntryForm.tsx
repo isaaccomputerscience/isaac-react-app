@@ -166,7 +166,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                   disabled={false}
                   value={projectTitle}
                   onChange={(e) => setProjectTitle(e.target.value)}
-                  // placeholder="E.g., SmartLab"
+                  placeholder="E.g., SmartLab"
                 />
               </Col>
               <Col lg={6}>
@@ -178,7 +178,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                   disabled={false}
                   value={projectLink}
                   onChange={(e) => setProjectLink(e.target.value)}
-                  // placeholder="Add a link to a project saved in the cloud (e.g., Google Drive, Dropbox)"
+                  placeholder="Add a link to a project saved in the cloud (e.g., Google Drive, Dropbox)"
                 />
               </Col>
             </Row>
@@ -209,13 +209,15 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                 />
               </Col>
               <Col lg={6}>
-                <Label className="entry-form-sub-title">
-                  Select student(s) <span className="entry-form-asterisk">*</span>
-                  {memberSelectionError && (
-                    <Alert color="danger" className="mb-2" style={{ zIndex: 9999, position: "relative" }}>
-                      {memberSelectionError}
-                    </Alert>
-                  )}
+                <FormGroup>
+                  <Label className="entry-form-sub-title">
+                    Select student(s) <span className="entry-form-asterisk">*</span>
+                    {memberSelectionError && (
+                      <Alert color="danger" className="mb-2" style={{ zIndex: 9999, position: "relative" }}>
+                        {memberSelectionError}
+                      </Alert>
+                    )}
+                  </Label>
                   <Select
                     inputId="group-members-select"
                     isMulti
@@ -251,13 +253,20 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                     closeMenuOnSelect={false}
                     maxMenuHeight={200}
                     styles={{
+                      control: (provided) => ({
+                        ...provided,
+                        border: "1px solid #ced4da",
+                        borderRadius: "0.375rem",
+                        minHeight: "38px",
+                        backgroundColor: !selectedGroup?.members?.length ? "#f8f9fa" : "white",
+                      }),
                       menu: (provided) => ({
                         ...provided,
                         zIndex: 9998,
                       }),
                     }}
                   />
-                </Label>
+                </FormGroup>
               </Col>
             </Row>
 
