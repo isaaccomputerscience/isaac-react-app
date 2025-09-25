@@ -16,12 +16,20 @@ interface CompetitionEntryFormProps {
 const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) => {
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
+  const [projectTitle, setProjectTitle] = useState("");
+  const [projectLink, setProjectLink] = useState("");
   const activeGroups = useActiveGroups();
   const [getGroupMembers] = isaacApi.endpoints.getGroupMembers.useLazyQuery();
   const targetUser = useAppSelector(selectors.user.orNull);
   const reserveUsersOnCompetition = useReserveUsersOnCompetition();
-  const [submissionLink, setSubmissionLink] = useState("");
+  // const [submissionLink, setSubmissionLink] = useState("");
   const [memberSelectionError, setMemberSelectionError] = useState<string>("");
+  const [userToUpdate, setUserToUpdate] = useState(targetUser ? { ...targetUser, password: null } : { password: null });
+
+  // Create a wrapper function for setUserToUpdate
+  const handleUserUpdate = (user: any) => {
+    setUserToUpdate(user);
+  };
 
   // Get the selected group from activeGroups (which gets updated with members from Redux)
   const selectedGroup = selectedGroupId ? activeGroups.find((group) => group.id === selectedGroupId) || null : null;
@@ -49,7 +57,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
     setSelectedMembers(selectedValues);
   };
 
-  const isSubmitDisabled = !submissionLink || !selectedGroup || selectedMembers.length === 0;
+  const isSubmitDisabled = !projectTitle || !projectLink || !selectedGroup || selectedMembers.length === 0;
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -57,18 +65,17 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
     const elements = form.elements;
     const groupId = (elements.namedItem("formGroup") as HTMLSelectElement).value;
     const selectedGroup = activeGroups.find((group) => group.groupName === groupId);
-    const submissionLink = (elements.namedItem("submissionLink") as HTMLInputElement).value;
     const groupName = selectedGroup?.groupName;
 
     if (selectedGroup?.id && selectedMembers.length > 0) {
-      // Convert selected member IDs from strings to numbers
       const reservableIds = selectedMembers
         .map((memberId) => Number.parseInt(memberId, 10))
         .filter((id) => !Number.isNaN(id));
-      reserveUsersOnCompetition(COMPETITON_ID, reservableIds, submissionLink, groupName);
+      reserveUsersOnCompetition(COMPETITON_ID, reservableIds, projectLink, groupName);
     }
 
-    setSubmissionLink("");
+    setProjectTitle("");
+    setProjectLink("");
     setSelectedMembers([]);
     setSelectedGroupId(null);
     (elements.namedItem("formGroup") as HTMLSelectElement).selectedIndex = 0;
@@ -90,16 +97,21 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
     return "Please select a group first";
   };
 
+  // console.log("targetUser: ", targetUser);
+
   return (
     <div className="py-5">
       <div className="entry-form-background-img entry-form-section">
         <Container className="pb-2">
           <Form onSubmit={handleSubmit}>
             <h1 className="py-4 entry-form-title">Enter the competition</h1>
+
+            {/* Your account information section */}
+            <h2 className="py-3 entry-form-section-title">Your account information</h2>
             <Row className="d-flex flex-column flex-md-row">
               <Col lg={6}>
                 <FormInput
-                  label="First Name"
+                  label="First name"
                   type="text"
                   id="firstName"
                   required
@@ -107,12 +119,22 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                   defaultValue={targetUser?.loggedIn ? targetUser.givenName || "" : ""}
                 />
                 <FormInput
-                  label="Last Name"
+                  label="Last name"
                   type="text"
                   id="lastName"
                   required
                   disabled={true}
                   defaultValue={targetUser?.loggedIn ? targetUser?.familyName || "" : ""}
+                />
+              </Col>
+              <Col lg={6}>
+                <FormInput
+                  label="Email address"
+                  type="email"
+                  id="email"
+                  required
+                  disabled={true}
+                  defaultValue={targetUser?.loggedIn ? targetUser?.email || "" : ""}
                 />
                 {targetUser && (
                   <FormGroup>
@@ -120,28 +142,68 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                       My current school or college <span className="entry-form-asterisk">*</span>
                     </Label>
                     <SchoolInput
-                      disableInput={true}
-                      userToUpdate={{ ...targetUser, password: null }}
+                      userToUpdate={userToUpdate}
+                      setUserToUpdate={handleUserUpdate}
                       submissionAttempted={false}
-                      required
+                      disableInput={true}
+                      required={true}
                       showLabel={false}
                     />
                   </FormGroup>
                 )}
               </Col>
+            </Row>
+
+            {/* Project details section */}
+            <h2 className="py-3 entry-form-section-title">Project details</h2>
+            <Row>
               <Col lg={6}>
                 <FormInput
-                  label="URL link to a students project"
+                  label="Project title"
                   type="text"
-                  id="submissionLink"
+                  id="projectTitle"
                   required
                   disabled={false}
-                  value={submissionLink}
-                  onChange={(e) => setSubmissionLink(e.target.value)}
+                  value={projectTitle}
+                  onChange={(e) => setProjectTitle(e.target.value)}
+                  // placeholder="E.g., SmartLab"
                 />
+              </Col>
+              <Col lg={6}>
                 <FormInput
-                  label="Select a group"
-                  subLabel="Please ensure each group has no more than 4 students."
+                  label="Project link"
+                  type="url"
+                  id="projectLink"
+                  required
+                  disabled={false}
+                  value={projectLink}
+                  onChange={(e) => setProjectLink(e.target.value)}
+                  // placeholder="Add a link to a project saved in the cloud (e.g., Google Drive, Dropbox)"
+                />
+              </Col>
+            </Row>
+
+            {/* Your students section */}
+            <h2 className="py-3 entry-form-section-title">Your students</h2>
+            <Row>
+              <Col lg={12}>
+                <p className="mb-3">
+                  <button
+                    type="button"
+                    className="btn btn-link p-0 text-decoration-underline"
+                    onClick={() => {
+                      /* handle navigation to groups page */
+                    }}
+                  >
+                    Manage students and groups here.
+                  </button>
+                </p>
+              </Col>
+            </Row>
+            <Row>
+              <Col lg={6}>
+                <FormInput
+                  label="Select your student group"
                   type="select"
                   id="formGroup"
                   required
@@ -153,6 +215,8 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                   activeGroups={activeGroups}
                   setSelectedGroup={(group) => setSelectedGroupId(group?.id || null)}
                 />
+              </Col>
+              <Col lg={6}>
                 <Label className="entry-form-sub-title">
                   Select student(s) <span className="entry-form-asterisk">*</span>
                   {memberSelectionError && (
@@ -191,8 +255,6 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                           }))
                         : []
                     }
-                    // isDisabled={!selectedGroup || !selectedGroup.members || selectedGroup.members.length === 0}
-                    //below code is consise version of the above code. Please revert to the above code if its confusing to read and understand. SonarQube complained about the above code.
                     isDisabled={!selectedGroup?.members?.length}
                     closeMenuOnSelect={false}
                     maxMenuHeight={200}
@@ -204,25 +266,26 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                     }}
                   />
                 </Label>
-                <Row className="entry-form-button-label d-flex flex-column flex-md-row">
-                  <Col xs="auto">
-                    <Input
-                      className="btn-sm entry-form-button"
-                      type="submit"
-                      value="Submit"
-                      disabled={isSubmitDisabled}
-                    />
-                  </Col>
-                  <Col className="pl-0 mt-2 ml-3 mt-md-0">
-                    <Label>
-                      By entering the National Computer Science Competition you agree to the{" "}
-                      <a href="#terms-and-conditions" onClick={handleTermsClick}>
-                        Terms and Conditions
-                      </a>
-                      .
-                    </Label>
-                  </Col>
-                </Row>
+              </Col>
+            </Row>
+
+            <Row className="entry-form-button-label d-flex flex-column flex-md-row">
+              <Col xs="auto">
+                <Input
+                  className="btn-sm entry-form-button"
+                  type="submit"
+                  value="Submit competition entry"
+                  disabled={isSubmitDisabled}
+                />
+              </Col>
+              <Col className="pl-0 mt-2 ml-3 mt-md-0">
+                <Label>
+                  By entering the National Computer Science Competition you agree to the{" "}
+                  <a href="#terms-and-conditions" onClick={handleTermsClick}>
+                    Terms and Conditions
+                  </a>
+                  .
+                </Label>
               </Col>
             </Row>
           </Form>
