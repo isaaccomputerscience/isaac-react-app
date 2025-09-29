@@ -282,7 +282,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
               <Col className="pl-0 mt-2 ml-3 mt-md-0">
                 <Label>
                   By entering the National Computer Science Competition you agree to the{" "}
-                  <a href="#terms-and-conditions" onClick={handleTermsClick}>
+                  <a href="#terms-and-conditions" onClick={handleTermsClick} style={{ color: "#1D70B8" }}>
                     Terms and Conditions
                   </a>
                   .
