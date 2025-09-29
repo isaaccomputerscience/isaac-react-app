@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Row, Col, Container, FormGroup, Label, Input, Alert } from "reactstrap";
+import { Form, Row, Col, Container, FormGroup, Label, Input, Alert, Button } from "reactstrap";
 import { isaacApi, useAppSelector } from "../../../../state";
 import { selectors } from "../../../../state/selectors";
 import { SchoolInput } from "../../../elements/inputs/SchoolInput";
@@ -280,15 +280,13 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                 </Label>
               </Col>
             </Row>
-            <Row className="entry-form-button-label justify-content-center mb-5">
-              {/* <Col xs="auto"> */}
+            <Row className="entry-form-button-label justify-content-center inline-block mb-5">
               <Input
-                className="btn-sm entry-form-button px-6"
+                className="btn btn-xl btn-secondary border-0 form-control"
                 type="submit"
-                value="Submit competition entry"
                 disabled={isSubmitDisabled}
+                value="Submit competition entry"
               />
-              {/* </Col> */}
             </Row>
           </Form>
         </Container>
