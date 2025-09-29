@@ -179,10 +179,14 @@
     background-color: #d60265;
     color: white !important;
     border: none !important;
-    width: 109px;
+    width: auto;
     height: 48px;
     font-size: 18px;
     font-family: "dm-sans-light", DMSans-Light, sans-serif;
+
+    @media (min-width: 1024px) {
+      min-width: 500px;
+    }
   }
 
   &-button-label {

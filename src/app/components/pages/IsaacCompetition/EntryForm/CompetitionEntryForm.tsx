@@ -269,17 +269,8 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                 </FormGroup>
               </Col>
             </Row>
-
-            <Row className="entry-form-button-label d-flex flex-column flex-md-row">
-              <Col xs="auto">
-                <Input
-                  className="btn-sm entry-form-button"
-                  type="submit"
-                  value="Submit competition entry"
-                  disabled={isSubmitDisabled}
-                />
-              </Col>
-              <Col className="pl-0 mt-2 ml-3 mt-md-0">
+            <Row className="justify-content-center mt-4">
+              <Col className="text-center">
                 <Label>
                   By entering the National Computer Science Competition you agree to the{" "}
                   <a href="#terms-and-conditions" onClick={handleTermsClick} style={{ color: "#1D70B8" }}>
@@ -288,6 +279,16 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                   .
                 </Label>
               </Col>
+            </Row>
+            <Row className="entry-form-button-label justify-content-center mb-5">
+              {/* <Col xs="auto"> */}
+              <Input
+                className="btn-sm entry-form-button px-6"
+                type="submit"
+                value="Submit competition entry"
+                disabled={isSubmitDisabled}
+              />
+              {/* </Col> */}
             </Row>
           </Form>
         </Container>
