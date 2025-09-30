@@ -8,6 +8,7 @@ import { useReserveUsersOnCompetition } from "./useReserveUsersOnCompetition";
 import { useActiveGroups } from "./useActiveGroups";
 import Select from "react-select";
 import CustomTooltip from "../../../elements/CustomTooltip";
+// import { validateUserSchool } from "../../../../services/validation";
 
 const COMPETITON_ID = "20250131_isaac_competition";
 interface CompetitionEntryFormProps {
@@ -19,6 +20,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
   const [projectTitle, setProjectTitle] = useState("");
   const [projectLink, setProjectLink] = useState("");
+  const [submissionAttempted, setSubmissionAttempted] = useState(false); // Add this state
   const activeGroups = useActiveGroups();
   const [getGroupMembers] = isaacApi.endpoints.getGroupMembers.useLazyQuery();
   const targetUser = useAppSelector(selectors.user.orNull);
@@ -30,6 +32,22 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
   // Create a wrapper function for setUserToUpdate
   const handleUserUpdate = (user: any) => {
     setUserToUpdate(user);
+  };
+
+  // Create a custom school validation for the competition
+  const isSchoolValidForCompetition = () => {
+    if (!userToUpdate) return false;
+
+    // Check if user has explicitly selected "not associated with school"
+    if ((userToUpdate as any).schoolOther === "N/A") {
+      return false; // Competition requires a school
+    }
+
+    // Check if user has a valid school ID or manually entered school
+    return !!(
+      (userToUpdate as any).schoolId ||
+      ((userToUpdate as any).schoolOther && (userToUpdate as any).schoolOther !== "N/A")
+    );
   };
 
   // Get the selected group from activeGroups (which gets updated with members from Redux)
@@ -58,10 +76,20 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
     setSelectedMembers(selectedValues);
   };
 
-  const isSubmitDisabled = !projectTitle || !projectLink || !selectedGroup || selectedMembers.length === 0;
+  // Update the validation logic to use the custom validation
+  const isSchoolValid = isSchoolValidForCompetition();
+  const isSubmitDisabled =
+    !projectTitle || !projectLink || !selectedGroup || selectedMembers.length === 0 || !isSchoolValid;
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    setSubmissionAttempted(true); // Set this when form is submitted
+
+    // Check if school is valid before proceeding
+    if (!isSchoolValid) {
+      return; // Don't submit if school is not valid
+    }
+
     const form = event.target as HTMLFormElement;
     const elements = form.elements;
     const groupId = (elements.namedItem("formGroup") as HTMLSelectElement).value;
@@ -143,11 +171,18 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                     <SchoolInput
                       userToUpdate={userToUpdate}
                       setUserToUpdate={handleUserUpdate}
-                      submissionAttempted={false}
+                      submissionAttempted={submissionAttempted} // Pass the submission state
                       disableInput={true}
                       required={true}
                       showLabel={false}
                     />
+                    {/* Show error message immediately when school is invalid */}
+                    {!isSchoolValid && (
+                      <Alert color="danger" className="mt-2">
+                        <strong>Please update your account details to specify your school or college.</strong> Only
+                        teachers and students from state-funded schools in England are eligible to participate.
+                      </Alert>
+                    )}
                   </FormGroup>
                 )}
               </Col>
