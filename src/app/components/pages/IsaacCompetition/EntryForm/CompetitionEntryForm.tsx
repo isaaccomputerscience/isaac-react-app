@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Row, Col, Container, FormGroup, Label, Input, Alert, Button } from "reactstrap";
+import { Form, Row, Col, Container, FormGroup, Label, Input, Alert } from "reactstrap";
 import { isaacApi, useAppSelector } from "../../../../state";
 import { selectors } from "../../../../state/selectors";
 import { SchoolInput } from "../../../elements/inputs/SchoolInput";
@@ -7,6 +7,7 @@ import FormInput from "./FormInput";
 import { useReserveUsersOnCompetition } from "./useReserveUsersOnCompetition";
 import { useActiveGroups } from "./useActiveGroups";
 import Select from "react-select";
+import CustomTooltip from "../../../elements/CustomTooltip";
 
 const COMPETITON_ID = "20250131_isaac_competition";
 interface CompetitionEntryFormProps {
@@ -97,8 +98,6 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
     return "Please select a group first";
   };
 
-  // console.log("targetUser: ", targetUser);
-
   return (
     <div className="py-5">
       <div className="entry-form-background-img entry-form-section">
@@ -179,6 +178,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                   value={projectLink}
                   onChange={(e) => setProjectLink(e.target.value)}
                   placeholder="Add a link to a project saved in the cloud (e.g., Google Drive, Dropbox)"
+                  tooltipMessage="Upload your project to cloud storage (e.g., Google Drive, OneDrive, Dropbox) and paste the share link here. The link must be set to 'Anyone with the link can view'."
                 />
               </Col>
             </Row>
@@ -206,12 +206,17 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                   ]}
                   activeGroups={activeGroups}
                   setSelectedGroup={(group) => setSelectedGroupId(group?.id || null)}
+                  tooltipMessage="Choose one of the groups you have created that includes the student(s) who worked on the project. If no groups are available, go to Teachers > Manage Groups to create one and invite students to join."
                 />
               </Col>
               <Col lg={6}>
                 <FormGroup>
                   <Label className="entry-form-sub-title">
                     Select student(s) <span className="entry-form-asterisk">*</span>
+                    <CustomTooltip
+                      id="student-selection-tooltip"
+                      message="Choose 1-4 students from the selected group who worked on the submitted project."
+                    />
                     {memberSelectionError && (
                       <Alert color="danger" className="mb-2" style={{ zIndex: 9999, position: "relative" }}>
                         {memberSelectionError}

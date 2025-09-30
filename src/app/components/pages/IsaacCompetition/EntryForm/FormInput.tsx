@@ -2,6 +2,7 @@ import React from "react";
 import { FormGroup, Label, Input } from "reactstrap";
 import { InputType } from "reactstrap/es/Input";
 import { AppGroup } from "../../../../../IsaacAppTypes";
+import CustomTooltip from "../../../elements/CustomTooltip";
 
 interface FormInputProps {
   label: string;
@@ -17,6 +18,7 @@ interface FormInputProps {
   activeGroups?: AppGroup[];
   setSelectedGroup?: (group: AppGroup | null) => void;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  tooltipMessage?: string;
 }
 
 const FormInput = ({
@@ -33,11 +35,13 @@ const FormInput = ({
   activeGroups = [],
   setSelectedGroup,
   onChange,
+  tooltipMessage,
 }: FormInputProps) => {
   return (
     <FormGroup>
       <Label className="entry-form-sub-title">
         {label} {required && <span className="entry-form-asterisk">*</span>}
+        {tooltipMessage && <CustomTooltip id={`${id}-tooltip`} message={tooltipMessage} />}
       </Label>
       {subLabel && <div className="entry-form-sub-title">{subLabel}</div>}
       {type === "select" ? (
