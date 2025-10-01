@@ -328,7 +328,7 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
             </Row>
             <Row className="entry-form-button-label justify-content-center inline-block mb-5">
               <Input
-                className="btn entry-form-button btn-secondary border-0 form-control"
+                className="btn entry-form-button"
                 type="submit"
                 disabled={isSubmitDisabled}
                 value="Submit competition entry"
