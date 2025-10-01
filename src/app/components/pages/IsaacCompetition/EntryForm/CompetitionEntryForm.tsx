@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Row, Col, Container, FormGroup, Label, Input, Alert } from "reactstrap";
+import { Form, Row, Col, Container, FormGroup, Label, Input, Alert, FormFeedback } from "reactstrap";
 import { isaacApi, useAppSelector } from "../../../../state";
 import { selectors } from "../../../../state/selectors";
 import { SchoolInput } from "../../../elements/inputs/SchoolInput";
@@ -176,12 +176,18 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                       required={true}
                       showLabel={false}
                     />
-                    {/* Show error message immediately when school is invalid */}
+                    {/* Tooltip using competition-specific CSS classes */}
                     {!isSchoolValid && (
-                      <Alert color="danger" className="mt-2">
-                        <strong>Please update your account details to specify your school or college.</strong> Only
-                        teachers and students from state-funded schools in England are eligible to participate.
-                      </Alert>
+                      <div className="entry-form-validation-tooltip">
+                        <div className="tooltip-content">
+                          <div className="tooltip-arrow"></div>
+                          <div className="tooltip-icon">!</div>
+                          <div className="tooltip-text">
+                            Please <a href="/account">update</a> your account details to specify your school or college.
+                            Only teachers and students from state-funded schools in England are eligible to participate.
+                          </div>
+                        </div>
+                      </div>
                     )}
                   </FormGroup>
                 )}
