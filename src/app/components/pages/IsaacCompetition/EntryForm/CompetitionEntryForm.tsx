@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Row, Col, Container, FormGroup, Label, Input, Alert, FormFeedback } from "reactstrap";
+import { Form, Row, Col, Container, FormGroup, Label, Input, Alert } from "reactstrap";
 import { isaacApi, useAppSelector } from "../../../../state";
 import { selectors } from "../../../../state/selectors";
 import { SchoolInput } from "../../../elements/inputs/SchoolInput";
@@ -249,6 +249,18 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                   setSelectedGroup={(group) => setSelectedGroupId(group?.id || null)}
                   tooltipMessage="Choose one of the groups you have created that includes the student(s) who worked on the project. If no groups are available, go to Teachers > Manage Groups to create one and invite students to join."
                 />
+                {activeGroups.length === 0 && (
+                  <div className="entry-form-validation-tooltip">
+                    <div className="tooltip-content">
+                      <div className="tooltip-arrow"></div>
+                      <div className="tooltip-icon">!</div>
+                      <div className="tooltip-text">
+                        You have not created any groups. Please <a href="/groups">create a group here first</a> and
+                        invite students to join.
+                      </div>
+                    </div>
+                  </div>
+                )}
               </Col>
               <Col lg={6}>
                 <FormGroup>
