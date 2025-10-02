@@ -234,29 +234,66 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
               </Col>
             </Row>
             <Row>
-              <Col lg={6}>
-                <FormInput
-                  label="Select your student group"
-                  type="select"
-                  id="formGroup"
-                  required
-                  disabled={false}
-                  options={[
-                    "Choose from the groups you've created or create one first",
-                    ...activeGroups.map((group) => group.groupName || ""),
-                  ]}
-                  activeGroups={activeGroups}
-                  setSelectedGroup={(group) => setSelectedGroupId(group?.id || null)}
-                  tooltipMessage="Choose one of the groups you have created that includes the student(s) who worked on the project. If no groups are available, go to Teachers > Manage Groups to create one and invite students to join."
-                />
+              <Col lg={6} className="basic-multi-select">
+                <FormGroup>
+                  <Label className="entry-form-sub-title">
+                    Select your student group <span className="entry-form-asterisk">*</span>
+                    <CustomTooltip
+                      id="student-group-tooltip"
+                      message="Choose one of the groups you have created that includes the student(s) who worked on the project. If no groups are available, go to Teachers > Manage Groups to create one and invite students to join."
+                    />
+                  </Label>
+                  <Select
+                    isClearable
+                    placeholder="Choose from the groups you've created or create one first"
+                    value={
+                      selectedGroupId
+                        ? activeGroups.find((group) => group.id === selectedGroupId)
+                          ? {
+                              value: selectedGroupId,
+                              label: activeGroups.find((group) => group.id === selectedGroupId)?.groupName || "",
+                            }
+                          : null
+                        : null
+                    }
+                    onChange={(selectedOption) => {
+                      if (selectedOption) {
+                        setSelectedGroupId(selectedOption.value);
+                      } else {
+                        setSelectedGroupId(null);
+                      }
+                    }}
+                    options={activeGroups
+                      .filter((group) => group.id !== undefined)
+                      .map((group) => ({
+                        value: group.id!,
+                        label: group.groupName || "",
+                      }))}
+                    noOptionsMessage={() => "No options"}
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    styles={{
+                      control: (provided) => ({
+                        ...provided,
+                        border: "1px solid #ced4da",
+                        borderRadius: "0.375rem",
+                        minHeight: "38px",
+                        backgroundColor: "white",
+                      }),
+                    }}
+                  />
+                </FormGroup>
                 {activeGroups.length === 0 && (
                   <div className="entry-form-validation-tooltip">
                     <div className="tooltip-content">
                       <div className="tooltip-arrow"></div>
                       <div className="tooltip-icon">!</div>
-                      <div className="tooltip-text">
-                        You have not created any groups. Please <a href="/groups">create a group here first</a> and
-                        invite students to join.
+                      <div className="tooltip-text" style={{ color: "#000" }}>
+                        You have not created any groups. Please{" "}
+                        <a href="/groups" style={{ color: "#1D70B8", textDecoration: "underline" }}>
+                          create a group here first
+                        </a>{" "}
+                        and invite students to join.
                       </div>
                     </div>
                   </div>
