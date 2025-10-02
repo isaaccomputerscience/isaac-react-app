@@ -38,7 +38,7 @@ const ReservationsModal = () => {
     if (!selectedGroup && sortedActiveGroups && sortedActiveGroups.length > 0) {
       setSelectedGroupId(sortedActiveGroups[0].id);
     }
-  }, [sortedActiveGroups]);
+  }, [sortedActiveGroups, selectedGroup]);
 
   const selectedEvent = useAppSelector(
       (state: AppState) => (state && state.currentEvent !== NOT_FOUND && state.currentEvent) || null,
@@ -87,19 +87,20 @@ const ReservationsModal = () => {
     if (selectedEvent && selectedEvent.id && selectedGroup && selectedGroup.id) {
       dispatch(getEventBookingsForGroup(selectedEvent.id, selectedGroup.id));
     }
-  }, [dispatch, selectedEvent, selectedGroup]);
+  }, [dispatch, selectedEvent, selectedGroup, getGroupMembers]);
 
   // FIXED: Only set cancel reservation checkboxes based on active bookings
   useEffect(() => {
-    const bookedUserIds = modifiedBookingsForAllGroups
-        .filter((booking) => booking.bookingStatus !== "CANCELLED")
-        .map((booking) => booking.userBooked && booking.userBooked.id);
+    const bookedUserIds = new Set(
+        modifiedBookingsForAllGroups
+            .filter((booking) => booking.bookingStatus !== "CANCELLED")
+            .map((booking) => booking.userBooked && booking.userBooked.id)
+            .filter((id): id is number => id !== null && id !== undefined),
+    );
 
     const newCancelReservationCheckboxes: boolean[] = [];
     for (const userId of bookedUserIds) {
-      if (userId) {
-        newCancelReservationCheckboxes[userId] = false;
-      }
+      newCancelReservationCheckboxes[userId] = false;
     }
     setCancelReservationCheckboxes(newCancelReservationCheckboxes);
   }, [modifiedBookingsForAllGroups]);
@@ -107,24 +108,26 @@ const ReservationsModal = () => {
   // FIXED: Calculate unbooked users from group members, excluding only ACTIVE bookings
   useEffect(() => {
     if (selectedGroup && selectedGroup.members) {
-      // Get IDs of users with ACTIVE (non-cancelled) bookings
-      const bookedUserIds = eventBookingsForGroup
-          .filter((booking) => booking.bookingStatus !== "CANCELLED")
-          .map((booking) => booking.userBooked && booking.userBooked.id);
+      // Get IDs of users with ACTIVE (non-cancelled) bookings as a Set for efficient lookup
+      const bookedUserIds = new Set(
+          eventBookingsForGroup
+              .filter((booking) => booking.bookingStatus !== "CANCELLED")
+              .map((booking) => booking.userBooked && booking.userBooked.id)
+              .filter((id): id is number => id !== null && id !== undefined),
+      );
 
-      // AUX list of unbooked users from ALL group members
-      // and
-      // exclude users who have ACTIVE bookings
+      // Build list of unbooked users from ALL group members
+      // Only exclude users who have ACTIVE bookings
       const newUnbookedUsers = _orderBy(
           selectedGroup.members
-              .filter((member) => !bookedUserIds.includes(member.id as number))
+              .filter((member) => !bookedUserIds.has(member.id as number))
               // do not allow the reservation of teachers on a student only event
               .filter((member) => !(selectedEvent?.isStudentOnly && member.role !== "STUDENT")),
           ["authorisedFullAccess", "familyName", "givenName"],
           ["desc", "asc", "asc"],
       );
 
-      // Fix the render issue of click position for checkboxes
+      // Initialize checkboxes for ALL unbooked users
       const newUserCheckboxes: { [key: number]: boolean } = {};
       for (const user of newUnbookedUsers) {
         if (user.id) {
@@ -151,8 +154,8 @@ const ReservationsModal = () => {
     setCheckAllCheckbox(!checkAllCheckbox);
     const checkboxes = { ...userCheckboxes };
     for (const id in userCheckboxes) {
-      if (unbookedUsersById[id].emailVerificationStatus === "VERIFIED") {
-        checkboxes[id] = !checkAllCheckbox;
+      if (unbookedUsersById[parseInt(id)].emailVerificationStatus === "VERIFIED") {
+        checkboxes[parseInt(id)] = !checkAllCheckbox;
       }
     }
     setUserCheckboxes(checkboxes);
@@ -172,7 +175,7 @@ const ReservationsModal = () => {
     setCheckAllCancelReservationsCheckbox(!checkAllCancelReservationsCheckbox);
     const checkboxes = { ...cancelReservationCheckboxes };
     for (const id in cancelReservationCheckboxes) {
-      checkboxes[id] = !checkAllCancelReservationsCheckbox;
+      checkboxes[parseInt(id)] = !checkAllCancelReservationsCheckbox;
     }
     setCancelReservationCheckboxes(checkboxes);
   };
@@ -215,7 +218,9 @@ const ReservationsModal = () => {
       const candidateBookings = Object.entries(userCheckboxes)
           .filter(([, selected]) => selected)
           // teachers should not count toward student event limits
-          .filter(([id]) => !selectedEvent.isAStudentEvent || unbookedUsersById[id as any]?.role === "STUDENT");
+          .filter(
+              ([id]) => !selectedEvent.isAStudentEvent || unbookedUsersById[parseInt(id)]?.role === "STUDENT",
+          );
 
       return candidateBookings.length + bookings.length > selectedEvent.groupReservationLimit;
     }
