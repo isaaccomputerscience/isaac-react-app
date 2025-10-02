@@ -218,7 +218,7 @@ const ReservationsModal = () => {
       const candidateBookings = Object.entries(userCheckboxes)
         .filter(([, selected]) => selected)
         // teachers should not count toward student event limits
-        .filter(([id]) => !selectedEvent.isAStudentEvent || unbookedUsersById[Number.parseInt(id)]?.role === "STUDENT",);
+        .filter(([id]) => !selectedEvent.isAStudentEvent || unbookedUsersById[Number.parseInt(id)]?.role === "STUDENT");
 
       return candidateBookings.length + bookings.length > selectedEvent.groupReservationLimit;
     }
