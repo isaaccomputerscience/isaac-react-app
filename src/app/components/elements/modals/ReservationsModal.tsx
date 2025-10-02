@@ -335,8 +335,8 @@ const ReservationsModal = () => {
                                 {!booking.reservedById
                                   ? ""
                                   : booking.reservedById === user?.id
-                                    ? "You"
-                                    : "Someone else"}
+                                  ? "You"
+                                  : "Someone else"}
                               </td>
                             </tr>
                           )
