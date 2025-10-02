@@ -89,7 +89,7 @@ const ReservationsModal = () => {
     }
   }, [dispatch, selectedEvent, selectedGroup, getGroupMembers]);
 
-  // FIXED: Only set cancel reservation checkboxes based on active bookings
+  // Cancel reservation checkboxes to be set based on active bookings
   useEffect(() => {
     const bookedUserIds = new Set(
       modifiedBookingsForAllGroups
@@ -105,10 +105,10 @@ const ReservationsModal = () => {
     setCancelReservationCheckboxes(newCancelReservationCheckboxes);
   }, [modifiedBookingsForAllGroups]);
 
-  // FIXED: Calculate unbooked users from group members, excluding only ACTIVE bookings
+  // Populate unbooked users from group members excluding only ACTIVE bookings
   useEffect(() => {
     if (selectedGroup?.members) {
-      // Get IDs of users with ACTIVE (non-cancelled) bookings as a Set for efficient lookup
+      // Get IDs of users with not CANCELLED bookings
       const bookedUserIds = new Set(
         eventBookingsForGroup
           .filter((booking) => booking.bookingStatus !== "CANCELLED")
@@ -218,9 +218,7 @@ const ReservationsModal = () => {
       const candidateBookings = Object.entries(userCheckboxes)
         .filter(([, selected]) => selected)
         // teachers should not count toward student event limits
-        .filter(
-          ([id]) =>
-            !selectedEvent.isAStudentEvent || unbookedUsersById[Number.parseInt(id)]?.role === "STUDENT",
+        .filter(([id]) => !selectedEvent.isAStudentEvent || unbookedUsersById[Number.parseInt(id)]?.role === "STUDENT",
         );
 
       return candidateBookings.length + bookings.length > selectedEvent.groupReservationLimit;
