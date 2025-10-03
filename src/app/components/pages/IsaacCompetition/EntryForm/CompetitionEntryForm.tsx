@@ -69,6 +69,12 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
 
     if (selectedValues.length > 4) {
       setMemberSelectionError("You can only select up to 4 students");
+
+      // Clear the error after 3 seconds
+      setTimeout(() => {
+        setMemberSelectionError("");
+      }, 3000);
+
       return;
     }
 
