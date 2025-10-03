@@ -15,7 +15,7 @@ interface CompetitionEntryFormProps {
   handleTermsClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }
 
-const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) => {
+export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) => {
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
   const [projectTitle, setProjectTitle] = useState("");
@@ -134,7 +134,13 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
             <h1 className="py-4 entry-form-title">Enter the competition</h1>
 
             {/* Your account information section */}
-            <h2 className="py-3 entry-form-section-title">Your account information</h2>
+            <h2 className="py-3 entry-form-section-title">
+              Your account information (
+              <a href="/account" style={{ color: "#FF3A6E", textDecoration: "underline" }}>
+                update
+              </a>
+              )
+            </h2>
             <Row className="d-flex flex-column flex-md-row">
               <Col lg={6}>
                 <FormInput
@@ -225,10 +231,10 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
             </Row>
 
             {/* Your students section */}
-            <h2 className="py-3 entry-form-section-title">Your students</h2>
+            <h2 className="pt-3 pb-2 entry-form-section-title mb-0">Your students</h2>
             <Row>
               <Col lg={12}>
-                <a href="/groups" className="mb-3" style={{ color: "#1D70B8", textDecoration: "underline" }}>
+                <a href="/groups" className="mb-4" style={{ color: "#1D70B8", textDecoration: "underline" }}>
                   Manage students and groups here
                 </a>
               </Col>
@@ -293,7 +299,14 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                         <a href="/groups" style={{ color: "#1D70B8", textDecoration: "underline" }}>
                           create a group here first
                         </a>{" "}
-                        and invite students to join.
+                        and invite students to join. For guidance, see our{" "}
+                        <a
+                          href="https://isaaccomputerscience.org/support/teacher/assignments#create_group"
+                          style={{ color: "#1D70B8", textDecoration: "underline" }}
+                        >
+                          FAQ for teachers
+                        </a>
+                        .
                       </div>
                     </div>
                   </div>
@@ -397,9 +410,9 @@ const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormProps) =
                 </Label>
               </Col>
             </Row>
-            <Row className="entry-form-button-label justify-content-center inline-block mb-5">
+            <Row className="entry-form-button-label justify-content-center inline-block mb-5 pt-3">
               <Input
-                className="btn entry-form-button"
+                className="btn btn-block btn-secondary border-0 form-control"
                 type="submit"
                 disabled={isSubmitDisabled}
                 value="Submit competition entry"
