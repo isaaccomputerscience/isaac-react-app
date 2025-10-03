@@ -85,6 +85,8 @@ const FormInput = ({
           value={value}
           placeholder={placeholder}
           onChange={onChange}
+          className={id === "projectTitle" || id === "projectLink" ? "white-bg" : undefined}
+          autoComplete={id === "projectTitle" || id === "projectLink" ? "off" : undefined}
         />
       )}
     </FormGroup>
