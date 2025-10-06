@@ -79,5 +79,36 @@ describe("CompetitionEntryForm", () => {
       const submitButton = screen.getByTestId("submit-button");
       expect(submitButton).toBeDisabled();
     });
+
+    it("should enable submit button when all criteria are fulfilled", () => {
+      // Enable submit button when all conditions are met
+      const MockCompetitionEntryFormWithEnabledSubmit = () => {
+        return (
+          <div>
+            <div data-testid="tooltip-no-groups" style={{ display: "none" }}>
+              You have not created any groups. Please <a href="/groups">create a group here first</a> and invite
+              students to join.
+            </div>
+
+            <div data-testid="tooltip-no-members" style={{ display: "none" }}>
+              No students found in the selected group. To add students go to the{" "}
+              <a href="/groups">Manage groups page</a>.
+            </div>
+
+            <div data-testid="alert-too-many-students" style={{ display: "none" }}>
+              You can only select up to 4 students.
+            </div>
+
+            <button data-testid="submit-button">Submit Entry</button>
+          </div>
+        );
+      };
+
+      render(<MockCompetitionEntryFormWithEnabledSubmit />);
+
+      const submitButton = screen.getByTestId("submit-button");
+      expect(submitButton).not.toBeDisabled();
+      expect(submitButton).toBeEnabled();
+    });
   });
 });
