@@ -65,6 +65,26 @@ describe("CompetitionEntryForm", () => {
   };
 
   describe("Basic rendering", () => {
+    it("should update project title when user types", async () => {
+      const user = userEvent.setup();
+      setupTest();
+
+      const projectTitleInput = screen.getByPlaceholderText("E.g., SmartLab");
+      await user.type(projectTitleInput, "My Project");
+
+      expect(projectTitleInput).toHaveValue("My Project");
+    });
+
+    it("should update project link when user types", async () => {
+      const user = userEvent.setup();
+      setupTest();
+
+      const projectLinkInput = screen.getByPlaceholderText(/Add a link to a project saved in the cloud/);
+      await user.type(projectLinkInput, "https://example.com");
+
+      expect(projectLinkInput).toHaveValue("https://example.com");
+    });
+
     it("should have correct hyperlinks", () => {
       setupTest();
       const updateAccountLinks = screen.getAllByText("update");
