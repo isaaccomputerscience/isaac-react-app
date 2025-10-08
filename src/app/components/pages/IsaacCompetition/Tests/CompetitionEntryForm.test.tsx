@@ -464,28 +464,5 @@ describe("CompetitionEntryForm", () => {
         expect(asterisk).toBeInTheDocument();
       });
     });
-
-    // it("should prepopulate account information fields with user data", () => {
-    //   setupTest();
-
-    //   // Check that the account information fields are present and disabled
-    //   const firstNameInput = screen.getByRole("textbox", { name: /First name/ });
-    //   const lastNameInput = screen.getByRole("textbox", { name: /Last name/ });
-    //   const emailInput = screen.getByRole("textbox", { name: /Email address/ });
-
-    //   // Verify all fields are present and disabled
-    //   expect(firstNameInput).toBeInTheDocument();
-    //   expect(lastNameInput).toBeInTheDocument();
-    //   expect(emailInput).toBeInTheDocument();
-
-    //   // Check that the fields are disabled (they should be read-only)
-    //   expect(firstNameInput).toBeDisabled();
-    //   expect(lastNameInput).toBeDisabled();
-    //   expect(emailInput).toBeDisabled();
-
-    //   // Check that the school field shows the user's school data
-    //   const schoolInput = screen.getByTestId("school-select");
-    //   expect(schoolInput).toHaveValue("N/A"); // mockUser has schoolOther: "N/A"
-    // });
   });
 });
