@@ -8,7 +8,6 @@ import { useReserveUsersOnCompetition } from "./useReserveUsersOnCompetition";
 import { useActiveGroups } from "./useActiveGroups";
 import Select from "react-select";
 import CustomTooltip from "../../../elements/CustomTooltip";
-// import { validateUserSchool } from "../../../../services/validation";
 
 const COMPETITON_ID = "20250131_isaac_competition";
 interface CompetitionEntryFormProps {
@@ -25,7 +24,6 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
   const [getGroupMembers] = isaacApi.endpoints.getGroupMembers.useLazyQuery();
   const targetUser = useAppSelector(selectors.user.orNull);
   const reserveUsersOnCompetition = useReserveUsersOnCompetition();
-  // const [submissionLink, setSubmissionLink] = useState("");
   const [memberSelectionError, setMemberSelectionError] = useState<string>("");
   const [userToUpdate, setUserToUpdate] = useState(targetUser ? { ...targetUser, password: null } : { password: null });
 
@@ -101,9 +99,8 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
 
     if (selectedGroupObj?.id && selectedMembers.length > 0) {
       const reservableIds = selectedMembers
-          .map((memberId) => Number.parseInt(memberId, 10))
-          .filter((id) => !Number.isNaN(id));
-
+        .map((memberId) => Number.parseInt(memberId, 10))
+        .filter((id) => !Number.isNaN(id));
 
       reserveUsersOnCompetition(
           COMPETITON_ID,
@@ -137,6 +134,17 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
     return "Please select a group first";
   };
 
+  function getSelectedGroup() {
+    return selectedGroupId
+        ? activeGroups.find((group) => group.id === selectedGroupId)
+            ? {
+              value: selectedGroupId,
+              label: activeGroups.find((group) => group.id === selectedGroupId)?.groupName || "",
+            }
+            : null
+        : null;
+  }
+
   return (
     <div className="py-5">
       <div className="entry-form-background-img entry-form-section">
@@ -147,9 +155,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
             {/* Your account information section */}
             <h2 className="py-3 entry-form-section-title">
               Your account information (
-              <a href="/account" style={{ color: "#FF3A6E", textDecoration: "underline" }}>
-                update
-              </a>
+                <a href="/account" style={{ color: "#FF3A6E", textDecoration: "underline" }}>update</a>
               )
             </h2>
             <Row className="d-flex flex-column flex-md-row">
@@ -264,14 +270,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                     isClearable
                     placeholder="Choose from the groups you've created or create one first"
                     value={
-                      selectedGroupId
-                        ? activeGroups.find((group) => group.id === selectedGroupId)
-                          ? {
-                              value: selectedGroupId,
-                              label: activeGroups.find((group) => group.id === selectedGroupId)?.groupName || "",
-                            }
-                          : null
-                        : null
+                      getSelectedGroup()
                     }
                     onChange={(selectedOption) => {
                       if (selectedOption) {
