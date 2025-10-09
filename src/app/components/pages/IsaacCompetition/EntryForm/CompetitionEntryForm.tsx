@@ -96,24 +96,29 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
       return; // Don't submit if school is not valid
     }
 
-    const form = event.target as HTMLFormElement;
-    const elements = form.elements;
-    const groupId = (elements.namedItem("formGroup") as HTMLSelectElement).value;
-    const selectedGroup = activeGroups.find((group) => group.groupName === groupId);
-    const groupName = selectedGroup?.groupName;
+    const selectedGroupObj = activeGroups.find((group) => group.id === selectedGroupId);
+    const groupName = selectedGroupObj?.groupName;
 
-    if (selectedGroup?.id && selectedMembers.length > 0) {
+    if (selectedGroupObj?.id && selectedMembers.length > 0) {
       const reservableIds = selectedMembers
-        .map((memberId) => Number.parseInt(memberId, 10))
-        .filter((id) => !Number.isNaN(id));
-      reserveUsersOnCompetition(COMPETITON_ID, reservableIds, projectLink, groupName);
+          .map((memberId) => Number.parseInt(memberId, 10))
+          .filter((id) => !Number.isNaN(id));
+
+
+      reserveUsersOnCompetition(
+          COMPETITON_ID,
+          reservableIds,
+          projectLink,
+          projectTitle,
+          groupName
+      );
     }
 
+    // Reset form state
     setProjectTitle("");
     setProjectLink("");
     setSelectedMembers([]);
     setSelectedGroupId(null);
-    (elements.namedItem("formGroup") as HTMLSelectElement).selectedIndex = 0;
   };
 
   // Extract the nested ternary into a function
