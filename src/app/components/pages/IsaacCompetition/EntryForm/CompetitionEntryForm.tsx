@@ -102,13 +102,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
         .map((memberId) => Number.parseInt(memberId, 10))
         .filter((id) => !Number.isNaN(id));
 
-      reserveUsersOnCompetition(
-          COMPETITON_ID,
-          reservableIds,
-          projectLink,
-          projectTitle,
-          groupName
-      );
+      reserveUsersOnCompetition(COMPETITON_ID, reservableIds, projectLink, projectTitle, groupName);
     }
 
     // Reset form state
@@ -136,13 +130,13 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
 
   function getSelectedGroup() {
     return selectedGroupId
-        ? activeGroups.find((group) => group.id === selectedGroupId)
-            ? {
-              value: selectedGroupId,
-              label: activeGroups.find((group) => group.id === selectedGroupId)?.groupName || "",
-            }
-            : null
-        : null;
+      ? activeGroups.find((group) => group.id === selectedGroupId)
+        ? {
+          value: selectedGroupId,
+          label: activeGroups.find((group) => group.id === selectedGroupId)?.groupName || "",
+        }
+        : null
+      : null;
   }
 
   return (

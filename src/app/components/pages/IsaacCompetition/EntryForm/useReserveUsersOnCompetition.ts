@@ -18,7 +18,7 @@ export const useReserveUsersOnCompetition = () => {
         userIds,
         submissionLink,
         groupName ?? "",
-        projectTitle
+        projectTitle,
       );
       dispatch(showSuccessToast("Competition Entry Success", "Competition entry was successful."));
     } catch (error) {
