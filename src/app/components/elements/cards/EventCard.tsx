@@ -26,11 +26,6 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
     meetingUrl,
   } = event;
 
-  // Add this temporarily in the EventCard component to debug
-  console.log("Event audience data:", audience);
-  console.log("Audience type:", typeof audience);
-  // console.log("Is array:", Array.isArray(audience));
-
   const getCourseName = (audience: any[] | undefined) => {
     if (!audience?.length) return "N/A";
 
