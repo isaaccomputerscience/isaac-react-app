@@ -476,7 +476,7 @@ export const api = {
       userIds: number[],
       submissionLink: string,
       groupName: string,
-      projectTitle: string
+      projectTitle: string,
     ) => {
       return endpoint.post(`/events/${eventId}/competitionEntries`, {
         entrantIds: userIds,

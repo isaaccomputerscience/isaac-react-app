@@ -132,9 +132,9 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
     return selectedGroupId
       ? activeGroups.find((group) => group.id === selectedGroupId)
         ? {
-          value: selectedGroupId,
-          label: activeGroups.find((group) => group.id === selectedGroupId)?.groupName || "",
-        }
+            value: selectedGroupId,
+            label: activeGroups.find((group) => group.id === selectedGroupId)?.groupName || "",
+          }
         : null
       : null;
   }
@@ -149,7 +149,9 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
             {/* Your account information section */}
             <h2 className="py-3 entry-form-section-title">
               Your account information (
-                <a href="/account" style={{ color: "#FF3A6E", textDecoration: "underline" }}>update</a>
+                <a href="/account" style={{ color: "#FF3A6E", textDecoration: "underline" }}>
+                  update
+                </a>
               )
             </h2>
             <Row className="d-flex flex-column flex-md-row">
@@ -263,9 +265,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                   <Select
                     isClearable
                     placeholder="Choose from the groups you've created or create one first"
-                    value={
-                      getSelectedGroup()
-                    }
+                    value={getSelectedGroup()}
                     onChange={(selectedOption) => {
                       if (selectedOption) {
                         setSelectedGroupId(selectedOption.value);
