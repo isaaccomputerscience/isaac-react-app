@@ -12,6 +12,7 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
     id,
     title,
     subtitle,
+    audience,
     eventThumbnail,
     location,
     hasExpired,
@@ -25,22 +26,22 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
     meetingUrl,
   } = event;
 
-  const getCourseName = (subtitle: string | undefined) => {
-    if (!subtitle) return "GCSE/A level";
+  // Add this temporarily in the EventCard component to debug
+  console.log("Event audience data:", audience);
+  console.log("Audience type:", typeof audience);
+  // console.log("Is array:", Array.isArray(audience));
 
-    const lowerCaseSubtitle = subtitle.toLowerCase();
-    const hasGcse = lowerCaseSubtitle.includes("gcse");
-    const hasALevel = lowerCaseSubtitle.includes("a level");
+  const getCourseName = (audience: any[] | undefined) => {
+    if (!audience?.length) return "N/A";
 
-    if (hasGcse && hasALevel) {
-      return "GCSE/A level";
-    } else if (hasGcse) {
-      return "GCSE";
-    } else if (hasALevel) {
-      return "A level";
-    } else {
-      return "GCSE/A level";
-    }
+    const stages = audience.flatMap((aud) => aud.stage || []);
+    const hasGcse = stages.includes("gcse");
+    const hasALevel = stages.includes("a_level");
+
+    if (hasGcse && hasALevel) return "GCSE/A level";
+    if (hasGcse) return "GCSE";
+    if (hasALevel) return "A level";
+    return "GCSE/A level";
   };
 
   return (
@@ -54,7 +55,7 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
     >
       {eventThumbnail && (
         <div className={"event-card-image"}>
-          <span className="course-name">{getCourseName(subtitle)}</span>
+          <span className="course-name">{getCourseName(audience)}</span>
           <CardImg
             data-testid="event-card-image"
             aria-hidden={true}
