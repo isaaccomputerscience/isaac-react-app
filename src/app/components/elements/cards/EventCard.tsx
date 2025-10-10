@@ -29,9 +29,9 @@ export const EventCard = ({ event, pod = false }: { event: AugmentedEvent; pod?:
   const getCourseName = (audience: any[] | undefined) => {
     if (!audience?.length) return "N/A";
 
-    const stages = audience.flatMap((aud) => aud.stage || []);
-    const hasGcse = stages.includes("gcse");
-    const hasALevel = stages.includes("a_level");
+    const stages = new Set(audience.flatMap((aud) => aud.stage || []));
+    const hasGcse = stages.has("gcse");
+    const hasALevel = stages.has("a_level");
 
     if (hasGcse && hasALevel) return "GCSE/A level";
     if (hasGcse) return "GCSE";
