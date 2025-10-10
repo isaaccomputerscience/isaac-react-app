@@ -149,9 +149,9 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
             {/* Your account information section */}
             <h2 className="py-3 entry-form-section-title">
               Your account information (
-                <a href="/account" style={{ color: "#FF3A6E", textDecoration: "underline" }}>
-                  update
-                </a>
+              <a href="/account" style={{ color: "#FF3A6E", textDecoration: "underline" }}>
+                update
+              </a>
               )
             </h2>
             <Row className="d-flex flex-column flex-md-row">
