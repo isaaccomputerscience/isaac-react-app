@@ -2,7 +2,7 @@ import React from "react";
 import { render } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import CompetitionWrapper from "../CompetitionWrapper";
-import {COMPETITION_OPEN_DATE, COMPETITION_END_DATE, ENTRIES_CLOSED_BANNER_END_DATE,} from "../dateUtils";
+import { COMPETITION_OPEN_DATE, COMPETITION_END_DATE, ENTRIES_CLOSED_BANNER_END_DATE } from "../dateUtils";
 
 describe("CompetitionWrapper", () => {
   it("renders beforeCompetitionOpenContent before the competition opens", () => {
