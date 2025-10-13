@@ -14,12 +14,12 @@ describe("CompetitionWrapper", () => {
     const dateBeforeOpen = new Date(COMPETITION_OPEN_DATE.getTime() - 24 * 60 * 60 * 1000); // 1 day before
 
     const { getByText } = render(
-        <CompetitionWrapper
-            currentDate={dateBeforeOpen}
-            beforeCompetitionOpenContent={<div>Opening November 2025</div>}
-        >
-          <div>Competition is open</div>
-        </CompetitionWrapper>,
+      <CompetitionWrapper
+        currentDate={dateBeforeOpen}
+        beforeCompetitionOpenContent={<div>Opening November 2025</div>}
+      >
+        <div>Competition is open</div>
+      </CompetitionWrapper>,
     );
     expect(getByText("Opening November 2025")).toBeInTheDocument();
   });
@@ -29,9 +29,9 @@ describe("CompetitionWrapper", () => {
     const dateDuringCompetition = new Date(COMPETITION_OPEN_DATE.getTime() + 24 * 60 * 60 * 1000); // 1 day after open
 
     const { getByText, queryByText } = render(
-        <CompetitionWrapper currentDate={dateDuringCompetition}>
-          <div>Competition is open</div>
-        </CompetitionWrapper>,
+      <CompetitionWrapper currentDate={dateDuringCompetition}>
+        <div>Competition is open</div>
+      </CompetitionWrapper>,
     );
     expect(getByText("Competition is open")).toBeInTheDocument();
     expect(queryByText("Opening November 2025")).not.toBeInTheDocument();
@@ -42,12 +42,12 @@ describe("CompetitionWrapper", () => {
     const dateAfterEnd = new Date(COMPETITION_END_DATE.getTime() + 24 * 60 * 60 * 1000); // 1 day after end
 
     const { getByText } = render(
-        <CompetitionWrapper
-            currentDate={dateAfterEnd}
-            closedCompetitionContent={<div>Entries for this competition have now closed</div>}
-        >
-          <div>Competition is open</div>
-        </CompetitionWrapper>,
+      <CompetitionWrapper
+        currentDate={dateAfterEnd}
+        closedCompetitionContent={<div>Entries for this competition have now closed</div>}
+      >
+        <div>Competition is open</div>
+      </CompetitionWrapper>,
     );
     expect(getByText("Entries for this competition have now closed")).toBeInTheDocument();
   });
@@ -57,13 +57,13 @@ describe("CompetitionWrapper", () => {
     const dateAfterBannerEnd = new Date(ENTRIES_CLOSED_BANNER_END_DATE.getTime() + 24 * 60 * 60 * 1000); // 1 day after
 
     const { queryByText } = render(
-        <CompetitionWrapper
-            currentDate={dateAfterBannerEnd}
-            beforeCompetitionOpenContent={<div>Opening November 2025</div>}
-            closedCompetitionContent={<div>Entries for this competition have now closed</div>}
-        >
-          <div>Competition is open</div>
-        </CompetitionWrapper>,
+      <CompetitionWrapper
+        currentDate={dateAfterBannerEnd}
+        beforeCompetitionOpenContent={<div>Opening November 2025</div>}
+        closedCompetitionContent={<div>Entries for this competition have now closed</div>}
+      >
+        <div>Competition is open</div>
+      </CompetitionWrapper>,
     );
     expect(queryByText("Competition is open")).not.toBeInTheDocument();
     expect(queryByText("Opening November 2025")).not.toBeInTheDocument();
