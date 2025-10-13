@@ -2,11 +2,7 @@ import React from "react";
 import { render } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import CompetitionWrapper from "../CompetitionWrapper";
-import {
-  COMPETITION_OPEN_DATE,
-  COMPETITION_END_DATE,
-  ENTRIES_CLOSED_BANNER_END_DATE,
-} from "../dateUtils";
+import {COMPETITION_OPEN_DATE, COMPETITION_END_DATE, ENTRIES_CLOSED_BANNER_END_DATE,} from "../dateUtils";
 
 describe("CompetitionWrapper", () => {
   it("renders beforeCompetitionOpenContent before the competition opens", () => {
@@ -14,10 +10,7 @@ describe("CompetitionWrapper", () => {
     const dateBeforeOpen = new Date(COMPETITION_OPEN_DATE.getTime() - 24 * 60 * 60 * 1000); // 1 day before
 
     const { getByText } = render(
-      <CompetitionWrapper
-        currentDate={dateBeforeOpen}
-        beforeCompetitionOpenContent={<div>Opening November 2025</div>}
-      >
+      <CompetitionWrapper currentDate={dateBeforeOpen} beforeCompetitionOpenContent={<div>Opening November 2025</div>}>
         <div>Competition is open</div>
       </CompetitionWrapper>,
     );
