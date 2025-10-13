@@ -425,9 +425,11 @@ describe("CompetitionEntryForm", () => {
       ];
       setupTest(undefined, groupsWithNoMembers);
 
-      const groupSelect = screen.getByText("Choose from the groups you've created or create one first");
+      const groupSelect = await screen.getByText("Choose from the groups you've created or create one first");
       await user.click(groupSelect);
-      await user.click(screen.getByText("Empty Group"));
+
+      const emptyGroupOption = await screen.findByText("Empty Group");
+      await user.click(emptyGroupOption);
 
       const tooltipText = screen.getByText(/No students found in the selected group/);
       expect(tooltipText).toBeInTheDocument();
