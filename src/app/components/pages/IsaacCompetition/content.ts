@@ -58,7 +58,7 @@ export default {
       description:
         "Groups of up to 4 students are able to join in! We will also accept individual entries with teacher support.",
       requirements:
-        "Eligible participants must be in Year 9, 10, or 11 during the 2025/2026 academic year and attend a state-funded school in England; private, independent, and home-educated students are not eligible.",
+        "Eligible participants must be in Year 9, 10, or 11 during the 2025/2026 academic year and attend a state-funded school; private, independent, and home-educated students are not eligible.",
     },
     prizes: {
       title: "🏆 The prizes",
