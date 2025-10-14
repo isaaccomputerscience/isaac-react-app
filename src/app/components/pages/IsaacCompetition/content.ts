@@ -21,11 +21,24 @@ export default {
     howItWorks: {
       title: "How does it work?",
       steps: [
-        "1. Students need to ask their teacher to participate",
-        "2. Students and teachers create or log in to an account",
-        "3. Boost your knowledge with our Student Boosters and Gameboards",
+        "1. Students ask their teacher to get involved and work on their projects",
+        "2. Create or log in to an account",
+        {
+          text: "3. Join our ",
+          link1: { text: "live Q&A session", href: "#" },
+          text2: " and boost skills with ",
+          link2: { text: "Boosters", href: "#" },
+          text3: " and ",
+          link3: { text: "Gameboards", href: "#" },
+          text4: " (optional)",
+        },
         "4. Work individually or in a group to develop a project, record a video, and ask your teacher to submit it",
         "5. Teachers submit competition entry! The finalists will be selected and invited to a final in Birmingham in May 2026.",
+        {
+          text5: "Teachers, see our ",
+          link5: { text: "FAQ guide", href: "#" },
+          text6: " for help and how to enter.",
+        },
       ],
     },
     whyJoin: {

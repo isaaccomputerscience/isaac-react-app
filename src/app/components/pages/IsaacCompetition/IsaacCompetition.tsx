@@ -98,29 +98,7 @@ export const IsaacCompetition = () => {
         <EntryFormHandler buttons={buttons} handleTermsClick={handleTermsClick} />
       </section>
       <section id="internetOfEverything" className="event-section">
-        <div className="event-section-background-img">
-          {/* <Container>
-            <Row className="py-4">
-              <Col xs={12} lg={6}>
-                <IoECard title={internetOfEverything.ioe.title} content={internetOfEverything.ioe.section} />
-              </Col>
-              <Col xs={12} lg={6} className="mt-4 mt-lg-0">
-                <IoECard
-                  title={internetOfEverything.examples.title}
-                  content={internetOfEverything.examples.section}
-                  isList
-                />
-              </Col>
-            </Row>
-            <div className="pb-4">
-              <TestimonialComment
-                imageSrc="/assets/star.svg"
-                altText="Star"
-                text={internetOfEverything.testamonial.text}
-              />
-            </div>
-          </Container> */}
-        </div>
+        <div className="event-section-background-img"></div>
       </section>
 
       <section id="competition-information-section">
