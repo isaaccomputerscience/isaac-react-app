@@ -25,11 +25,14 @@ export default {
         "2. Create or log in to an account",
         {
           text: "3. Join our ",
-          link1: { text: "live Q&A session", href: "#" },
+          link1: {
+            text: "live Q&A session",
+            href: "https://isaaccomputerscience.org/events/20251113_national_competition_q_and_a",
+          },
           text2: " and boost skills with ",
-          link2: { text: "Boosters", href: "#" },
+          link2: { text: "Boosters", href: "https://isaaccomputerscience.org/events" },
           text3: " and ",
-          link3: { text: "Gameboards", href: "#" },
+          link3: { text: "Gameboards", href: "https://isaaccomputerscience.org/gameboards/new" },
           text4: " (optional)",
         },
         "4. Work individually or in a group to develop a project, record a video, and ask your teacher to submit it",
@@ -53,7 +56,7 @@ export default {
     eligibility: {
       title: "Who can join?",
       description:
-        "This competition encourages teamwork, allowing groups of up to 4 students or individual entries with teacher support.",
+        "Groups of up to 4 students are able to join in! We will also accept individual entries with teacher support.",
       requirements:
         "Eligible participants must be in Year 9, 10, or 11 during the 2025/2026 academic year and attend a state-funded school in England; private, independent, and home-educated students are not eligible.",
     },

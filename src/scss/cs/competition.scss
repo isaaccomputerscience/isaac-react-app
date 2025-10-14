@@ -32,9 +32,23 @@
   background-color: #ffffff;
 }
 
+.manage-group-link {
+  color: #1D70B8;
+  text-decoration: underline;
+  &:focus {
+    outline: none;
+  }
+}
+
 .competition-information-text a{
   color: #1D70B8;
   text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+  &:focus {
+    outline: none;
+  }
 }
 
 .competition-information {
