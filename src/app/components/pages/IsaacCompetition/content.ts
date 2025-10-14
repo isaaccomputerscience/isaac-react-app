@@ -1,15 +1,17 @@
 export default {
   section1: {
     header: {
-      section: [
-        "Calling all computer science fans! Isaac Computer Science, ran by the National Centre for Computing Education (NCCE), is hosting a national competition that challenges students to imagine, design, and pitch a groundbreaking new product for the Internet of Everything.",
-        " The competition is a fantastic opportunity for students to apply their knowledge to real-world ideas.",
+      section1: [
+        "Calling all computer science fans! We are hosting a national competition to challenge students to imagine, design, and pitch a groundbreaking new product for the Internet of Everything (IOE).",
+      ],
+      section2: [
+        "The competition is a fantastic opportunity for students to apply their knowledge to real-world ideas. Entries open in November 2025 and last until the end of January 2026.",
       ],
     },
     note: {
-      heading: "Please note:",
-      entryDetails: "Competition entries open in November 2025 and last until the end of January 2026. Follow our",
-      callToAction: "accounts for updates and teachers can sign up to our expression of interest form below.",
+      entryDetails: "Follow our",
+      callToAction:
+        "accounts for updates and teachers can sign up to our expression of interest form below for updates via email.",
       xLink: "https://x.com/isaaccompsci",
       facebookLink: "https://www.facebook.com/IsaacComputerScience",
     },

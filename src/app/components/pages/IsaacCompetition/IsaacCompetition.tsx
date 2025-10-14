@@ -60,10 +60,10 @@ export const IsaacCompetition = () => {
           <Row>
             <h1 className="primary-heading pl-3">National Computer Science Competition</h1>
             <Col xs={12} md={6} lg={8} className="pb-3">
-              <p className="mt-4 body-text">{section1.header.section}</p>
+              <p className="mt-4 body-text">{section1.header.section1}</p>
+              <p className="mt-4 body-text">{section1.header.section2}</p>
               <p className="mt-4 mb-0 body-text">
-                <span style={{ fontWeight: 700 }}>{section1.note.heading}</span>
-                {` ${section1.note.entryDetails} `}
+                <span>{section1.note.entryDetails} </span>
                 <a
                   href={section1.note.xLink}
                   target="_blank"
