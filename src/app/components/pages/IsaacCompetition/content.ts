@@ -63,7 +63,7 @@ export default {
       title: "🏆 The prizes",
       description: "As well as the glory of being a IOE innovator, we also have prizes available, which may include:",
       prizeList: [
-        "Trophies for the winning teamand the individual winner",
+        "Trophies for the winning team and the individual winner",
         "£50 Amazon gift vouchers",
         "Industry tour hosted by a partner organisation",
         "Isaac Computer Science and partner merchandise",
