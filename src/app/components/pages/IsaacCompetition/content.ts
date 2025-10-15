@@ -46,11 +46,10 @@ export default {
     },
     whyJoin: {
       title: "Why join the competition?",
-      description: "Participating in this competition will allow students to:",
       benefits: [
-        "a. network with industry leaders: meet professionals, gain insights into potential career paths, and build connections",
-        "b. enhance their computer science knowledge: revise for mock exams through interactive gameboards and practical applications",
-        "c. showcase their talent: stand out on future university or job applications and earn the title of an IoE innovator",
+        "Network with industry leaders: meet professionals, gain insights into potential career paths, and build connections",
+        "Enhance computer science knowledge: students can revise for exams through gameboards and practical applications",
+        "Showcase your talent: stand out on future university or job applications and earn the title of an IoE innovator",
       ],
     },
     eligibility: {
@@ -62,8 +61,13 @@ export default {
     },
     prizes: {
       title: "🏆 The prizes",
-      description: "Finalists from each region will participate in exclusive partner events, which may include:",
-      prizeList: ["£50 Amazon gift vouchers", "Isaac Computer Science merchandise to support students"],
+      description: "As well as the glory of being a IOE innovator, we also have prizes available, which may include:",
+      prizeList: [
+        "Trophies for the winning teamand the individual winner",
+        "£50 Amazon gift vouchers",
+        "Industry tour hosted by a partner organisation",
+        "Isaac Computer Science and partner merchandise",
+      ],
     },
     timeline: {
       title: "Competition Timeline",
@@ -73,7 +77,7 @@ export default {
         { event: "Entries open", date: "November 2025" },
         { event: "Entries close", date: "31 January 2026" },
         { event: "Finalist selected", date: "March 2026" },
-        { event: "The final", date: "May 2026" },
+        { event: "The final", date: "18 May 2026" },
       ],
     },
   },

@@ -293,3 +293,10 @@
     }
   }
 }
+
+ul .competition-information-text {
+  &::before {
+    content: attr(data-title);
+    font-weight: bold;
+  }
+}

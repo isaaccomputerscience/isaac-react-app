@@ -38,18 +38,23 @@ const InformationCard = ({ title, description, content, isList = false, classNam
         {description && <CardText className="competition-information-text mb-3">{description}</CardText>}
         {isList ? (
           <ul>
-            {content.map((item, index) => (
-              <li key={index} className="competition-information-text">
-                {typeof item === "string" ? item : renderStepWithLinks(item, index)}
-              </li>
-            ))}
+            {content.map((item, index) => {
+              const [title, description] = item.split(": ");
+              return (
+                <li key={index} className="competition-information-text" data-title={title + ": "}>
+                  {description}
+                </li>
+              );
+            })}
           </ul>
         ) : (
           content.map((item, index) =>
             typeof item === "string" ? (
-              <CardText key={index} className="competition-information-text">
-                {item}
-              </CardText>
+              <CardText
+                key={index}
+                className="competition-information-text"
+                dangerouslySetInnerHTML={{ __html: item }}
+              />
             ) : (
               renderStepWithLinks(item, index)
             ),

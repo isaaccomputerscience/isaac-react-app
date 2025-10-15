@@ -114,8 +114,8 @@ export const IsaacCompetition = () => {
             <Col xs={12} lg={6} className="mt-4 mt-lg-0">
               <InformationCard
                 title={section3.whyJoin.title}
-                description={section3.whyJoin.description}
                 content={section3.whyJoin.benefits}
+                isList
                 className="competition-information-default-background"
               />
             </Col>
