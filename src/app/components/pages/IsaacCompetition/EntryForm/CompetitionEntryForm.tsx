@@ -140,8 +140,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
   }
 
   return (
-    <div className="py-5">
-      <div className="entry-form-background-img entry-form-section">
+      <div className="py-5 entry-form-background-img entry-form-section">
         <Container className="pb-2">
           <Form onSubmit={handleSubmit}>
             <h1 className="py-4 entry-form-title">Enter the competition</h1>
@@ -427,7 +426,6 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
           </Form>
         </Container>
       </div>
-    </div>
   );
 };
 
