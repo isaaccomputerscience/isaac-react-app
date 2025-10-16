@@ -165,22 +165,22 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                   defaultValue={targetUser?.loggedIn ? targetUser.givenName || "" : ""}
                 />
                 <FormInput
-                  label="Last name"
-                  type="text"
-                  id="lastName"
-                  required
-                  disabled={true}
-                  defaultValue={targetUser?.loggedIn ? targetUser?.familyName || "" : ""}
+                    label="Email address"
+                    type="email"
+                    id="email"
+                    required
+                    disabled={true}
+                    defaultValue={targetUser?.loggedIn ? targetUser?.email || "" : ""}
                 />
               </Col>
               <Col lg={6}>
                 <FormInput
-                  label="Email address"
-                  type="email"
-                  id="email"
-                  required
-                  disabled={true}
-                  defaultValue={targetUser?.loggedIn ? targetUser?.email || "" : ""}
+                    label="Last name"
+                    type="text"
+                    id="lastName"
+                    required
+                    disabled={true}
+                    defaultValue={targetUser?.loggedIn ? targetUser?.familyName || "" : ""}
                 />
                 {targetUser && (
                   <FormGroup>
