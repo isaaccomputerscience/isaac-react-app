@@ -7,9 +7,17 @@ interface InformationCardProps {
   content: (string | any)[];
   isList?: boolean;
   className?: string;
+  onFaqClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }
 
-const InformationCard = ({ title, description, content, isList = false, className = "" }: InformationCardProps) => {
+const InformationCard = ({
+  title,
+  description,
+  content,
+  isList = false,
+  className = "",
+  onFaqClick,
+}: InformationCardProps) => {
   const renderStepWithLinks = (step: any, index: number) => (
     <CardText key={index} className="competition-information-text">
       {step.text}
@@ -24,7 +32,11 @@ const InformationCard = ({ title, description, content, isList = false, classNam
       {step.link3 && <a href={step.link3.href}>{step.link3.text}</a>}
       {step.text4}
       {step.text5}
-      {step.link5 && <a href={step.link5.href}>{step.link5.text}</a>}
+      {step.link5 && (
+        <a href={step.link5.href} onClick={step.link5.text === "FAQ guide" ? onFaqClick : undefined}>
+          {step.link5.text}
+        </a>
+      )}
       {step.text6}
     </CardText>
   );

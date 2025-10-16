@@ -102,13 +102,13 @@ export default {
     projectIdeas: {
       title: "Project ideas to get started",
       section: [
-        "There are endless possibilities! However, we know how hard it is to start with a blank page. Here are a few ideas to get you started:",
+        "There are endless possibilities! We know how challenging it can be to start with a blank page, so here are a few ideas to spark your creativity:",
         [
-          "develop an app or game that promotes healthy sleep habits",
-          "design a website to educate youth on mobile device cybersecurity",
-          "propose an Internet of Everything device concept that helps keep public spaces clean",
+          "Develop an app or game that promotes healthy sleep habits",
+          "Propose a device concept that helps keep public spaces clean",
+          "Create a smart device for mental wellbeing",
         ],
-        "These ideas are only the beginning: we can’t wait to see what you think of!",
+        "These ideas are only the beginning – we can’t wait to see the innovative solutions you come up with!",
       ],
     },
     availableSupport: {

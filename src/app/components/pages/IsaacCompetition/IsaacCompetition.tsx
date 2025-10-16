@@ -39,6 +39,14 @@ export const IsaacCompetition = () => {
     }
   };
 
+  const handleFaqClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    event.preventDefault();
+    if (accordionRef.current) {
+      accordionRef.current.scrollIntoView({ behavior: "smooth" });
+      setOpen("4");
+    }
+  };
+
   const accordionSections = [
     { id: "0", title: accordion.internetOfEverything.title, section: accordion.internetOfEverything.section },
     { id: "1", title: accordion.projectIdeas.title, section: accordion.projectIdeas.section },
@@ -109,6 +117,7 @@ export const IsaacCompetition = () => {
                 title={section3.howItWorks.title}
                 content={section3.howItWorks.steps}
                 className="competition-information-default-background"
+                onFaqClick={handleFaqClick}
               />
             </Col>
             <Col xs={12} lg={6} className="mt-4 mt-lg-0">
