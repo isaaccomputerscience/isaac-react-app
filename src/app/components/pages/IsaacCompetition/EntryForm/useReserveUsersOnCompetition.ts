@@ -20,7 +20,8 @@ export const useReserveUsersOnCompetition = () => {
         groupName ?? "",
         projectTitle,
       );
-      dispatch(showSuccessToast("Competition entry submitted", "You have successfully submitted your competition entry"));
+      dispatch(
+          showSuccessToast("Competition entry submitted", "You have successfully submitted your competition entry"));
     } catch (error) {
       dispatch(showErrorToast("Competition Entry Failed", "Failed to make the competiton entry."));
     }

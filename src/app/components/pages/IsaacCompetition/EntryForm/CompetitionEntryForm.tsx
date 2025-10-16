@@ -136,14 +136,15 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
     return selectedGroupId
       ? activeGroups.find((group) => group.id === selectedGroupId)
         ? {
-          value: selectedGroupId,
-          label: activeGroups.find((group) => group.id === selectedGroupId)?.groupName || "",
+            value: selectedGroupId,
+            label: activeGroups.find((group) => group.id === selectedGroupId)?.groupName || "",
           }
         : null
       : null;
   }
 
-  const showNoMembersWarning = selectedGroup && selectedGroup.members !== undefined && !isLoadingMembers && selectedGroup.members.length === 0;
+  const showNoMembersWarning =
+      selectedGroup && selectedGroup.members !== undefined && !isLoadingMembers && selectedGroup.members.length === 0;
 
   return (
     <div className="py-5 entry-form-background-img entry-form-section">
@@ -340,25 +341,25 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                   value={
                     selectedGroup?.members
                       ? selectedGroup.members
-                        .filter((member) => selectedMembers.includes(member.id?.toString() || ""))
-                        .map((member) => ({
-                          value: member.id?.toString() || "",
-                          label:
-                            `${member.givenName || ""} ${member.familyName || ""}`.trim() ||
-                            `User ${member.id}` ||
-                            "Unknown",
-                        }))
+                          .filter((member) => selectedMembers.includes(member.id?.toString() || ""))
+                          .map((member) => ({
+                            value: member.id?.toString() || "",
+                            label:
+                              `${member.givenName || ""} ${member.familyName || ""}`.trim() ||
+                              `User ${member.id}` ||
+                              "Unknown",
+                          }))
                       : []
                   }
                   onChange={handleMemberSelection}
                   options={
                     selectedGroup?.members
                       ? selectedGroup.members.map((member) => ({
-                        value: member.id?.toString() || "",
-                        label:
-                          `${member.givenName || ""} ${member.familyName || ""}`.trim() ||
-                          `User ${member.id}` ||
-                          "Unknown",
+                          value: member.id?.toString() || "",
+                          label:
+                            `${member.givenName || ""} ${member.familyName || ""}`.trim() ||
+                            `User ${member.id}` ||
+                            "Unknown",
                         }))
                       : []
                   }
@@ -373,7 +374,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                       borderRadius: "0.375rem",
                       minHeight: "38px",
                       backgroundColor:
-                        (!selectedGroup || isLoadingMembers || !selectedGroup?.members?.length) ? "#f8f9fa" : "white",
+                        !selectedGroup || isLoadingMembers || !selectedGroup?.members?.length ? "#f8f9fa" : "white",
                     }),
                     menu: (provided) => ({
                       ...provided,
