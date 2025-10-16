@@ -144,7 +144,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
   }
 
   const showNoMembersWarning =
-      selectedGroup && selectedGroup.members !== undefined && !isLoadingMembers && selectedGroup.members.length === 0;
+    selectedGroup && selectedGroup.members !== undefined && !isLoadingMembers && selectedGroup.members.length === 0;
 
   return (
     <div className="py-5 entry-form-background-img entry-form-section">
