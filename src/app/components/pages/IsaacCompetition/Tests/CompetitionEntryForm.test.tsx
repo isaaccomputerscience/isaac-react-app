@@ -1,5 +1,5 @@
 import React from "react";
-import { screen } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { rest } from "msw";
 import { API_PATH } from "../../../../services";
@@ -223,7 +223,9 @@ describe("CompetitionEntryForm", () => {
       await user.click(groupSelect);
       await user.click(screen.getByText("Empty Group"));
 
-      expect(screen.getByText("No members found in this group")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText("No members found in this group")).toBeInTheDocument();
+      });
     });
 
     it("should show member selection error when more than 4 students selected", async () => {
