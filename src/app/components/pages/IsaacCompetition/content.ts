@@ -114,7 +114,7 @@ export default {
     availableSupport: {
       title: "Available support",
       section: [
-        "We have a range of topics to help out with your design of your IoE device. Take a look:",
+        "Explore our selection of resources to support your Internet of Everything (IoE) device design:",
         [
           "Embedded Systems",
           "The processor",
@@ -125,7 +125,7 @@ export default {
           "Legislation",
           "Impacts of technology",
         ],
-        "Our industry partners are also here to help! Siemens have offered to help with their Games Arcade, and are offering free software licenses for SolidEdge – CAD design to get you started.",
+        "Check out our live booster sessions and discovery events here to enhance your subject knowledge and discover career opportunities in computer science.",
       ],
     },
     video: {
