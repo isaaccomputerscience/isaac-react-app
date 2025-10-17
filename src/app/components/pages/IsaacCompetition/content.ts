@@ -181,12 +181,7 @@ export default {
         "How to create a group:",
         [
           "Only users with a teacher account can create a group. If you don’t have a teacher account, you can request one when signing up on the platform or through your student account settings. We aim to process all requests as quickly as possible, but it may take up to 5 working days. More information about teacher accounts is <a href = 'https://isaaccomputerscience.org/support/teacher/general'>here</a>.",
-          "Click on Teachers on the menu bar, then click on <a href = 'https://isaaccomputerscience.org/groups'>Manage groups</a>",
-          [
-            "Enter a name for your new group. The group name will be shared with your students, so make it useful for them too.",
-            "For a student group entry, the Competition requires each group to consist of 2 to 4 students. If a student is working on the application individually, a teacher must create a separate group for them.",
-            "Click on Create.",
-          ],
+          "Click on Teachers on the menu bar, then click on <a href = 'https://isaaccomputerscience.org/groups'>Manage groups</a> <ul><li>Enter a name for your new group. The group name will be shared with your students, so make it useful for them too.</li><li>For a student group entry, the Competition requires each group to consist of 2 to 4 students. If a student is working on the application individually, a teacher must create a separate group for them.</li><li>Click on Create.</li></ul>",
           "You may use the existing group to enter students into the competition, as long as it includes everyone who worked on the project. Students from different groups on Isaac platform cannot be entered together.",
         ],
         "How to invite students to join a group:",
@@ -259,17 +254,7 @@ export default {
     industry: {
       title: "Industry Partners",
       section: [
-        "A big thank you to our industry partners for their support and generous prizes! Sincere appreciation for the contributions from:",
-        [
-          "The British Computer Society, branded BCS, The Chartered Institute for IT",
-          "Cisco",
-          "Kainos",
-          "Reed",
-          "Siemens",
-          "Dassault Systèmes",
-        ],
-        "",
-        "A special thank you to Birmingham City University for providing the space to host the competition final. Their continued support throughout the competition has been invaluable, and it's exciting to partner with them and be a part of Innovation Fest, taking place 19 - 23 May 2025.",
+        "Birmingham City University is once again a key partner of the competition and will proudly host the final at their Innovation Fest in Birmingham this May. This event offers students and teachers an excellent chance to take part in an exciting showcase of creativity, innovation, and future talent.",
       ],
     },
     termsAndConditions: {
