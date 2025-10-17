@@ -138,11 +138,7 @@ export default {
           "Overview of the project: Explain the global problem your IoE device addresses. Give a short summary of your project and its purpose.",
           "Impact: Describe how your IoE device could improve lives globally. Include any benefits for people, communities, or the environment.",
           "Device description: Show the design or prototype of your device – it doesn’t have to be perfect or finished! Explain its features, functions, and how it works.",
-          "Teamwork or individual approach:",
-          [
-            "If its a group project: Explain how you worked together, your collaboration skills, and methods used.",
-            "If its an individual project: Describe your approach, how you solved problems, and how you managed the project yourself.",
-          ],
+          "Teamwork or individual approach: <ul><li>If its a group project: Explain how you worked together, your collaboration skills, and methods used.</li><li>If its an individual project: Describe your approach, how you solved problems, and how you managed the project yourself.</li></ul>",
           "Creativity and engagement: Use visuals, demonstrations, or examples to make your video interesting and easy to follow. Creative formats are welcome! But make sure your explanation is clear for someone who has never seen your project before.",
         ],
         "Remember, the Internet of Everything (IoE) device focuses not just on things, but also on people, processes, and data. This captures the IoE difference from Internet of Things (IoT). IoT is mostly “things”; IoE is about integrating people, processes, and data with connected devices.",
@@ -161,13 +157,7 @@ export default {
         "Supporting Documents",
         [
           "While not mandatory, supporting documents can enhance your submission.",
-          "Consider including:",
-          [
-            "Diagrams or sketches of your device.",
-            "A brief written summary of your project.",
-            "Evidence of research or data that supports your concept.",
-            "Reflections on collaboration and teamwork.",
-          ],
+          "Consider including:<ul><li>Diagrams or sketches of your device.</li><li>A brief written summary of your project.</li><li>Evidence of research or data that supports your concept.</li><li>Reflections on collaboration and teamwork.</li></ul>",
         ],
         "Tips for Success",
         [
@@ -190,17 +180,18 @@ export default {
       section: [
         "How to create a group:",
         [
-          "Only users with a teacher account can create a group. If you don’t have a teacher account, you can request one when signing up on the platform or through your student account settings. We aim to process all requests as quickly as possible, but it may take up to 5 working days. More information about teacher accounts <a href = 'https://isaaccomputerscience.org/support/teacher/general?amp;stage=all&examBoard=all&stage=all'>here</a>.",
-          "Click on Teachers on the menu bar, then click on <a href = 'https://isaaccomputerscience.org/groups?examBoard=aqa&stage=a_level'>Manage groups</a>",
+          "Only users with a teacher account can create a group. If you don’t have a teacher account, you can request one when signing up on the platform or through your student account settings. We aim to process all requests as quickly as possible, but it may take up to 5 working days. More information about teacher accounts is <a href = 'https://isaaccomputerscience.org/support/teacher/general'>here</a>.",
+          "Click on Teachers on the menu bar, then click on <a href = 'https://isaaccomputerscience.org/groups'>Manage groups</a>",
           [
             "Enter a name for your new group. The group name will be shared with your students, so make it useful for them too.",
             "For a student group entry, the Competition requires each group to consist of 2 to 4 students. If a student is working on the application individually, a teacher must create a separate group for them.",
             "Click on Create.",
           ],
+          "You may use the existing group to enter students into the competition, as long as it includes everyone who worked on the project. Students from different groups on Isaac platform cannot be entered together.",
         ],
-        "How to invite students to join a group",
+        "How to invite students to join a group:",
         [
-          "To invite your students to join a group, click on the 'Invite Users' button on the Manage groups page.",
+          "To invite your students to join a group, click on the 'Invite Users' button on the <a href = 'https://isaaccomputerscience.org/groups'>Manage groups</a> page.",
           "Choose between a URL or an authentication code to share with the students.",
           "Find details about <a href='https://isaaccomputerscience.org/support/student/homework?examBoard=aqa&stage=a_level'>how students join groups here</a>. When students use the URL or code, they will be shown your first initial, last name, and email address, and they’ll be asked to confirm they want to share their progress with you.",
           "We recommend that you access your <a href='https://isaaccomputerscience.org/groups?examBoard=aqa&stage=a_level'>Manage groups</a> page when students first join your group to make sure that they’ve all verified their account email addresses before they log out.",
@@ -208,11 +199,13 @@ export default {
         "How to submit a Competition entry",
         [
           "Teachers are responsible for submitting the work of students on their behalf.",
-          "Go to the entry form and enter your full first and last name. If needed, you can update your name in your account settings.",
-          "In the URL box, provide a link to the cloud storage where your video and any supporting materials are saved. Ensure the link is accessible to the Organiser by setting the correct permissions (e.g., open to anyone with the link).",
-          "From the dropdown, select a group that you created for this competition",
+          "Make sure that your account details are accurate in the ‘Your account information’ section of the entry form. If necessary, you can update your information in your <a href = 'https://isaaccomputerscience.org/account'>account settings</a>.",
+          "In the 'Project title’ field, enter the title of the project your students worked on. Each title must be unique.",
+          "In the ‘Project link’ field, provide a link to the cloud storage where a video and any supporting materials are saved. Ensure the link is accessible to the Organiser by setting the correct permissions (e.g., open to anyone with the link).",
+          "In the ‘Select your student group’ field, choose from the groups you've created or create one first. If no groups are available, go to Teachers > <a href = 'https://isaaccomputerscience.org/groups'>Manage groups</a> to create one and invite students to join.",
+          "In the ‘Select student(s)’ field, choose 1-4 students from your selected student group who worked on the submitted project. If no students are found in the selected group, make sure students join the group first. Go to the <a href = 'https://isaaccomputerscience.org/groups'>Manage groups</a> page and invite them using a URL or authentication code.",
         ],
-        "If you have any questions or run into problems, contact <a href='https://isaaccomputerscience.org/contact?examBoard=all&stage=all'>here</a>.",
+        "If you have any questions or run into problems, contact <a href='https://isaaccomputerscience.org/contact'>here</a>.",
       ],
     },
     assessmentCriteria: {
