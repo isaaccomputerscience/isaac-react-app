@@ -219,9 +219,11 @@ describe("CompetitionEntryForm", () => {
       ];
       setupTest(undefined, groupsWithNoMembers);
 
-      const groupSelect = screen.getByText("Choose from the groups you've created or create one first");
+      const groupSelect = await screen.getByText("Choose from the groups you've created or create one first");
       await user.click(groupSelect);
-      await user.click(screen.getByText("Empty Group"));
+
+      const emptyGroupOption = await screen.findByText("Empty Group");
+      await user.click(emptyGroupOption);
 
       await waitFor(() => {
         expect(screen.getByText("No members found in this group")).toBeInTheDocument();
