@@ -10,8 +10,7 @@ export default {
     },
     note: {
       entryDetails: "Follow our",
-      callToAction:
-        "accounts for updates and teachers can sign up to our expression of interest form below for updates via email.",
+      callToAction: "accounts for updates and sign up to our expression of interest form below for updates via email.",
       xLink: "https://x.com/isaaccompsci",
       facebookLink: "https://www.facebook.com/IsaacComputerScience",
     },
