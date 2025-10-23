@@ -300,3 +300,17 @@ ul .competition-information-text {
     font-weight: bold;
   }
 }
+
+.competition-information-prizes-background {
+  strong, b {
+    font-weight: normal !important;
+  }
+
+  .competition-information-text::before {
+    font-weight: normal !important;
+  }
+}
+
+.prizesCard li {
+  margin-bottom: 0 !important;
+}
