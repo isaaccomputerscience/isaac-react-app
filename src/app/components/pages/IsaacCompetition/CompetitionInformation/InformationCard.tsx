@@ -74,8 +74,8 @@ const InformationCard = ({
                 const [title, description] = item.split(": ");
                 return (
                   <li
-                    key={index}
-                    className={`competition-information-text ${!isLast ? 'mb-3' : ''}`}
+                    key={item}
+                    className={`competition-information-text ${isLast ? "" : "mb-3"}`}
                     data-title={title + ": "}
                   >
                     {description}
@@ -83,10 +83,7 @@ const InformationCard = ({
                 );
               } else {
                 return (
-                  <li
-                      key={index}
-                      className={`competition-information-text ${!isLast ? 'mb-3' : ''}`}
-                  >
+                  <li key={item} className={`competition-information-text ${isLast ? "" : "mb-3"}`}>
                     {item}
                   </li>
                 );
