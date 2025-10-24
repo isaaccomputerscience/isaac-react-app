@@ -28,12 +28,7 @@ const InformationCard = ({
       )}
       {step.text2}
       {step.link2 && (
-        <a
-          href={step.link2.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: "#1D70B8" }}
-        >
+        <a href={step.link2.href} target="_blank" rel="noopener noreferrer" style={{ color: "#1D70B8" }}>
           {step.link2.text}
         </a>
       )}
