@@ -73,10 +73,6 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
     if (selectedValues.length > 4) {
       setMemberSelectionError("Limit of 4 students reached. To select a new student, remove one first.");
 
-      // setTimeout(() => {
-      //   setMemberSelectionError("");
-      // }, 3000);
-
       return;
     }
 
@@ -328,18 +324,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                       message="Choose 1-4 students from the selected group who worked on the submitted project."
                     />
                     {memberSelectionError && (
-                      <div
-                        className="mb-2"
-                        style={{
-                          backgroundColor: "white",
-                          border: "1px solid #000",
-                          borderRadius: "4px",
-                          padding: "12px",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "8px",
-                        }}
-                      >
+                      <div className="mb-2 member-selection-error-tooltip">
                         <div
                           style={{
                             backgroundColor: "#FF6B35",
