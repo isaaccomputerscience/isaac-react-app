@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Row, Col, Container, FormGroup, Label, Input, Alert } from "reactstrap";
+import { Form, Row, Col, Container, FormGroup, Label, Input } from "reactstrap";
 import { isaacApi, useAppSelector } from "../../../../state";
 import { selectors } from "../../../../state/selectors";
 import { SchoolInput } from "../../../elements/inputs/SchoolInput";
@@ -71,11 +71,11 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
     const selectedValues = selectedOptions ? selectedOptions.map((option: any) => option.value) : [];
 
     if (selectedValues.length > 4) {
-      setMemberSelectionError("You can only select up to 4 students");
+      setMemberSelectionError("Limit of 4 students reached. To select a new student, remove one first.");
 
-      setTimeout(() => {
-        setMemberSelectionError("");
-      }, 3000);
+      // setTimeout(() => {
+      //   setMemberSelectionError("");
+      // }, 3000);
 
       return;
     }
@@ -328,9 +328,36 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                       message="Choose 1-4 students from the selected group who worked on the submitted project."
                     />
                     {memberSelectionError && (
-                      <Alert color="danger" className="mb-2" style={{ zIndex: 9999, position: "relative" }}>
-                        {memberSelectionError}
-                      </Alert>
+                      <div
+                        className="mb-2"
+                        style={{
+                          backgroundColor: "white",
+                          border: "1px solid #000",
+                          borderRadius: "4px",
+                          padding: "12px",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            backgroundColor: "#FF6B35",
+                            color: "white",
+                            borderRadius: "4px",
+                            width: "20px",
+                            height: "20px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: "14px",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          !
+                        </div>
+                        <span style={{ color: "#000", fontSize: "14px" }}>{memberSelectionError}</span>
+                      </div>
                     )}
                   </Label>
                   <Select
