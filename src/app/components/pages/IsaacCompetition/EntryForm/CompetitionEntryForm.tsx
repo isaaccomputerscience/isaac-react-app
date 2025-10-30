@@ -201,7 +201,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                       <div className="entry-form-validation-tooltip">
                         <div className="tooltip-content">
                           <div className="tooltip-arrow"></div>
-                          <div className="tooltip-icon">!</div>
+                          <img src="/assets/warning_icon.svg" alt="invalid school error" />
                           <div className="tooltip-text">
                             Please <a href="/account">update</a> your account details to specify your school or college.
                             Only teachers and students from state-funded schools in England are eligible to participate.
@@ -296,7 +296,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                   <div className="entry-form-validation-tooltip">
                     <div className="tooltip-content">
                       <div className="tooltip-arrow"></div>
-                      <div className="tooltip-icon">!</div>
+                      <img src="/assets/warning_icon.svg" alt="no groups found error" />
                       <div className="tooltip-text" style={{ color: "#000" }}>
                         You have not created any groups. Please{" "}
                         <a href="/groups" style={{ color: "#1D70B8", textDecoration: "underline" }}>
@@ -324,29 +324,9 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                       message="Choose 1-4 students from the selected group who worked on the submitted project."
                     />
                     {memberSelectionError && (
-                      // <div className="mb-2 member-selection-error-tooltip">
-                      //   <div
-                      //     style={{
-                      //       backgroundColor: "#FF6B35",
-                      //       color: "white",
-                      //       borderRadius: "4px",
-                      //       width: "20px",
-                      //       height: "20px",
-                      //       display: "flex",
-                      //       alignItems: "center",
-                      //       justifyContent: "center",
-                      //       fontSize: "14px",
-                      //       fontWeight: "bold",
-                      //     }}
-                      //   >
-                      //     !
-                      //   </div>
-                      //   <span style={{ color: "#000", fontSize: "14px" }}>{memberSelectionError}</span>
-                      // </div>
                       <div className="entry-form-validation-tooltip  mt-2">
                         <div className="tooltip-content" style={{ border: "1px solid #000" }}>
-                          {/* REMOVE <div className="tooltip-arrow"></div> */}
-                          <div className="tooltip-icon">!</div>
+                          <img src="/assets/warning_icon.svg" alt="member selection error" />
                           <div className="tooltip-text" style={{ color: "#000" }}>
                             Limit of 4 students reached. To select a new student, remove one first.
                           </div>
@@ -410,7 +390,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                     <div className="entry-form-validation-tooltip" style={{ marginTop: "12px" }}>
                       <div className="tooltip-content">
                         <div className="tooltip-arrow"></div>
-                        <div className="tooltip-icon">!</div>
+                        <img src="/assets/warning_icon.svg" alt="no members found error" />
                         <div className="tooltip-text" style={{ color: "#000" }}>
                           No students found in the selected group. To add students go to the{" "}
                           <a href="/groups" style={{ color: "#1D70B8", textDecoration: "underline" }}>
