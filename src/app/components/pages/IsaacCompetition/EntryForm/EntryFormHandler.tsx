@@ -3,7 +3,7 @@ import { Container, Col } from "reactstrap";
 import CompetitionEntryForm from "./CompetitionEntryForm";
 import CompetitionButton from "../Buttons/CompetitionButton";
 import { selectors, useAppSelector } from "../../../../state";
-import {isStudent, isAdmin, isTeacher} from "../../../../services";
+import { isStudent, isAdmin, isTeacher } from "../../../../services";
 import CompetitionWrapper from "../CompetitionWrapper";
 import { CLOSED_MESSAGE, STUDENT_MESSAGE, TEACHER_MESSAGE } from "../constants";
 
