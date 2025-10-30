@@ -324,24 +324,33 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                       message="Choose 1-4 students from the selected group who worked on the submitted project."
                     />
                     {memberSelectionError && (
-                      <div className="mb-2 member-selection-error-tooltip">
-                        <div
-                          style={{
-                            backgroundColor: "#FF6B35",
-                            color: "white",
-                            borderRadius: "4px",
-                            width: "20px",
-                            height: "20px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontSize: "14px",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          !
+                      // <div className="mb-2 member-selection-error-tooltip">
+                      //   <div
+                      //     style={{
+                      //       backgroundColor: "#FF6B35",
+                      //       color: "white",
+                      //       borderRadius: "4px",
+                      //       width: "20px",
+                      //       height: "20px",
+                      //       display: "flex",
+                      //       alignItems: "center",
+                      //       justifyContent: "center",
+                      //       fontSize: "14px",
+                      //       fontWeight: "bold",
+                      //     }}
+                      //   >
+                      //     !
+                      //   </div>
+                      //   <span style={{ color: "#000", fontSize: "14px" }}>{memberSelectionError}</span>
+                      // </div>
+                      <div className="entry-form-validation-tooltip  mt-2">
+                        <div className="tooltip-content" style={{ border: "1px solid #000" }}>
+                          {/* REMOVE <div className="tooltip-arrow"></div> */}
+                          <div className="tooltip-icon">!</div>
+                          <div className="tooltip-text" style={{ color: "#000" }}>
+                            Limit of 4 students reached. To select a new student, remove one first.
+                          </div>
                         </div>
-                        <span style={{ color: "#000", fontSize: "14px" }}>{memberSelectionError}</span>
                       </div>
                     )}
                   </Label>

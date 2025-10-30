@@ -285,6 +285,7 @@
     
     .tooltip-text {
       flex: 1;
+      font-family: "roboto", Roboto, sans-serif;
       color: #dc3545;
       font-size: 14px;
       line-height: 1.4;
@@ -299,16 +300,6 @@
       }
     }
   }
-}
-
-.member-selection-error-tooltip {
-  background-color: white;
-  border: 1px solid #000;
-  border-radius: 4px;
-  padding: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 ul .competition-information-text {
