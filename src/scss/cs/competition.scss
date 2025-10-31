@@ -244,6 +244,10 @@
       align-items: flex-start;
       gap: 8px;
     }
+
+    &-centered .tooltip-content {
+      align-items: center;
+    }
     
     .tooltip-arrow {
       position: absolute;

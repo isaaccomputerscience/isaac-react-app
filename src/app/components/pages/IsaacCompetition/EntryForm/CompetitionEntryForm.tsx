@@ -324,7 +324,10 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                       message="Choose 1-4 students from the selected group who worked on the submitted project."
                     />
                     {memberSelectionError && (
-                      <div className="entry-form-validation-tooltip  mt-2">
+                      <div
+                        className="entry-form-validation-tooltip entry-form-validation-tooltip-centered mt-2"
+                        style={{ alignItems: "center" }}
+                      >
                         <div className="tooltip-content" style={{ border: "1px solid #000" }}>
                           <img src="/assets/warning_icon.svg" alt="member selection error" />
                           <div className="tooltip-text" style={{ color: "#000" }}>
