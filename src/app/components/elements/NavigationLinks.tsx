@@ -21,7 +21,10 @@ export const NavigationLinks = ({ navigation }: { navigation: PageNavigation }) 
         <div className="isaac-nav-link float-right a-alt lrg-text font-weight-bold">
           <Markup trusted-markup-encoding={"html"}>{navigation.nextItem.title}</Markup>
         </div>
-        <div className="isaac-nav-link float-right next-link">Next</div>
+        <div className="isaac-nav-link float-right next-link py-2">
+          Next
+          <img src="/assets/chevron_right.svg" alt="next" className="ml-2" />
+        </div>
       </Link>
     </div>
   );

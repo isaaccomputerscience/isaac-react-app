@@ -81,11 +81,10 @@ div.isaac-nav-link {
 
   &.next-link {
     padding-right: 1.2rem;
-    background-image: url("/assets/chevron_right.svg");
-    background-repeat: no-repeat;
-    background-position: center right;
     clear: right;
     text-decoration: none;
+    display: flex;
+    align-items: center;
   }
   &.previous-link {
     padding-left: 1.2rem;
