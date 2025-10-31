@@ -22,8 +22,7 @@ export const NavigationLinks = ({ navigation }: { navigation: PageNavigation }) 
           <Markup trusted-markup-encoding={"html"}>{navigation.nextItem.title}</Markup>
         </div>
         <div className="isaac-nav-link float-right next-link py-2">
-          Next
-          <img src="/assets/chevron_right.svg" alt="next" className="ml-2" />
+          Next <img src="/assets/chevron_right.svg" alt="next" className="ml-2" />
         </div>
       </Link>
     </div>
@@ -36,8 +35,7 @@ export const NavigationLinks = ({ navigation }: { navigation: PageNavigation }) 
           <Markup trusted-markup-encoding={"html"}>{navigation.previousItem.title}</Markup>
         </div>
         <div className="isaac-nav-link float-left previous-link py-2">
-          <img src="/assets/chevron_left.svg" alt="previous" className="mr-2" />
-          Previous
+          <img src="/assets/chevron_left.svg" alt="previous" className="mr-2" /> Previous
         </div>
       </Link>
     </div>
