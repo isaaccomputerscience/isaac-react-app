@@ -78,6 +78,10 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
 
     setMemberSelectionError("");
     setSelectedMembers(selectedValues);
+
+    setTimeout(() => {
+      setMemberSelectionError("");
+    }, 10000);
   };
 
   const isSchoolValid = isSchoolValidForCompetition();
@@ -328,7 +332,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                         className="entry-form-validation-tooltip entry-form-validation-tooltip-centered mt-2"
                         style={{ alignItems: "center" }}
                       >
-                        <div className="tooltip-content" style={{ border: "1px solid #000" }}>
+                        <div className="tooltip-content">
                           <img src="/assets/warning_icon.svg" alt="member selection error" />
                           <div className="tooltip-text" style={{ color: "#000" }}>
                             Limit of 4 students reached. To select a new student, remove one first.
