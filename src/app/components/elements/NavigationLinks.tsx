@@ -35,7 +35,10 @@ export const NavigationLinks = ({ navigation }: { navigation: PageNavigation }) 
         <div className="isaac-nav-link float-left a-alt lrg-text font-weight-bold">
           <Markup trusted-markup-encoding={"html"}>{navigation.previousItem.title}</Markup>
         </div>
-        <div className="isaac-nav-link float-left previous-link">Previous</div>
+        <div className="isaac-nav-link float-left previous-link py-2">
+          <img src="/assets/chevron_left.svg" alt="previous" className="mr-2" />
+          Previous
+        </div>
       </Link>
     </div>
   );
