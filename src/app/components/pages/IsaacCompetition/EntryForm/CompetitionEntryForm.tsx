@@ -76,6 +76,31 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
     };
   }, []);
 
+  // Add this new useEffect to set custom validation message for projectLink
+  useEffect(() => {
+    const input = document.getElementById("projectLink") as HTMLInputElement;
+    if (!input) return;
+
+    const handleInvalid = () => {
+      input.setCustomValidity("Please enter a full URL, including http:// or https://");
+    };
+
+    const handleInput = () => {
+      // Clear custom validity when user starts typing (so validation can run again)
+      if (input.validity.valid) {
+        input.setCustomValidity("");
+      }
+    };
+
+    input.addEventListener("invalid", handleInvalid);
+    input.addEventListener("input", handleInput);
+
+    return () => {
+      input.removeEventListener("invalid", handleInvalid);
+      input.removeEventListener("input", handleInput);
+    };
+  }, []);
+
   const handleMemberSelection = (selectedOptions: any) => {
     const selectedValues = selectedOptions ? selectedOptions.map((option: any) => option.value) : [];
 
