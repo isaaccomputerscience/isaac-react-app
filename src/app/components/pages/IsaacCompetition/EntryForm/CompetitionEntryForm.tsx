@@ -76,7 +76,6 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
     };
   }, []);
 
-  // Add this new useEffect to set custom validation message for projectLink
   useEffect(() => {
     const input = document.getElementById("projectLink") as HTMLInputElement;
     if (!input) return;
@@ -86,10 +85,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
     };
 
     const handleInput = () => {
-      // Clear custom validity when user starts typing (so validation can run again)
-      if (input.validity.valid) {
-        input.setCustomValidity("");
-      }
+      input.setCustomValidity("");
     };
 
     input.addEventListener("invalid", handleInvalid);
