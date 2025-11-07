@@ -51,6 +51,12 @@ export default {
         "Showcase your talent: stand out on future university or job applications and earn the title of an IoE innovator",
       ],
     },
+    qanda: {
+      title: "Q&A - Everything you need to know",
+      description: "Learn about the competition essentials to get started",
+      videoUrl: "t0ojrm0fMoE",
+    },
+
     eligibility: {
       title: "Who can join?",
       description:

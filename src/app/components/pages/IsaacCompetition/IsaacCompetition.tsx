@@ -129,6 +129,16 @@ export const IsaacCompetition = () => {
               />
             </Col>
           </Row>
+          <Row>
+            <Col xs={12} lg={6} className="mt-4 mt-lg-0">
+              <InformationCard
+                title={section3.qanda.title}
+                content={[section3.qanda.description]}
+                videoUrl={section3.qanda.videoUrl}
+                className="competition-information-default-background"
+              />
+            </Col>
+          </Row>
           <Row className="py-4">
             <Col xs={12} lg={6}>
               <InformationCard
