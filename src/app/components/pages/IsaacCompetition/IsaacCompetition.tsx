@@ -8,6 +8,7 @@ import Accordion from "./Accordion/Accordion";
 import InformationCard from "./CompetitionInformation/InformationCard";
 import CompetitionTimeline from "./CompetitionInformation/CompetitionTimeline";
 import EntryFormHandler from "./EntryForm/EntryFormHandler";
+import { liveQandASessionDate } from "./dateUtils";
 
 const { section1, section3, accordion } = content;
 
@@ -22,8 +23,6 @@ export const IsaacCompetition = () => {
       label: "Submit a project",
     },
   ];
-
-  const qandaVideoReleaseDate = new Date("2025-11-15");
 
   const [open, setOpen] = useState<string | null>(null);
 
@@ -122,7 +121,7 @@ export const IsaacCompetition = () => {
                 onFaqClick={handleFaqClick}
               />
             </Col>
-            {qandaVideoReleaseDate > new Date() ? (
+            {liveQandASessionDate > new Date() ? (
               <Col xs={12} lg={6} className="mt-4 mt-lg-0">
                 <InformationCard
                   title={section3.whyJoin.title}
