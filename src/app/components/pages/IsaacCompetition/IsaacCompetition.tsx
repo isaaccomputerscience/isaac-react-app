@@ -23,6 +23,8 @@ export const IsaacCompetition = () => {
     },
   ];
 
+  const qandaVideoReleaseDate = new Date("2025-11-15");
+
   const [open, setOpen] = useState<string | null>(null);
 
   const setOpenState = (id?: string) => {
@@ -120,24 +122,25 @@ export const IsaacCompetition = () => {
                 onFaqClick={handleFaqClick}
               />
             </Col>
-            <Col xs={12} lg={6} className="mt-4 mt-lg-0">
-              <InformationCard
-                title={section3.whyJoin.title}
-                content={section3.whyJoin.benefits}
-                isList
-                className="competition-information-default-background"
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col xs={12} lg={6} className="mt-4 mt-lg-0">
-              <InformationCard
-                title={section3.qanda.title}
-                content={[section3.qanda.description]}
-                videoUrl={section3.qanda.videoUrl}
-                className="competition-information-default-background"
-              />
-            </Col>
+            {qandaVideoReleaseDate > new Date() ? (
+              <Col xs={12} lg={6} className="mt-4 mt-lg-0">
+                <InformationCard
+                  title={section3.whyJoin.title}
+                  content={section3.whyJoin.benefits}
+                  isList
+                  className="competition-information-default-background"
+                />
+              </Col>
+            ) : (
+              <Col xs={12} lg={6} className="mt-4 mt-lg-0">
+                <InformationCard
+                  title={section3.qanda.title}
+                  content={[section3.qanda.description]}
+                  videoUrl={section3.qanda.videoUrl}
+                  className="competition-information-default-background"
+                />
+              </Col>
+            )}
           </Row>
           <Row className="py-4">
             <Col xs={12} lg={6}>
