@@ -28,9 +28,9 @@ const determineUrlQueryPresets = (user?: Immutable<PotentialUser> | null) => {
   let presetMessage = "";
   let presetPlaceholder = "";
   let presetUrl = "";
-  let presetFirstName = "";
-  let presetLastName = "";
-  let presetEmail = "";
+  const presetFirstName = "";
+  const presetLastName = "";
+  const presetEmail = "";
 
   const setTeacherRequestPresets = (user: Immutable<LoggedInUser>) => {
     presetSubject = "Teacher Account Request";
@@ -88,7 +88,7 @@ export const Contact = () => {
   const user = useAppSelector(selectors.user.orNull);
   const error = useAppSelector((state: AppState) => state?.error ?? null);
   const [presetFirstName, presetLastName, presetEmail, presetSubject, presetMessage, presetPlaceholder, presetUrl] =
-      determineUrlQueryPresets(user);
+    determineUrlQueryPresets(user);
   const [firstName, setFirstName] = useState((user?.loggedIn && user.givenName) || presetFirstName || "");
   const [lastName, setLastName] = useState((user?.loggedIn && user.familyName) || presetLastName || "");
   const [email, setEmail] = useState((user?.loggedIn && user.email) || presetEmail || "");
