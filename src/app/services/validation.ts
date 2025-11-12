@@ -100,7 +100,7 @@ export const validatePassword = (password: string): boolean => {
     return false;
   }
 
-  if (!/[0-9]/.test(password)) {
+  if (!/\d/.test(password)) {
     return false;
   }
 
@@ -116,7 +116,7 @@ export const validatePassword = (password: string): boolean => {
   // ASCII punctuation includes ALL of: !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~
   // The regex pattern [!-\/:-@\[-`{-~] covers all ASCII punctuation ranges:
   // ! to / (33-47), : to @ (58-64), [ to ` (91-96), { to ~ (123-126)
-  return /[!-\/:-@\[-`{-~]/.test(password);
+  return /[!-/:-@[-`{-~]/.test(password);
 };
 
 /**
@@ -138,7 +138,7 @@ export const getPasswordValidationErrors = (password: string): string[] => {
     errors.push(`Password must be no more than ${MAXIMUM_PASSWORD_LENGTH} characters`);
   }
 
-  if (!/[0-9]/.test(password)) {
+  if (!/\d/.test(password)) {
     errors.push("Password must contain at least one number");
   }
 
@@ -150,10 +150,8 @@ export const getPasswordValidationErrors = (password: string): string[] => {
     errors.push("Password must contain at least one uppercase letter");
   }
 
-  if (!/[!-\/:-@\[-`{-~]/.test(password)) {
-    errors.push(
-        "Password must contain at least one punctuation character (e.g., !@#$%^&*()-_=+[]{};:'\",.<>/?\\|`~)",
-    );
+  if (!/[!-/:-@[-`{-~]/.test(password)) {
+    errors.push("Password must contain at least one punctuation character (e.g., !@#$%^&*()-_=+[]{};:'\",.<>/?\\|`~)",);
   }
 
   return errors;
@@ -182,8 +180,8 @@ export const calculatePasswordStrength = (password: string): PasswordStrength =>
 
   const hasMultipleLowercase = (password.match(/[a-z]/g) || []).length >= 3;
   const hasMultipleUppercase = (password.match(/[A-Z]/g) || []).length >= 3;
-  const hasMultipleNumbers = (password.match(/[0-9]/g) || []).length >= 3;
-  const hasMultiplePunctuation = (password.match(/[!-\/:-@\[-`{-~]/g) || []).length >= 2;
+  const hasMultipleNumbers = (password.match(/\d/g) || []).length >= 3;
+  const hasMultiplePunctuation = (password.match(/[!-/:-@[-`{-~]/g) || []).length >= 2;
 
   if (hasMultipleLowercase) strengthScore += 0.25;
   if (hasMultipleUppercase) strengthScore += 0.25;
@@ -193,11 +191,9 @@ export const calculatePasswordStrength = (password: string): PasswordStrength =>
   // Pattern complexity bonus - check for non-repetitive patterns
   const hasNoRepeatingChars = !/(.)\1{2,}/.test(password); // No char repeated 3+ times
   const hasNoSequentialNumbers =
-      !/012|123|234|345|456|567|678|789|890|987|876|765|654|543|432|321|210/.test(password);
+    !/012|123|234|345|456|567|678|789|890|987|876|765|654|543|432|321|210/.test(password);
   const hasNoSequentialLetters =
-      !/abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz/i.test(
-          password,
-      );
+    !/abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz/i.test(password,);
 
   if (hasNoRepeatingChars) strengthScore += 0.5;
   if (hasNoSequentialNumbers) strengthScore += 0.25;
@@ -308,9 +304,7 @@ export const validatePasswordReset = (
   const strength = newPassword ? calculatePasswordStrength(newPassword) : PasswordStrength.INVALID;
 
   if (strength < PasswordStrength.FAIR && validation.valid) {
-    validation.errors.push(
-        "Warning: Your password is weak. Consider using a stronger password for better security.",
-    );
+    validation.errors.push("Warning: Your password is weak. Consider using a stronger password for better security.",);
   }
 
   return {
@@ -499,23 +493,23 @@ export function safePercentage(correct: number | null | undefined, attempts: num
 }
 
 export const validateForm = (
-    registrationUser: Immutable<ValidationUser>,
-    unverifiedPassword: string | undefined,
-    userContexts: UserContext[],
-    dobOver13CheckboxChecked: boolean,
-    emailPreferences: UserEmailPreferences | undefined,
+  registrationUser: Immutable<ValidationUser>,
+  unverifiedPassword: string | undefined,
+  userContexts: UserContext[],
+  dobOver13CheckboxChecked: boolean,
+  emailPreferences: UserEmailPreferences | undefined,
 ) => {
   return (
-      validateName(registrationUser.familyName) &&
-      validateName(registrationUser.givenName) &&
-      validateUserSchool(registrationUser) &&
-      validatePassword(registrationUser.password || "") &&
-      registrationUser.password === unverifiedPassword &&
-      validateEmail(registrationUser.email) &&
-      (isDobOverThirteen(registrationUser.dateOfBirth) || dobOver13CheckboxChecked) &&
-      validateUserGender(registrationUser) &&
-      validateUserContexts(userContexts) &&
-      validateEmailPreferences(emailPreferences)
+    validateName(registrationUser.familyName) &&
+    validateName(registrationUser.givenName) &&
+    validateUserSchool(registrationUser) &&
+    validatePassword(registrationUser.password || "") &&
+    registrationUser.password === unverifiedPassword &&
+    validateEmail(registrationUser.email) &&
+    (isDobOverThirteen(registrationUser.dateOfBirth) || dobOver13CheckboxChecked) &&
+    validateUserGender(registrationUser) &&
+    validateUserContexts(userContexts) &&
+    validateEmailPreferences(emailPreferences)
   );
 };
 

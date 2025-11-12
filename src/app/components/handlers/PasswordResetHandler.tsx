@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { AppState, handlePasswordReset, useAppDispatch, useAppSelector, verifyPasswordReset } from "../../state";
 import { Button, Card, CardBody, CardFooter, Container, Form, FormFeedback, FormGroup, Input, Label } from "reactstrap";
-import { loadZxcvbnIfNotPresent} from "../../services";
 import { RouteComponentProps } from "react-router";
-import { validatePassword, getPasswordValidationErrors } from "../../services";
+import { validatePassword, getPasswordValidationErrors, loadZxcvbnIfNotPresent } from "../../services";
 
 export const ResetPasswordHandler = ({ match }: RouteComponentProps<{ token?: string }>) => {
   const dispatch = useAppDispatch();
@@ -31,14 +30,14 @@ export const ResetPasswordHandler = ({ match }: RouteComponentProps<{ token?: st
       // Using the proper validation function that checks for 12+ chars and all requirements
       const isValid = validatePassword(password);
 
-      if (!isValid) {
+      if (isValid) {
+        setPasswordErrors([]);
+      } else {
         // Get specific errors if using the enhanced module
         const errors = getPasswordValidationErrors ?
             getPasswordValidationErrors(password) :
             ["Password must be at least 12 characters, with at least one uppercase letter, one lowercase letter, one number, and one punctuation character"];
         setPasswordErrors(errors);
-      } else {
-        setPasswordErrors([]);
       }
     } else if (passwordTouched && !password) {
       setPasswordErrors(["Password is required"]);
@@ -50,10 +49,10 @@ export const ResetPasswordHandler = ({ match }: RouteComponentProps<{ token?: st
     if (confirmPasswordTouched) {
       if (!confirmPassword) {
         setConfirmPasswordError("Please confirm your password");
-      } else if (password !== confirmPassword) {
-        setConfirmPasswordError("Passwords do not match");
-      } else {
+      } else if (password === confirmPassword) {
         setConfirmPasswordError("");
+      } else {
+        setConfirmPasswordError("Passwords do not match");
       }
     }
   }, [password, confirmPassword, confirmPasswordTouched]);
@@ -95,6 +94,14 @@ export const ResetPasswordHandler = ({ match }: RouteComponentProps<{ token?: st
       dispatch(handlePasswordReset({ token: urlToken, password: password }));
     }
   };
+
+  function isDisabled() {
+    return <>
+      {password ? confirmPassword ? passwordErrors.length > 0 ? "Please fix password errors" :
+          confirmPasswordError ? "Passwords must match" :
+              "Please complete all fields" : "Please confirm your password" : "Please enter a password"}
+    </>;
+  }
 
   return (
     <Container id="password-reset">
@@ -157,7 +164,7 @@ export const ResetPasswordHandler = ({ match }: RouteComponentProps<{ token?: st
 
           <CardFooter>
             {/* Show general errors from the API */}
-            {errorMessage && errorMessage.type === "generalError" && (
+            {errorMessage?.type === "generalError" && (
               <h4 role="alert" className="text-danger text-center mb-3">
                 {errorMessage.generalError}
               </h4>
@@ -176,13 +183,9 @@ export const ResetPasswordHandler = ({ match }: RouteComponentProps<{ token?: st
 
             {/* Show why button is disabled */}
             {(!password || !confirmPassword || !isFormValid()) && (
-                <small className="text-muted text-center d-block">
-                  {!password ? "Please enter a password" :
-                      !confirmPassword ? "Please confirm your password" :
-                          passwordErrors.length > 0 ? "Please fix password errors" :
-                              confirmPasswordError ? "Passwords must match" :
-                                  "Please complete all fields"}
-                </small>
+              <small className="text-muted text-center d-block">
+                {isDisabled()}
+              </small>
             )}
           </CardFooter>
         </Card>
