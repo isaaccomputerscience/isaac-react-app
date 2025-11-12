@@ -151,7 +151,7 @@ export const getPasswordValidationErrors = (password: string): string[] => {
   }
 
   if (!/[!-/:-@[-`{-~]/.test(password)) {
-    errors.push("Password must contain at least one punctuation character (e.g., !@#$%^&*()-_=+[]{};:'\",.<>/?\\|`~)",);
+    errors.push("Password must contain at least one punctuation character (e.g., !@#$%^&*()-_=+[]{};:'\",.<>/?\\|`~)");
   }
 
   return errors;
@@ -161,57 +161,40 @@ export const getPasswordValidationErrors = (password: string): string[] => {
  * Calculates the strength of a password on a scale from INVALID to VERY_STRONG
  */
 export const calculatePasswordStrength = (password: string): PasswordStrength => {
-  if (!password) {
+  if (password) {
+    if (!validatePassword(password)) {
+      return PasswordStrength.INVALID;
+    }
+    let strengthScore: number;
+    strengthScore = 1;
+    if (password.length >= 15) strengthScore += 1;
+    if (password.length >= 20) strengthScore += 1;
+    if (password.length >= 25) strengthScore += 1;
+    const hasMultipleLowercase = (password.match(/[a-z]/g) || []).length >= 3;
+    const hasMultipleUppercase = (password.match(/[A-Z]/g) || []).length >= 3;
+    const hasMultipleNumbers = (password.match(/\d/g) || []).length >= 3;
+    const hasMultiplePunctuation = (password.match(/[!-/:-@[-`{-~]/g) || []).length >= 2;
+    if (hasMultipleLowercase) strengthScore += 0.25;
+    if (hasMultipleUppercase) strengthScore += 0.25;
+    if (hasMultipleNumbers) strengthScore += 0.25;
+    if (hasMultiplePunctuation) strengthScore += 0.25;
+    const hasNoRepeatingChars = !/(.)\1{2,}/.test(password);
+    const hasNoSequentialNumbers = !/012|123|234|345|456|567|678|789|890|987|876|765|654|543|432|321|210/.test(password);
+    if (hasNoRepeatingChars) strengthScore += 0.5;
+    if (hasNoSequentialNumbers) strengthScore += 0.25;
+    const commonPatterns = [/password/i, /123456/, /qwerty/i, /abc123/i, /admin/i, /letmein/i];
+    const hasCommonPattern = commonPatterns.some((pattern) => pattern.test(password));
+    if (hasCommonPattern) strengthScore -= 1;
+    const finalScore = Math.floor(strengthScore);
+    if (finalScore <= 0) return PasswordStrength.INVALID;
+    if (finalScore === 1) return PasswordStrength.WEAK;
+    if (finalScore === 2) return PasswordStrength.FAIR;
+    if (finalScore === 3) return PasswordStrength.GOOD;
+    if (finalScore === 4) return PasswordStrength.STRONG;
+    return PasswordStrength.VERY_STRONG;
+  } else {
     return PasswordStrength.INVALID;
   }
-
-  if (!validatePassword(password)) {
-    return PasswordStrength.INVALID;
-  }
-
-  let strengthScore: number;
-
-  strengthScore = 1; // WEAK
-
-  // Length bonuses
-  if (password.length >= 15) strengthScore += 1;
-  if (password.length >= 20) strengthScore += 1;
-  if (password.length >= 25) strengthScore += 1;
-
-  const hasMultipleLowercase = (password.match(/[a-z]/g) || []).length >= 3;
-  const hasMultipleUppercase = (password.match(/[A-Z]/g) || []).length >= 3;
-  const hasMultipleNumbers = (password.match(/\d/g) || []).length >= 3;
-  const hasMultiplePunctuation = (password.match(/[!-/:-@[-`{-~]/g) || []).length >= 2;
-
-  if (hasMultipleLowercase) strengthScore += 0.25;
-  if (hasMultipleUppercase) strengthScore += 0.25;
-  if (hasMultipleNumbers) strengthScore += 0.25;
-  if (hasMultiplePunctuation) strengthScore += 0.25;
-
-  // Pattern complexity bonus - check for non-repetitive patterns
-  const hasNoRepeatingChars = !/(.)\1{2,}/.test(password); // No char repeated 3+ times
-  const hasNoSequentialNumbers =
-    !/012|123|234|345|456|567|678|789|890|987|876|765|654|543|432|321|210/.test(password);
-  const hasNoSequentialLetters =
-    !/abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz/i.test(password,);
-
-  if (hasNoRepeatingChars) strengthScore += 0.5;
-  if (hasNoSequentialNumbers) strengthScore += 0.25;
-  if (hasNoSequentialLetters) strengthScore += 0.25;
-
-  const commonPatterns = [/password/i, /123456/, /qwerty/i, /abc123/i, /admin/i, /letmein/i];
-
-  const hasCommonPattern = commonPatterns.some((pattern) => pattern.test(password));
-  if (hasCommonPattern) strengthScore -= 1;
-
-  const finalScore = Math.floor(strengthScore);
-
-  if (finalScore <= 0) return PasswordStrength.INVALID;
-  if (finalScore === 1) return PasswordStrength.WEAK;
-  if (finalScore === 2) return PasswordStrength.FAIR;
-  if (finalScore === 3) return PasswordStrength.GOOD;
-  if (finalScore === 4) return PasswordStrength.STRONG;
-  return PasswordStrength.VERY_STRONG;
 };
 
 /**
@@ -269,8 +252,8 @@ export const validatePasswordMatch = (password: string, confirmPassword: string)
  * Validates a complete password form (password + confirmation)
  */
 export const validatePasswordForm = (
-    password: string | undefined,
-    confirmPassword: string | undefined,
+  password: string | undefined,
+  confirmPassword: string | undefined,
 ): { valid: boolean; errors: string[] } => {
   const errors: string[] = [];
 
@@ -297,14 +280,14 @@ export const validatePasswordForm = (
  * Validates a password reset with strength checking
  */
 export const validatePasswordReset = (
-    newPassword: string,
-    confirmPassword: string,
+  newPassword: string,
+  confirmPassword: string,
 ): { valid: boolean; errors: string[]; strength: PasswordStrength } => {
   const validation = validatePasswordForm(newPassword, confirmPassword);
   const strength = newPassword ? calculatePasswordStrength(newPassword) : PasswordStrength.INVALID;
 
   if (strength < PasswordStrength.FAIR && validation.valid) {
-    validation.errors.push("Warning: Your password is weak. Consider using a stronger password for better security.",);
+    validation.errors.push("Warning: Your password is weak. Consider using a stronger password for better security.");
   }
 
   return {
