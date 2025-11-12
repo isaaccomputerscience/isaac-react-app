@@ -13,6 +13,7 @@ import { Immutable } from "immer";
 export function atLeastOne(possibleNumber?: number): boolean {
   return possibleNumber !== undefined && possibleNumber > 0;
 }
+
 export function zeroOrLess(possibleNumber?: number): boolean {
   return possibleNumber !== undefined && possibleNumber <= 0;
 }
@@ -64,14 +65,292 @@ const isDobOverN = (n: number, dateOfBirth?: Date | number) => {
 
 export const isDobOverThirteen = (dateOfBirth?: Date | number) => isDobOverN(13, dateOfBirth);
 
+// ============================================================================
+// COMPREHENSIVE PASSWORD VALIDATION
+// ============================================================================
+
 export const MINIMUM_PASSWORD_LENGTH = 12;
-export const PASSWORD_REQUIREMENTS = `Passwords must be at least ${MINIMUM_PASSWORD_LENGTH} characters, containing at least one number, one lowercase letter, one uppercase letter, and one punctuation character.`;
-export const validatePassword = (password: string) => {
-  const regex = new RegExp(
-    `^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{${MINIMUM_PASSWORD_LENGTH},}$`,
-  );
-  return regex.test(password);
+export const MAXIMUM_PASSWORD_LENGTH = 128;
+
+export const PASSWORD_REQUIREMENTS = `Passwords must be ${MINIMUM_PASSWORD_LENGTH}-${MAXIMUM_PASSWORD_LENGTH} characters, containing at least one number, one lowercase letter, one uppercase letter, and one ASCII punctuation character.`;
+
+export enum PasswordStrength {
+  INVALID = 0,
+  WEAK = 1,
+  FAIR = 2,
+  GOOD = 3,
+  STRONG = 4,
+  VERY_STRONG = 5,
+}
+
+/**
+ * Validates that a password meets all requirements:
+ * - Between 12-128 characters
+ * - Contains at least one number
+ * - Contains at least one lowercase letter
+ * - Contains at least one uppercase letter
+ * - Contains at least one ASCII punctuation character
+ */
+export const validatePassword = (password: string): boolean => {
+  if (!password) {
+    return false;
+  }
+
+  if (password.length < MINIMUM_PASSWORD_LENGTH || password.length > MAXIMUM_PASSWORD_LENGTH) {
+    return false;
+  }
+
+  if (!/[0-9]/.test(password)) {
+    return false;
+  }
+
+  if (!/[a-z]/.test(password)) {
+    return false;
+  }
+
+  if (!/[A-Z]/.test(password)) {
+    return false;
+  }
+
+  // Check for at least one ASCII punctuation character
+  // ASCII punctuation includes ALL of: !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~
+  // The regex pattern [!-\/:-@\[-`{-~] covers all ASCII punctuation ranges:
+  // ! to / (33-47), : to @ (58-64), [ to ` (91-96), { to ~ (123-126)
+  return /[!-\/:-@\[-`{-~]/.test(password);
 };
+
+/**
+ * Returns an array of specific validation errors for a password
+ */
+export const getPasswordValidationErrors = (password: string): string[] => {
+  const errors: string[] = [];
+
+  if (!password) {
+    errors.push("Password is required");
+    return errors;
+  }
+
+  if (password.length < MINIMUM_PASSWORD_LENGTH) {
+    errors.push(`Password must be at least ${MINIMUM_PASSWORD_LENGTH} characters`);
+  }
+
+  if (password.length > MAXIMUM_PASSWORD_LENGTH) {
+    errors.push(`Password must be no more than ${MAXIMUM_PASSWORD_LENGTH} characters`);
+  }
+
+  if (!/[0-9]/.test(password)) {
+    errors.push("Password must contain at least one number");
+  }
+
+  if (!/[a-z]/.test(password)) {
+    errors.push("Password must contain at least one lowercase letter");
+  }
+
+  if (!/[A-Z]/.test(password)) {
+    errors.push("Password must contain at least one uppercase letter");
+  }
+
+  if (!/[!-\/:-@\[-`{-~]/.test(password)) {
+    errors.push(
+        "Password must contain at least one punctuation character (e.g., !@#$%^&*()-_=+[]{};:'\",.<>/?\\|`~)",
+    );
+  }
+
+  return errors;
+};
+
+/**
+ * Calculates the strength of a password on a scale from INVALID to VERY_STRONG
+ */
+export const calculatePasswordStrength = (password: string): PasswordStrength => {
+  if (!password) {
+    return PasswordStrength.INVALID;
+  }
+
+  if (!validatePassword(password)) {
+    return PasswordStrength.INVALID;
+  }
+
+  let strengthScore: number;
+
+  strengthScore = 1; // WEAK
+
+  // Length bonuses
+  if (password.length >= 15) strengthScore += 1;
+  if (password.length >= 20) strengthScore += 1;
+  if (password.length >= 25) strengthScore += 1;
+
+  const hasMultipleLowercase = (password.match(/[a-z]/g) || []).length >= 3;
+  const hasMultipleUppercase = (password.match(/[A-Z]/g) || []).length >= 3;
+  const hasMultipleNumbers = (password.match(/[0-9]/g) || []).length >= 3;
+  const hasMultiplePunctuation = (password.match(/[!-\/:-@\[-`{-~]/g) || []).length >= 2;
+
+  if (hasMultipleLowercase) strengthScore += 0.25;
+  if (hasMultipleUppercase) strengthScore += 0.25;
+  if (hasMultipleNumbers) strengthScore += 0.25;
+  if (hasMultiplePunctuation) strengthScore += 0.25;
+
+  // Pattern complexity bonus - check for non-repetitive patterns
+  const hasNoRepeatingChars = !/(.)\1{2,}/.test(password); // No char repeated 3+ times
+  const hasNoSequentialNumbers =
+      !/012|123|234|345|456|567|678|789|890|987|876|765|654|543|432|321|210/.test(password);
+  const hasNoSequentialLetters =
+      !/abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz/i.test(
+          password,
+      );
+
+  if (hasNoRepeatingChars) strengthScore += 0.5;
+  if (hasNoSequentialNumbers) strengthScore += 0.25;
+  if (hasNoSequentialLetters) strengthScore += 0.25;
+
+  const commonPatterns = [/password/i, /123456/, /qwerty/i, /abc123/i, /admin/i, /letmein/i];
+
+  const hasCommonPattern = commonPatterns.some((pattern) => pattern.test(password));
+  if (hasCommonPattern) strengthScore -= 1;
+
+  const finalScore = Math.floor(strengthScore);
+
+  if (finalScore <= 0) return PasswordStrength.INVALID;
+  if (finalScore === 1) return PasswordStrength.WEAK;
+  if (finalScore === 2) return PasswordStrength.FAIR;
+  if (finalScore === 3) return PasswordStrength.GOOD;
+  if (finalScore === 4) return PasswordStrength.STRONG;
+  return PasswordStrength.VERY_STRONG;
+};
+
+/**
+ * Gets a human-readable label for a password strength value
+ */
+export const getPasswordStrengthLabel = (strength: PasswordStrength): string => {
+  switch (strength) {
+    case PasswordStrength.INVALID:
+      return "Invalid";
+    case PasswordStrength.WEAK:
+      return "Weak";
+    case PasswordStrength.FAIR:
+      return "Fair";
+    case PasswordStrength.GOOD:
+      return "Good";
+    case PasswordStrength.STRONG:
+      return "Strong";
+    case PasswordStrength.VERY_STRONG:
+      return "Very Strong";
+    default:
+      return "Unknown";
+  }
+};
+
+/**
+ * Gets a color for strength indicator
+ */
+export const getPasswordStrengthColor = (strength: PasswordStrength): string => {
+  switch (strength) {
+    case PasswordStrength.INVALID:
+      return "#dc3545";
+    case PasswordStrength.WEAK:
+      return "#fd7e14";
+    case PasswordStrength.FAIR:
+      return "#ffc107";
+    case PasswordStrength.GOOD:
+      return "#28a745";
+    case PasswordStrength.STRONG:
+      return "#20c997";
+    case PasswordStrength.VERY_STRONG:
+      return "#007bff";
+    default:
+      return "#6c757d";
+  }
+};
+
+/**
+ * Validates that two passwords match
+ */
+export const validatePasswordMatch = (password: string, confirmPassword: string): boolean => {
+  return password === confirmPassword;
+};
+
+/**
+ * Validates a complete password form (password + confirmation)
+ */
+export const validatePasswordForm = (
+    password: string | undefined,
+    confirmPassword: string | undefined,
+): { valid: boolean; errors: string[] } => {
+  const errors: string[] = [];
+
+  if (!password) {
+    errors.push("Password is required");
+  } else {
+    const passwordErrors = getPasswordValidationErrors(password);
+    errors.push(...passwordErrors);
+  }
+
+  if (!confirmPassword) {
+    errors.push("Please confirm your password");
+  } else if (password && password !== confirmPassword) {
+    errors.push("Passwords do not match");
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors,
+  };
+};
+
+/**
+ * Validates a password reset with strength checking
+ */
+export const validatePasswordReset = (
+    newPassword: string,
+    confirmPassword: string,
+): { valid: boolean; errors: string[]; strength: PasswordStrength } => {
+  const validation = validatePasswordForm(newPassword, confirmPassword);
+  const strength = newPassword ? calculatePasswordStrength(newPassword) : PasswordStrength.INVALID;
+
+  if (strength < PasswordStrength.FAIR && validation.valid) {
+    validation.errors.push(
+        "Warning: Your password is weak. Consider using a stronger password for better security.",
+    );
+  }
+
+  return {
+    ...validation,
+    strength,
+  };
+};
+
+/**
+ * Checks if a password is acceptable (alias for validatePassword for backward compatibility)
+ */
+export const isPasswordAcceptable = (password: string): boolean => {
+  return validatePassword(password);
+};
+
+/**
+ * Helper to get all password info at once
+ */
+export const getPasswordInfo = (password: string) => {
+  const isValid = validatePassword(password);
+  const errors = getPasswordValidationErrors(password);
+  const strength = calculatePasswordStrength(password);
+  const strengthLabel = getPasswordStrengthLabel(strength);
+  const strengthColor = getPasswordStrengthColor(strength);
+
+  return {
+    isValid,
+    errors,
+    strength,
+    strengthLabel,
+    strengthColor,
+    meetsRequirements: isValid,
+    isWeak: strength <= PasswordStrength.WEAK,
+    isStrong: strength >= PasswordStrength.GOOD,
+  };
+};
+
+// ============================================================================
+// EMAIL PREFERENCES VALIDATION
+// ============================================================================
 
 export const validateEmailPreferences = (emailPreferences?: UserEmailPreferences | null) => {
   return (
@@ -83,6 +362,10 @@ export const validateEmailPreferences = (emailPreferences?: UserEmailPreferences
     )
   );
 };
+
+// ============================================================================
+// USER CONTEXT VALIDATION
+// ============================================================================
 
 export function validateUserContexts(userContexts?: UserContext[]): boolean {
   if (userContexts === undefined) {
@@ -97,6 +380,10 @@ export function validateUserContexts(userContexts?: UserContext[]): boolean {
       Object.values(EXAM_BOARD).includes(uc.examBoard as EXAM_BOARD), // valid exam board for cs
   );
 }
+
+// ============================================================================
+// USER SCHOOL VALIDATION
+// ============================================================================
 
 // Users school is valid if user is a tutor - their school is allowed to be undefined
 export const validateUserSchool = (user?: Immutable<ValidationUser> | null) => {
@@ -114,6 +401,10 @@ export const validateUserSchool = (user?: Immutable<ValidationUser> | null) => {
   return !!user.schoolId || isTutor(user) || isValidSchoolOther;
 };
 
+// ============================================================================
+// USER ATTRIBUTE VALIDATION
+// ============================================================================
+
 export const validateUserGender = (user?: Immutable<ValidationUser> | null) => {
   return user && user.gender && user.gender !== "UNKNOWN";
 };
@@ -121,6 +412,10 @@ export const validateUserGender = (user?: Immutable<ValidationUser> | null) => {
 export const validateFullName = (user?: Immutable<ValidationUser> | null) => {
   return user && validateName(user.givenName) && validateName(user.familyName);
 };
+
+// ============================================================================
+// TIME-BASED VALIDATION
+// ============================================================================
 
 const withinLastNMinutes = (nMinutes: number, dateOfAction: string | null) => {
   if (dateOfAction) {
@@ -132,8 +427,13 @@ const withinLastNMinutes = (nMinutes: number, dateOfAction: string | null) => {
     return false;
   }
 };
+
 export const withinLast2Minutes = withinLastNMinutes.bind(null, 2);
 export const withinLast2Hours = withinLastNMinutes.bind(null, 120);
+
+// ============================================================================
+// COMPOSITE VALIDATION FUNCTIONS
+// ============================================================================
 
 export function allRequiredInformationIsPresent(
   user?: Immutable<ValidationUser> | null,
@@ -199,22 +499,48 @@ export function safePercentage(correct: number | null | undefined, attempts: num
 }
 
 export const validateForm = (
-  registrationUser: Immutable<ValidationUser>,
-  unverifiedPassword: string | undefined,
-  userContexts: UserContext[],
-  dobOver13CheckboxChecked: boolean,
-  emailPreferences: UserEmailPreferences | undefined,
+    registrationUser: Immutable<ValidationUser>,
+    unverifiedPassword: string | undefined,
+    userContexts: UserContext[],
+    dobOver13CheckboxChecked: boolean,
+    emailPreferences: UserEmailPreferences | undefined,
 ) => {
   return (
-    validateName(registrationUser.familyName) &&
-    validateName(registrationUser.givenName) &&
-    validateUserSchool(registrationUser) &&
-    validatePassword(registrationUser.password || "") &&
-    registrationUser.password === unverifiedPassword &&
-    validateEmail(registrationUser.email) &&
-    (isDobOverThirteen(registrationUser.dateOfBirth) || dobOver13CheckboxChecked) &&
-    validateUserGender(registrationUser) &&
-    validateUserContexts(userContexts) &&
-    validateEmailPreferences(emailPreferences)
+      validateName(registrationUser.familyName) &&
+      validateName(registrationUser.givenName) &&
+      validateUserSchool(registrationUser) &&
+      validatePassword(registrationUser.password || "") &&
+      registrationUser.password === unverifiedPassword &&
+      validateEmail(registrationUser.email) &&
+      (isDobOverThirteen(registrationUser.dateOfBirth) || dobOver13CheckboxChecked) &&
+      validateUserGender(registrationUser) &&
+      validateUserContexts(userContexts) &&
+      validateEmailPreferences(emailPreferences)
   );
+};
+
+// ============================================================================
+// DEFAULT EXPORT (for backward compatibility)
+// ============================================================================
+
+export default {
+  MINIMUM_PASSWORD_LENGTH,
+  MAXIMUM_PASSWORD_LENGTH,
+  PASSWORD_REQUIREMENTS,
+
+  PasswordStrength,
+
+  validatePassword,
+  validatePasswordMatch,
+  validatePasswordForm,
+  validatePasswordReset,
+
+  getPasswordValidationErrors,
+
+  calculatePasswordStrength,
+  getPasswordStrengthLabel,
+  getPasswordStrengthColor,
+
+  isPasswordAcceptable,
+  getPasswordInfo,
 };
