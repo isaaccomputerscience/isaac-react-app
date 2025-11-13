@@ -34,10 +34,10 @@ export const ResetPasswordHandler = ({ match }: RouteComponentProps<{ token?: st
         setPasswordErrors([]);
       } else {
         // Get specific errors if using the enhanced module
-        const errors = getPasswordValidationErrors ?
-          getPasswordValidationErrors(password) :
-          [ "Password must be at least 12 characters, with at least one uppercase letter, one lowercase letter, one number, and one punctuation character",
-          ];
+        const errors = getPasswordValidationErrors
+          ? getPasswordValidationErrors(password)
+              : ["Password must be at least 12 characters, with at least one uppercase letter, one lowercase letter, one number, and one punctuation character",
+            ];
         setPasswordErrors(errors);
       }
     } else if (passwordTouched && !password) {
