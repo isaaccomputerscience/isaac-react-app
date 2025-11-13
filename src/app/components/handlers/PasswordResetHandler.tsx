@@ -35,8 +35,9 @@ export const ResetPasswordHandler = ({ match }: RouteComponentProps<{ token?: st
       } else {
         // Get specific errors if using the enhanced module
         const errors = getPasswordValidationErrors ?
-            getPasswordValidationErrors(password) :
-            ["Password must be at least 12 characters, with at least one uppercase letter, one lowercase letter, one number, and one punctuation character"];
+          getPasswordValidationErrors(password) :
+          [ "Password must be at least 12 characters, with at least one uppercase letter, one lowercase letter, one number, and one punctuation character",
+          ];
         setPasswordErrors(errors);
       }
     } else if (passwordTouched && !password) {
@@ -96,11 +97,16 @@ export const ResetPasswordHandler = ({ match }: RouteComponentProps<{ token?: st
   };
 
   function isDisabled() {
-    return <>
+    return (
+      <>
       {password ? confirmPassword ? passwordErrors.length > 0 ? "Please fix password errors" :
-          confirmPasswordError ? "Passwords must match" :
-              "Please complete all fields" : "Please confirm your password" : "Please enter a password"}
-    </>;
+        confirmPasswordError
+          ? "Passwords must match"
+          : "Please complete all fields"
+          : "Please confirm your password"
+          : "Please enter a password"}
+      </>
+    )
   }
 
   return (
@@ -126,15 +132,15 @@ export const ResetPasswordHandler = ({ match }: RouteComponentProps<{ token?: st
 
                 {/* Show password requirements */}
                 <small id="password-requirements" className="form-text text-muted">
-                  Password must be at least 12 characters, containing at least one uppercase letter,
-                  one lowercase letter, one number, and one punctuation character.
+                  Password must be at least 12 characters, containing at least one uppercase letter, one lowercase
+                  letter, one number, and one punctuation character.
                 </small>
 
                 {/* Show specific validation errors */}
                 {passwordTouched && passwordErrors.length > 0 && (
                   <div id="password-errors" className="invalid-feedback d-block">
                     {passwordErrors.map((error, index) => (
-                        <div key={index}>{error}</div>
+                      <div key={index}>{error}</div>
                     ))}
                   </div>
                 )}
@@ -154,9 +160,7 @@ export const ResetPasswordHandler = ({ match }: RouteComponentProps<{ token?: st
                   required
                 />
                 {confirmPasswordTouched && confirmPasswordError && (
-                  <FormFeedback id="confirm-password-error">
-                    {confirmPasswordError}
-                  </FormFeedback>
+                  <FormFeedback id="confirm-password-error">{confirmPasswordError}</FormFeedback>
                 )}
               </FormGroup>
             </Form>
@@ -183,9 +187,7 @@ export const ResetPasswordHandler = ({ match }: RouteComponentProps<{ token?: st
 
             {/* Show why button is disabled */}
             {(!password || !confirmPassword || !isFormValid()) && (
-              <small className="text-muted text-center d-block">
-                {isDisabled()}
-              </small>
+              <small className="text-muted text-center d-block">{isDisabled()}</small>
             )}
           </CardFooter>
         </Card>
