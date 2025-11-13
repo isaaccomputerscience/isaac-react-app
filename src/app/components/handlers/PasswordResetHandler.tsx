@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import { AppState, handlePasswordReset, useAppDispatch, useAppSelector, verifyPasswordReset } from "../../state";
 import { Button, Card, CardBody, CardFooter, Container, Form, FormFeedback, FormGroup, Input, Label } from "reactstrap";
 import { RouteComponentProps } from "react-router";
-import { validatePassword, getPasswordValidationErrors, loadZxcvbnIfNotPresent } from "../../services";
+import {
+  validatePassword,
+  getPasswordValidationErrors,
+  loadZxcvbnIfNotPresent,
+  PASSWORD_REQUIREMENTS
+} from "../../services";
 
 export const ResetPasswordHandler = ({ match }: RouteComponentProps<{ token?: string }>) => {
   const dispatch = useAppDispatch();
@@ -37,7 +42,7 @@ export const ResetPasswordHandler = ({ match }: RouteComponentProps<{ token?: st
         const errors = getPasswordValidationErrors
           ? getPasswordValidationErrors(password)
           : [
-              "Password must be at least 12 characters, with at least one uppercase letter, one lowercase letter, one number, and one punctuation character",
+              PASSWORD_REQUIREMENTS,
             ];
         setPasswordErrors(errors);
       }
@@ -128,8 +133,7 @@ export const ResetPasswordHandler = ({ match }: RouteComponentProps<{ token?: st
 
                 {/* Show password requirements */}
                 <small id="password-requirements" className="form-text text-muted">
-                  Password must be at least 12 characters, containing at least one uppercase letter, one lowercase
-                  letter, one number, and one punctuation character.
+                  {PASSWORD_REQUIREMENTS}
                 </small>
 
                 {/* Show specific validation errors */}
