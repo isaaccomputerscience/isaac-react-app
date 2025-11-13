@@ -182,8 +182,8 @@ const calculateCharacterDiversityBonus = (password: string): number => {
 
   const hasMultipleLowercase = (password.match(/[a-z]/g) || []).length >= 3;
   const hasMultipleUppercase = (password.match(/[A-Z]/g) || []).length >= 3;
-  const hasMultipleNumbers = (password.match(/[0-9]/g) || []).length >= 3;
-  const hasMultiplePunctuation = (password.match(/[!-\/:-@\[-`{-~]/g) || []).length >= 2;
+  const hasMultipleNumbers = (password.match(/\d/g) || []).length >= 3;
+  const hasMultiplePunctuation = (password.match(/[!-/:-@[-`{-~]/g) || []).length >= 2;
 
   if (hasMultipleLowercase) bonus += 0.25;
   if (hasMultipleUppercase) bonus += 0.25;
@@ -197,16 +197,10 @@ const calculatePatternComplexityBonus = (password: string): number => {
   let bonus = 0;
 
   const hasNoRepeatingChars = !/(.)\1{2,}/.test(password);
-  const hasNoSequentialNumbers =
-      !/012|123|234|345|456|567|678|789|890|987|876|765|654|543|432|321|210/.test(password);
-  const hasNoSequentialLetters =
-      !/abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz/i.test(
-          password,
-      );
+  const hasNoSequentialNumbers = !/012|123|234|345|456|567|678|789|890|987|876|765|654|543|432|321|210/.test(password);
 
   if (hasNoRepeatingChars) bonus += 0.5;
   if (hasNoSequentialNumbers) bonus += 0.25;
-  if (hasNoSequentialLetters) bonus += 0.25;
 
   return bonus;
 };
