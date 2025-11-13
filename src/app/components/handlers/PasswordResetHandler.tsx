@@ -38,7 +38,7 @@ export const ResetPasswordHandler = ({ match }: RouteComponentProps<{ token?: st
       if (isValid) {
         setPasswordErrors([]);
       } else {
-        // Get specific errors if using the enhanced module
+        // Get specific errors if using the enhanced module8
         const errors = getPasswordValidationErrors ? getPasswordValidationErrors(password) : [PASSWORD_REQUIREMENTS];
         setPasswordErrors(errors);
       }
