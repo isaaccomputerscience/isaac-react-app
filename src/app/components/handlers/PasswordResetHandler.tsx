@@ -96,17 +96,12 @@ export const ResetPasswordHandler = ({ match }: RouteComponentProps<{ token?: st
     }
   };
 
-  function isDisabled() {
-    return (
-      <>
-      {password ? confirmPassword ? passwordErrors.length > 0 ? "Please fix password errors" :
-        confirmPasswordError
-          ? "Passwords must match"
-          : "Please complete all fields"
-          : "Please confirm your password"
-          : "Please enter a password"}
-      </>
-    )
+  function getDisabledButtonMessage(): string {
+    if (!password) return "Please enter a password";
+    if (!confirmPassword) return "Please confirm your password";
+    if (passwordErrors.length > 0) return "Please fix password errors";
+    if (confirmPasswordError) return "Passwords must match";
+    return "Please complete all fields";
   }
 
   return (
@@ -187,7 +182,7 @@ export const ResetPasswordHandler = ({ match }: RouteComponentProps<{ token?: st
 
             {/* Show why button is disabled */}
             {(!password || !confirmPassword || !isFormValid()) && (
-              <small className="text-muted text-center d-block">{isDisabled()}</small>
+              <small className="text-muted text-center d-block">{getDisabledButtonMessage()}</small>
             )}
           </CardFooter>
         </Card>

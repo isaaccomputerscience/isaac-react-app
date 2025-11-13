@@ -92,31 +92,23 @@ export enum PasswordStrength {
  * - Contains at least one ASCII punctuation character
  */
 export const validatePassword = (password: string): boolean => {
-  if (!password) {
+  if (password) {
+    if (password.length < MINIMUM_PASSWORD_LENGTH || password.length > MAXIMUM_PASSWORD_LENGTH) {
+      return false;
+    }
+    if (!/\d/.test(password)) {
+      return false;
+    }
+    if (!/[a-z]/.test(password)) {
+      return false;
+    }
+    if (!/[A-Z]/.test(password)) {
+      return false;
+    }
+    return /[!-/:-@[-`{-~]/.test(password);
+  } else {
     return false;
   }
-
-  if (password.length < MINIMUM_PASSWORD_LENGTH || password.length > MAXIMUM_PASSWORD_LENGTH) {
-    return false;
-  }
-
-  if (!/\d/.test(password)) {
-    return false;
-  }
-
-  if (!/[a-z]/.test(password)) {
-    return false;
-  }
-
-  if (!/[A-Z]/.test(password)) {
-    return false;
-  }
-
-  // Check for at least one ASCII punctuation character
-  // ASCII punctuation includes ALL of: !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~
-  // The regex pattern [!-\/:-@\[-`{-~] covers all ASCII punctuation ranges:
-  // ! to / (33-47), : to @ (58-64), [ to ` (91-96), { to ~ (123-126)
-  return /[!-/:-@[-`{-~]/.test(password);
 };
 
 /**
@@ -125,36 +117,30 @@ export const validatePassword = (password: string): boolean => {
 export const getPasswordValidationErrors = (password: string): string[] => {
   const errors: string[] = [];
 
-  if (!password) {
+  if (password) {
+    if (password.length < MINIMUM_PASSWORD_LENGTH) {
+      errors.push(`Password must be at least ${MINIMUM_PASSWORD_LENGTH} characters`);
+    }
+    if (password.length > MAXIMUM_PASSWORD_LENGTH) {
+      errors.push(`Password must be no more than ${MAXIMUM_PASSWORD_LENGTH} characters`);
+    }
+    if (!/\d/.test(password)) {
+      errors.push("Password must contain at least one number");
+    }
+    if (!/[a-z]/.test(password)) {
+      errors.push("Password must contain at least one lowercase letter");
+    }
+    if (!/[A-Z]/.test(password)) {
+      errors.push("Password must contain at least one uppercase letter");
+    }
+    if (!/[!-/:-@[-`{-~]/.test(password)) {
+      errors.push("Password must contain at least one punctuation character (e.g., !@#$%^&*()-_=+[]{};:'\",.<>/?\\|`~)");
+    }
+    return errors;
+  } else {
     errors.push("Password is required");
     return errors;
   }
-
-  if (password.length < MINIMUM_PASSWORD_LENGTH) {
-    errors.push(`Password must be at least ${MINIMUM_PASSWORD_LENGTH} characters`);
-  }
-
-  if (password.length > MAXIMUM_PASSWORD_LENGTH) {
-    errors.push(`Password must be no more than ${MAXIMUM_PASSWORD_LENGTH} characters`);
-  }
-
-  if (!/\d/.test(password)) {
-    errors.push("Password must contain at least one number");
-  }
-
-  if (!/[a-z]/.test(password)) {
-    errors.push("Password must contain at least one lowercase letter");
-  }
-
-  if (!/[A-Z]/.test(password)) {
-    errors.push("Password must contain at least one uppercase letter");
-  }
-
-  if (!/[!-/:-@[-`{-~]/.test(password)) {
-    errors.push("Password must contain at least one punctuation character (e.g., !@#$%^&*()-_=+[]{};:'\",.<>/?\\|`~)");
-  }
-
-  return errors;
 };
 
 /**
@@ -257,11 +243,11 @@ export const validatePasswordForm = (
 ): { valid: boolean; errors: string[] } => {
   const errors: string[] = [];
 
-  if (!password) {
-    errors.push("Password is required");
-  } else {
+  if (password) {
     const passwordErrors = getPasswordValidationErrors(password);
     errors.push(...passwordErrors);
+  } else {
+    errors.push("Password is required");
   }
 
   if (!confirmPassword) {
