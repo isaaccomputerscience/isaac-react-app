@@ -6,7 +6,7 @@ import {
   validatePassword,
   getPasswordValidationErrors,
   loadZxcvbnIfNotPresent,
-  PASSWORD_REQUIREMENTS
+  PASSWORD_REQUIREMENTS,
 } from "../../services";
 
 export const ResetPasswordHandler = ({ match }: RouteComponentProps<{ token?: string }>) => {
@@ -39,11 +39,7 @@ export const ResetPasswordHandler = ({ match }: RouteComponentProps<{ token?: st
         setPasswordErrors([]);
       } else {
         // Get specific errors if using the enhanced module
-        const errors = getPasswordValidationErrors
-          ? getPasswordValidationErrors(password)
-          : [
-              PASSWORD_REQUIREMENTS,
-            ];
+        const errors = getPasswordValidationErrors ? getPasswordValidationErrors(password) : [PASSWORD_REQUIREMENTS,];
         setPasswordErrors(errors);
       }
     } else if (passwordTouched && !password) {
