@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { StudentRegistration } from "../../app/components/pages/StudentRegistration";
 import * as actions from "../../app/state/actions";
 import { rest } from "msw";
-import {API_PATH, PASSWORD_REQUIREMENTS} from "../../app/services";
+import { API_PATH, PASSWORD_REQUIREMENTS } from "../../app/services";
 import { registrationMockUser, registrationUserData } from "../../mocks/data";
 
 const registerUserSpy = jest.spyOn(actions, "registerUser");
