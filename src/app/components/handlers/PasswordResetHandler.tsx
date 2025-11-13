@@ -134,8 +134,8 @@ export const ResetPasswordHandler = ({ match }: RouteComponentProps<{ token?: st
                 {/* Show specific validation errors */}
                 {passwordTouched && passwordErrors.length > 0 && (
                   <div id="password-errors" className="invalid-feedback d-block">
-                    {passwordErrors.map((error, index) => (
-                      <div key={index}>{error}</div>
+                    {passwordErrors.map((error) => (
+                      <div key={error}>{error}</div>
                     ))}
                   </div>
                 )}
