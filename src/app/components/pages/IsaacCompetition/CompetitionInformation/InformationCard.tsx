@@ -59,14 +59,14 @@ const InformationCard = ({
   return (
     <Card className={`h-100 ${className} competition-information-no-border`}>
       {videoUrl && (
-        <div className="" style={{ position: "relative", paddingBottom: "56.25%" }}>
+        <div className="card" style={{ position: "relative", paddingBottom: "56.25%", borderRadius: "4px" }}>
           <iframe
             title={`${title} video`}
             src={`https://www.youtube-nocookie.com/embed/${videoUrl}?enablejsapi=1&rel=0&fs=1&modestbranding=1`}
             id="ytplayer"
             width="100%"
             height="100%"
-            style={{ position: "absolute", border: "none" }}
+            style={{ position: "absolute", border: "none", borderRadius: "4px" }}
             allowFullScreen
           />
         </div>
