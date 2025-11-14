@@ -58,7 +58,7 @@ export default {
     qanda: {
       title: "Q&A - Everything you need to know",
       description:
-        "Learn about the competition essentials to get started. This Q&A session covers key dates, entry requirements, and details about the final event at the inspiring Innovation Fest! ",
+        "Learn about the competition essentials to get started.<br>This Q&A session covers key dates, entry requirements, and details about the final event at the inspiring <br> Innovation Fest! ",
       videoUrl: "p04Ve9dM3oA",
     },
 
