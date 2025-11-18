@@ -1,6 +1,6 @@
 import React from "react";
 import { Col, Container, Row } from "reactstrap";
-import { Route, withRouter} from "react-router-dom";
+import { Route, withRouter } from "react-router-dom";
 import { TitleAndBreadcrumb } from "../elements/TitleAndBreadcrumb";
 import { Redirect, RouteComponentProps } from "react-router";
 import { Tabs } from "../elements/Tabs";
