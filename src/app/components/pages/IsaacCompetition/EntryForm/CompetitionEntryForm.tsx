@@ -41,8 +41,8 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
     }
 
     return (
-        (userToUpdate as any).schoolId ||
-        ((userToUpdate as any).schoolOther && (userToUpdate as any).schoolOther !== "N/A")
+      (userToUpdate as any).schoolId ||
+      ((userToUpdate as any).schoolOther && (userToUpdate as any).schoolOther !== "N/A")
     );
   };
 
