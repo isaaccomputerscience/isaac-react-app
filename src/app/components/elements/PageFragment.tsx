@@ -15,7 +15,9 @@ export const PageFragment = ({ fragmentId, ifNotFound }: PageFragmentComponentPr
   useEffect(() => {
     if (fragment) {
       const el = document.getElementById(fragmentId);
-      if (el) { el.scrollIntoView({ behavior: "smooth", block: "start" }); }
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
     }
   }, [fragmentId, fragment]);
 

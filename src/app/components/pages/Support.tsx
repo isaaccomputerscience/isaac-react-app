@@ -120,11 +120,11 @@ export const SupportPageComponent = ({
           >
             {fromPairs(
               Object.values(section.categories).map((category) => {
-                // eslint-disable-next-line react/jsx-key
+                const fragmentId = `support_${type}_${category.category}`;
                 return [
                   category.title,
-                  <div id={`support_${type}_${category.category}`}>
-                    <PageFragment fragmentId={`support_${type}_${category.category}`} />
+                  <div key={fragmentId} id={fragmentId}>
+                    <PageFragment fragmentId={fragmentId} />
                   </div>,
                 ];
               }),
