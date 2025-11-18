@@ -182,25 +182,6 @@
     background-repeat: no-repeat;
     background-position: left top;
     background-size: contain;
-    position: relative;
-    
-    // On smaller screens, limit background size to prevent it from extending into button area
-    @media (max-width: 1023px) {
-      background-size: auto 80%;
-      background-position: left top;
-    }
-    
-    // Ensure Container creates a stacking context above the background
-    .container {
-      position: relative;
-      z-index: 1;
-    }
-    
-    // Ensure Form creates a stacking context
-    form {
-      position: relative;
-      z-index: 1;
-    }
   }
 
   &-title {
@@ -221,82 +202,29 @@
   }
 
   &-button {
-    // Use linear-gradient to ensure completely opaque background that blocks any pattern
-    background: linear-gradient(rgb(255, 36, 140), rgb(255, 36, 140)) !important;
-    background-color: rgb(255, 36, 140) !important;
-    background-image: none !important;
+    background-color: #ff248c !important;
     color: #212529 !important;
     border: none !important;
     width: auto;
     height: 48px;
     font-size: 18px;
     font-family: "dm-sans-light", DMSans-Light, sans-serif;
-    position: relative;
-    z-index: 1; // Lower z-index so dropdowns (z-index: 2) can appear above, but still above background via stacking context
-    isolation: isolate; // Create new stacking context to ensure button is above all backgrounds
-    // Force button into its own compositing layer to ensure it renders above background pattern
-    transform: translateZ(0);
-    will-change: transform;
-    // Ensure button doesn't blend with background and has fully opaque background
-    mix-blend-mode: normal;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    // Ensure background is completely solid and opaque
-    background-clip: padding-box;
-    // Prevent any visual interference from parent backgrounds
-    box-shadow: 0 0 0 1px transparent; // Creates a new stacking context without visible effect
-    
-    // Create a fully opaque background layer that stays solid even when button has opacity
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgb(255, 36, 140);
-      z-index: -1;
-      border-radius: inherit;
-      pointer-events: none;
-    }
+    opacity: 1 !important;
 
     @media (min-width: 1024px) {
       min-width: 500px;
     }
     
-    // When disabled, use a different (lighter) background color while keeping it opaque
     &:disabled {
-      opacity: 1 !important; // Reset opacity on the button itself to keep background solid
-      // Use a lighter/faded version for disabled state
+      opacity: 1 !important;
       background-color: #ff4aa0 !important;
-      background: linear-gradient(#ff4aa0, #ff4aa0) !important;
-      
-      // Fade only the text/content
-      color: rgba(33, 37, 41, 0.65) !important; // #212529 at 65% opacity
-      
-      // Ensure pseudo-element background matches disabled state
-      &::before {
-        opacity: 1;
-        background-color: #ff4aa0;
-      }
+      color: #495057 !important;
     }
   }
 
-  &-button-label {
-    padding-top: 34px;
-    position: relative;
-    z-index: 1; // Lower z-index to allow dropdowns above
-    // Create a stacking context for the button row
-    isolation: isolate;
-    
-    // Ensure the column container creates a stacking context
-    .col-md-6 {
-      position: relative;
-      z-index: 1;
-      // Force into compositing layer
-      transform: translateZ(0);
-    }
-  }
+  // &-button-label {
+  //   padding-top: 34px;
+  // }
 
   &-button:focus {
     background-color: #d60265;
