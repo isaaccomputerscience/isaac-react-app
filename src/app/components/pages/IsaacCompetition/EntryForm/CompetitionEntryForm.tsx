@@ -30,7 +30,6 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [userToUpdate, setUserToUpdate] = useState(targetUser ? { ...targetUser, password: null } : { password: null });
 
-  // State for duplicate validation
   const [existingProjectTitles, setExistingProjectTitles] = useState<Set<string>>(new Set());
   const [isDuplicateTitle, setIsDuplicateTitle] = useState(false);
   const [isLoadingTitles, setIsLoadingTitles] = useState(false);
@@ -48,8 +47,8 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
     }
 
     return (
-        (userToUpdate as any).schoolId ||
-        ((userToUpdate as any).schoolOther && (userToUpdate as any).schoolOther !== "N/A")
+      (userToUpdate as any).schoolId ||
+      ((userToUpdate as any).schoolOther && (userToUpdate as any).schoolOther !== "N/A")
     );
   };
 
@@ -59,13 +58,13 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
     if (selectedGroup?.id && !selectedGroup.members) {
       setIsLoadingMembers(true);
       getGroupMembers(selectedGroup.id)
-          .unwrap()
-          .then(() => {
-            setIsLoadingMembers(false);
-          })
-          .catch(() => {
-            setIsLoadingMembers(false);
-          });
+        .unwrap()
+        .then(() => {
+          setIsLoadingMembers(false);
+        })
+        .catch(() => {
+          setIsLoadingMembers(false);
+        });
     } else if (selectedGroup?.members) {
       setIsLoadingMembers(false);
     }
@@ -76,40 +75,29 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
     if (selectedGroup?.id && selectedGroup.members && selectedGroup.members.length > 0) {
       setIsLoadingTitles(true);
       const memberIds = selectedGroup.members
-          .map((member) => member.id)
-          .filter((id): id is number => id !== undefined);
-
-      // DEBUG: Log API call
-      console.log("📡 Fetching project titles for:", {
-        competitionId: COMPETITON_ID,
-        groupId: selectedGroup.id,
-        memberIds,
-        memberCount: memberIds.length,
-      });
+        .map((member) => member.id)
+        .filter((id): id is number => id !== undefined);
 
       getCompetitionProjectTitles({ competitionId: COMPETITON_ID, userIds: memberIds })
-          .unwrap()
-          .then((response) => {
-            // DEBUG: Log API response
-            console.log("✅ Project titles received:", response);
+        .unwrap()
+        .then((response) => {
+          // Normalize titles to lowercase for case-insensitive comparison
+          // Filter out null/undefined/empty values first
+          const titles = new Set(
+              response.projectTitles
+                  .filter((title: string | null) => title != null && title.trim() !== "")
+                  .map((title: string) => title.toLowerCase().trim())
+          );
 
-            // Normalize titles to lowercase for case-insensitive comparison
-            const titles = new Set(
-                response.projectTitles.map((title: string) => title.toLowerCase().trim())
-            );
-
-            console.log("📝 Normalized titles stored:", Array.from(titles));
-
-            setExistingProjectTitles(titles);
-            setIsLoadingTitles(false);
-          })
-          .catch((error) => {
-            console.error("❌ Error fetching project titles:", error);
-            setIsLoadingTitles(false);
-          });
+          setExistingProjectTitles(titles);
+          setIsLoadingTitles(false);
+        })
+        .catch((error) => {
+          console.error("Error fetching project titles:", error);
+          setIsLoadingTitles(false);
+        });
     } else {
       // Clear titles when no group is selected
-      console.log("🗑️ Clearing project titles (no valid group)");
       setExistingProjectTitles(new Set());
     }
   }, [selectedGroup, getCompetitionProjectTitles]);
@@ -127,17 +115,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
 
     debounceTimeoutRef.current = setTimeout(() => {
       const normalizedTitle = projectTitle.toLowerCase().trim();
-      const isDuplicate = existingProjectTitles.has(normalizedTitle);
-
-      // DEBUG: Log validation check
-      console.log("🔍 Validation Check:", {
-        projectTitle,
-        normalizedTitle,
-        existingProjectTitles: Array.from(existingProjectTitles),
-        isDuplicate,
-      });
-
-      setIsDuplicateTitle(isDuplicate);
+      setIsDuplicateTitle(existingProjectTitles.has(normalizedTitle));
     }, 500);
 
     return () => {
@@ -259,346 +237,340 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
 
   function getSelectedGroup() {
     return selectedGroupId
-        ? activeGroups.find((group) => group.id === selectedGroupId)
-            ? {
-              value: selectedGroupId,
-              label: activeGroups.find((group) => group.id === selectedGroupId)?.groupName || "",
-            }
-            : null
-        : null;
+      ? activeGroups.find((group) => group.id === selectedGroupId)
+        ? {
+          value: selectedGroupId,
+          label: activeGroups.find((group) => group.id === selectedGroupId)?.groupName || "",
+        }
+        : null
+      : null;
   }
 
   const showNoMembersWarning =
-      selectedGroup && selectedGroup.members !== undefined && !isLoadingMembers && selectedGroup.members.length === 0;
+    selectedGroup && selectedGroup.members !== undefined && !isLoadingMembers && selectedGroup.members.length === 0;
 
   return (
-      <div className="pt-5">
-        <div className="entry-form-background-img entry-form-section">
-          <Container className="pb-2">
-            <Form onSubmit={handleSubmit}>
-              <h1 className="py-4 entry-form-title">Enter the competition</h1>
+    <div className="pt-5">
+      <div className="entry-form-background-img entry-form-section">
+        <Container className="pb-2">
+          <Form onSubmit={handleSubmit}>
+            <h1 className="py-4 entry-form-title">Enter the competition</h1>
 
-              <h2 className="py-3 entry-form-section-title">
-                Your account information (
-                <a href="/account" style={{ color: "#FF3A6E", textDecoration: "underline" }}>
-                  update
-                </a>
-                )
-              </h2>
-              <Row className="d-flex flex-column flex-md-row">
-                <Col lg={6}>
-                  <FormInput
-                      label="First name"
-                      type="text"
-                      id="firstName"
-                      required
-                      disabled={true}
-                      defaultValue={targetUser?.loggedIn ? targetUser.givenName || "" : ""}
-                  />
-                  <FormInput
-                      label="Email address"
-                      type="email"
-                      id="email"
-                      required
-                      disabled={true}
-                      defaultValue={targetUser?.loggedIn ? targetUser?.email || "" : ""}
-                  />
-                </Col>
-                <Col lg={6}>
-                  <FormInput
-                      label="Last name"
-                      type="text"
-                      id="lastName"
-                      required
-                      disabled={true}
-                      defaultValue={targetUser?.loggedIn ? targetUser?.familyName || "" : ""}
-                  />
-                  {targetUser && (
-                      <FormGroup>
-                        <Label className="entry-form-sub-title">
-                          My current school or college <span className="entry-form-asterisk">*</span>
-                        </Label>
-                        <SchoolInput
-                            userToUpdate={userToUpdate}
-                            setUserToUpdate={handleUserUpdate}
-                            submissionAttempted={submissionAttempted}
-                            disableInput={true}
-                            required={true}
-                            showLabel={false}
-                        />
-                        {!isSchoolValid && (
-                            <div className="entry-form-validation-tooltip">
-                              <div className="tooltip-content">
-                                <div className="tooltip-arrow"></div>
-                                <img src="/assets/warning_icon.svg" alt="invalid school error" />
-                                <div className="tooltip-text">
-                                  Please <a href="/account">update</a> your account details to specify your school or college.
-                                  Only teachers and students from state-funded schools in England are eligible to participate.
-                                </div>
-                              </div>
-                            </div>
-                        )}
-                      </FormGroup>
-                  )}
-                </Col>
-              </Row>
-
-              <h2 className="py-3 entry-form-section-title">Project details</h2>
-              <Row>
-                <Col lg={6}>
+            <h2 className="py-3 entry-form-section-title">
+              Your account information (
+              <a href="/account" style={{ color: "#FF3A6E", textDecoration: "underline" }}>
+                update
+              </a>
+              )
+            </h2>
+            <Row className="d-flex flex-column flex-md-row">
+              <Col lg={6}>
+                <FormInput
+                  label="First name"
+                  type="text"
+                  id="firstName"
+                  required
+                  disabled={true}
+                  defaultValue={targetUser?.loggedIn ? targetUser.givenName || "" : ""}
+                />
+                <FormInput
+                  label="Email address"
+                  type="email"
+                  id="email"
+                  required
+                  disabled={true}
+                  defaultValue={targetUser?.loggedIn ? targetUser?.email || "" : ""}
+                />
+              </Col>
+              <Col lg={6}>
+                <FormInput
+                  label="Last name"
+                  type="text"
+                  id="lastName"
+                  required
+                  disabled={true}
+                  defaultValue={targetUser?.loggedIn ? targetUser?.familyName || "" : ""}
+                />
+                {targetUser && (
                   <FormGroup>
                     <Label className="entry-form-sub-title">
-                      Project title <span className="entry-form-asterisk">*</span>
-                      {/* DEBUG: Show validation state */}
-                      <small style={{ marginLeft: "10px", color: "#666" }}>
-                        {isLoadingTitles && "(Loading titles...)"}
-                        {!isLoadingTitles && existingProjectTitles.size > 0 && `(${existingProjectTitles.size} titles loaded)`}
-                        {isDuplicateTitle && <span style={{ color: "#dc3545" }}> ⚠️ DUPLICATE</span>}
-                      </small>
+                      My current school or college <span className="entry-form-asterisk">*</span>
                     </Label>
-                    <Input
-                        type="text"
-                        id="projectTitle"
-                        required
-                        disabled={false}
-                        value={projectTitle}
-                        onChange={(e) => setProjectTitle(e.target.value)}
-                        placeholder="E.g., SmartLab"
-                        style={{
-                          border: isDuplicateTitle ? "2px solid #dc3545" : "1px solid #ced4da",
-                          borderRadius: "0.375rem",
-                        }}
+                    <SchoolInput
+                      userToUpdate={userToUpdate}
+                      setUserToUpdate={handleUserUpdate}
+                      submissionAttempted={submissionAttempted}
+                      disableInput={true}
+                      required={true}
+                      showLabel={false}
                     />
-                    {isDuplicateTitle && (
-                        <div className="entry-form-validation-tooltip" style={{ marginTop: "8px" }}>
-                          <div className="tooltip-content">
-                            <div className="tooltip-arrow"></div>
-                            <img src="/assets/warning_icon.svg" alt="duplicate title error" />
-                            <div className="tooltip-text" style={{ color: "#000" }}>
-                              A project with this title already exists. Please use a unique title for each submission. To
-                              update a previously submitted project,{" "}
-                              <a href="/contact" style={{ color: "#1D70B8", textDecoration: "underline" }}>
-                                contact us
-                              </a>
-                              .
-                            </div>
-                          </div>
-                        </div>
-                    )}
-                  </FormGroup>
-                </Col>
-                <Col lg={6}>
-                  <FormInput
-                      label="Project link"
-                      type="url"
-                      id="projectLink"
-                      required
-                      disabled={false}
-                      value={projectLink}
-                      onChange={(e) => setProjectLink(e.target.value)}
-                      placeholder="Add a link to a project saved in the cloud (e.g., Google Drive, Dropbox)"
-                      tooltipMessage="Upload your project to cloud storage (e.g., Google Drive, OneDrive, Dropbox) and paste the share link here. Set the link so that 'Anyone with the link can view'. If that's not possible, grant access to contact@isaaccomputerscience.org."
-                  />
-                </Col>
-              </Row>
-
-              <h2 className="pt-3 pb-2 entry-form-section-title mb-0">Your students</h2>
-              <Row>
-                <Col lg={12}>
-                  <a href="/groups" className="mb-4 manage-group-link">
-                    Manage students and groups here
-                  </a>
-                </Col>
-              </Row>
-              <Row>
-                <Col lg={6} className="basic-multi-select">
-                  <FormGroup>
-                    <Label className="entry-form-sub-title">
-                      Select your student group <span className="entry-form-asterisk">*</span>
-                      <CustomTooltip
-                          id="student-group-tooltip"
-                          message="Choose one of the groups you have created that includes the student(s) who worked on the project. If no groups are available, go to Teachers > Manage Groups to create one and invite students to join."
-                      />
-                    </Label>
-                    <Select
-                        isClearable
-                        placeholder="Choose from the groups you've created or create one first"
-                        value={getSelectedGroup()}
-                        onChange={(selectedOption) => {
-                          if (selectedOption) {
-                            setSelectedGroupId(selectedOption.value);
-                          } else {
-                            setSelectedGroupId(null);
-                            setExistingProjectTitles(new Set());
-                          }
-                        }}
-                        options={activeGroups
-                            .filter((group) => group.id !== undefined)
-                            .map((group) => ({
-                              value: group.id!,
-                              label: group.groupName || "",
-                            }))}
-                        noOptionsMessage={() => "No options"}
-                        className="basic-multi-select"
-                        classNamePrefix="select"
-                        styles={{
-                          control: (provided) => ({
-                            ...provided,
-                            border: "1px solid #ced4da",
-                            borderRadius: "0.375rem",
-                            minHeight: "38px",
-                            backgroundColor: "white",
-                          }),
-                        }}
-                    />
-                  </FormGroup>
-                  {activeGroups.length === 0 && (
+                    {!isSchoolValid && (
                       <div className="entry-form-validation-tooltip">
                         <div className="tooltip-content">
                           <div className="tooltip-arrow"></div>
-                          <img src="/assets/warning_icon.svg" alt="no groups found error" />
-                          <div className="tooltip-text" style={{ color: "#000" }}>
-                            You have not created any groups. Please{" "}
-                            <a href="/groups" style={{ color: "#1D70B8", textDecoration: "underline" }}>
-                              create a group here first
-                            </a>{" "}
-                            and invite students to join. For guidance, see our{" "}
-                            <a
-                                href="https://isaaccomputerscience.org/support/teacher/assignments#create_group"
-                                style={{ color: "#1D70B8", textDecoration: "underline" }}
-                            >
-                              FAQ for teachers
-                            </a>
-                            .
+                          <img src="/assets/warning_icon.svg" alt="invalid school error" />
+                          <div className="tooltip-text">
+                            Please <a href="/account">update</a> your account details to specify your school or college.
+                            Only teachers and students from state-funded schools in England are eligible to participate.
                           </div>
                         </div>
                       </div>
-                  )}
-                </Col>
-                <Col lg={6}>
-                  <FormGroup>
-                    <Label className="entry-form-sub-title">
-                      Select student(s) <span className="entry-form-asterisk">*</span>
-                      <CustomTooltip
-                          id="student-selection-tooltip"
-                          message="Choose 1-4 students from the selected group who worked on the submitted project."
-                      />
-                      {memberSelectionError && (
-                          <div
-                              className="entry-form-validation-tooltip entry-form-validation-tooltip-centered mt-2"
-                              style={{ alignItems: "center" }}
-                          >
-                            <div className="tooltip-content">
-                              <img src="/assets/warning_icon.svg" alt="member selection error" />
-                              <div className="tooltip-text" style={{ color: "#000" }}>
-                                Limit of 4 students reached. To select a new student, remove one first.
-                              </div>
-                            </div>
-                          </div>
-                      )}
-                    </Label>
-                    <Select
-                        inputId="group-members-select"
-                        isMulti
-                        required
-                        isClearable
-                        placeholder={getPlaceholderText()}
-                        className="basic-multi-select"
-                        classNamePrefix="select"
-                        value={
-                          selectedGroup?.members
-                              ? selectedGroup.members
-                                  .filter((member) => selectedMembers.includes(member.id?.toString() || ""))
-                                  .map((member) => ({
-                                    value: member.id?.toString() || "",
-                                    label:
-                                        `${member.givenName || ""} ${member.familyName || ""}`.trim() ||
-                                        `User ${member.id}` ||
-                                        "Unknown",
-                                  }))
-                              : []
-                        }
-                        onChange={handleMemberSelection}
-                        options={
-                          selectedGroup?.members
-                              ? selectedGroup.members.map((member) => ({
-                                value: member.id?.toString() || "",
-                                label:
-                                    `${member.givenName || ""} ${member.familyName || ""}`.trim() ||
-                                    `User ${member.id}` ||
-                                    "Unknown",
-                              }))
-                              : []
-                        }
-                        isDisabled={!selectedGroup || isLoadingMembers || !selectedGroup?.members?.length}
-                        closeMenuOnSelect={false}
-                        maxMenuHeight={200}
-                        isLoading={isLoadingMembers}
-                        styles={{
-                          control: (provided) => ({
-                            ...provided,
-                            border: "1px solid #ced4da",
-                            borderRadius: "0.375rem",
-                            minHeight: "38px",
-                            backgroundColor:
-                                !selectedGroup || isLoadingMembers || !selectedGroup?.members?.length ? "#f8f9fa" : "white",
-                          }),
-                          menu: (provided) => ({
-                            ...provided,
-                            zIndex: 9998,
-                          }),
-                        }}
-                    />
-                    {showNoMembersWarning && (
-                        <div className="entry-form-validation-tooltip" style={{ marginTop: "12px" }}>
-                          <div className="tooltip-content">
-                            <div className="tooltip-arrow"></div>
-                            <img src="/assets/warning_icon.svg" alt="no members found error" />
-                            <div className="tooltip-text" style={{ color: "#000" }}>
-                              No students found in the selected group. To add students go to the{" "}
-                              <a href="/groups" style={{ color: "#1D70B8", textDecoration: "underline" }}>
-                                Manage groups page
-                              </a>{" "}
-                              and invite them using a URL or authentication code. For guidance, see our{" "}
-                              <a
-                                  href="https://isaaccomputerscience.org/support/teacher/assignments#invite_students"
-                                  style={{ color: "#1D70B8", textDecoration: "underline" }}
-                              >
-                                FAQ for teachers
-                              </a>
-                              .
-                            </div>
-                          </div>
-                        </div>
                     )}
                   </FormGroup>
-                </Col>
-              </Row>
-              <Row className="justify-content-center mt-4">
-                <Col className="text-center">
-                  <Label>
-                    By entering the National Computer Science Competition you agree to the{" "}
-                    <a href="#terms-and-conditions" onClick={handleTermsClick} style={{ color: "#1D70B8" }}>
-                      Terms and Conditions
-                    </a>
-                    .
+                )}
+              </Col>
+            </Row>
+
+            <h2 className="py-3 entry-form-section-title">Project details</h2>
+            <Row>
+              <Col lg={6}>
+                <FormGroup>
+                  <Label className="entry-form-sub-title">
+                    Project title <span className="entry-form-asterisk">*</span>
                   </Label>
-                </Col>
-              </Row>
-              <Row className="entry-form-button-label justify-content-center mb-5 pt-3">
-                <div className="col-md-6">
                   <Input
-                      className="btn btn-block btn-secondary border-0 form-control"
-                      type="submit"
-                      disabled={isSubmitDisabled}
-                      value="Submit competition entry"
+                    type="text"
+                    id="projectTitle"
+                    required
+                    disabled={false}
+                    value={projectTitle}
+                    onChange={(e) => setProjectTitle(e.target.value)}
+                    placeholder="E.g., SmartLab"
+                    style={{
+                      border: isDuplicateTitle ? "2px solid #dc3545" : "1px solid #ced4da",
+                      borderRadius: "0.375rem",
+                    }}
                   />
-                </div>
-              </Row>
-            </Form>
-          </Container>
-        </div>
+                  {isDuplicateTitle && (
+                    <div className="entry-form-validation-tooltip" style={{ marginTop: "8px" }}>
+                      <div className="tooltip-content">
+                        <div className="tooltip-arrow"></div>
+                        <img src="/assets/warning_icon.svg" alt="duplicate title error" />
+                        <div className="tooltip-text" style={{ color: "#000" }}>
+                          A project with this title already exists. Please use a unique title for each submission. To
+                          update a previously submitted project,{" "}
+                          <a href="/contact" style={{ color: "#1D70B8", textDecoration: "underline" }}>
+                            contact us
+                          </a>
+                          .
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </FormGroup>
+              </Col>
+              <Col lg={6}>
+                <FormInput
+                  label="Project link"
+                  type="url"
+                  id="projectLink"
+                  required
+                  disabled={false}
+                  value={projectLink}
+                  onChange={(e) => setProjectLink(e.target.value)}
+                  placeholder="Add a link to a project saved in the cloud (e.g., Google Drive, Dropbox)"
+                  tooltipMessage="Upload your project to cloud storage (e.g., Google Drive, OneDrive, Dropbox) and paste the share link here. Set the link so that 'Anyone with the link can view'. If that's not possible, grant access to contact@isaaccomputerscience.org."
+                />
+              </Col>
+            </Row>
+
+            <h2 className="pt-3 pb-2 entry-form-section-title mb-0">Your students</h2>
+            <Row>
+              <Col lg={12}>
+                <a href="/groups" className="mb-4 manage-group-link">
+                  Manage students and groups here
+                </a>
+              </Col>
+            </Row>
+            <Row>
+              <Col lg={6} className="basic-multi-select">
+                <FormGroup>
+                  <Label className="entry-form-sub-title">
+                    Select your student group <span className="entry-form-asterisk">*</span>
+                    <CustomTooltip
+                      id="student-group-tooltip"
+                      message="Choose one of the groups you have created that includes the student(s) who worked on the project. If no groups are available, go to Teachers > Manage Groups to create one and invite students to join."
+                    />
+                  </Label>
+                  <Select
+                    isClearable
+                    placeholder="Choose from the groups you've created or create one first"
+                    value={getSelectedGroup()}
+                    onChange={(selectedOption) => {
+                      if (selectedOption) {
+                        setSelectedGroupId(selectedOption.value);
+                      } else {
+                        setSelectedGroupId(null);
+                        setExistingProjectTitles(new Set());
+                      }
+                    }}
+                    options={activeGroups
+                        .filter((group) => group.id !== undefined)
+                        .map((group) => ({
+                          value: group.id!,
+                          label: group.groupName || "",
+                        }))}
+                    noOptionsMessage={() => "No options"}
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    styles={{
+                      control: (provided) => ({
+                        ...provided,
+                        border: "1px solid #ced4da",
+                        borderRadius: "0.375rem",
+                        minHeight: "38px",
+                        backgroundColor: "white",
+                      }),
+                    }}
+                  />
+                </FormGroup>
+                {activeGroups.length === 0 && (
+                  <div className="entry-form-validation-tooltip">
+                    <div className="tooltip-content">
+                      <div className="tooltip-arrow"></div>
+                      <img src="/assets/warning_icon.svg" alt="no groups found error" />
+                      <div className="tooltip-text" style={{ color: "#000" }}>
+                        You have not created any groups. Please{" "}
+                        <a href="/groups" style={{ color: "#1D70B8", textDecoration: "underline" }}>
+                          create a group here first
+                        </a>{" "}
+                        and invite students to join. For guidance, see our{" "}
+                        <a
+                            href="https://isaaccomputerscience.org/support/teacher/assignments#create_group"
+                            style={{ color: "#1D70B8", textDecoration: "underline" }}
+                        >
+                          FAQ for teachers
+                        </a>
+                        .
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </Col>
+              <Col lg={6}>
+                <FormGroup>
+                  <Label className="entry-form-sub-title">
+                    Select student(s) <span className="entry-form-asterisk">*</span>
+                    <CustomTooltip
+                      id="student-selection-tooltip"
+                      message="Choose 1-4 students from the selected group who worked on the submitted project."
+                    />
+                    {memberSelectionError && (
+                      <div
+                        className="entry-form-validation-tooltip entry-form-validation-tooltip-centered mt-2"
+                        style={{ alignItems: "center" }}
+                      >
+                        <div className="tooltip-content">
+                          <img src="/assets/warning_icon.svg" alt="member selection error" />
+                          <div className="tooltip-text" style={{ color: "#000" }}>
+                            Limit of 4 students reached. To select a new student, remove one first.
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </Label>
+                  <Select
+                    inputId="group-members-select"
+                    isMulti
+                    required
+                    isClearable
+                    placeholder={getPlaceholderText()}
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    value={
+                      selectedGroup?.members
+                        ? selectedGroup.members
+                          .filter((member) => selectedMembers.includes(member.id?.toString() || ""))
+                          .map((member) => ({
+                            value: member.id?.toString() || "",
+                            label:
+                              `${member.givenName || ""} ${member.familyName || ""}`.trim() ||
+                              `User ${member.id}` ||
+                              "Unknown",
+                          }))
+                        : []
+                    }
+                    onChange={handleMemberSelection}
+                    options={
+                      selectedGroup?.members
+                        ? selectedGroup.members.map((member) => ({
+                          value: member.id?.toString() || "",
+                          label:
+                            `${member.givenName || ""} ${member.familyName || ""}`.trim() ||
+                            `User ${member.id}` ||
+                            "Unknown",
+                        }))
+                        : []
+                    }
+                    isDisabled={!selectedGroup || isLoadingMembers || !selectedGroup?.members?.length}
+                    closeMenuOnSelect={false}
+                    maxMenuHeight={200}
+                    isLoading={isLoadingMembers}
+                    styles={{
+                      control: (provided) => ({
+                        ...provided,
+                        border: "1px solid #ced4da",
+                        borderRadius: "0.375rem",
+                        minHeight: "38px",
+                        backgroundColor:
+                          !selectedGroup || isLoadingMembers || !selectedGroup?.members?.length ? "#f8f9fa" : "white",
+                      }),
+                      menu: (provided) => ({
+                        ...provided,
+                        zIndex: 9998,
+                      }),
+                    }}
+                  />
+                  {showNoMembersWarning && (
+                    <div className="entry-form-validation-tooltip" style={{ marginTop: "12px" }}>
+                      <div className="tooltip-content">
+                        <div className="tooltip-arrow"></div>
+                        <img src="/assets/warning_icon.svg" alt="no members found error" />
+                        <div className="tooltip-text" style={{ color: "#000" }}>
+                          No students found in the selected group. To add students go to the{" "}
+                          <a href="/groups" style={{ color: "#1D70B8", textDecoration: "underline" }}>
+                            Manage groups page
+                          </a>{" "}
+                          and invite them using a URL or authentication code. For guidance, see our{" "}
+                          <a
+                            href="https://isaaccomputerscience.org/support/teacher/assignments#invite_students"
+                            style={{ color: "#1D70B8", textDecoration: "underline" }}
+                          >
+                            FAQ for teachers
+                          </a>
+                          .
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </FormGroup>
+              </Col>
+            </Row>
+            <Row className="justify-content-center mt-4">
+              <Col className="text-center">
+                <Label>
+                  By entering the National Computer Science Competition you agree to the{" "}
+                  <a href="#terms-and-conditions" onClick={handleTermsClick} style={{ color: "#1D70B8" }}>
+                    Terms and Conditions
+                  </a>
+                  .
+                </Label>
+              </Col>
+            </Row>
+            <Row className="entry-form-button-label justify-content-center mb-5 pt-3">
+              <div className="col-md-6">
+                <Input
+                  className="btn btn-block btn-secondary border-0 form-control"
+                  type="submit"
+                  disabled={isSubmitDisabled}
+                  value="Submit competition entry"
+                />
+              </div>
+            </Row>
+          </Form>
+        </Container>
       </div>
+    </div>
   );
 };
 
