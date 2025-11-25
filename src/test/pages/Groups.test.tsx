@@ -328,15 +328,12 @@ describe("Groups", () => {
           const { groupId } = req.params;
           const updatedGroup = await req.json();
 
-          // Exclude ownerSummary and additionalManagers from comparison
-          // as these are not sent in the request body
-          // Note: members doesn't exist in mockGroups, so we don't need to exclude it
-          const { ownerSummary, additionalManagers, ...groupToModifyWithoutExcluded } = groupToModify;
+          const { ownerSummary, additionalManagers, ...groupToModifyWithoutNestedObjects } = groupToModify;
 
           return (
             parseInt(groupId as string) === groupToModify.id &&
             updatedGroup.archived === newArchivedValue &&
-            isEqual(groupToModifyWithoutExcluded, {
+            isEqual(groupToModifyWithoutNestedObjects, {
               ...updatedGroup,
               archived: !newArchivedValue,
             })
