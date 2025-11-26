@@ -32,7 +32,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
 
   const [existingProjectTitles, setExistingProjectTitles] = useState<Set<string>>(new Set());
   const [isDuplicateTitle, setIsDuplicateTitle] = useState(false);
-  const [isLoadingTitles, setIsLoadingTitles] = useState(false);
+  const [setIsLoadingTitles] = useState(false);
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleUserUpdate = (user: any) => {
@@ -74,8 +74,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
   useEffect(() => {
     if (selectedGroup?.id && selectedGroup.members && selectedGroup.members.length > 0) {
       setIsLoadingTitles(true);
-      const memberIds = selectedGroup.members
-        .map((member) => member.id)
+      const memberIds = selectedGroup.members.map((member) => member.id)
         .filter((id): id is number => id !== undefined);
 
       getCompetitionProjectTitles({ competitionId: COMPETITON_ID, userIds: memberIds })
@@ -84,9 +83,9 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
           // Normalize titles to lowercase for case-insensitive comparison
           // Filter out null/undefined/empty values first
           const titles = new Set(
-              response.projectTitles
-                  .filter((title: string | null) => title != null && title.trim() !== "")
-                  .map((title: string) => title.toLowerCase().trim())
+            response.projectTitles
+              .filter((title: string | null) => title != null && title.trim() !== "")
+              .map((title: string) => title.toLowerCase().trim())
           );
 
           setExistingProjectTitles(titles);
@@ -183,7 +182,12 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
 
   const isSchoolValid = isSchoolValidForCompetition();
   const isSubmitDisabled =
-      !projectTitle || !projectLink || !selectedGroup || selectedMembers.length === 0 || !isSchoolValid || isDuplicateTitle;
+    !projectTitle ||
+    !projectLink ||
+    !selectedGroup ||
+    selectedMembers.length === 0 ||
+    !isSchoolValid ||
+    isDuplicateTitle;
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -202,8 +206,8 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
 
     if (selectedGroupObj?.id && selectedMembers.length > 0) {
       const reservableIds = selectedMembers
-          .map((memberId) => Number.parseInt(memberId, 10))
-          .filter((id) => !Number.isNaN(id));
+            .map((memberId) => Number.parseInt(memberId, 10))
+            .filter((id) => !Number.isNaN(id));
 
       reserveUsersOnCompetition(COMPETITON_ID, reservableIds, projectLink, projectTitle, groupName);
     }
@@ -239,9 +243,9 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
     return selectedGroupId
       ? activeGroups.find((group) => group.id === selectedGroupId)
         ? {
-          value: selectedGroupId,
-          label: activeGroups.find((group) => group.id === selectedGroupId)?.groupName || "",
-        }
+            value: selectedGroupId,
+            label: activeGroups.find((group) => group.id === selectedGroupId)?.groupName || "",
+          }
         : null
       : null;
   }
@@ -349,10 +353,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                         <div className="tooltip-text" style={{ color: "#000" }}>
                           A project with this title already exists. Please use a unique title for each submission. To
                           update a previously submitted project,{" "}
-                          <a href="/contact" style={{ color: "#1D70B8", textDecoration: "underline" }}>
-                            contact us
-                          </a>
-                          .
+                          <a href="/contact" style={{ color: "#1D70B8", textDecoration: "underline" }}>contact us</a>.
                         </div>
                       </div>
                     </div>
@@ -405,11 +406,11 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                       }
                     }}
                     options={activeGroups
-                        .filter((group) => group.id !== undefined)
-                        .map((group) => ({
-                          value: group.id!,
-                          label: group.groupName || "",
-                        }))}
+                          .filter((group) => group.id !== undefined)
+                          .map((group) => ({
+                            value: group.id!,
+                            label: group.groupName || "",
+                          }))}
                     noOptionsMessage={() => "No options"}
                     className="basic-multi-select"
                     classNamePrefix="select"
@@ -436,8 +437,8 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                         </a>{" "}
                         and invite students to join. For guidance, see our{" "}
                         <a
-                            href="https://isaaccomputerscience.org/support/teacher/assignments#create_group"
-                            style={{ color: "#1D70B8", textDecoration: "underline" }}
+                              href="https://isaaccomputerscience.org/support/teacher/assignments#create_group"
+                              style={{ color: "#1D70B8", textDecoration: "underline" }}
                         >
                           FAQ for teachers
                         </a>
@@ -480,26 +481,26 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                     value={
                       selectedGroup?.members
                         ? selectedGroup.members
-                          .filter((member) => selectedMembers.includes(member.id?.toString() || ""))
-                          .map((member) => ({
-                            value: member.id?.toString() || "",
-                            label:
-                              `${member.givenName || ""} ${member.familyName || ""}`.trim() ||
-                              `User ${member.id}` ||
-                              "Unknown",
-                          }))
+                            .filter((member) => selectedMembers.includes(member.id?.toString() || ""))
+                            .map((member) => ({
+                              value: member.id?.toString() || "",
+                              label:
+                                `${member.givenName || ""} ${member.familyName || ""}`.trim() ||
+                                `User ${member.id}` ||
+                                "Unknown",
+                            }))
                         : []
                     }
                     onChange={handleMemberSelection}
                     options={
                       selectedGroup?.members
                         ? selectedGroup.members.map((member) => ({
-                          value: member.id?.toString() || "",
-                          label:
-                            `${member.givenName || ""} ${member.familyName || ""}`.trim() ||
-                            `User ${member.id}` ||
-                            "Unknown",
-                        }))
+                            value: member.id?.toString() || "",
+                            label:
+                              `${member.givenName || ""} ${member.familyName || ""}`.trim() ||
+                              `User ${member.id}` ||
+                              "Unknown",
+                          }))
                         : []
                     }
                     isDisabled={!selectedGroup || isLoadingMembers || !selectedGroup?.members?.length}
