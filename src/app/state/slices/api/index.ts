@@ -578,7 +578,7 @@ const isaacApi = createApi({
     getCompetitionProjectTitles: build.query<GetCompetitionProjectTitlesResponse, GetCompetitionProjectTitlesRequest>({
       query: ({ competitionId, userIds }) => ({
         url: `/events/bookings/titles`,
-        method: 'POST',
+        method: "POST",
         body: { competitionId, userIds },
       }),
     }),

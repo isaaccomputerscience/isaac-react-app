@@ -83,7 +83,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
           const titles = new Set(
             response.projectTitles
               .filter((title: string | null) => title != null && title.trim() !== "")
-              .map((title: string) => title.toLowerCase().trim())
+              .map((title: string) => title.toLowerCase().trim()),
           );
 
           setExistingProjectTitles(titles);
@@ -349,10 +349,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                         <div className="tooltip-text" style={{ color: "#000" }}>
                           A project with this title already exists. Please use a unique title for each submission. To
                           update a previously submitted project,{" "}
-                          <a href="/contact" style={{ color: "#1D70B8", textDecoration: "underline" }}>
-                            contact us
-                          </a>
-                          .
+                          <a href="/contact" style={{ color: "#1D70B8", textDecoration: "underline" }}>contact us</a>.
                         </div>
                       </div>
                     </div>
