@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Form, Row, Col, Container, FormGroup, Label, Input } from "reactstrap";
-import { isaacApi, useAppSelector } from "../../../../state";
-import { selectors } from "../../../../state";
+import { isaacApi, useAppSelector, selectors } from "../../../../state";
 import { SchoolInput } from "../../../elements/inputs/SchoolInput";
 import FormInput from "./FormInput";
 import { useReserveUsersOnCompetition } from "./useReserveUsersOnCompetition";
@@ -350,10 +349,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                           A project with this title already exists. Please use a unique title for each submission.
                           To
                           update a previously submitted project,{" "}
-                          <a href="/contact" style={{ color: "#1D70B8", textDecoration: "underline" }}>
-                            contact us
-                          </a>
-                          .
+                          <a href="/contact" style={{ color: "#1D70B8", textDecoration: "underline" }}>contact us</a>.
                         </div>
                       </div>
                     </div>
