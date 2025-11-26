@@ -28,7 +28,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
   const reserveUsersOnCompetition = useReserveUsersOnCompetition();
   const [memberSelectionError, setMemberSelectionError] = useState<string>("");
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const [userToUpdate, setUserToUpdate] = useState(targetUser ? {...targetUser, password: null} : {password: null});
+  const [userToUpdate, setUserToUpdate] = useState(targetUser ? { ...targetUser, password: null } : { password: null });
 
   // State for duplicate validation
   const [existingProjectTitles, setExistingProjectTitles] = useState<Set<string>>(new Set());
@@ -73,9 +73,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
   // Fetch project titles when group is selected and members are loaded
   useEffect(() => {
     if (selectedGroup?.id && selectedGroup.members && selectedGroup.members.length > 0) {
-      const memberIds = selectedGroup.members
-        .map((member) => member.id)
-        .filter((id): id is number => id !== undefined);
+      const memberIds = selectedGroup.members.map((member) => member.id).filter((id): id is number => id !== undefined);
 
       getCompetitionProjectTitles({ competitionId: COMPETITON_ID, userIds: memberIds })
         .unwrap()
@@ -180,7 +178,12 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
 
   const isSchoolValid = isSchoolValidForCompetition();
   const isSubmitDisabled =
-    !projectTitle || !projectLink || !selectedGroup || selectedMembers.length === 0 || !isSchoolValid || isDuplicateTitle;
+    !projectTitle ||
+    !projectLink ||
+    !selectedGroup ||
+    selectedMembers.length === 0 ||
+    !isSchoolValid ||
+    isDuplicateTitle;
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -236,9 +239,9 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
     return selectedGroupId
       ? activeGroups.find((group) => group.id === selectedGroupId)
         ? {
-          value: selectedGroupId,
-          label: activeGroups.find((group) => group.id === selectedGroupId)?.groupName || "",
-        }
+            value: selectedGroupId,
+            label: activeGroups.find((group) => group.id === selectedGroupId)?.groupName || "",
+          }
         : null
       : null;
   }
@@ -305,12 +308,10 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                       <div className="entry-form-validation-tooltip">
                         <div className="tooltip-content">
                           <div className="tooltip-arrow"></div>
-                          <img src="/assets/warning_icon.svg" alt="invalid school error"/>
+                          <img src="/assets/warning_icon.svg" alt="invalid school error" />
                           <div className="tooltip-text">
-                            Please <a href="/account">update</a> your account details to specify your school or
-                            college.
-                            Only teachers and students from state-funded schools in England are eligible to
-                            participate.
+                            Please <a href="/account">update</a> your account details to specify your school or college.
+                            Only teachers and students from state-funded schools in England are eligible to participate.
                           </div>
                         </div>
                       </div>
@@ -341,15 +342,17 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                     }}
                   />
                   {isDuplicateTitle && (
-                    <div className="entry-form-validation-tooltip" style={{marginTop: "8px"}}>
+                    <div className="entry-form-validation-tooltip" style={{ marginTop: "8px" }}>
                       <div className="tooltip-content">
                         <div className="tooltip-arrow"></div>
-                        <img src="/assets/warning_icon.svg" alt="duplicate title error"/>
-                        <div className="tooltip-text" style={{color: "#000"}}>
-                          A project with this title already exists. Please use a unique title for each submission.
-                          To
+                        <img src="/assets/warning_icon.svg" alt="duplicate title error" />
+                        <div className="tooltip-text" style={{ color: "#000" }}>
+                          A project with this title already exists. Please use a unique title for each submission. To
                           update a previously submitted project,{" "}
-                          <a href="/contact" style={{ color: "#1D70B8", textDecoration: "underline" }}>contact us</a>.
+                          <a href="/contact" style={{ color: "#1D70B8", textDecoration: "underline" }}>
+                            contact us
+                          </a>
+                          .
                         </div>
                       </div>
                     </div>
@@ -425,16 +428,16 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                   <div className="entry-form-validation-tooltip">
                     <div className="tooltip-content">
                       <div className="tooltip-arrow"></div>
-                      <img src="/assets/warning_icon.svg" alt="no groups found error"/>
-                      <div className="tooltip-text" style={{color: "#000"}}>
+                      <img src="/assets/warning_icon.svg" alt="no groups found error" />
+                      <div className="tooltip-text" style={{ color: "#000" }}>
                         You have not created any groups. Please{" "}
-                        <a href="/groups" style={{color: "#1D70B8", textDecoration: "underline"}}>
+                        <a href="/groups" style={{ color: "#1D70B8", textDecoration: "underline" }}>
                           create a group here first
                         </a>{" "}
                         and invite students to join. For guidance, see our{" "}
                         <a
                           href="https://isaaccomputerscience.org/support/teacher/assignments#create_group"
-                          style={{color: "#1D70B8", textDecoration: "underline"}}
+                          style={{ color: "#1D70B8", textDecoration: "underline" }}
                         >
                           FAQ for teachers
                         </a>
@@ -455,11 +458,11 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                     {memberSelectionError && (
                       <div
                         className="entry-form-validation-tooltip entry-form-validation-tooltip-centered mt-2"
-                        style={{alignItems: "center"}}
+                        style={{ alignItems: "center" }}
                       >
                         <div className="tooltip-content">
-                          <img src="/assets/warning_icon.svg" alt="member selection error"/>
-                          <div className="tooltip-text" style={{color: "#000"}}>
+                          <img src="/assets/warning_icon.svg" alt="member selection error" />
+                          <div className="tooltip-text" style={{ color: "#000" }}>
                             Limit of 4 students reached. To select a new student, remove one first.
                           </div>
                         </div>
@@ -477,26 +480,26 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                     value={
                       selectedGroup?.members
                         ? selectedGroup.members
-                          .filter((member) => selectedMembers.includes(member.id?.toString() || ""))
-                          .map((member) => ({
-                            value: member.id?.toString() || "",
-                            label:
-                              `${member.givenName || ""} ${member.familyName || ""}`.trim() ||
-                              `User ${member.id}` ||
-                              "Unknown",
-                          }))
+                            .filter((member) => selectedMembers.includes(member.id?.toString() || ""))
+                            .map((member) => ({
+                              value: member.id?.toString() || "",
+                              label:
+                                `${member.givenName || ""} ${member.familyName || ""}`.trim() ||
+                                `User ${member.id}` ||
+                                "Unknown",
+                            }))
                         : []
                     }
                     onChange={handleMemberSelection}
                     options={
                       selectedGroup?.members
                         ? selectedGroup.members.map((member) => ({
-                          value: member.id?.toString() || "",
-                          label:
-                            `${member.givenName || ""} ${member.familyName || ""}`.trim() ||
-                            `User ${member.id}` ||
-                            "Unknown",
-                        }))
+                            value: member.id?.toString() || "",
+                            label:
+                              `${member.givenName || ""} ${member.familyName || ""}`.trim() ||
+                              `User ${member.id}` ||
+                              "Unknown",
+                          }))
                         : []
                     }
                     isDisabled={!selectedGroup || isLoadingMembers || !selectedGroup?.members?.length}
@@ -519,19 +522,19 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                     }}
                   />
                   {showNoMembersWarning && (
-                    <div className="entry-form-validation-tooltip" style={{marginTop: "12px"}}>
+                    <div className="entry-form-validation-tooltip" style={{ marginTop: "12px" }}>
                       <div className="tooltip-content">
                         <div className="tooltip-arrow"></div>
-                        <img src="/assets/warning_icon.svg" alt="no members found error"/>
-                        <div className="tooltip-text" style={{color: "#000"}}>
+                        <img src="/assets/warning_icon.svg" alt="no members found error" />
+                        <div className="tooltip-text" style={{ color: "#000" }}>
                           No students found in the selected group. To add students go to the{" "}
-                          <a href="/groups" style={{color: "#1D70B8", textDecoration: "underline"}}>
+                          <a href="/groups" style={{ color: "#1D70B8", textDecoration: "underline" }}>
                             Manage groups page
                           </a>{" "}
                           and invite them using a URL or authentication code. For guidance, see our{" "}
                           <a
                             href="https://isaaccomputerscience.org/support/teacher/assignments#invite_students"
-                            style={{color: "#1D70B8", textDecoration: "underline"}}
+                            style={{ color: "#1D70B8", textDecoration: "underline" }}
                           >
                             FAQ for teachers
                           </a>
@@ -547,7 +550,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
               <Col className="text-center">
                 <Label>
                   By entering the National Computer Science Competition you agree to the{" "}
-                  <a href="#terms-and-conditions" onClick={handleTermsClick} style={{color: "#1D70B8"}}>
+                  <a href="#terms-and-conditions" onClick={handleTermsClick} style={{ color: "#1D70B8" }}>
                     Terms and Conditions
                   </a>
                   .
