@@ -350,7 +350,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                           A project with this title already exists. Please use a unique title for each submission.
                           To
                           update a previously submitted project,{" "}
-                          <a href="/contact" style={{color: "#1D70B8", textDecoration: "underline"}}>
+                          <a href="/contact" style={{ color: "#1D70B8", textDecoration: "underline" }}>
                             contact us
                           </a>
                           .
