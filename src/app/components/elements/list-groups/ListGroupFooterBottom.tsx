@@ -35,10 +35,12 @@ const footerLinks = {
 };
 
 export const ListGroupFooterBottom = () => (
-  <div className="footer-links footer-bottom">
-    <ListGroup className="d-flex flex-wrap flex-row link-group">
+  <div className="footer-links">
+    {/* <ListGroup className="d-flex flex-wrap flex-column flex-md-row link-group"> */}
+    {/* <div className=""> */}
+    <div className="d-flex flex-column">
       <ListGroupItem className="footer-bottom-links d-md-flex flex-md-row bg-transparent link-group w-100">
-        <h2 className="h5 mb-3 mb-md-0 mr-md-4">Links</h2>
+        <h3>Links</h3>
         <ListGroup className="d-md-flex flex-md-row">{footerLinks.right}</ListGroup>
       </ListGroupItem>
       <ListGroupItem className="footer-bottom-info border-0 px-0 py-0 bg-transparent">
@@ -53,22 +55,19 @@ export const ListGroupFooterBottom = () => (
           , except where otherwise stated.
         </p>
       </ListGroupItem>
-
-      <ListGroupItem className="footer-bottom-logos border-0 px-0 py-0 bg-transparent d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center d-print-none">
-        <ExternalLink href="https://computingeducation.org.uk/" className="mb-3 mb-md-0">
-          <img
-            src="/assets/logos/ncce.svg"
-            alt="National Centre for Computing Education website"
-            className="img-fluid"
-          />
-        </ExternalLink>
-        <ExternalLink href="https://www.gov.uk/government/organisations/department-for-education">
-          <img src="/assets/logos/dfe.svg" alt="UK Department for Education" className="img-fluid" />
-        </ExternalLink>
-        <ExternalLink href="https://www.stem.org.uk/">
-          <img src="/assets/logos/stem_footer.svg" alt="STEM Learning" className="logo-mr" height="100px" />
-        </ExternalLink>
-      </ListGroupItem>
-    </ListGroup>
+    </div>
+    <ListGroupItem className="footer-bottom-logos border-0 px-0 py-0 bg-transparent d-flex flex-column flex-md-row align-items-start align-items-md-center d-print-none">
+      <ExternalLink href="https://computingeducation.org.uk/" className="mb-3 mb-md-0">
+        <img src="/assets/logos/ncce.svg" alt="National Centre for Computing Education website" className="img-fluid" />
+      </ExternalLink>
+      <ExternalLink href="https://www.gov.uk/government/organisations/department-for-education">
+        <img src="/assets/logos/dfe.svg" alt="UK Department for Education" className="img-fluid" />
+      </ExternalLink>
+      <ExternalLink href="https://www.stem.org.uk/">
+        <img src="/assets/logos/stem_footer.svg" alt="STEM Learning" className="logo-mr" height="100px" />
+      </ExternalLink>
+    </ListGroupItem>
+    {/* </div> */}
+    {/* </ListGroup> */}
   </div>
 );

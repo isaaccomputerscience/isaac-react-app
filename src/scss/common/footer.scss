@@ -5,72 +5,77 @@
   color: white;
 }
 
-.footer-links {
-  color: white;
+.footer-container {
+  background-color: white;
+  width: 100%;
+}
 
-  .footer-support-links {
-    .h5 {
-      font-family: $footer-links-font;
-    }
+// .footer-links {
+//   color: white;
 
-    .link-list {
+//   .footer-support-links {
+//     .h5 {
+//       font-family: $footer-links-font;
+//     }
 
-      a {
-        font-family: $footer-text-font;
-        color: white;
-        text-decoration: none;
+//     .link-list {
 
-        &:hover {
-          color: white;
-        }
-      }
-    }
-  }
+//       a {
+//         font-family: $footer-text-font;
+//         color: white;
+//         text-decoration: none;
 
-  .h5 {
-    font-family: $footer-links-font;
-  }
+//         &:hover {
+//           color: white;
+//         }
+//       }
+//     }
+//   }
 
-  a {
-    color: white;
-    display: block;
-    text-decoration: none;
+//   .h5 {
+//     font-family: $footer-links-font;
+//   }
 
-    &:hover {
-      color: white;
-    }
-  }
+//   a {
+//     color: white;
+//     display: block;
+//     text-decoration: none;
 
-  .footerLink {
-    font-family: $footer-text-font;
-    font-size: 16px;
-  }
+//     &:hover {
+//       color: white;
+//     }
+//   }
 
-  .logo-col {
-    @include respond-below(sm) {
-      padding: 1rem;
-    }
-    a {
-      color: white;
-      display: block;
-      text-decoration: none;
+//   .footerLink {
+//     font-family: $footer-text-font;
+//     font-size: 16px;
+//   }
 
-      &:hover {
-        color: white;
-      }
-    }
-  }
-  &.footer-links-social {
-    background-position: left 82%;
-    background-repeat: no-repeat;
-    height: 100%;
+//   .logo-col {
+//     @include respond-below(sm) {
+//       padding: 1rem;
+//     }
+//     a {
+//       color: white;
+//       display: block;
+//       text-decoration: none;
+
+//       &:hover {
+//         color: white;
+//       }
+//     }
+//   }
+//   &.footer-links-social {
+//     background-position: left 82%;
+//     background-repeat: no-repeat;
+//     height: 100%;
     
 
-    @include respond-above(md) {
-      background-position: left 100% bottom 15%;
-    }
-  }
-}
+//     @include respond-above(md) {
+//       background-position: left 100% bottom 15%;
+//     }
+//   }
+// }
 
 .logo-text {
   color: white;
@@ -108,12 +113,11 @@
   .footer-bottom-logos {
     @include respond-above(md) {
       width: 30%;
-      margin-left: 8%;
     }
   }
 }
 
-.footer-bottom-links a {
+.footer-bottom-links a, h3 {
   color: black;
   padding-right: 30px;
   
