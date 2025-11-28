@@ -35,9 +35,9 @@ const footerLinks = {
 };
 
 export const ListGroupFooterBottom = () => (
-  <div className="footer-links">
+  // <div className="footer-links">
+  <>
     {/* <ListGroup className="d-flex flex-wrap flex-column flex-md-row link-group"> */}
-    {/* <div className=""> */}
     <div className="d-flex flex-column">
       <ListGroupItem className="footer-bottom-links d-md-flex flex-md-row bg-transparent link-group w-100">
         <h3>Links</h3>
@@ -67,7 +67,6 @@ export const ListGroupFooterBottom = () => (
         <img src="/assets/logos/stem_footer.svg" alt="STEM Learning" className="logo-mr" height="100px" />
       </ExternalLink>
     </ListGroupItem>
-    {/* </div> */}
     {/* </ListGroup> */}
-  </div>
+  </>
 );

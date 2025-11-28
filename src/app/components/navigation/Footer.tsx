@@ -35,17 +35,8 @@ export const Footer = () => (
         </Row>
       </Container>
     </div>
-    <div className="footer-container pl-3">
-      {/* <Container> */}
-      {/* <Row> */}
+    <div className="footer-container d-flex flex-row justify-content-between pl-5 mb-3">
       <ListGroupFooterBottom />
-      {/* </Row> */}
-      {/* <div className="w-100 d-flex justify-content-end">
-          <ExternalLink href="https://www.stem.org.uk/">
-            <img src="/assets/logos/stem_footer.svg" alt="STEM Learning" className="logo-mr" height="100px" />
-          </ExternalLink>
-        </div> */}
-      {/* </Container> */}
     </div>
   </footer>
 );
