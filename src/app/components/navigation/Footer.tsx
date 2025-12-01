@@ -35,8 +35,10 @@ export const Footer = () => (
         </Row>
       </Container>
     </div>
-    <div className="footer-container d-flex flex-row justify-content-between pl-5 mb-3">
+    {/* <Container className="mr-0 pr-0"> */}
+    <div>
       <ListGroupFooterBottom />
     </div>
+    {/* </Container> */}
   </footer>
 );

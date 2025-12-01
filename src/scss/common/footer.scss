@@ -7,7 +7,13 @@
 
 .footer-container {
   background-color: white;
-  width: 100%;
+  // width: 100%;
+  // margin: 0px !important;
+}
+
+.list-group a{
+  color: white;
+  text-decoration: none;
 }
 
 // .footer-links {
@@ -117,6 +123,10 @@
   }
 }
 
+// .footer-bottom-links-container {
+//   margin-right: 60px;
+// }
+
 .footer-bottom-links a, h3 {
   color: black;
   padding-right: 30px;
@@ -140,7 +150,7 @@
   .footer-bottom-logos img {
     height: auto;
     width: auto;
-    max-width: 90%;
+    // max-width: 90%;
     padding-left: 14px;
   }
 }
