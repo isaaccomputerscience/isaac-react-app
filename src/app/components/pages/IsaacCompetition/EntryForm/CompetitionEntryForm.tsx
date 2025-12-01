@@ -83,7 +83,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
           const titles = new Set(
             response.projectTitles
               .filter((title: string | null) => title != null && title.trim() !== "")
-              .map((title: string) => title.toLowerCase().trim()),
+              .map((title: string) => title.toLowerCase().trim())
           );
 
           setExistingProjectTitles(titles);
@@ -336,10 +336,6 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                     value={projectTitle}
                     onChange={(e) => setProjectTitle(e.target.value)}
                     placeholder="E.g., SmartLab"
-                    style={{
-                      border: isDuplicateTitle ? "2px solid #dc3545" : "1px solid #ced4da",
-                      borderRadius: "0.375rem",
-                    }}
                   />
                   {isDuplicateTitle && (
                     <div className="entry-form-validation-tooltip" style={{ marginTop: "8px" }}>
