@@ -130,10 +130,17 @@
 .footer-bottom-links a, h3 {
   color: black;
   padding-right: 30px;
+  margin-bottom: 0;
   
   &:hover {
     color: black;
   }
+}
+
+h3 {
+  font-family: $footer-links-font;
+  font-size: 18px;
+  margin-bottom: 0;
 }
 
 .print-font {
