@@ -83,7 +83,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
           const titles = new Set(
             response.projectTitles
               .filter((title: string | null) => title != null && title.trim() !== "")
-              .map((title: string) => title.toLowerCase().trim())
+              .map((title: string) => title.toLowerCase().trim()),
           );
 
           setExistingProjectTitles(titles);
