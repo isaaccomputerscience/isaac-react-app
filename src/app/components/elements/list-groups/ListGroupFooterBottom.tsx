@@ -51,9 +51,10 @@ export const ListGroupFooterBottom = () => (
               className="d-inline fw-bold print-font text-decoration-none"
             >
               Open Government Licence v3.0,
-            </ExternalLink>{" "}
+            </ExternalLink>
+            <br />
+            except where otherwise stated.
           </p>
-          <p className="pt-2 mb-lg-0 pb-2 pb-sm-0">except where otherwise stated.</p>
         </ListGroupItem>
       </div>
 
@@ -69,7 +70,7 @@ export const ListGroupFooterBottom = () => (
           <img src="/assets/logos/dfe.svg" alt="UK Department for Education" className="img-fluid" />
         </ExternalLink>
         <ExternalLink href="https://www.stem.org.uk/">
-          <img src="/assets/logos/stem_footer.svg" alt="STEM Learning" className="logo-mr" height="100px" />
+          <img src="/assets/logos/stem_footer.svg" alt="STEM Learning" className="logo-mr img-fluid" />
         </ExternalLink>
       </ListGroupItem>
     </ListGroup>
