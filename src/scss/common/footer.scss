@@ -85,18 +85,18 @@
   }
 }
 
-.footer-bottom {
+.footer-bottom h2 {
   background-color: white;
   width: 100%;
+  
 
-  .h5 {
+  h2 {
     color: black;
     font-family: $footer-links-font;
     font-size: 20px;
   }
 
-  .footer-bottom-info {
-    p {
+  .footer-bottom-info p{
       font-family: $footer-text-font;
       font-size: 14px;
       color: #000000;
@@ -104,7 +104,7 @@
     @include respond-above(md) {
       width: 40%;
     }
-  }
+  
   .footer-bottom-logos {
     @include respond-above(md) {
       width: 30%;
@@ -121,6 +121,13 @@
     color: black;
   }
 }
+
+.footer-bottom-links h2{
+  color: black;
+  font-family: $footer-links-font;
+  font-size: 20px;
+  padding-right: 30px;
+  }
 
 .print-font {
   font-family: $footer-bold-font;
@@ -169,8 +176,7 @@
     padding-top: 0.5rem !important;
   }
 
-  .footer-links .footer-support-links .h5, 
-  .footer-bottom-links .h5 {
+  .footer-links .footer-support-links .h5 {
     margin-bottom: 15px;
     text-align: left;
   }
@@ -203,8 +209,7 @@
     padding-top: 0.5rem !important;
   }
 
-  .footer-links .footer-support-links .h5, 
-  .footer-bottom-links .h5 {
+  .footer-links .footer-support-links .h5 {
     margin-bottom: 15px;
     text-align: left;
   }
