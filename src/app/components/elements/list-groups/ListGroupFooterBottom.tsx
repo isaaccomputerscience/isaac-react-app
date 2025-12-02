@@ -52,8 +52,8 @@ export const ListGroupFooterBottom = () => (
             >
               Open Government Licence v3.0,
             </ExternalLink>{" "}
-            except where otherwise stated.
           </p>
+          <p className="pt-2 mb-lg-0 pb-2 pb-sm-0">except where otherwise stated.</p>
         </ListGroupItem>
       </div>
 
