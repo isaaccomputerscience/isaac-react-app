@@ -36,7 +36,7 @@ const footerLinks = {
 
 export const ListGroupFooterBottom = () => (
   <div className="footer-bottom-wrapper">
-    <ListGroup className="footer-bottom-list d-flex flex-column flex-md-row justify-content-between link-group">
+    <ListGroup className="footer-bottom-list d-flex flex-column flex-lg-row justify-content-between link-group">
       <div className="footer-bottom-left justify-content-between d-flex flex-column">
         <ListGroupItem className="footer-bottom-links d-md-flex flex-md-row bg-transparent link-group w-100 border-0 px-0 py-3">
           <h2>Links</h2>
@@ -57,7 +57,7 @@ export const ListGroupFooterBottom = () => (
         </ListGroupItem>
       </div>
 
-      <ListGroupItem className="footer-bottom-logos border-0 px-0 py-0 bg-transparent d-flex flex-row align-items-end justify-content-md-end d-print-none">
+      <ListGroupItem className="footer-bottom-logos border-0 px-0 py-0 bg-transparent d-flex flex-row  align-items-end justify-content-start justify-content-lg-end d-print-none">
         <ExternalLink href="https://computingeducation.org.uk/" className="mb-3 mb-md-0">
           <img
             src="/assets/logos/ncce.svg"

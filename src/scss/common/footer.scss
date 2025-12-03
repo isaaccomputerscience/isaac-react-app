@@ -105,6 +105,12 @@
 .footer-bottom-list {
   margin: 0;
   width: 100%;
+  flex-direction: column; // Default: stack vertically on smaller screens
+  
+  // At 900px and above, switch to row layout (side by side)
+  @media (min-width: 900px) {
+    flex-direction: row;
+  }
   
   @media (min-width: 1024px){
     width: 100%;
@@ -198,7 +204,7 @@
 .footer-bottom-logos {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  // align-items: center;
   gap: 0.875rem;
   padding-right: 0 !important;
   flex-shrink: 0;
