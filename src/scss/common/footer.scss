@@ -93,12 +93,12 @@
   @media (min-width: 990px) {
     padding-left: 0;
     padding-right: 0;
-    margin-left: 70px;
+    margin-left: 85px;
     padding-bottom: 1.5rem; // Add bottom padding for iPad Pro
   }
   
   @media (min-width: 1700px) {
-    margin-left: 270px;
+    margin-left: 300px;
   }
 }
 
@@ -106,6 +106,9 @@
   margin: 0;
   width: 100%;
   
+  @media (min-width: 1024px){
+    width: 100%;
+  }
   // Medium screens - ensure proper spacing and alignment, extend to right edge
   @media (min-width: 768px) and (max-width: 1024px) {
     gap: 1rem;
@@ -117,19 +120,22 @@
   }
   
   @media (min-width: 990px) {
-    margin-right: calc(-100vw + 100% + 70px);
-    width: calc(100vw - 70px);
+    // Extend to right edge: negative margin accounts for the 85px left margin
+    margin-right: calc(-100vw + 100% + 85px);
+    width: calc(100vw - 85px); // Width accounts for the 85px left margin
+    padding-left: 0; // Remove padding-left since we're using margin calculations
   }
   
   @media (min-width: 1700px) {
-    margin-right: calc(-100vw + 100% + 270px);
-    width: calc(100vw - 270px);
+    // Extend to right edge: negative margin accounts for the 300px left margin
+    margin-right: calc(-100vw + 100% + 300px);
+    width: calc(100vw - 300px); // Width accounts for the 300px left margin
   }
 }
 
 .footer-bottom-left {
   padding-left: 0;
-  padding-right: 15px;
+  // padding-right: 15px;
   
   @media (min-width: 768px) and (max-width: 1024px) {
     flex-shrink: 1;
@@ -397,7 +403,8 @@
 @media only screen and (min-width: 769px) and (max-width: 989px) {
   .footer-bottom-list {
     align-items: flex-end; // Align both sections at bottom - same as iPad Pro
-    overflow: visible; // Prevent clipping
+    overflow: visible;
+    margin-right: 0 !important; // Prevent clipping
   }
   
   .footer-bottom-links {
@@ -414,7 +421,8 @@
   
   .footer-bottom-info {
     p {
-      padding-bottom: 1.5rem !important;
+      padding-bottom: 0 !important;
+      margin-bottom: 0 !important;
       font-size: 12px;
       line-height: 1.4;
     }
@@ -521,14 +529,16 @@
   .footer-bottom-wrapper {
     padding-left: 0;
     padding-right: 0;
-    margin-left: 70px;
+    margin-left: 32px; // Keep this to align with footer content above
     padding-bottom: 1.5rem; // Add bottom padding for iPad Pro
   }
   
   .footer-bottom-list {
-    margin-right: calc(-100vw + 100% + 70px);
-    width: calc(100vw - 70px);
+    // Extend to right edge: negative margin accounts for the 32px left margin
+    margin-right: calc(-100vw + 100% + 32px);
+    width: calc(100vw - 32px); // Width accounts for the 32px left margin
     align-items: flex-end; // Align to bottom
+    padding-left: 0; // Remove padding-left since we're using margin calculations
   }
   
   .footer-bottom-left {
@@ -555,7 +565,7 @@
   }
   
   .footer-bottom-logos {
-    gap: 1.5rem; // Increased spacing between logos
+    gap: 1.5 rem; // Increased spacing between logos
     align-items: flex-end; // Align to bottom
     padding-top: 0;
     padding-bottom: 0;
@@ -659,7 +669,7 @@
 
   .footer-bottom-info {
     p {
-      padding-bottom: 1.5rem !important;
+      padding-bottom: 0 !important;
     }
   }
 
@@ -674,6 +684,7 @@
   .footer-bottom-wrapper {
     padding-left: 15px;
     padding-right: 15px;
+    // margin-left: 24px;
   }
   
   .footer-bottom-links {
