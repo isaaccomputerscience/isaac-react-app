@@ -5,6 +5,12 @@
   color: white;
 }
 
+.footerBottom {
+  background-color: white;
+  width: 100%;
+  overflow-x: hidden; // Prevent horizontal scroll
+}
+
 .footer-links {
   color: white;
 
@@ -72,6 +78,229 @@
   }
 }
 
+.footer-bottom-wrapper {
+  width: 100%;
+  padding-left: 15px;
+  padding-right: 15px;
+  
+  // Remove right padding on medium screens to allow logos to touch edge
+  @media (min-width: 768px) and (max-width: 1024px) {
+    padding-right: 0;
+  }
+  
+  @media (min-width: 990px) {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 70px;
+  }
+  
+  @media (min-width: 1700px) {
+    margin-left: 270px;
+  }
+}
+
+.footer-bottom-list {
+  margin: 0;
+  width: 100%;
+  
+  // Medium screens - ensure proper spacing and alignment, extend to right edge
+  @media (min-width: 768px) and (max-width: 1024px) {
+    gap: 1rem;
+    align-items: flex-end; // Align both sections at bottom
+    margin-right: calc(-100vw + 100%);
+    width: calc(100vw - 15px); // Account for left padding of wrapper
+    padding-bottom: 0; // Remove any padding here, handled by wrapper
+  }
+  
+  @media (min-width: 990px) {
+    margin-right: calc(-100vw + 100% + 70px);
+    width: calc(100vw - 70px);
+  }
+  
+  @media (min-width: 1700px) {
+    margin-right: calc(-100vw + 100% + 270px);
+    width: calc(100vw - 270px);
+  }
+}
+
+.footer-bottom-left {
+  padding-left: 0;
+  padding-right: 15px;
+  
+  @media (min-width: 768px) and (max-width: 1024px) {
+    flex-shrink: 1;
+    min-width: 0;
+    padding-right: 10px;
+  }
+  
+  @media (min-width: 1025px) {
+    flex-shrink: 0;
+  }
+}
+
+.footer-bottom-links {
+  h2 {
+    color: black;
+    font-family: $footer-links-font;
+    font-size: 20px;
+    padding-right: 30px;
+    margin-bottom: 0;
+    
+    // Reduce font size on medium screens
+    @media (min-width: 768px) and (max-width: 1024px) {
+      font-size: 18px;
+      padding-right: 20px;
+    }
+  }
+  
+  a {
+    color: black;
+    padding-right: 30px;
+    text-decoration: none;
+    
+    // Reduce font size and padding on medium screens
+    @media (min-width: 768px) and (max-width: 1024px) {
+      font-size: 14px;
+      padding-right: 20px;
+    }
+    
+    &:hover {
+      color: black;
+    }
+  }
+}
+
+.footer-bottom-info {
+  p {
+    font-family: $footer-text-font;
+    font-size: 14px;
+    color: #000000;
+    margin-bottom: 0;
+    
+    // Reduce font size on medium screens
+    @media (min-width: 768px) and (max-width: 1024px) {
+      font-size: 12px;
+      line-height: 1.4;
+    }
+  }
+}
+
+.footer-bottom-logos {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.875rem;
+  padding-right: 0 !important;
+  flex-shrink: 0;
+  
+  @media (min-width: 768px) {
+    justify-content: flex-end;
+  }
+  
+  // Medium screens (768px - 1024px) - allow shrinking and reduce gap
+  @media (min-width: 768px) and (max-width: 1024px) {
+    flex-shrink: 1;
+    min-width: 0;
+    gap: 1rem; // Increased spacing between logos
+    padding-left: 10px;
+    padding-right: 0 !important; // Ensure no right padding
+    align-items: flex-end; // Align all logos to bottom
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 0; // Ensure no right margin
+    align-self: flex-end; // Align container to bottom to match left content
+    
+    // Target ExternalLink wrappers
+    > a {
+      display: flex;
+      align-items: flex-end; // Align each logo to bottom
+      margin: 0 !important; // Override Bootstrap mb-3 mb-md-0
+      padding: 0;
+      line-height: 0; // Remove line-height spacing
+      
+      // First ExternalLink (NCCE logo) - ensure bottom alignment
+      &:first-of-type {
+        margin-bottom: 0 !important;
+        margin-top: 0 !important;
+        align-items: flex-end;
+        align-self: flex-end; // Force bottom alignment
+        
+        img {
+          max-width: 65px !important;
+          height: auto;
+          display: block;
+          margin: 0 !important;
+          padding: 0 !important;
+          vertical-align: bottom;
+          line-height: 0;
+          align-self: flex-end; // Force bottom alignment
+        }
+      }
+      
+      // Second ExternalLink (DFE logo) - reduce size to prevent clipping
+      &:nth-of-type(2) {
+        align-items: flex-end;
+        align-self: flex-end; // Force bottom alignment
+        img {
+          max-width: 70px !important; // Reduced to prevent clipping
+          max-height: 85px !important; // Add max-height to prevent clipping
+          height: auto !important;
+          display: block;
+          margin: 0 !important;
+          padding: 0 !important;
+          vertical-align: bottom;
+          object-fit: contain;
+          align-self: flex-end; // Force bottom alignment
+        }
+      }
+      
+      // Third logo (STEM) - keep at right edge, align to bottom
+      &:last-of-type {
+        align-items: flex-end;
+        align-self: flex-end; // Force bottom alignment
+        margin-left: 0;
+        margin-right: 0; // Ensure no right margin
+        
+        img {
+          vertical-align: bottom;
+          margin-right: 0 !important; // Ensure no right margin
+          padding-right: 0 !important; // Ensure no right padding
+        }
+      }
+    }
+    
+    img {
+      max-width: 80px;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      margin: 0 !important;
+      vertical-align: bottom;
+      line-height: 0;
+    }
+    
+    // STEM logo specific sizing for medium screens
+    .logo-mr {
+      max-height: none;
+      height: auto;
+      width: auto;
+    }
+  }
+  
+  img {
+    flex-shrink: 0;
+    max-width: 100%;
+    height: auto;
+    
+    @media (min-width: 990px) {
+      padding-left: 14px;
+      max-width: none;
+    }
+  }
+}
+
 .logo-text {
   color: white;
   font-family: $footer-text-font;
@@ -85,18 +314,18 @@
   }
 }
 
-.footer-bottom {
+.footer-bottom h2 {
   background-color: white;
   width: 100%;
+  
 
-  .h5 {
+  h2 {
     color: black;
     font-family: $footer-links-font;
     font-size: 20px;
   }
 
-  .footer-bottom-info {
-    p {
+  .footer-bottom-info p{
       font-family: $footer-text-font;
       font-size: 14px;
       color: #000000;
@@ -104,7 +333,7 @@
     @include respond-above(md) {
       width: 40%;
     }
-  }
+  
   .footer-bottom-logos {
     @include respond-above(md) {
       width: 30%;
@@ -116,11 +345,19 @@
 .footer-bottom-links a {
   color: black;
   padding-right: 30px;
+  text-decoration: none;
   
   &:hover {
     color: black;
   }
 }
+
+.footer-bottom-links h2{
+  color: black;
+  font-family: $footer-links-font;
+  font-size: 20px;
+  padding-right: 30px;
+  }
 
 .print-font {
   font-family: $footer-bold-font;
@@ -136,48 +373,241 @@
   .footer-bottom-logos img {
     height: auto;
     width: auto;
-    max-width: 90%;
     padding-left: 14px;
   }
 }
 
 @media only screen and (min-width: 769px) and (max-width: 989px) {
-  .links-col {
-    padding-top: 0.5rem !important;
+  .footer-bottom-links {
+    h2 {
+      font-size: 18px;
+      padding-right: 20px;
+    }
+    
+    a {
+      font-size: 14px;
+      padding-right: 20px;
+    }
   }
-
+  
   .footer-bottom-info {
     p {
       padding-bottom: 1.5rem !important;
+      font-size: 12px;
+      line-height: 1.4;
     }
   }
 
   .footer-bottom-logos {
-    padding-bottom: 1.5rem;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-right: 0 !important;
+    gap: 1rem; // Increased spacing between logos
+    align-items: flex-end; // Align to bottom
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 0;
+    align-self: flex-end; // Align container to bottom
+    
+    > a {
+      display: flex;
+      align-items: flex-end;
+      align-self: flex-end; // Force bottom alignment
+      margin: 0 !important; // Override Bootstrap classes
+      padding: 0;
+      line-height: 0;
+      
+      // First logo - ensure bottom alignment
+      &:first-of-type {
+        margin-bottom: 0 !important;
+        margin-top: 0 !important;
+        
+        img {
+          max-width: 60px !important;
+          height: auto;
+          display: block;
+          margin: 0 !important;
+          padding: 0 !important;
+          vertical-align: bottom;
+          line-height: 0;
+          align-self: flex-end;
+        }
+      }
+      
+      // Second logo - prevent clipping
+      &:nth-of-type(2) {
+        img {
+          max-width: 65px !important;
+          max-height: 80px !important; // Prevent clipping
+          height: auto !important;
+          display: block;
+          margin: 0 !important;
+          padding: 0 !important;
+          vertical-align: bottom;
+          object-fit: contain;
+          align-self: flex-end;
+        }
+      }
+      
+      // Third logo - keep at right edge
+      &:last-of-type {
+        margin-right: 0;
+        
+        img {
+          vertical-align: bottom;
+          margin-right: 0 !important;
+          padding-right: 0 !important;
+        }
+      }
+    }
+    
+    img {
+      padding-left: 8px;
+      max-width: 75px;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      margin: 0 !important;
+      vertical-align: bottom;
+      line-height: 0;
+    }
+    
+    .logo-mr {
+      max-height: none;
+      height: auto;
+      width: auto;
+    }
+  }
+}
+
+@media only screen and (min-width: 990px) and (max-width: 1024px) {
+  .footer-bottom-wrapper {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 70px;
+    padding-bottom: 1.5rem; // Add bottom padding for iPad Pro
   }
   
-  .footer-bottom-logos img {
-    height: auto;
-    width: auto;
-    max-width: 90%;
-    padding-left: 14px;
+  .footer-bottom-list {
+    margin-right: calc(-100vw + 100% + 70px);
+    width: calc(100vw - 70px);
+    align-items: flex-end; // Align to bottom
+  }
+  
+  .footer-bottom-left {
+    padding-right: 10px;
+  }
+  
+  .footer-bottom-links {
+    h2 {
+      font-size: 18px;
+      padding-right: 20px;
+    }
+    
+    a {
+      font-size: 14px;
+      padding-right: 20px;
+    }
+  }
+  
+  .footer-bottom-info {
+    p {
+      font-size: 12px;
+      line-height: 1.4;
+    }
+  }
+  
+  .footer-bottom-logos {
+    gap: 1.5rem; // Increased spacing between logos
+    align-items: flex-end; // Align to bottom
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-right: 0 !important;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 0;
+    align-self: flex-end; // Align container to bottom
+    
+    > a {
+      display: flex;
+      align-items: flex-end;
+      align-self: flex-end; // Force bottom alignment
+      margin: 0 !important; // Override Bootstrap classes
+      padding: 0;
+      line-height: 0;
+      
+      // First logo - ensure bottom alignment
+      &:first-of-type {
+        margin-bottom: 0 !important;
+        margin-top: 0 !important;
+        
+        img {
+          max-width: 70px !important;
+          height: auto;
+          display: block;
+          margin: 0 !important;
+          padding: 0 !important;
+          vertical-align: bottom;
+          line-height: 0;
+          align-self: flex-end;
+        }
+      }
+      
+      // Second logo - prevent clipping
+      &:nth-of-type(2) {
+        img {
+          max-width: 75px !important;
+          max-height: 90px !important; // Prevent clipping
+          height: auto !important;
+          display: block;
+          margin: 0 !important;
+          padding: 0 !important;
+          vertical-align: bottom;
+          object-fit: contain;
+          align-self: flex-end;
+        }
+      }
+      
+      // Third logo - keep at right edge
+      &:last-of-type {
+        margin-right: 0;
+        
+        img {
+          vertical-align: bottom;
+          margin-right: 0 !important;
+          padding-right: 0 !important;
+        }
+      }
+    }
+    
+    img {
+      max-width: 90px;
+      height: auto;
+      padding-left: 8px;
+      object-fit: contain;
+      display: block;
+      margin: 0 !important;
+      vertical-align: bottom;
+      line-height: 0;
+    }
+    
+    .logo-mr {
+      max-height: none;
+      height: auto;
+      width: auto;
+    }
   }
 }
 
 @media only screen and (min-width: 480px) and (max-width: 768px) {
-  .links-col {
-    padding-top: 0.5rem !important;
-  }
-
-  .footer-links .footer-support-links .h5, 
-  .footer-bottom-links .h5 {
-    margin-bottom: 15px;
-    text-align: left;
-  }
-  
-  .footer-links .footer-support-links a,
-  .footer-bottom-links a {
-    margin-bottom: 10px;
+  .footer-bottom-links {
+    h2 {
+      margin-bottom: 15px;
+    }
+    
+    a {
+      margin-bottom: 10px;
+    }
   }
 
   .footer-bottom-info {
@@ -188,34 +618,30 @@
 
   .footer-bottom-logos {
     padding-bottom: 1.5rem;
-    margin-left: 5%;
     gap: 1.25rem;
+    justify-content: flex-start;
   }
-
 }
 
 @media only screen and (max-width: 480px) {
-  .logo-col {
-    padding: 20px !important;
+  .footer-bottom-wrapper {
+    padding-left: 15px;
+    padding-right: 15px;
   }
   
-  .links-col {
-    padding-top: 0.5rem !important;
-  }
-
-  .footer-links .footer-support-links .h5, 
-  .footer-bottom-links .h5 {
-    margin-bottom: 15px;
-    text-align: left;
-  }
-  
-  .footer-links .footer-support-links a,
-  .footer-bottom-links a {
-    margin-bottom: 10px;
+  .footer-bottom-links {
+    h2 {
+      margin-bottom: 15px;
+    }
+    
+    a {
+      margin-bottom: 10px;
+    }
   }
 
   .footer-bottom-logos {
     gap: 1.25rem;
-    margin-left: 5%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
   }
 }
