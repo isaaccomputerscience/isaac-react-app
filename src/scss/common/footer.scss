@@ -86,12 +86,15 @@
   // Remove right padding on medium screens to allow logos to touch edge
   @media (min-width: 768px) and (max-width: 1024px) {
     padding-right: 0;
+    padding-bottom: 1.5rem; // Add bottom padding like iPad Pro
+    overflow: visible; // Ensure logos aren't clipped
   }
   
   @media (min-width: 990px) {
     padding-left: 0;
     padding-right: 0;
     margin-left: 70px;
+    padding-bottom: 1.5rem; // Add bottom padding for iPad Pro
   }
   
   @media (min-width: 1700px) {
@@ -110,6 +113,7 @@
     margin-right: calc(-100vw + 100%);
     width: calc(100vw - 15px); // Account for left padding of wrapper
     padding-bottom: 0; // Remove any padding here, handled by wrapper
+    overflow: visible; // Ensure content isn't clipped
   }
   
   @media (min-width: 990px) {
@@ -192,6 +196,7 @@
   gap: 0.875rem;
   padding-right: 0 !important;
   flex-shrink: 0;
+  overflow: visible; // Prevent clipping
   
   @media (min-width: 768px) {
     justify-content: flex-end;
@@ -201,7 +206,7 @@
   @media (min-width: 768px) and (max-width: 1024px) {
     flex-shrink: 1;
     min-width: 0;
-    gap: 1rem; // Increased spacing between logos
+    gap: 1.5rem; // Match iPad Pro spacing
     padding-left: 10px;
     padding-right: 0 !important; // Ensure no right padding
     align-items: flex-end; // Align all logos to bottom
@@ -211,6 +216,8 @@
     margin-bottom: 0;
     margin-right: 0; // Ensure no right margin
     align-self: flex-end; // Align container to bottom to match left content
+    overflow: visible; // Prevent clipping
+    min-height: fit-content; // Allow container to grow
     
     // Target ExternalLink wrappers
     > a {
@@ -219,6 +226,7 @@
       margin: 0 !important; // Override Bootstrap mb-3 mb-md-0
       padding: 0;
       line-height: 0; // Remove line-height spacing
+      overflow: visible; // Prevent clipping
       
       // First ExternalLink (NCCE logo) - ensure bottom alignment
       &:first-of-type {
@@ -228,24 +236,26 @@
         align-self: flex-end; // Force bottom alignment
         
         img {
-          max-width: 65px !important;
-          height: auto;
+          max-width: 70px !important; // Same size as iPad Pro
+          height: auto !important;
+          max-height: none !important; // Remove height constraint to prevent clipping
           display: block;
           margin: 0 !important;
           padding: 0 !important;
           vertical-align: bottom;
           line-height: 0;
           align-self: flex-end; // Force bottom alignment
+          object-fit: contain;
         }
       }
       
-      // Second ExternalLink (DFE logo) - reduce size to prevent clipping
+      // Second ExternalLink (DFE logo) - same size as first
       &:nth-of-type(2) {
         align-items: flex-end;
         align-self: flex-end; // Force bottom alignment
         img {
-          max-width: 70px !important; // Reduced to prevent clipping
-          max-height: 85px !important; // Add max-height to prevent clipping
+          max-width: 70px !important; // Same size as first logo
+          max-height: none !important; // Remove height constraint to prevent clipping
           height: auto !important;
           display: block;
           margin: 0 !important;
@@ -256,7 +266,7 @@
         }
       }
       
-      // Third logo (STEM) - keep at right edge, align to bottom
+      // Third logo (STEM) - same size as others
       &:last-of-type {
         align-items: flex-end;
         align-self: flex-end; // Force bottom alignment
@@ -264,16 +274,22 @@
         margin-right: 0; // Ensure no right margin
         
         img {
+          max-width: 70px !important; // Same size as other logos
+          height: auto !important;
+          max-height: none !important; // Remove height constraint
           vertical-align: bottom;
           margin-right: 0 !important; // Ensure no right margin
           padding-right: 0 !important; // Ensure no right padding
+          object-fit: contain;
+          display: block;
         }
       }
     }
     
     img {
-      max-width: 80px;
-      height: auto;
+      max-width: 70px !important; // Default consistent size for all logos - match iPad Pro
+      height: auto !important;
+      max-height: none !important; // Remove height constraint
       object-fit: contain;
       display: block;
       margin: 0 !important;
@@ -283,8 +299,9 @@
     
     // STEM logo specific sizing for medium screens
     .logo-mr {
-      max-height: none;
-      height: auto;
+      max-width: 70px !important; // Same size as others - match iPad Pro
+      max-height: none !important; // Remove height constraint
+      height: auto !important;
       width: auto;
     }
   }
@@ -378,6 +395,11 @@
 }
 
 @media only screen and (min-width: 769px) and (max-width: 989px) {
+  .footer-bottom-list {
+    align-items: flex-end; // Align both sections at bottom - same as iPad Pro
+    overflow: visible; // Prevent clipping
+  }
+  
   .footer-bottom-links {
     h2 {
       font-size: 18px;
@@ -402,12 +424,14 @@
     padding-top: 0;
     padding-bottom: 0;
     padding-right: 0 !important;
-    gap: 1rem; // Increased spacing between logos
+    gap: 1.5rem; // Match iPad Pro spacing
     align-items: flex-end; // Align to bottom
     margin-top: 0;
     margin-bottom: 0;
     margin-right: 0;
     align-self: flex-end; // Align container to bottom
+    overflow: visible; // Prevent clipping
+    min-height: fit-content; // Allow container to grow
     
     > a {
       display: flex;
@@ -416,6 +440,7 @@
       margin: 0 !important; // Override Bootstrap classes
       padding: 0;
       line-height: 0;
+      overflow: visible; // Prevent clipping
       
       // First logo - ensure bottom alignment
       &:first-of-type {
@@ -423,22 +448,26 @@
         margin-top: 0 !important;
         
         img {
-          max-width: 60px !important;
-          height: auto;
+          max-width: 70px !important; // Same size as iPad Pro
+          height: auto !important;
+          max-height: none !important; // Remove height constraint
           display: block;
           margin: 0 !important;
           padding: 0 !important;
           vertical-align: bottom;
           line-height: 0;
           align-self: flex-end;
+          object-fit: contain;
         }
       }
       
-      // Second logo - prevent clipping
+      // Second logo - same size as first
       &:nth-of-type(2) {
+        align-items: flex-end;
+        align-self: flex-end;
         img {
-          max-width: 65px !important;
-          max-height: 80px !important; // Prevent clipping
+          max-width: 70px !important; // Same size as first logo
+          max-height: none !important; // Remove height constraint to prevent clipping
           height: auto !important;
           display: block;
           margin: 0 !important;
@@ -449,22 +478,30 @@
         }
       }
       
-      // Third logo - keep at right edge
+      // Third logo - same size as others
       &:last-of-type {
+        align-items: flex-end;
+        align-self: flex-end;
         margin-right: 0;
         
         img {
+          max-width: 70px !important; // Same size as other logos
+          height: auto !important;
+          max-height: none !important; // Remove height constraint
           vertical-align: bottom;
           margin-right: 0 !important;
           padding-right: 0 !important;
+          object-fit: contain;
+          display: block;
         }
       }
     }
     
     img {
       padding-left: 8px;
-      max-width: 75px;
-      height: auto;
+      max-width: 70px !important; // Default consistent size - match iPad Pro
+      height: auto !important;
+      max-height: none !important; // Remove height constraint
       object-fit: contain;
       display: block;
       margin: 0 !important;
@@ -473,9 +510,9 @@
     }
     
     .logo-mr {
-      max-height: none;
-      height: auto;
-      width: auto;
+      max-width: 70px !important; // Same size as others - match iPad Pro
+      max-height: none !important; // Remove height constraint
+      height: auto !important;
     }
   }
 }
@@ -542,7 +579,7 @@
         margin-top: 0 !important;
         
         img {
-          max-width: 70px !important;
+          max-width: 70px !important; // Consistent size
           height: auto;
           display: block;
           margin: 0 !important;
@@ -550,13 +587,16 @@
           vertical-align: bottom;
           line-height: 0;
           align-self: flex-end;
+          object-fit: contain;
         }
       }
       
-      // Second logo - prevent clipping
+      // Second logo - same size as first
       &:nth-of-type(2) {
+        align-items: flex-end;
+        align-self: flex-end;
         img {
-          max-width: 75px !important;
+          max-width: 70px !important; // Same size as first logo
           max-height: 90px !important; // Prevent clipping
           height: auto !important;
           display: block;
@@ -568,20 +608,26 @@
         }
       }
       
-      // Third logo - keep at right edge
+      // Third logo - same size as others
       &:last-of-type {
+        align-items: flex-end;
+        align-self: flex-end;
         margin-right: 0;
         
         img {
+          max-width: 70px !important; // Same size as other logos
+          height: auto;
           vertical-align: bottom;
           margin-right: 0 !important;
           padding-right: 0 !important;
+          object-fit: contain;
+          display: block;
         }
       }
     }
     
     img {
-      max-width: 90px;
+      max-width: 70px !important; // Default consistent size
       height: auto;
       padding-left: 8px;
       object-fit: contain;
@@ -592,6 +638,7 @@
     }
     
     .logo-mr {
+      max-width: 70px !important; // Same size as others
       max-height: none;
       height: auto;
       width: auto;
