@@ -11,9 +11,19 @@
   // margin: 0px !important;
 }
 
+.footer-bottom-container {
+  max-width: 90vw !important;
+  // margin-left: 20vw;
+  padding-right: 0;
+}
+
 .list-group a{
   color: white;
   text-decoration: none;
+}
+
+.logos-container {
+  gap: 1rem;
 }
 
 // .footer-links {
@@ -211,9 +221,10 @@ h3 {
     padding-bottom: 1.5rem;
     margin-left: 5%;
     gap: 1.25rem;
-  }
-
+  }  
 }
+
+
 
 @media only screen and (max-width: 480px) {
   .logo-col {
