@@ -389,10 +389,12 @@ h2.h-title {
   }
 }
 
-// .container {
-//   margin-left: 10vw;
-//   // margin-right: 5vw;
-// }
+body 
+{ > .container {
+  margin-left: 10vw;
+  // margin-right: 5vw;
+}
+}
 
 // ----------------------------------------------
 // Custom width styling
