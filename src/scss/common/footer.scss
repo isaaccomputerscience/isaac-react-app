@@ -90,12 +90,12 @@
     overflow: visible; // Ensure logos aren't clipped
   }
   
-  @media (min-width: 990px) {
-    padding-left: 0;
-    padding-right: 0;
-    margin-left: 85px;
-    padding-bottom: 1.5rem; // Add bottom padding for iPad Pro
-  }
+  // @media (min-width: 900px) {
+  //   padding-left: 0;
+  //   padding-right: 0;
+  //   margin-left: 85px;
+  //   padding-bottom: 1.5rem; // Add bottom padding for iPad Pro
+  // }
   
   @media (min-width: 1700px) {
     margin-left: 300px;
@@ -325,7 +325,9 @@
     
     @media (min-width: 990px) {
       padding-left: 14px;
-      max-width: none;
+      max-width: none !important;
+      width: auto;
+      flex-shrink: 0;
     }
   }
 }
@@ -408,9 +410,9 @@
 
 @media only screen and (min-width: 769px) and (max-width: 989px) {
   .footer-bottom-list {
-    align-items: flex-end; // Align both sections at bottom - same as iPad Pro
+    align-items: flex-end;
     overflow: visible;
-    margin-right: 0 !important; // Prevent clipping
+    margin-right: 0 !important; 
   }
   
   .footer-bottom-links {
@@ -531,7 +533,7 @@
   }
 }
 
-@media only screen and (min-width: 990px) and (max-width: 1024px) {
+@media only screen and (min-width: 990px)  {
   .footer-bottom-wrapper {
     padding-left: 0;
     padding-right: 0;
@@ -571,15 +573,16 @@
   }
   
   .footer-bottom-logos {
-    gap: 1.5 rem; // Increased spacing between logos
-    align-items: flex-end; // Align to bottom
+    gap: 1.5rem; // Fix typo: remove space in "1.5 rem"
+    align-items: flex-end;
     padding-top: 0;
     padding-bottom: 0;
     padding-right: 0 !important;
     margin-top: 0;
     margin-bottom: 0;
     margin-right: 0;
-    align-self: flex-end; // Align container to bottom
+    align-self: flex-end;
+    flex-shrink: 0 !important; // Prevent container from shrinking
     
     > a {
       display: flex;
@@ -588,6 +591,7 @@
       margin: 0 !important; // Override Bootstrap classes
       padding: 0;
       line-height: 0;
+      flex-shrink: 0;
       
       // First logo - ensure bottom alignment
       &:first-of-type {
@@ -595,7 +599,8 @@
         margin-top: 0 !important;
         
         img {
-          max-width: 70px !important; // Consistent size
+          max-width: none !important; // Remove 70px constraint
+          width: auto !important; // Allow natural width
           height: auto;
           display: block;
           margin: 0 !important;
@@ -604,16 +609,18 @@
           line-height: 0;
           align-self: flex-end;
           object-fit: contain;
+          flex-shrink: 0; // Prevent image from shrinking
         }
       }
       
-      // Second logo - same size as first
+      // Second logo
       &:nth-of-type(2) {
         align-items: flex-end;
         align-self: flex-end;
         img {
-          max-width: 70px !important; // Same size as first logo
-          max-height: 90px !important; // Prevent clipping
+          max-width: none !important; // Remove 70px constraint
+          width: auto !important; // Allow natural width
+          max-height: none !important; // Remove height constraint
           height: auto !important;
           display: block;
           margin: 0 !important;
@@ -621,40 +628,46 @@
           vertical-align: bottom;
           object-fit: contain;
           align-self: flex-end;
+          flex-shrink: 0;
         }
       }
       
-      // Third logo - same size as others
+      // Third logo
       &:last-of-type {
         align-items: flex-end;
         align-self: flex-end;
         margin-right: 0;
         
         img {
-          max-width: 70px !important; // Same size as other logos
+          max-width: none !important; // Remove 70px constraint
+          width: auto !important; // Allow natural width
           height: auto;
           vertical-align: bottom;
           margin-right: 0 !important;
           padding-right: 0 !important;
           object-fit: contain;
           display: block;
+          flex-shrink: 0;
         }
       }
     }
     
     img {
-      max-width: 70px !important; // Default consistent size
+      max-width: none !important; // Remove 70px constraint for all images
+      width: auto !important; // Allow natural width
       height: auto;
-      padding-left: 8px;
+      padding-left: 14px; // Keep spacing
       object-fit: contain;
       display: block;
       margin: 0 !important;
       vertical-align: bottom;
       line-height: 0;
+      flex-shrink: 0; // Prevent shrinking
     }
     
+    
     .logo-mr {
-      max-width: 70px !important; // Same size as others
+      max-width: none !important; // Remove 70px constraint
       max-height: none;
       height: auto;
       width: auto;

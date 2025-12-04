@@ -50,7 +50,7 @@ export const ListGroupFooterBottom = () => (
               href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
               className="d-inline fw-bold print-font text-decoration-none"
             >
-              Open Government Licence v3.0,
+              Open Government Licence v3.0, {""}
             </ExternalLink>
             except where otherwise stated.
           </p>
