@@ -38,15 +38,15 @@ export const ListGroupFooterBottom = () => (
   // <div className="footer-links">
   <>
     {/* <ListGroup className="d-flex flex-wrap flex-column flex-md-row link-group"> */}
-    <Container className="footer-bottom-container mb-3">
-      <div className="d-flex flex-lg-row flex-column">
+    <Container className="papya mb-md-3 ">
+      <div className="d-flex flex-xl-row flex-column">
         <div className="footer-bottom-links-container d-flex flex-column justify-content-end">
           <ListGroupItem className="footer-bottom-links d-md-flex flex-md-row bg-transparent link-group w-100 pl-0">
-            <h3>Links</h3>
+            <h3 className="mb-2 mb-md-0">Links</h3>
             <ListGroup className="d-md-flex flex-md-row">{footerLinks.right}</ListGroup>
           </ListGroupItem>
           <ListGroupItem className="footer-bottom-info border-0 px-0 py-0 bg-transparent">
-            <p className="pt-2 mb-lg-0 pb-2 pb-sm-0">
+            <p className=" pr-3 mb-0 pb-2 pb-sm-0">
               All teaching materials on this site are available under the{" "}
               <ExternalLink
                 href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
@@ -59,9 +59,9 @@ export const ListGroupFooterBottom = () => (
           </ListGroupItem>
         </div>
 
-        <ListGroupItem className="footer-bottom-logos border-0 px-0 py-0 bg-transparent d-flex flex-column flex-md-row align-items-end align-items-md-center d-print-none">
-          <div className="logos-container d-flex w-100 align-items-end justify-content-end ml-3">
-            <ExternalLink href="https://computingeducation.org.uk/" className="mb-3 mb-md-0">
+        <ListGroupItem className="footer-bottom-logos border-0 px-0 py-0 bg-transparent d-flex flex-column justify-content-end align-items-end d-print-none">
+          <div className="logos-container d-flex w-100 align-items-center align-items-md-end justify-content-end ml-3">
+            <ExternalLink href="https://computingeducation.org.uk/">
               <img
                 src="/assets/logos/ncce.svg"
                 alt="National Centre for Computing Education website"
