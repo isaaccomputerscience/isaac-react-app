@@ -1,76 +1,52 @@
-// NOMENSA footer.scss
-// REPLACE ./assets WITH /assets
 .footerTop {
   background-color: #120540;
   color: white;
 }
 
-.footer-links {
-  color: white;
+.footer-container {
+  background-color: white;
+}
 
-  .footer-support-links {
-    .h5 {
-      font-family: $footer-links-font;
-    }
+.papya {
+  margin-right: 0;
+  padding-right: 0;
+}
 
-    .link-list {
+@media only screen and (min-width: 1680px) {
+.papya {
 
-      a {
-        font-family: $footer-text-font;
-        color: white;
-        text-decoration: none;
-
-        &:hover {
-          color: white;
-        }
-      }
-    }
-  }
-
-  .h5 {
-    font-family: $footer-links-font;
-  }
-
-  a {
-    color: white;
-    display: block;
-    text-decoration: none;
-
-    &:hover {
-      color: white;
-    }
-  }
-
-  .footerLink {
-    font-family: $footer-text-font;
-    font-size: 16px;
-  }
-
-  .logo-col {
-    @include respond-below(sm) {
-      padding: 1rem;
-    }
-    a {
-      color: white;
-      display: block;
-      text-decoration: none;
-
-      &:hover {
-        color: white;
-      }
-    }
-  }
-  &.footer-links-social {
-    background-position: left 82%;
-    background-repeat: no-repeat;
-    height: 100%;
-    
-
-    @include respond-above(md) {
-      background-position: left 100% bottom 15%;
-    }
+  max-width: 82vw !important;
+  padding-left: 0 !important;
   }
 }
+
+@media only screen and (min-width: 991px) and (max-width: 1680px) {
+// .papya {
+//   max-width: 98vw !important;
+//   }
+}
+
+@media only screen and (max-width: 990px) {
+.papya {
+  max-width: 99vw !important;
+  }
+}
+
+.list-group a{
+  color: white;
+  text-decoration: none;
+}
+
+  .logos-container {
+    gap: 2rem;
+    margin-bottom: 1rem;
+    
+    @include respond-above(md) {
+      gap: 1rem;
+      justify-content: flex-end;
+    align-items: flex-end !important;
+    }
+  }
 
 .logo-text {
   color: white;
@@ -108,18 +84,24 @@
   .footer-bottom-logos {
     @include respond-above(md) {
       width: 30%;
-      margin-left: 8%;
     }
   }
 }
 
-.footer-bottom-links a {
+.footer-bottom-links a, h3 {
   color: black;
   padding-right: 30px;
+  margin-bottom: 0;
   
   &:hover {
     color: black;
   }
+}
+
+h3 {
+  font-family: $footer-links-font;
+  font-size: 18px;
+  margin-bottom: 0;
 }
 
 .print-font {
@@ -129,14 +111,12 @@
 
 .footer-bottom-logos img {
   max-width: 100%;
-  height: auto;
 }
 
 @media only screen and (min-width: 990px) {
   .footer-bottom-logos img {
     height: auto;
     width: auto;
-    max-width: 90%;
     padding-left: 14px;
   }
 }
@@ -146,12 +126,6 @@
     padding-top: 0.5rem !important;
   }
 
-  .footer-bottom-info {
-    p {
-      padding-bottom: 1.5rem !important;
-    }
-  }
-
   .footer-bottom-logos {
     padding-bottom: 1.5rem;
   }
@@ -159,7 +133,6 @@
   .footer-bottom-logos img {
     height: auto;
     width: auto;
-    max-width: 90%;
     padding-left: 14px;
   }
 }
@@ -180,19 +153,20 @@
     margin-bottom: 10px;
   }
 
-  .footer-bottom-info {
-    p {
-      padding-bottom: 1.5rem !important;
-    }
-  }
+  // .footer-bottom-info {
+  //   p {
+  //     padding-bottom: 1.5rem !important;
+  //   }
+  // }
 
   .footer-bottom-logos {
     padding-bottom: 1.5rem;
-    margin-left: 5%;
+    // margin-left: 5%;
     gap: 1.25rem;
-  }
-
+  }  
 }
+
+
 
 @media only screen and (max-width: 480px) {
   .logo-col {

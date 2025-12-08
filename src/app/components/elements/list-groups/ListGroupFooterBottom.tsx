@@ -1,5 +1,5 @@
 import React from "react";
-import { ListGroup, ListGroupItem } from "reactstrap";
+import { ListGroup, ListGroupItem, Container } from "reactstrap";
 import { ExternalLink } from "../ExternalLink";
 import { Link } from "react-router-dom";
 interface FooterLinkProps {
@@ -35,37 +35,49 @@ const footerLinks = {
 };
 
 export const ListGroupFooterBottom = () => (
-  <div className="footer-links footer-bottom">
-    <ListGroup className="d-flex flex-wrap flex-row link-group">
-      <ListGroupItem className="footer-bottom-links d-md-flex flex-md-row bg-transparent link-group w-100">
-        <h2 className="h5 mb-3 mb-md-0 mr-md-4">Links</h2>
-        <ListGroup className="d-md-flex flex-md-row">{footerLinks.right}</ListGroup>
-      </ListGroupItem>
-      <ListGroupItem className="footer-bottom-info border-0 px-0 py-0 bg-transparent">
-        <p className="pl-3 pt-2 mb-lg-0 pb-2 pb-sm-0">
-          All teaching materials on this site are available under the{" "}
-          <ExternalLink
-            href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
-            className="d-inline fw-bold print-font"
-          >
-            Open Government Licence v3.0
-          </ExternalLink>
-          , except where otherwise stated.
-        </p>
-      </ListGroupItem>
+  // <div className="footer-links">
+  <>
+    {/* <ListGroup className="d-flex flex-wrap flex-column flex-md-row link-group"> */}
+    <Container className="papya mb-md-3 ">
+      <div className="d-flex flex-xl-row flex-column">
+        <div className="footer-bottom-links-container d-flex flex-column justify-content-end">
+          <ListGroupItem className="footer-bottom-links d-md-flex flex-md-row bg-transparent link-group w-100 pl-0">
+            <h3 className="mb-2 mb-md-0">Links</h3>
+            <ListGroup className="d-md-flex flex-md-row">{footerLinks.right}</ListGroup>
+          </ListGroupItem>
+          <ListGroupItem className="footer-bottom-info border-0 px-0 py-0 bg-transparent">
+            <p className=" pr-3 mb-0 pb-2 pb-sm-0">
+              All teaching materials on this site are available under the{" "}
+              <ExternalLink
+                href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+                className="d-inline fw-bold print-font"
+              >
+                Open Government Licence v3.0
+              </ExternalLink>
+              , except where otherwise stated.
+            </p>
+          </ListGroupItem>
+        </div>
 
-      <ListGroupItem className="footer-bottom-logos border-0 px-0 py-0 bg-transparent d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center d-print-none">
-        <ExternalLink href="https://computingeducation.org.uk/" className="mb-3 mb-md-0">
-          <img
-            src="/assets/logos/ncce.svg"
-            alt="National Centre for Computing Education website"
-            className="img-fluid"
-          />
-        </ExternalLink>
-        <ExternalLink href="https://www.gov.uk/government/organisations/department-for-education">
-          <img src="/assets/logos/dfe.svg" alt="UK Department for Education" className="img-fluid" />
-        </ExternalLink>
-      </ListGroupItem>
-    </ListGroup>
-  </div>
+        <ListGroupItem className="footer-bottom-logos border-0 px-0 py-0 bg-transparent d-flex flex-column justify-content-end align-items-end d-print-none">
+          <div className="logos-container d-flex w-100 align-items-end align-items-md-end justify-content-end ml-3">
+            <ExternalLink href="https://computingeducation.org.uk/">
+              <img
+                src="/assets/logos/ncce.svg"
+                alt="National Centre for Computing Education website"
+                className="img-fluid"
+              />
+            </ExternalLink>
+            <ExternalLink href="https://www.gov.uk/government/organisations/department-for-education">
+              <img src="/assets/logos/dfe.svg" alt="UK Department for Education" className="img-fluid" />
+            </ExternalLink>
+            <ExternalLink href="https://www.stem.org.uk/">
+              <img src="/assets/logos/stem_footer.svg" alt="STEM Learning" className="logo-mr" />
+            </ExternalLink>
+          </div>
+        </ListGroupItem>
+      </div>
+    </Container>
+    {/* </ListGroup> */}
+  </>
 );

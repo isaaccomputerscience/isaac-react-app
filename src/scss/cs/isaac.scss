@@ -389,6 +389,45 @@ h2.h-title {
   }
 }
 
+ 
+@media only screen and (min-width: 1680px) {
+container {
+  margin-left: 18vw;
+
+  & .container{
+    margin-left: auto;
+  }
+}
+}
+
+@media only screen and (min-width: 990px) and (max-width: 1680px) {
+container {
+  // margin-left: 2vw;
+
+  & .container{
+    margin-left: 0 !important;
+  }
+}
+}
+
+// @media only screen and (max-width: 990px) {
+// container {
+//   margin-left: 1vw;
+
+//   & .container{
+//     margin-left: 0 !important;
+//   }
+// }
+// }
+
+
+// footer .footerBottom  
+// { > .container {
+//   margin-left: 10vw;
+//   // margin-right: 5vw;
+// }
+// }
+
 // ----------------------------------------------
 // Custom width styling
 // ----------------------------------------------
