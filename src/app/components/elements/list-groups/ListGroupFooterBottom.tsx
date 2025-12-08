@@ -35,43 +35,39 @@ const footerLinks = {
 };
 
 export const ListGroupFooterBottom = () => (
-  <div className="footer-bottom-wrapper">
-    <ListGroup className="footer-bottom-list d-flex flex-column flex-lg-row justify-content-between link-group">
-      <div className="footer-bottom-left justify-content-between d-flex flex-column">
-        <ListGroupItem className="footer-bottom-links d-md-flex flex-md-row bg-transparent link-group w-100 border-0 px-0 py-3">
-          <h2>Links</h2>
-          <ListGroup className="d-md-flex flex-md-row">{footerLinks.right}</ListGroup>
-        </ListGroupItem>
-
-        <ListGroupItem className="footer-bottom-info border-0 px-0 py-0 bg-transparent">
-          <p className="pt-2 mb-lg-0">
-            All teaching materials on this site are available under the <br />
-            <ExternalLink
-              href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
-              className="d-inline fw-bold print-font text-decoration-none"
-            >
-              Open Government Licence v3.0, {""}
-            </ExternalLink>
-            except where otherwise stated.
-          </p>
-        </ListGroupItem>
-      </div>
-
-      <ListGroupItem className="footer-bottom-logos border-0 px-0 py-0 bg-transparent d-flex flex-row  align-items-end justify-content-start justify-content-lg-end d-print-none">
-        <ExternalLink href="https://computingeducation.org.uk/" className="mb-3 mb-md-0">
-          <img
-            src="/assets/logos/ncce.svg"
-            alt="National Centre for Computing Education website"
-            className="img-fluid"
-          />
-        </ExternalLink>
-        <ExternalLink href="https://www.gov.uk/government/organisations/department-for-education">
-          <img src="/assets/logos/dfe.svg" alt="UK Department for Education" className="img-fluid" />
-        </ExternalLink>
-        <ExternalLink href="https://www.stem.org.uk/">
-          <img src="/assets/logos/stem_footer.svg" alt="STEM Learning" className="logo-mr img-fluid" />
-        </ExternalLink>
+  <>
+    {/* <ListGroup className="footer-bottom-list d-flex flex-column flex-md-row justify-content-between link-group"> */}
+    <div className="footer-bottom-left justify-content-around d-flex flex-column">
+      <ListGroupItem className="footer-bottom-links d-md-flex flex-md-row bg-transparent link-group w-100 border-0 px-0 py-3">
+        <h2>Links</h2>
+        <ListGroup className="d-md-flex flex-md-row">{footerLinks.right}</ListGroup>
       </ListGroupItem>
-    </ListGroup>
-  </div>
+
+      <ListGroupItem className="footer-bottom-info border-0 px-0 py-0 bg-transparent">
+        <p className="pt-2 mb-lg-0">
+          All teaching materials on this site are available under the <br />
+          <ExternalLink
+            href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+            className="d-inline fw-bold print-font text-decoration-none"
+          >
+            Open Government Licence v3.0, {""}
+          </ExternalLink>
+          except where otherwise stated.
+        </p>
+      </ListGroupItem>
+    </div>
+
+    <ListGroupItem className="footer-bottom-logos border-0 px-0 py-0 bg-transparent d-flex flex-row  align-items-end justify-content-start justify-content-lg-end d-print-none">
+      <ExternalLink href="https://computingeducation.org.uk/" className="mb-3 mb-md-0">
+        <img src="/assets/logos/ncce.svg" alt="National Centre for Computing Education website" className="img-fluid" />
+      </ExternalLink>
+      <ExternalLink href="https://www.gov.uk/government/organisations/department-for-education">
+        <img src="/assets/logos/dfe.svg" alt="UK Department for Education" className="img-fluid" />
+      </ExternalLink>
+      <ExternalLink href="https://www.stem.org.uk/">
+        <img src="/assets/logos/stem_footer.svg" alt="STEM Learning" className="logo-mr img-fluid" />
+      </ExternalLink>
+    </ListGroupItem>
+    {/* </ListGroup> */}
+  </>
 );

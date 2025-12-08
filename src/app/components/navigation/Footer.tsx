@@ -35,7 +35,7 @@ export const Footer = () => (
         </Row>
       </Container>
     </div>
-    <div className="footerBottom">
+    <div className="footerBottom d-flex flex-column flex-md-row justify-content-between align-items-end">
       <ListGroupFooterBottom />
     </div>
   </footer>
