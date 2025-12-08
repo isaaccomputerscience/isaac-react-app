@@ -60,7 +60,7 @@ export const ListGroupFooterBottom = () => (
         </div>
 
         <ListGroupItem className="footer-bottom-logos border-0 px-0 py-0 bg-transparent d-flex flex-column justify-content-end align-items-end d-print-none">
-          <div className="logos-container d-flex w-100 align-items-center align-items-md-end justify-content-end ml-3">
+          <div className="logos-container d-flex w-100 align-items-end align-items-md-end justify-content-end ml-3">
             <ExternalLink href="https://computingeducation.org.uk/">
               <img
                 src="/assets/logos/ncce.svg"
@@ -72,7 +72,7 @@ export const ListGroupFooterBottom = () => (
               <img src="/assets/logos/dfe.svg" alt="UK Department for Education" className="img-fluid" />
             </ExternalLink>
             <ExternalLink href="https://www.stem.org.uk/">
-              <img src="/assets/logos/stem_footer.svg" alt="STEM Learning" className="logo-mr" height="100px" />
+              <img src="/assets/logos/stem_footer.svg" alt="STEM Learning" className="logo-mr" />
             </ExternalLink>
           </div>
         </ListGroupItem>
