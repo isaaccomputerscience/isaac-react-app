@@ -35,9 +35,9 @@ const footerLinks = {
 };
 
 export const ListGroupFooterBottom = () => (
-  <>
+  <div className="d-flex flex-xl-row flex-column mb-3 ml-3 justify-content-between align-items-xl-end">
     {/* <ListGroup className="footer-bottom-list d-flex flex-column flex-md-row justify-content-between link-group"> */}
-    <div className="footer-bottom-left justify-content-around d-flex flex-column">
+    <div className="footer-bottom-left mb-4 mb-md-0 justify-content-around d-flex flex-column">
       <ListGroupItem className="footer-bottom-links d-md-flex flex-md-row bg-transparent link-group w-100 border-0 px-0 py-3">
         <h2>Links</h2>
         <ListGroup className="d-md-flex flex-md-row">{footerLinks.right}</ListGroup>
@@ -57,17 +57,23 @@ export const ListGroupFooterBottom = () => (
       </ListGroupItem>
     </div>
 
-    <ListGroupItem className="footer-bottom-logos border-0 px-0 py-0 bg-transparent d-flex flex-row  align-items-end justify-content-start justify-content-lg-end d-print-none">
-      <ExternalLink href="https://computingeducation.org.uk/" className="mb-3 mb-md-0">
-        <img src="/assets/logos/ncce.svg" alt="National Centre for Computing Education website" className="img-fluid" />
-      </ExternalLink>
-      <ExternalLink href="https://www.gov.uk/government/organisations/department-for-education">
-        <img src="/assets/logos/dfe.svg" alt="UK Department for Education" className="img-fluid" />
-      </ExternalLink>
+    <ListGroupItem className="footer-bottom-logos border-0 px-0 py-0 bg-transparent d-flex flex-row  align-items-end justify-content-end d-print-none">
+      <div className="footer-bottom-logos-first-two d-flex flex-column flex-md-row">
+        <ExternalLink href="https://computingeducation.org.uk/" className="mb-3 mb-md-0">
+          <img
+            src="/assets/logos/ncce.svg"
+            alt="National Centre for Computing Education website"
+            className="img-fluid"
+          />
+        </ExternalLink>
+        <ExternalLink href="https://www.gov.uk/government/organisations/department-for-education">
+          <img src="/assets/logos/dfe.svg" alt="UK Department for Education" className="img-fluid" />
+        </ExternalLink>
+      </div>
       <ExternalLink href="https://www.stem.org.uk/">
         <img src="/assets/logos/stem_footer.svg" alt="STEM Learning" className="logo-mr img-fluid" />
       </ExternalLink>
     </ListGroupItem>
     {/* </ListGroup> */}
-  </>
+  </div>
 );
