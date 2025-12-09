@@ -57,11 +57,23 @@ declare global {
 }
 
 export function rewrite(src: string) {
-  // Detect platform
-  if (src.includes("youtube.com") || src.includes("youtu.be")) {
-    return rewriteYouTube(src);
-  } else if (src.includes("wistia.com") || src.includes("wistia.net")) {
-    return rewriteWistia(src);
+  try {
+    const url = new URL(src, window.location.origin); // Allow for relative URLs if needed
+    const host = url.hostname.toLowerCase();
+    // YouTube: youtube.com and youtu.be covers embed and short URLs
+    if (host === "youtube.com" || host.endsWith(".youtube.com") || host === "youtu.be") {
+      return rewriteYouTube(src);
+    }
+    if (
+      host === "wistia.com" ||
+      host.endsWith(".wistia.com") ||
+      host === "wistia.net" ||
+      host.endsWith(".wistia.net")
+    ) {
+      return rewriteWistia(src);
+    }
+  } catch (e) {
+    // Parsing failed; treat as unrecognized (do nothing)
   }
   return undefined;
 }
@@ -166,9 +178,28 @@ export function IsaacVideo(props: IsaacVideoProps) {
 
   const wistiaIframeRef = useRef<HTMLIFrameElement>(null);
 
-  // Detect video platform
-  const isYouTube = src?.includes("youtube") || src?.includes("youtu.be");
-  const isWistia = src?.includes("wistia");
+  // Detect video platform using URL hostname (more secure than string.includes)
+  const isYouTube = React.useMemo(() => {
+    if (!src) return false;
+    try {
+      const url = new URL(src);
+      const hostname = url.hostname.toLowerCase();
+      return hostname.includes("youtube.com") || hostname.includes("youtu.be");
+    } catch {
+      return false;
+    }
+  }, [src]);
+
+  const isWistia = React.useMemo(() => {
+    if (!src) return false;
+    try {
+      const url = new URL(src);
+      const hostname = url.hostname.toLowerCase();
+      return hostname.includes("wistia.com") || hostname.includes("wistia.net");
+    } catch {
+      return false;
+    }
+  }, [src]);
 
   // Extract video ID for Wistia
   const wistiaVideoId = React.useMemo(() => {
@@ -193,9 +224,12 @@ export function IsaacVideo(props: IsaacVideoProps) {
       return;
     }
 
+    // eslint-disable-next-line no-script-url
     const script = document.createElement("script");
     script.src = "https://fast.wistia.com/assets/external/E-v1.js";
     script.async = true;
+    // Note: Not using SRI (integrity attribute) because Wistia updates their scripts frequently
+    // and this is a trusted official CDN already whitelisted in our CSP
     document.body.appendChild(script);
   }, [isWistia]);
 
@@ -215,8 +249,21 @@ export function IsaacVideo(props: IsaacVideoProps) {
     }
 
     const handleWistiaMessage = (event: MessageEvent): void => {
-      // Security: only accept messages from Wistia domains
-      if (!event.origin.includes("wistia.")) {
+      // Security: Strict origin verification for Wistia domains
+      // Check that origin is exactly a Wistia domain (not just contains 'wistia')
+      const allowedOrigins = [
+        "https://fast.wistia.net",
+        "https://fast.wistia.com",
+        "https://embed-ssl.wistia.com",
+        "https://embed-cloudfront.wistia.com",
+      ];
+
+      const isValidWistiaOrigin = allowedOrigins.some(
+        (origin) =>
+          event.origin === origin || event.origin.endsWith(".wistia.net") || event.origin.endsWith(".wistia.com"),
+      );
+
+      if (!isValidWistiaOrigin) {
         return;
       }
 
