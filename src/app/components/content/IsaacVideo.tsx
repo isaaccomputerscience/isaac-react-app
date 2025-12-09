@@ -62,9 +62,11 @@ export function rewrite(src: string) {
     const url = new URL(src);
     const hostname = url.hostname.toLowerCase();
 
-    if (hostname.includes("youtube.com") || hostname.includes("youtu.be")) {
+    const allowedYouTubeHosts = ["youtube.com", "www.youtube.com", "youtu.be"];
+    const allowedWistiaHosts = ["wistia.com", "www.wistia.com", "fast.wistia.net", "wistia.net"];
+    if (allowedYouTubeHosts.includes(hostname)) {
       return rewriteYouTube(src);
-    } else if (hostname.includes("wistia.com") || hostname.includes("wistia.net")) {
+    } else if (allowedWistiaHosts.includes(hostname)) {
       return rewriteWistia(src);
     }
   } catch {
