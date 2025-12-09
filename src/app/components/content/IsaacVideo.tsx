@@ -57,23 +57,18 @@ declare global {
 }
 
 export function rewrite(src: string) {
+  // Detect platform by checking the hostname
   try {
-    const url = new URL(src, window.location.origin); // Allow for relative URLs if needed
-    const host = url.hostname.toLowerCase();
-    // YouTube: youtube.com and youtu.be covers embed and short URLs
-    if (host === "youtube.com" || host.endsWith(".youtube.com") || host === "youtu.be") {
+    const url = new URL(src);
+    const hostname = url.hostname.toLowerCase();
+
+    if (hostname.includes("youtube.com") || hostname.includes("youtu.be")) {
       return rewriteYouTube(src);
-    }
-    if (
-      host === "wistia.com" ||
-      host.endsWith(".wistia.com") ||
-      host === "wistia.net" ||
-      host.endsWith(".wistia.net")
-    ) {
+    } else if (hostname.includes("wistia.com") || hostname.includes("wistia.net")) {
       return rewriteWistia(src);
     }
-  } catch (e) {
-    // Parsing failed; treat as unrecognized (do nothing)
+  } catch {
+    // Invalid URL, return undefined
   }
   return undefined;
 }
