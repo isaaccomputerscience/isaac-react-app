@@ -181,7 +181,10 @@ export function IsaacVideo(props: IsaacVideoProps) {
     try {
       const url = new URL(src);
       const hostname = url.hostname.toLowerCase();
-      return hostname.includes("youtube.com") || hostname.includes("youtu.be");
+      const allowedHostnames = ["youtube.com", "youtu.be"];
+      return allowedHostnames.some(allowed =>
+        hostname === allowed || hostname.endsWith("." + allowed)
+      );
     } catch {
       return false;
     }
@@ -192,7 +195,10 @@ export function IsaacVideo(props: IsaacVideoProps) {
     try {
       const url = new URL(src);
       const hostname = url.hostname.toLowerCase();
-      return hostname.includes("wistia.com") || hostname.includes("wistia.net");
+      const allowedHostnames = ["wistia.com", "wistia.net"];
+      return allowedHostnames.some(allowed =>
+        hostname === allowed || hostname.endsWith("." + allowed)
+      );
     } catch {
       return false;
     }
