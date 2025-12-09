@@ -224,7 +224,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
     }
 
     // eslint-disable-next-line no-script-url
-    //NOSONAR
+    // sonar-ignore: S5725
     const script = document.createElement("script");
     script.src = "https://fast.wistia.com/assets/external/E-v1.js";
     script.async = true;

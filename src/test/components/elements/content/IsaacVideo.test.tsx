@@ -10,6 +10,8 @@ describe("rewrite", () => {
 
   it("parses wistia embed url to iframe src", () => {
     const parsedUrl = rewrite("https://www.wistia.com/medias/glytlhepl5");
-    expect(parsedUrl).toEqual("https://fast.wistia.net/embed/iframe/glytlhepl5?web_component=true&seo=true");
+    expect(parsedUrl).toEqual(
+      "https://fast.wistia.net/embed/iframe/glytlhepl5?videoFoam=true&playerColor=1fadad&wmode=transparent",
+    );
   });
 });
