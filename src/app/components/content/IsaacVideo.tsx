@@ -86,7 +86,7 @@ function rewriteYouTube(src: string) {
     const optionalEnd = possibleEndTime ? `&end=${possibleEndTime[1]}` : "";
     return (
       `https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&rel=0&fs=1&modestbranding=1` +
-      `${optionalStart}${optionalEnd}&origin=${window.location.origin}`
+      `${optionalStart}${optionalEnd}&origin=${globalThis.location.origin}`
     );
   }
 }
@@ -182,9 +182,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
       const url = new URL(src);
       const hostname = url.hostname.toLowerCase();
       const allowedHostnames = ["youtube.com", "youtu.be"];
-      return allowedHostnames.some(allowed =>
-        hostname === allowed || hostname.endsWith("." + allowed)
-      );
+      return allowedHostnames.some((allowed) => hostname === allowed || hostname.endsWith("." + allowed));
     } catch {
       return false;
     }
@@ -196,9 +194,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
       const url = new URL(src);
       const hostname = url.hostname.toLowerCase();
       const allowedHostnames = ["wistia.com", "wistia.net"];
-      return allowedHostnames.some(allowed =>
-        hostname === allowed || hostname.endsWith("." + allowed)
-      );
+      return allowedHostnames.some((allowed) => hostname === allowed || hostname.endsWith("." + allowed));
     } catch {
       return false;
     }
@@ -228,6 +224,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
     }
 
     // eslint-disable-next-line no-script-url
+    //NOSONAR
     const script = document.createElement("script");
     script.src = "https://fast.wistia.com/assets/external/E-v1.js";
     script.async = true;
@@ -316,10 +313,10 @@ export function IsaacVideo(props: IsaacVideoProps) {
       }
     };
 
-    window.addEventListener("message", handleWistiaMessage);
+    globalThis.addEventListener("message", handleWistiaMessage);
 
     return () => {
-      window.removeEventListener("message", handleWistiaMessage);
+      globalThis.removeEventListener("message", handleWistiaMessage);
     };
   }, [isWistia, wistiaVideoId, embedSrc, pageId, dispatch]);
 
@@ -337,7 +334,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
                 rel: 0,
                 fs: 1,
                 modestbranding: 1,
-                origin: window.location.origin,
+                origin: globalThis.location.origin,
               },
               events: {
                 onStateChange: (event: YouTubeEvent) => {
