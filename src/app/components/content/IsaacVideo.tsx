@@ -54,6 +54,12 @@ declare global {
       [key: string]: unknown;
     };
   }
+
+  // Explicitly declare on globalThis
+  // eslint-disable-next-line no-var
+  var YT: Window["YT"];
+  // eslint-disable-next-line no-var
+  var Wistia: Window["Wistia"];
 }
 
 export function rewrite(src: string) {
@@ -125,7 +131,7 @@ async function logVideoEvent(
 }
 
 function onPlayerStateChange(event: YouTubeEvent, pageId?: string, dispatch?: ReturnType<typeof useAppDispatch>): void {
-  const YT = window.YT;
+  const YT = globalThis.YT;
   if (!YT) return;
 
   const logEventDetails: VideoEventDetails = {
@@ -203,14 +209,14 @@ export function IsaacVideo(props: IsaacVideoProps) {
   // Extract video ID for Wistia
   const wistiaVideoId = React.useMemo(() => {
     if (!isWistia || !embedSrc) return null;
-    const match = embedSrc.match(/embed\/iframe\/([a-zA-Z0-9]+)/);
+    const match = /embed\/iframe\/([a-zA-Z0-9]+)/.exec(embedSrc);
     return match ? match[1] : null;
   }, [isWistia, embedSrc]);
 
   // Extract video ID for YouTube
   const youtubeVideoId = React.useMemo(() => {
     if (!isYouTube || !embedSrc) return null;
-    const match = embedSrc.match(/embed\/([^?]+)/);
+    const match = /embed\/([^?]+)/.exec(embedSrc);
     return match ? match[1] : null;
   }, [isYouTube, embedSrc]);
 
@@ -219,7 +225,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
     if (!isWistia) return;
 
     // Check if Wistia script is already loaded
-    if (window.Wistia) {
+    if (globalThis.Wistia) {
       return;
     }
 
@@ -323,7 +329,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
   // YouTube video initialization
   const youtubeRef = useCallback(
     (node: HTMLDivElement | null) => {
-      const YT = window.YT;
+      const YT = globalThis.YT;
       if (node !== null && youtubeVideoId && YT) {
         try {
           YT.ready(function () {
