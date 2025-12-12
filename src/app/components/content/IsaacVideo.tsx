@@ -9,7 +9,6 @@ interface IsaacVideoProps {
   doc: VideoDTO;
 }
 
-// Type definitions for video event logging
 interface VideoEventDetails {
   type: "VIDEO_PLAY" | "VIDEO_PAUSE" | "VIDEO_ENDED";
   videoUrl: string;
@@ -17,7 +16,6 @@ interface VideoEventDetails {
   pageId?: string;
 }
 
-// Type definitions for Wistia postMessage data
 interface WistiaPostMessageData {
   method: string;
   args: Array<string | Record<string, unknown>>;
@@ -28,7 +26,6 @@ interface WistiaEventData {
   [key: string]: unknown;
 }
 
-// Type definitions for YouTube Player API
 interface YouTubePlayer {
   getVideoUrl: () => string;
   getCurrentTime: () => number;
@@ -55,72 +52,115 @@ declare global {
     };
   }
 
-  // Explicitly declare on globalThis
   // eslint-disable-next-line no-var
   var YT: Window["YT"];
   // eslint-disable-next-line no-var
   var Wistia: Window["Wistia"];
 }
 
-export function rewrite(src: string) {
-  // Detect platform by checking the hostname
+// Constants
+const VIDEO_PLATFORMS = {
+  YOUTUBE: {
+    hosts: ["youtube.com", "www.youtube.com", "youtu.be"],
+    idPattern: /(v=|\/embed\/|\/)([^?&/.]{11})/,
+    timePatterns: {
+      start: /[?&](t|start)=([0-9]+)/,
+      end: /[?&]end=([0-9]+)/,
+    },
+  },
+  WISTIA: {
+    hosts: ["wistia.com", "www.wistia.com", "fast.wistia.net", "wistia.net"],
+    idPattern: /\/(?:embed\/iframe|medias)\/([a-zA-Z0-9]+)/,
+    allowedOrigins: [
+      "https://fast.wistia.net",
+      "https://fast.wistia.com",
+      "https://embed-ssl.wistia.com",
+      "https://embed-cloudfront.wistia.com",
+    ],
+  },
+} as const;
+
+/**
+ * Check if a URL hostname matches allowed hosts for a platform
+ */
+function isHostAllowed(hostname: string, allowedHosts: readonly string[]): boolean {
+  const lowerHostname = hostname.toLowerCase();
+  return allowedHosts.some(
+    (allowed) => lowerHostname === allowed || lowerHostname.endsWith("." + allowed.split(".").slice(-2).join(".")),
+  );
+}
+
+/**
+ * Detect video platform from URL
+ */
+function detectPlatform(src: string): "youtube" | "wistia" | null {
   try {
     const url = new URL(src);
     const hostname = url.hostname.toLowerCase();
 
-    const allowedYouTubeHosts = ["youtube.com", "www.youtube.com", "youtu.be"];
-    const allowedWistiaHosts = ["wistia.com", "www.wistia.com", "fast.wistia.net", "wistia.net"];
-    if (allowedYouTubeHosts.includes(hostname)) {
-      return rewriteYouTube(src);
-    } else if (allowedWistiaHosts.includes(hostname)) {
-      return rewriteWistia(src);
-    }
+    if (isHostAllowed(hostname, VIDEO_PLATFORMS.YOUTUBE.hosts)) return "youtube";
+    if (isHostAllowed(hostname, VIDEO_PLATFORMS.WISTIA.hosts)) return "wistia";
   } catch {
-    // Invalid URL, return undefined
+    // Invalid URL
   }
-  return undefined;
-}
-
-function rewriteYouTube(src: string) {
-  const possibleVideoId = /(v=|\/embed\/|\/)([^?&/.]{11})/.exec(src);
-  const possibleStartTime = /[?&](t|start)=([0-9]+)/.exec(src);
-  const possibleEndTime = /[?&]end=([0-9]+)/.exec(src);
-
-  if (possibleVideoId) {
-    const videoId = possibleVideoId[2];
-    const optionalStart = possibleStartTime ? `&start=${possibleStartTime[2]}` : "";
-    const optionalEnd = possibleEndTime ? `&end=${possibleEndTime[1]}` : "";
-    return (
-      `https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&rel=0&fs=1&modestbranding=1` +
-      `${optionalStart}${optionalEnd}&origin=${globalThis.location.origin}`
-    );
-  }
-}
-
-function rewriteWistia(src: string) {
-  const possibleVideoId = /\/(?:embed\/iframe|medias)\/([a-zA-Z0-9]+)/.exec(src);
-
-  if (possibleVideoId) {
-    const videoId = possibleVideoId[1];
-    // Add wmode=transparent to enable postMessage API
-    return `https://fast.wistia.net/embed/iframe/${videoId}?videoFoam=true&playerColor=1fadad&wmode=transparent`;
-  }
+  return null;
 }
 
 /**
- * Helper function to log video events to the backend
- * Calls the API directly (bypassing Redux middleware) to ensure reliable delivery
+ * Rewrite video URL to embeddable format
+ */
+export function rewrite(src: string): string | undefined {
+  const platform = detectPlatform(src);
+  if (!platform) return undefined;
+
+  if (platform === "youtube") return rewriteYouTube(src);
+  if (platform === "wistia") return rewriteWistia(src);
+}
+
+function rewriteYouTube(src: string): string | undefined {
+  const videoIdMatch = VIDEO_PLATFORMS.YOUTUBE.idPattern.exec(src);
+  if (!videoIdMatch) return undefined;
+
+  const videoId = videoIdMatch[2];
+  const startMatch = VIDEO_PLATFORMS.YOUTUBE.timePatterns.start.exec(src);
+  const endMatch = VIDEO_PLATFORMS.YOUTUBE.timePatterns.end.exec(src);
+
+  const optionalStart = startMatch ? `&start=${startMatch[2]}` : "";
+  const optionalEnd = endMatch ? `&end=${endMatch[1]}` : "";
+
+  return (
+    `https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&rel=0&fs=1&modestbranding=1` +
+    `${optionalStart}${optionalEnd}&origin=${globalThis.location.origin}`
+  );
+}
+
+function rewriteWistia(src: string): string | undefined {
+  const videoIdMatch = VIDEO_PLATFORMS.WISTIA.idPattern.exec(src);
+  if (!videoIdMatch) return undefined;
+
+  const videoId = videoIdMatch[1];
+  return `https://fast.wistia.net/embed/iframe/${videoId}?videoFoam=true&playerColor=1fadad&wmode=transparent`;
+}
+
+/**
+ * Extract video ID from embed URL
+ */
+function extractVideoId(embedSrc: string, pattern: RegExp): string | null {
+  const match = pattern.exec(embedSrc);
+  return match ? match[1] : null;
+}
+
+/**
+ * Log video events to the backend
  */
 async function logVideoEvent(
   eventDetails: VideoEventDetails,
   dispatch?: ReturnType<typeof useAppDispatch>,
 ): Promise<void> {
-  // Dispatch to Redux for state management if needed
   if (dispatch) {
     dispatch({ type: ACTION_TYPE.LOG_EVENT, eventDetails });
   }
 
-  // Make the API call directly to ensure it happens
   try {
     await api.logger.log(eventDetails);
   } catch (error) {
@@ -130,36 +170,51 @@ async function logVideoEvent(
   }
 }
 
+/**
+ * Create video event details object
+ */
+function createEventDetails(
+  type: VideoEventDetails["type"],
+  videoUrl: string,
+  pageId?: string,
+  videoPosition?: number,
+): VideoEventDetails {
+  const details: VideoEventDetails = { type, videoUrl };
+  if (pageId) details.pageId = pageId;
+  if (videoPosition !== undefined) details.videoPosition = videoPosition;
+  return details;
+}
+
 function onPlayerStateChange(event: YouTubeEvent, pageId?: string, dispatch?: ReturnType<typeof useAppDispatch>): void {
   const YT = globalThis.YT;
   if (!YT) return;
 
-  const logEventDetails: VideoEventDetails = {
-    type: "VIDEO_PLAY", // Will be overwritten below
-    videoUrl: event.target.getVideoUrl(),
-    videoPosition: event.target.getCurrentTime(),
-  };
-
-  if (pageId) {
-    logEventDetails.pageId = pageId;
-  }
+  const videoUrl = event.target.getVideoUrl();
+  const videoPosition = event.target.getCurrentTime();
+  let eventType: VideoEventDetails["type"] | null = null;
 
   switch (event.data) {
     case YT.PlayerState.PLAYING:
-      logEventDetails.type = "VIDEO_PLAY";
+      eventType = "VIDEO_PLAY";
       break;
     case YT.PlayerState.PAUSED:
-      logEventDetails.type = "VIDEO_PAUSE";
+      eventType = "VIDEO_PAUSE";
       break;
     case YT.PlayerState.ENDED:
-      logEventDetails.type = "VIDEO_ENDED";
-      delete logEventDetails.videoPosition;
+      eventType = "VIDEO_ENDED";
       break;
     default:
-      return; // Don't send a log message.
+      return;
   }
 
-  logVideoEvent(logEventDetails, dispatch);
+  const eventDetails = createEventDetails(
+    eventType,
+    videoUrl,
+    pageId,
+    eventType !== "VIDEO_ENDED" ? videoPosition : undefined,
+  );
+
+  logVideoEvent(eventDetails, dispatch);
 }
 
 export function pauseAllVideos(): void {
@@ -181,134 +236,68 @@ export function IsaacVideo(props: IsaacVideoProps) {
 
   const wistiaIframeRef = useRef<HTMLIFrameElement>(null);
 
-  // Detect video platform using URL hostname (more secure than string.includes)
-  const isYouTube = React.useMemo(() => {
-    if (!src) return false;
-    try {
-      const url = new URL(src);
-      const hostname = url.hostname.toLowerCase();
-      const allowedHostnames = ["youtube.com", "youtu.be"];
-      return allowedHostnames.some((allowed) => hostname === allowed || hostname.endsWith("." + allowed));
-    } catch {
-      return false;
-    }
-  }, [src]);
+  const platform = React.useMemo(() => (src ? detectPlatform(src) : null), [src]);
+  const isYouTube = platform === "youtube";
+  const isWistia = platform === "wistia";
 
-  const isWistia = React.useMemo(() => {
-    if (!src) return false;
-    try {
-      const url = new URL(src);
-      const hostname = url.hostname.toLowerCase();
-      const allowedHostnames = ["wistia.com", "wistia.net"];
-      return allowedHostnames.some((allowed) => hostname === allowed || hostname.endsWith("." + allowed));
-    } catch {
-      return false;
-    }
-  }, [src]);
+  const wistiaVideoId = React.useMemo(
+    () => (isWistia && embedSrc ? extractVideoId(embedSrc, /embed\/iframe\/([a-zA-Z0-9]+)/) : null),
+    [isWistia, embedSrc],
+  );
 
-  // Extract video ID for Wistia
-  const wistiaVideoId = React.useMemo(() => {
-    if (!isWistia || !embedSrc) return null;
-    const match = /embed\/iframe\/([a-zA-Z0-9]+)/.exec(embedSrc);
-    return match ? match[1] : null;
-  }, [isWistia, embedSrc]);
-
-  // Extract video ID for YouTube
-  const youtubeVideoId = React.useMemo(() => {
-    if (!isYouTube || !embedSrc) return null;
-    const match = /embed\/([^?]+)/.exec(embedSrc);
-    return match ? match[1] : null;
-  }, [isYouTube, embedSrc]);
+  const youtubeVideoId = React.useMemo(
+    () => (isYouTube && embedSrc ? extractVideoId(embedSrc, /embed\/([^?]+)/) : null),
+    [isYouTube, embedSrc],
+  );
 
   // Load Wistia API script
   React.useEffect(() => {
-    if (!isWistia) return;
+    if (!isWistia || globalThis.Wistia) return;
 
-    // Check if Wistia script is already loaded
-    if (globalThis.Wistia) {
-      return;
-    }
-
-    // eslint-disable-next-line no-script-url
-    // sonar-ignore: S5725
     const script = document.createElement("script");
     script.src = "https://fast.wistia.com/assets/external/E-v1.js";
     script.async = true;
-    // Note: Not using SRI (integrity attribute) because Wistia updates their scripts frequently
-    // and this is a trusted official CDN already whitelisted in our CSP
     document.body.appendChild(script);
   }, [isWistia]);
 
-  /**
-   * Setup Wistia tracking using postMessage API
-   *
-   * Wistia sends postMessages in the format:
-   * { method: '_trigger', args: ['eventName', { eventData }] }
-   *
-   * We listen for these messages and extract:
-   * - Event name from args[0] (e.g., 'play', 'pause', 'end')
-   * - Event data from args[1] (e.g., { secondsWatched: 5.2 })
-   */
+  // Setup Wistia tracking using postMessage API
   React.useEffect(() => {
-    if (!isWistia || !wistiaVideoId || !wistiaIframeRef.current) {
-      return;
-    }
+    if (!isWistia || !wistiaVideoId || !wistiaIframeRef.current) return;
 
     const handleWistiaMessage = (event: MessageEvent): void => {
-      // Security: Strict origin verification for Wistia domains
-      // Check that origin is exactly a Wistia domain (not just contains 'wistia')
-      const allowedOrigins = [
-        "https://fast.wistia.net",
-        "https://fast.wistia.com",
-        "https://embed-ssl.wistia.com",
-        "https://embed-cloudfront.wistia.com",
-      ];
-
-      const isValidWistiaOrigin = allowedOrigins.some(
+      // Verify Wistia origin
+      const isValidOrigin = VIDEO_PLATFORMS.WISTIA.allowedOrigins.some(
         (origin) =>
           event.origin === origin || event.origin.endsWith(".wistia.net") || event.origin.endsWith(".wistia.com"),
       );
 
-      if (!isValidWistiaOrigin) {
-        return;
-      }
+      if (!isValidOrigin) return;
 
       try {
         const data: WistiaPostMessageData = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
 
-        // Wistia sends messages in format: { method: '_trigger', args: ['eventName', {...}] }
         if (data.method === "_trigger" && Array.isArray(data.args) && data.args.length > 0) {
           const eventName = data.args[0] as string;
           const eventData = (data.args[1] || {}) as WistiaEventData;
 
-          if (eventName === "play") {
-            const eventDetails: VideoEventDetails = {
-              type: "VIDEO_PLAY",
-              videoUrl: embedSrc || "",
-              videoPosition: eventData.secondsWatched || 0,
-              ...(pageId && { pageId }),
-            };
-            logVideoEvent(eventDetails, dispatch);
-          } else if (eventName === "pause") {
-            const eventDetails: VideoEventDetails = {
-              type: "VIDEO_PAUSE",
-              videoUrl: embedSrc || "",
-              videoPosition: eventData.secondsWatched || 0,
-              ...(pageId && { pageId }),
-            };
-            logVideoEvent(eventDetails, dispatch);
-          } else if (eventName === "end") {
-            const eventDetails: VideoEventDetails = {
-              type: "VIDEO_ENDED",
-              videoUrl: embedSrc || "",
-              ...(pageId && { pageId }),
-            };
+          const eventTypeMap: Record<string, VideoEventDetails["type"]> = {
+            play: "VIDEO_PLAY",
+            pause: "VIDEO_PAUSE",
+            end: "VIDEO_ENDED",
+          };
+
+          const eventType = eventTypeMap[eventName];
+          if (eventType) {
+            const eventDetails = createEventDetails(
+              eventType,
+              embedSrc || "",
+              pageId,
+              eventType !== "VIDEO_ENDED" ? eventData.secondsWatched || 0 : undefined,
+            );
             logVideoEvent(eventDetails, dispatch);
           }
         }
       } catch (error) {
-        // Silently ignore parsing errors from non-Wistia postMessages
-        // Only log actual errors in development
         if (
           process.env.NODE_ENV === "development" &&
           error instanceof Error &&
@@ -320,43 +309,38 @@ export function IsaacVideo(props: IsaacVideoProps) {
     };
 
     globalThis.addEventListener("message", handleWistiaMessage);
-
-    return () => {
-      globalThis.removeEventListener("message", handleWistiaMessage);
-    };
+    return () => globalThis.removeEventListener("message", handleWistiaMessage);
   }, [isWistia, wistiaVideoId, embedSrc, pageId, dispatch]);
 
   // YouTube video initialization
   const youtubeRef = useCallback(
     (node: HTMLDivElement | null) => {
       const YT = globalThis.YT;
-      if (node !== null && youtubeVideoId && YT) {
-        try {
-          YT.ready(function () {
-            new YT.Player(node, {
-              videoId: youtubeVideoId,
-              playerVars: {
-                enablejsapi: 1,
-                rel: 0,
-                fs: 1,
-                modestbranding: 1,
-                origin: globalThis.location.origin,
-              },
-              events: {
-                onStateChange: (event: YouTubeEvent) => {
-                  onPlayerStateChange(event, pageId, dispatch);
-                },
-              },
-            });
+      if (!node || !youtubeVideoId || !YT) return;
+
+      try {
+        YT.ready(() => {
+          new YT.Player(node, {
+            videoId: youtubeVideoId,
+            playerVars: {
+              enablejsapi: 1,
+              rel: 0,
+              fs: 1,
+              modestbranding: 1,
+              origin: globalThis.location.origin,
+            },
+            events: {
+              onStateChange: (event: YouTubeEvent) => onPlayerStateChange(event, pageId, dispatch),
+            },
           });
-        } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : "problem with YT library";
-          console.error("Error with YouTube library: ", error);
-          ReactGA.gtag("event", "exception", {
-            description: `youtube_error: ${errorMessage}`,
-            fatal: false,
-          });
-        }
+        });
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "problem with YT library";
+        console.error("Error with YouTube library: ", error);
+        ReactGA.gtag("event", "exception", {
+          description: `youtube_error: ${errorMessage}`,
+          fatal: false,
+        });
       }
     },
     [dispatch, pageId, youtubeVideoId],
@@ -376,10 +360,8 @@ export function IsaacVideo(props: IsaacVideoProps) {
         {embedSrc ? (
           <div className="content-video-container">
             {isYouTube ? (
-              // YouTube: Let the API create the iframe
               <div ref={youtubeRef} className="mw-100" title={altTextToUse} />
             ) : (
-              // Wistia and others: Use regular iframe with ref
               <iframe
                 ref={isWistia ? wistiaIframeRef : null}
                 className="mw-100"
