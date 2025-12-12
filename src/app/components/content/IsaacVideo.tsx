@@ -64,8 +64,8 @@ const VIDEO_PLATFORMS = {
     hosts: ["youtube.com", "www.youtube.com", "youtu.be"],
     idPattern: /(v=|\/embed\/|\/)([^?&/.]{11})/,
     timePatterns: {
-      start: /[?&](t|start)=([0-9]+)/,
-      end: /[?&]end=([0-9]+)/,
+      start: /[?&](t|start)=(\d+)/,
+      end: /[?&]end=(\d+)/,
     },
   },
   WISTIA: {
@@ -211,7 +211,7 @@ function onPlayerStateChange(event: YouTubeEvent, pageId?: string, dispatch?: Re
     eventType,
     videoUrl,
     pageId,
-    eventType !== "VIDEO_ENDED" ? videoPosition : undefined,
+    eventType === "VIDEO_ENDED" ? undefined : videoPosition,
   );
 
   logVideoEvent(eventDetails, dispatch);
@@ -292,7 +292,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
               eventType,
               embedSrc || "",
               pageId,
-              eventType !== "VIDEO_ENDED" ? eventData.secondsWatched || 0 : undefined,
+              eventType === "VIDEO_ENDED" ? undefined : eventData.secondsWatched || 0,
             );
             logVideoEvent(eventDetails, dispatch);
           }
