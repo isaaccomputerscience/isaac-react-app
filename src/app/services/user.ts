@@ -50,7 +50,10 @@ export function isEventManager(user?: UserRoleAndLoggedInStatus | null): boolean
 export function isStaff(user?: UserRoleAndLoggedInStatus | null): boolean {
   return (
     isDefined(user) &&
-    (user.role === "ADMIN" || user.role === "EVENT_MANAGER" || user.role === "CONTENT_EDITOR") &&
+    (user.role === "ADMIN" ||
+      user.role === "EVENT_MANAGER" ||
+      user.role === "CONTENT_EDITOR" ||
+      user.role === "TEACHER") &&
     (user.loggedIn ?? true)
   );
 }
