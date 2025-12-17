@@ -196,4 +196,49 @@ describe("SetAssignments", () => {
     const groupsAssignedHexagon = await within(gameboards[0]).findByTitle("Groups assigned");
     expect(groupsAssignedHexagon.textContent).toEqual("2 groups");
   });
+
+  it("should show scheduled start date field for TEACHER role", async () => {
+    renderTestEnvironment({
+      role: "TEACHER",
+      PageComponent: SetAssignments,
+      initialRouteEntries: ["/assignments"],
+    });
+
+    const gameboards = await screen.findAllByTestId("assignment-gameboard-card");
+    const modalOpenButton = within(gameboards[0]).getByRole("button", { name: /Assign\s?\/\s?Unassign/ });
+    await userEvent.click(modalOpenButton);
+
+    const modal = await screen.findByTestId("set-assignment-modal");
+    expect(within(modal).getByLabelText("Schedule an assignment start date", { exact: false })).toBeInTheDocument();
+  });
+
+  it("should NOT show notes field for TEACHER role", async () => {
+    renderTestEnvironment({
+      role: "TEACHER",
+      PageComponent: SetAssignments,
+      initialRouteEntries: ["/assignments"],
+    });
+
+    const gameboards = await screen.findAllByTestId("assignment-gameboard-card");
+    const modalOpenButton = within(gameboards[0]).getByRole("button", { name: /Assign\s?\/\s?Unassign/ });
+    await userEvent.click(modalOpenButton);
+
+    const modal = await screen.findByTestId("set-assignment-modal");
+    expect(within(modal).queryByLabelText("Notes", { exact: false })).not.toBeInTheDocument();
+  });
+
+  it("should show notes field for other roles except TEACHER", async () => {
+    renderTestEnvironment({
+      role: "ADMIN",
+      PageComponent: SetAssignments,
+      initialRouteEntries: ["/assignments"],
+    });
+
+    const gameboards = await screen.findAllByTestId("assignment-gameboard-card");
+    const modalOpenButton = within(gameboards[0]).getByRole("button", { name: /Assign\s?\/\s?Unassign/ });
+    await userEvent.click(modalOpenButton);
+
+    const modal = await screen.findByTestId("set-assignment-modal");
+    expect(within(modal).getByLabelText("Notes", { exact: false })).toBeInTheDocument();
+  });
 });
