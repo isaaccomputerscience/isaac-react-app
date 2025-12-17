@@ -46,6 +46,7 @@ import {
   isAdminOrEventManager,
   isDefined,
   isStaff,
+  isTeacher,
   Item,
   itemise,
   nthHourOf,
@@ -153,7 +154,7 @@ const AssignGroup = ({ groups, board, allowScheduling }: AssignGroupProps) => {
         />{" "}
         {dueDateInvalid && <small className={"pt-2 text-danger"}>Due date must be on or after start date.</small>}
       </Label>
-      {isStaff(user) && (
+      {isStaff(user) && !isTeacher(user) && (
         <Label className="w-100 pb-2">
           Notes (optional):
           <Input
