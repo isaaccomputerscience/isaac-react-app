@@ -104,9 +104,9 @@ const schoolSearch = (
   api.schools
     .search(schoolSearchText)
     .then(({ data }) => {
-      const openSchools = data && data.length > 0 ? data.filter((item) => item.closed !== true) : [];
-
-      setAsyncSelectOptionsCallback(openSchools.map((item) => ({ value: item, label: schoolNameWithPostcode(item) })));
+      setAsyncSelectOptionsCallback(
+        data && data.length > 0 ? data.map((item) => ({ value: item, label: schoolNameWithPostcode(item) })) : [],
+      );
     })
     .catch((response) => {
       console.error("Error searching for schools. ", response);
