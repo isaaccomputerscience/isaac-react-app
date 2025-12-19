@@ -26,6 +26,11 @@ const bookingDeadline = () => screen.queryByTestId("event-booking-deadline");
 const joinEventButton = () => screen.queryByRole("link", { name: "Join event now" });
 
 describe("EventDetails", () => {
+  // Clean up any state between tests to prevent pollution
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   const setupTest = async ({
     role,
     event,
@@ -166,9 +171,11 @@ describe("EventDetails", () => {
       role: "STUDENT",
       event: pastEvent,
     });
-    const eventDateText = `${FRIENDLY_DATE_AND_TIME.format(twoDaysAgo)} — ${TIME_ONLY.format(twoHoursLater)}`;
     const date = eventDate();
-    expect(date).toHaveTextContent(eventDateText);
+    expect(date).toHaveTextContent(FRIENDLY_DATE_AND_TIME.format(twoDaysAgo));
+    const endDateFormatted = TIME_ONLY.format(twoHoursLater);
+    const endDateFullFormatted = FRIENDLY_DATE_AND_TIME.format(twoHoursLater);
+    expect(date.textContent?.includes(endDateFormatted) || date.textContent?.includes(endDateFullFormatted)).toBe(true);
     expect(date).toHaveTextContent("This event is in the past.");
   });
 

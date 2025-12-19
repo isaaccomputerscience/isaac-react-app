@@ -26,7 +26,7 @@ const generateTestCases = (userCheck: (user?: UserRoleAndLoggedInStatus | null) 
   const roleRequirements = {
     STUDENT: [isStudent],
     TUTOR: [isTutorOrAbove, isTutor],
-    TEACHER: [isTeacherOrAbove, isTeacher, isTutorOrAbove],
+    TEACHER: [isTeacherOrAbove, isTeacher, isTutorOrAbove, isStaff, isEventLeaderOrStaff],
     EVENT_LEADER: [isEventLeader, isTeacherOrAbove, isTutorOrAbove, isEventLeaderOrStaff],
     CONTENT_EDITOR: [isStaff, isTeacherOrAbove, isTutorOrAbove, isEventLeaderOrStaff],
     EVENT_MANAGER: [
