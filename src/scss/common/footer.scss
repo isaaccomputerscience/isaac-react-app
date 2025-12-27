@@ -5,6 +5,12 @@
   color: white;
 }
 
+.footerBottom {
+  background-color: white;
+  width: 100%;
+  overflow-x: hidden;
+}
+
 .footer-links {
   color: white;
 
@@ -72,6 +78,319 @@
   }
 }
 
+.footer-bottom-wrapper {
+  width: 100%;
+  padding-left: 15px;
+  padding-right: 15px;
+  
+  // Remove right padding on medium screens to allow logos to touch edge
+  @media (min-width: 768px) and (max-width: 1024px) {
+    padding-right: 0;
+    padding-bottom: 1.5rem; // Add bottom padding like iPad Pro
+    overflow: visible; // Ensure logos aren't clipped
+  }
+  
+  // @media (min-width: 900px) {
+  //   padding-left: 0;
+  //   padding-right: 0;
+  //   margin-left: 85px;
+  //   padding-bottom: 1.5rem; // Add bottom padding for iPad Pro
+  // }
+  
+  @media (min-width: 1700px) {
+    margin-left: 300px;
+  }
+}
+
+.footer-bottom-list {
+  margin: 0;
+  width: 100%;
+  flex-direction: column; // Default: stack vertically on smaller screens
+  
+  // At 900px and above, switch to row layout (side by side)
+  @media (min-width: 900px) {
+    flex-direction: row;
+  }
+  
+  @media (min-width: 1024px){
+    width: 100%;
+  }
+  // Medium screens - ensure proper spacing and alignment, extend to right edge
+  @media (min-width: 768px) and (max-width: 1024px) {
+    gap: 1rem;
+    align-items: flex-end; // Align both sections at bottom
+    margin-right: calc(-100vw + 100%);
+    width: calc(100vw - 15px); // Account for left padding of wrapper
+    padding-bottom: 0; // Remove any padding here, handled by wrapper
+    overflow: visible; // Ensure content isn't clipped
+  }
+  
+  @media (min-width: 990px) {
+    // Extend to right edge: negative margin accounts for the 85px left margin
+    margin-right: calc(-100vw + 100% + 85px);
+    width: calc(100vw - 85px); // Width accounts for the 85px left margin
+    padding-left: 0; // Remove padding-left since we're using margin calculations
+  }
+  
+  @media (min-width: 1700px) {
+    // Extend to right edge: negative margin accounts for the 300px left margin
+    margin-right: calc(-100vw + 100% + 300px);
+    width: calc(100vw - 300px); // Width accounts for the 300px left margin
+  }
+}
+
+.footer-bottom-left {
+  padding-left: 0;
+  // padding-right: 15px;
+  
+  @media (min-width: 768px) and (max-width: 1024px) {
+    flex-shrink: 1;
+    min-width: 0;
+    padding-right: 10px;
+  }
+  
+  @media (min-width: 1025px) {
+    flex-shrink: 0;
+  }
+}
+
+.footer-bottom-links {
+  h2 {
+    color: black;
+    font-family: $footer-links-font;
+    font-size: 20px;
+    padding-right: 30px;
+    margin-bottom: 0;
+    
+    // Reduce font size on medium screens
+    @media (min-width: 768px) and (max-width: 1024px) {
+      font-size: 18px;
+      padding-right: 20px;
+    }
+  }
+  
+  a {
+    color: black;
+    padding-right: 30px;
+    text-decoration: none;
+    
+    // Reduce font size and padding on medium screens
+    @media (min-width: 768px) and (max-width: 1024px) {
+      font-size: 14px;
+      padding-right: 20px;
+    }
+    
+    &:hover {
+      color: black;
+    }
+  }
+}
+
+.footer-bottom-info {
+  p {
+    font-family: $footer-text-font;
+    font-size: 14px;
+    color: #000000;
+    margin-bottom: 0;
+    
+    // Reduce font size on medium screens
+    @media (min-width: 768px) and (max-width: 1024px) {
+      font-size: 12px;
+      line-height: 1.4;
+    }
+  }
+}
+
+.footer-bottom-logos {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end; // Align all items to bottom for proper vertical alignment
+  gap: 0.875rem;
+  padding-right: 0 !important;
+  padding-left: 0 !important; // Ensure no left padding on small screens
+  flex-shrink: 0;
+  overflow: visible; // Prevent clipping
+  justify-content: space-between; // On small screens: first two logos on left, third on right
+  
+  @media (min-width: 768px) {
+    justify-content: flex-end; // On larger screens: all logos on right
+    gap: 1.5rem; // 1.5rem gap between all logos on medium+ screens
+  }
+  
+  // Wrapper for first two logos - stack vertically on smaller screens only
+  .footer-bottom-logos-first-two {
+    display: flex;
+    flex-direction: column; // Stack vertically on small screens
+    align-items: flex-start; // Align to left on small screens
+    justify-content: flex-end; // Align container content to bottom
+    gap: 0.875rem;
+    padding-left: 0; // Ensure no left padding
+    margin-left: 0; // Ensure no left margin
+    
+    // Ensure all child links align to the left on small screens
+    > a {
+      align-self: flex-start !important; // Force left alignment
+      margin-left: 0 !important;
+      padding-left: 0 !important;
+      
+      img {
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+        display: block; // Ensure block display for proper alignment
+      }
+    }
+    
+    @media (min-width: 768px) {
+      flex-direction: row; // Arrange horizontally on medium+ screens
+      align-items: flex-end; // Align to bottom on larger screens
+      justify-content: flex-start; // Reset justify-content for row layout
+      gap: 1.5rem; // 1.5rem gap between first two logos on medium+ screens
+      margin-right: 0; // Remove any margin between wrapper and third logo
+      
+      > a {
+        align-self: auto; // Reset on larger screens
+      }
+    }
+  }
+  
+  // Third logo (STEM) - ensure it aligns with bottom of first two logos
+  > a:last-of-type {
+    align-self: flex-end; // Align to bottom to match first two logos container
+    display: flex;
+    align-items: flex-end;
+    
+    @media (min-width: 768px) {
+      margin-left: 0; // No extra margin on medium+ screens, gap handles spacing
+    }
+  }
+  
+  // Medium screens (768px - 1024px) - allow shrinking and reduce gap
+  @media (min-width: 768px) and (max-width: 1024px) {
+    flex-shrink: 1;
+    min-width: 0;
+    gap: 1.5rem; // 1.5rem gap between all logos
+    padding-left: 10px;
+    padding-right: 0 !important; // Ensure no right padding
+    align-items: flex-end; // Align all logos to bottom
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 0; // Ensure no right margin
+    align-self: flex-end; // Align container to bottom to match left content
+    overflow: visible; // Prevent clipping
+    min-height: fit-content; // Allow container to grow
+    
+    // Target first two logos inside wrapper
+    .footer-bottom-logos-first-two {
+      gap: 1.5rem; // 1.5rem gap between first two logos
+      
+      > a {
+        display: flex;
+        align-items: flex-end; // Align each logo to bottom
+        margin: 0 !important; // Override Bootstrap mb-3 mb-md-0
+        padding: 0;
+        line-height: 0; // Remove line-height spacing
+        overflow: visible; // Prevent clipping
+        
+        // First ExternalLink (NCCE logo) - ensure bottom alignment
+        &:first-of-type {
+          margin-bottom: 0 !important;
+          margin-top: 0 !important;
+          align-items: flex-end;
+          align-self: flex-end; // Force bottom alignment
+          
+          img {
+            max-width: 70px !important; // Same size as iPad Pro
+            height: auto !important;
+            max-height: none !important; // Remove height constraint to prevent clipping
+            display: block;
+            margin: 0 !important;
+            padding: 0 !important;
+            vertical-align: bottom;
+            line-height: 0;
+            align-self: flex-end; // Force bottom alignment
+            object-fit: contain;
+          }
+        }
+        
+        // Second ExternalLink (DFE logo) - same size as first
+        &:nth-of-type(2) {
+          align-items: flex-end;
+          align-self: flex-end; // Force bottom alignment
+          img {
+            max-width: 70px !important; // Same size as first logo
+            max-height: none !important; // Remove height constraint to prevent clipping
+            height: auto !important;
+            display: block;
+            margin: 0 !important;
+            padding: 0 !important;
+            vertical-align: bottom;
+            object-fit: contain;
+            align-self: flex-end; // Force bottom alignment
+          }
+        }
+      }
+    }
+    
+    // Target third logo (STEM) - direct child
+    > a:last-of-type {
+      display: flex;
+      align-items: flex-end; // Align each logo to bottom
+      margin: 0 !important; // Override Bootstrap mb-3 mb-md-0
+      padding: 0;
+      line-height: 0; // Remove line-height spacing
+      overflow: visible; // Prevent clipping
+      align-self: flex-end; // Force bottom alignment
+      margin-left: 0;
+      margin-right: 0; // Ensure no right margin
+      
+      img {
+        max-width: 70px !important; // Same size as other logos
+        height: auto !important;
+        max-height: none !important; // Remove height constraint
+        vertical-align: bottom;
+        margin-right: 0 !important; // Ensure no right margin
+        padding-right: 0 !important; // Ensure no right padding
+        object-fit: contain;
+        display: block;
+      }
+    }
+    
+    img {
+      max-width: 70px !important; // Default consistent size for all logos - match iPad Pro
+      height: auto !important;
+      max-height: none !important; // Remove height constraint
+      object-fit: contain;
+      display: block;
+      margin: 0 !important;
+      vertical-align: bottom;
+      line-height: 0;
+    }
+    
+    // STEM logo specific sizing for medium screens
+    .logo-mr {
+      max-width: 70px !important; // Same size as others - match iPad Pro
+      max-height: none !important; // Remove height constraint
+      height: auto !important;
+      width: auto;
+    }
+  }
+  
+  img {
+    flex-shrink: 0;
+    max-width: 100%;
+    height: auto;
+    
+    @media (min-width: 990px) {
+      padding-left: 14px;
+      max-width: none !important;
+      width: auto;
+      flex-shrink: 0;
+    }
+  }
+}
+
 .logo-text {
   color: white;
   font-family: $footer-text-font;
@@ -85,18 +404,18 @@
   }
 }
 
-.footer-bottom {
+.footer-bottom h2 {
   background-color: white;
   width: 100%;
+  
 
-  .h5 {
+  h2 {
     color: black;
     font-family: $footer-links-font;
     font-size: 20px;
   }
 
-  .footer-bottom-info {
-    p {
+  .footer-bottom-info p{
       font-family: $footer-text-font;
       font-size: 14px;
       color: #000000;
@@ -104,7 +423,7 @@
     @include respond-above(md) {
       width: 40%;
     }
-  }
+  
   .footer-bottom-logos {
     @include respond-above(md) {
       width: 30%;
@@ -116,11 +435,19 @@
 .footer-bottom-links a {
   color: black;
   padding-right: 30px;
+  text-decoration: none;
   
   &:hover {
     color: black;
   }
 }
+
+.footer-bottom-links h2{
+  color: black;
+  font-family: $footer-links-font;
+  font-size: 20px;
+  padding-right: 30px;
+  }
 
 .print-font {
   font-family: $footer-bold-font;
@@ -136,86 +463,387 @@
   .footer-bottom-logos img {
     height: auto;
     width: auto;
-    max-width: 90%;
     padding-left: 14px;
   }
 }
 
 @media only screen and (min-width: 769px) and (max-width: 989px) {
-  .links-col {
-    padding-top: 0.5rem !important;
+  .footer-bottom-list {
+    align-items: flex-end;
+    overflow: visible;
+    margin-right: 0 !important; 
   }
-
+  
+  .footer-bottom-links {
+    h2 {
+      font-size: 18px;
+      padding-right: 20px;
+    }
+    
+    a {
+      font-size: 14px;
+      padding-right: 20px;
+    }
+  }
+  
   .footer-bottom-info {
     p {
-      padding-bottom: 1.5rem !important;
+      padding-bottom: 0 !important;
+      margin-bottom: 0 !important;
+      font-size: 12px;
+      line-height: 1.4;
     }
   }
 
   .footer-bottom-logos {
-    padding-bottom: 1.5rem;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-right: 0 !important;
+    gap: 1.5rem; // Match iPad Pro spacing
+    align-items: flex-end; // Align to bottom
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 0;
+    align-self: flex-end; // Align container to bottom
+    overflow: visible; // Prevent clipping
+    min-height: fit-content; // Allow container to grow
+    
+    // Target first two logos inside wrapper
+    .footer-bottom-logos-first-two {
+      gap: 1.5rem; // 1.5rem gap between first two logos
+      
+      > a {
+        display: flex;
+        align-items: flex-end;
+        align-self: flex-end; // Force bottom alignment
+        margin: 0 !important; // Override Bootstrap classes
+        padding: 0;
+        line-height: 0;
+        overflow: visible; // Prevent clipping
+        
+        // First logo - ensure bottom alignment
+        &:first-of-type {
+          margin-bottom: 0 !important;
+          margin-top: 0 !important;
+          
+          img {
+            max-width: 70px !important; // Same size as iPad Pro
+            height: auto !important;
+            max-height: none !important; // Remove height constraint
+            display: block;
+            margin: 0 !important;
+            padding: 0 !important;
+            vertical-align: bottom;
+            line-height: 0;
+            align-self: flex-end;
+            object-fit: contain;
+          }
+        }
+        
+        // Second logo - same size as first
+        &:nth-of-type(2) {
+          align-items: flex-end;
+          align-self: flex-end;
+          img {
+            max-width: 70px !important; // Same size as first logo
+            max-height: none !important; // Remove height constraint to prevent clipping
+            height: auto !important;
+            display: block;
+            margin: 0 !important;
+            padding: 0 !important;
+            vertical-align: bottom;
+            object-fit: contain;
+            align-self: flex-end;
+          }
+        }
+      }
+    }
+    
+    // Target third logo (STEM) - direct child
+    > a:last-of-type {
+      display: flex;
+      align-items: flex-end;
+      align-self: flex-end; // Force bottom alignment
+      margin: 0 !important; // Override Bootstrap classes
+      padding: 0;
+      line-height: 0;
+      overflow: visible; // Prevent clipping
+      margin-right: 0;
+      
+      img {
+        max-width: 70px !important; // Same size as other logos
+        height: auto !important;
+        max-height: none !important; // Remove height constraint
+        vertical-align: bottom;
+        margin-right: 0 !important;
+        padding-right: 0 !important;
+        object-fit: contain;
+        display: block;
+      }
+    }
+    
+    img {
+      padding-left: 8px;
+      max-width: 70px !important; // Default consistent size - match iPad Pro
+      height: auto !important;
+      max-height: none !important; // Remove height constraint
+      object-fit: contain;
+      display: block;
+      margin: 0 !important;
+      vertical-align: bottom;
+      line-height: 0;
+    }
+    
+    .logo-mr {
+      max-width: 70px !important; // Same size as others - match iPad Pro
+      max-height: none !important; // Remove height constraint
+      height: auto !important;
+    }
+  }
+}
+
+@media only screen and (min-width: 990px)  {
+  .footer-bottom-wrapper {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 32px; // Keep this to align with footer content above
+    padding-bottom: 1.5rem; // Add bottom padding for iPad Pro
   }
   
-  .footer-bottom-logos img {
-    height: auto;
-    width: auto;
-    max-width: 90%;
-    padding-left: 14px;
+  .footer-bottom-list {
+    // Extend to right edge: negative margin accounts for the 32px left margin
+    margin-right: calc(-100vw + 100% + 32px);
+    width: calc(100vw - 32px); // Width accounts for the 32px left margin
+    align-items: flex-end; // Align to bottom
+    padding-left: 0; // Remove padding-left since we're using margin calculations
+  }
+  
+  .footer-bottom-left {
+    padding-right: 10px;
+  }
+  
+  .footer-bottom-links {
+    h2 {
+      font-size: 18px;
+      padding-right: 20px;
+    }
+    
+    a {
+      font-size: 14px;
+      padding-right: 20px;
+    }
+  }
+  
+  .footer-bottom-info {
+    p {
+      font-size: 12px;
+      line-height: 1.4;
+    }
+  }
+  
+  .footer-bottom-logos {
+    gap: 1.5rem; // Fix typo: remove space in "1.5 rem"
+    align-items: flex-end;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-right: 0 !important;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 0;
+    align-self: flex-end;
+    flex-shrink: 0 !important; // Prevent container from shrinking
+    
+    // Target first two logos inside wrapper
+    .footer-bottom-logos-first-two {
+      gap: 1.5rem; // 1.5rem gap between first two logos
+      
+      > a {
+        display: flex;
+        align-items: flex-end;
+        align-self: flex-end; // Force bottom alignment
+        margin: 0 !important; // Override Bootstrap classes
+        padding: 0;
+        line-height: 0;
+        flex-shrink: 0;
+        
+        // First logo - ensure bottom alignment
+        &:first-of-type {
+          margin-bottom: 0 !important;
+          margin-top: 0 !important;
+          
+          img {
+            max-width: none !important; // Remove 70px constraint
+            width: auto !important; // Allow natural width
+            height: auto;
+            display: block;
+            margin: 0 !important;
+            padding: 0 !important;
+            vertical-align: bottom;
+            line-height: 0;
+            align-self: flex-end;
+            object-fit: contain;
+            flex-shrink: 0; // Prevent image from shrinking
+          }
+        }
+        
+        // Second logo
+        &:nth-of-type(2) {
+          align-items: flex-end;
+          align-self: flex-end;
+          img {
+            max-width: none !important; // Remove 70px constraint
+            width: auto !important; // Allow natural width
+            max-height: none !important; // Remove height constraint
+            height: auto !important;
+            display: block;
+            margin: 0 !important;
+            padding: 0 !important;
+            vertical-align: bottom;
+            object-fit: contain;
+            align-self: flex-end;
+            flex-shrink: 0;
+          }
+        }
+      }
+    }
+    
+    // Target third logo (STEM) - direct child
+    > a:last-of-type {
+      display: flex;
+      align-items: flex-end;
+      align-self: flex-end; // Force bottom alignment
+      margin: 0 !important; // Override Bootstrap classes
+      padding: 0;
+      line-height: 0;
+      flex-shrink: 0;
+      margin-right: 0;
+      
+      img {
+        max-width: none !important; // Remove 70px constraint
+        width: auto !important; // Allow natural width
+        height: auto;
+        vertical-align: bottom;
+        margin-right: 0 !important;
+        padding-right: 0 !important;
+        object-fit: contain;
+        display: block;
+        flex-shrink: 0;
+      }
+    }
+    
+    img {
+      max-width: none !important; // Remove 70px constraint for all images
+      width: auto !important; // Allow natural width
+      height: auto;
+      padding-left: 14px; // Keep spacing
+      object-fit: contain;
+      display: block;
+      margin: 0 !important;
+      vertical-align: bottom;
+      line-height: 0;
+      flex-shrink: 0; // Prevent shrinking
+    }
+    
+    
+    .logo-mr {
+      max-width: none !important; // Remove 70px constraint
+      max-height: none;
+      height: auto;
+      width: auto;
+    }
   }
 }
 
 @media only screen and (min-width: 480px) and (max-width: 768px) {
-  .links-col {
-    padding-top: 0.5rem !important;
-  }
-
-  .footer-links .footer-support-links .h5, 
-  .footer-bottom-links .h5 {
-    margin-bottom: 15px;
-    text-align: left;
-  }
-  
-  .footer-links .footer-support-links a,
-  .footer-bottom-links a {
-    margin-bottom: 10px;
+  .footer-bottom-links {
+    h2 {
+      margin-bottom: 15px;
+    }
+    
+    a {
+      margin-bottom: 10px;
+    }
   }
 
   .footer-bottom-info {
     p {
-      padding-bottom: 1.5rem !important;
+      padding-bottom: 0 !important;
     }
   }
 
   .footer-bottom-logos {
     padding-bottom: 1.5rem;
-    margin-left: 5%;
     gap: 1.25rem;
+    justify-content: space-between; // First two logos on left, third on right
+    align-items: flex-end; // Ensure vertical alignment
+    
+    // Ensure first two logos align to the left
+    .footer-bottom-logos-first-two {
+      align-items: flex-start !important; // Force left alignment
+      padding-left: 0 !important;
+      margin-left: 0 !important;
+      
+      > a {
+        align-self: flex-start !important; // Force left alignment for both logos
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+        
+        &:first-of-type {
+          margin-bottom: 0 !important; // Remove Bootstrap mb-3 on small screens
+        }
+        
+        img {
+          margin-left: 0 !important;
+          padding-left: 0 !important;
+        }
+      }
+    }
   }
-
 }
 
 @media only screen and (max-width: 480px) {
-  .logo-col {
-    padding: 20px !important;
+  .footer-bottom-wrapper {
+    padding-left: 15px;
+    padding-right: 15px;
+    // margin-left: 24px;
   }
   
-  .links-col {
-    padding-top: 0.5rem !important;
-  }
-
-  .footer-links .footer-support-links .h5, 
-  .footer-bottom-links .h5 {
-    margin-bottom: 15px;
-    text-align: left;
-  }
-  
-  .footer-links .footer-support-links a,
-  .footer-bottom-links a {
-    margin-bottom: 10px;
+  .footer-bottom-links {
+    h2 {
+      margin-bottom: 15px;
+    }
+    
+    a {
+      margin-bottom: 10px;
+    }
   }
 
   .footer-bottom-logos {
     gap: 1.25rem;
-    margin-left: 5%;
+    justify-content: space-between; // First two logos on left, third on right
+    flex-wrap: nowrap; // Prevent wrapping to maintain layout
+    align-items: flex-end; // Ensure vertical alignment
+    
+    // Ensure first two logos align to the left
+    .footer-bottom-logos-first-two {
+      align-items: flex-start !important; // Force left alignment
+      padding-left: 0 !important;
+      margin-left: 0 !important;
+      
+      > a {
+        align-self: flex-start !important; // Force left alignment for both logos
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+        
+        &:first-of-type {
+          margin-bottom: 0 !important; // Remove Bootstrap mb-3 on small screens
+        }
+        
+        img {
+          margin-left: 0 !important;
+          padding-left: 0 !important;
+        }
+      }
+    }
   }
 }
