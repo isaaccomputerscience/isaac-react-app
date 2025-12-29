@@ -1,5 +1,7 @@
 import React, { ReactElement, useEffect, useRef } from "react";
 import { UncontrolledTooltip } from "reactstrap";
+import { Button } from "reactstrap";
+import { Link } from "react-router-dom";
 import {
   AUDIENCE_DISPLAY_FIELDS,
   filterAudienceViewsByProperties,
@@ -46,6 +48,7 @@ export interface PageTitleProps {
   subTitle?: string;
   disallowLaTeX?: boolean;
   help?: ReactElement;
+  boosterVideoButton?: boolean;
   className?: string;
   audienceViews?: ViewingContext[];
   onTitleEdit?: (newTitle: string) => void;
@@ -55,6 +58,7 @@ export const PageTitle = ({
   subTitle,
   disallowLaTeX,
   help,
+  boosterVideoButton,
   className,
   audienceViews,
   onTitleEdit,
@@ -65,14 +69,14 @@ export const PageTitle = ({
 
   useEffect(() => {
     dispatch(mainContentIdSlice.actions.set("main-heading"));
-  }, []);
+  }, [dispatch]);
   useEffect(() => {
     document.title = currentPageTitle + " — Isaac " + SITE_SUBJECT_TITLE;
     const element = headerRef.current;
     if (element && (window as any).followedAtLeastOneSoftLink && !openModal) {
       element.focus();
     }
-  }, [currentPageTitle]);
+  }, [currentPageTitle, openModal]);
 
   return (
     <h1 id="main-heading" tabIndex={-1} ref={headerRef} className={`h-title h-secondary d-sm-flex ${className ?? ""}`}>
@@ -88,7 +92,18 @@ export const PageTitle = ({
         <meta property="og:title" content={currentPageTitle} />
       </Helmet>
       {audienceViews && <AudienceViewer audienceViews={audienceViews} />}
-      {help && (
+
+      {/* Show booster video button OR help tooltip, but not both */}
+      {boosterVideoButton ? (
+        <Button
+          tag={Link}
+          to="/pages/test_page_booster_recording"
+          className="primary-button text-light align-self-center ml-2"
+          size="sm"
+        >
+          Watch booster videos
+        </Button>
+      ) : help ? (
         <React.Fragment>
           <div id="title-help" className="title-help">
             Help
@@ -97,7 +112,7 @@ export const PageTitle = ({
             {help}
           </UncontrolledTooltip>
         </React.Fragment>
-      )}
+      ) : null}
     </h1>
   );
 };
