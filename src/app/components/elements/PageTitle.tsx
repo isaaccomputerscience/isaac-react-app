@@ -18,6 +18,12 @@ import { Helmet } from "react-helmet";
 import { Markup } from "./markup";
 import { EditablePageTitle } from "./inputs/EditablePageTitle";
 
+declare global {
+  interface Window {
+    followedAtLeastOneSoftLink?: boolean;
+  }
+}
+
 function AudienceViewer({ audienceViews }: { audienceViews: ViewingContext[] }) {
   const userContext = useUserContext();
   const viewsWithMyStage = audienceViews.filter((vc) => vc.stage === userContext.stage);
@@ -53,6 +59,7 @@ export interface PageTitleProps {
   audienceViews?: ViewingContext[];
   onTitleEdit?: (newTitle: string) => void;
 }
+
 export const PageTitle = ({
   currentPageTitle,
   subTitle,
@@ -65,6 +72,7 @@ export const PageTitle = ({
 }: PageTitleProps) => {
   const dispatch = useAppDispatch();
   const openModal = useAppSelector((state: AppState) => Boolean(state?.activeModals?.length));
+  const user = useAppSelector((state: AppState) => state?.user); // Add this
   const headerRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
@@ -73,7 +81,7 @@ export const PageTitle = ({
   useEffect(() => {
     document.title = currentPageTitle + " — Isaac " + SITE_SUBJECT_TITLE;
     const element = headerRef.current;
-    if (element && "followedAtLeastOneSoftLink" in window && window.followedAtLeastOneSoftLink && !openModal) {
+    if (element && window.followedAtLeastOneSoftLink && !openModal) {
       element.focus();
     }
   }, [currentPageTitle, openModal]);
@@ -97,9 +105,15 @@ export const PageTitle = ({
       {boosterVideoButton ? (
         <Button
           tag={Link}
-          to="/pages/test_page_booster_recording"
-          className="primary-button text-light align-self-center ml-2"
-          size="sm"
+          to={
+            user?.loggedIn ? "/pages/test_page_booster_recording" : "/login?target=/pages/test_page_booster_recording"
+          }
+          className="primary-button text-light align-self-center ml-sm-2"
+          style={{
+            padding: "12px 32px",
+            fontSize: "18px",
+            lineHeight: "27px",
+          }}
         >
           Watch booster videos
         </Button>
