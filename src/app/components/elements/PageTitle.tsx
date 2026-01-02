@@ -109,11 +109,6 @@ export const PageTitle = ({
             user?.loggedIn ? "/pages/test_page_booster_recording" : "/login?target=/pages/test_page_booster_recording"
           }
           className="primary-button text-light align-self-center ml-sm-2"
-          style={{
-            padding: "12px 32px",
-            fontSize: "18px",
-            lineHeight: "27px",
-          }}
         >
           Watch booster videos
         </Button>
