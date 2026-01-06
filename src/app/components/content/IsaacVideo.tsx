@@ -18,11 +18,12 @@ interface VideoEventDetails {
 
 interface WistiaPostMessageData {
   method: string;
-  args: Array<string | Record<string, unknown>>;
+  args: Array<string | number | Record<string, unknown>>;
 }
 
 interface WistiaEventData {
   secondsWatched?: number;
+  seconds?: number;
   [key: string]: unknown;
 }
 
@@ -261,8 +262,16 @@ export function IsaacVideo(props: IsaacVideoProps) {
   }, [isWistia]);
 
   // Setup Wistia tracking using postMessage API
+  //
+  // Wistia's iframe postMessage API allows us to track video events and position.
+  // We explicitly bind to play, pause, end, timechange, and secondchange events.
+  // The timechange/secondchange events continuously update our local lastKnownTime variable,
+  // which is then used when logging play/pause/end events to capture accurate video positions.
   React.useEffect(() => {
     if (!isWistia || !wistiaVideoId || !wistiaIframeRef.current) return;
+
+    const iframe = wistiaIframeRef.current;
+    let lastKnownTime = 0;
 
     const handleWistiaMessage = (event: MessageEvent): void => {
       // Verify Wistia origin
@@ -276,25 +285,46 @@ export function IsaacVideo(props: IsaacVideoProps) {
       try {
         const data: WistiaPostMessageData = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
 
+        // Handle triggered events from Wistia
         if (data.method === "_trigger" && Array.isArray(data.args) && data.args.length > 0) {
           const eventName = data.args[0] as string;
           const eventData = (data.args[1] || {}) as WistiaEventData;
 
+          // Update lastKnownTime from event data if available
+          if (typeof eventData.seconds === "number") {
+            lastKnownTime = eventData.seconds;
+          } else if (typeof eventData.secondsWatched === "number") {
+            lastKnownTime = eventData.secondsWatched;
+          }
+
           const eventTypeMap: Record<string, VideoEventDetails["type"]> = {
             play: "VIDEO_PLAY",
+            playing: "VIDEO_PLAY", // Alternative name
             pause: "VIDEO_PAUSE",
+            paused: "VIDEO_PAUSE", // Alternative name
             end: "VIDEO_ENDED",
+            ended: "VIDEO_ENDED", // Alternative name
           };
 
-          const eventType = eventTypeMap[eventName];
+          const eventType = eventTypeMap[eventName.toLowerCase()];
           if (eventType) {
             const eventDetails = createEventDetails(
               eventType,
               embedSrc || "",
               pageId,
-              eventType === "VIDEO_ENDED" ? undefined : eventData.secondsWatched || 0,
+              eventType === "VIDEO_ENDED" ? undefined : lastKnownTime,
             );
+
             logVideoEvent(eventDetails, dispatch);
+          }
+        }
+
+        // Handle timechange/secondchange events to track position
+        if (data.method === "_trigger" && (data.args?.[0] === "timechange" || data.args?.[0] === "secondchange")) {
+          if (typeof data.args?.[1] === "number") {
+            lastKnownTime = data.args[1];
+          } else if (typeof (data.args?.[1] as WistiaEventData)?.seconds === "number") {
+            lastKnownTime = (data.args[1] as WistiaEventData).seconds as number;
           }
         }
       } catch (error) {
@@ -309,7 +339,31 @@ export function IsaacVideo(props: IsaacVideoProps) {
     };
 
     globalThis.addEventListener("message", handleWistiaMessage);
-    return () => globalThis.removeEventListener("message", handleWistiaMessage);
+
+    // Setup Wistia bindings once iframe is loaded
+    const setupWistiaBindings = () => {
+      if (iframe.contentWindow) {
+        // Bind to all the events we care about
+        const eventsToTrack = ["play", "pause", "end", "timechange", "secondchange"];
+        eventsToTrack.forEach(eventName => {
+          iframe.contentWindow?.postMessage(
+            JSON.stringify({
+              method: "bind",
+              args: [eventName],
+            }),
+            "https://fast.wistia.net",
+          );
+        });
+      }
+    };
+
+    // Give iframe time to load
+    const timer = setTimeout(setupWistiaBindings, 1000);
+
+    return () => {
+      globalThis.removeEventListener("message", handleWistiaMessage);
+      clearTimeout(timer);
+    };
   }, [isWistia, wistiaVideoId, embedSrc, pageId, dispatch]);
 
   // YouTube video initialization
