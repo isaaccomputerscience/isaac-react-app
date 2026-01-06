@@ -273,59 +273,75 @@ export function IsaacVideo(props: IsaacVideoProps) {
     const iframe = wistiaIframeRef.current;
     let lastKnownTime = 0;
 
-    const handleWistiaMessage = (event: MessageEvent): void => {
-      // Verify Wistia origin
-      const isValidOrigin = VIDEO_PLATFORMS.WISTIA.allowedOrigins.some(
-        (origin) =>
-          event.origin === origin || event.origin.endsWith(".wistia.net") || event.origin.endsWith(".wistia.com"),
+    // Event type mapping for video events
+    const eventTypeMap: Record<string, VideoEventDetails["type"]> = {
+      play: "VIDEO_PLAY",
+      playing: "VIDEO_PLAY",
+      pause: "VIDEO_PAUSE",
+      paused: "VIDEO_PAUSE",
+      end: "VIDEO_ENDED",
+      ended: "VIDEO_ENDED",
+    };
+
+    const isValidWistiaOrigin = (origin: string): boolean => {
+      return VIDEO_PLATFORMS.WISTIA.allowedOrigins.some(
+        (allowed) => origin === allowed || origin.endsWith(".wistia.net") || origin.endsWith(".wistia.com"),
+      );
+    };
+
+    const updateTimeFromEventData = (eventData: WistiaEventData): void => {
+      if (typeof eventData.seconds === "number") {
+        lastKnownTime = eventData.seconds;
+      } else if (typeof eventData.secondsWatched === "number") {
+        lastKnownTime = eventData.secondsWatched;
+      }
+    };
+
+    const updateTimeFromArgs = (args: Array<string | number | Record<string, unknown>>): void => {
+      if (typeof args[1] === "number") {
+        lastKnownTime = args[1];
+      } else if (typeof (args[1] as WistiaEventData)?.seconds === "number") {
+        lastKnownTime = (args[1] as WistiaEventData).seconds as number;
+      }
+    };
+
+    const handleVideoEvent = (eventName: string, eventData: WistiaEventData): void => {
+      updateTimeFromEventData(eventData);
+
+      const eventType = eventTypeMap[eventName.toLowerCase()];
+      if (!eventType) return;
+
+      const eventDetails = createEventDetails(
+        eventType,
+        embedSrc || "",
+        pageId,
+        eventType === "VIDEO_ENDED" ? undefined : lastKnownTime,
       );
 
-      if (!isValidOrigin) return;
+      logVideoEvent(eventDetails, dispatch);
+    };
+
+    const isTimeChangeEvent = (eventName: string): boolean => {
+      return eventName === "timechange" || eventName === "secondchange";
+    };
+
+    const handleWistiaMessage = (event: MessageEvent): void => {
+      if (!isValidWistiaOrigin(event.origin)) return;
 
       try {
         const data: WistiaPostMessageData = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
 
-        // Handle triggered events from Wistia
-        if (data.method === "_trigger" && Array.isArray(data.args) && data.args.length > 0) {
-          const eventName = data.args[0] as string;
-          const eventData = (data.args[1] || {}) as WistiaEventData;
-
-          // Update lastKnownTime from event data if available
-          if (typeof eventData.seconds === "number") {
-            lastKnownTime = eventData.seconds;
-          } else if (typeof eventData.secondsWatched === "number") {
-            lastKnownTime = eventData.secondsWatched;
-          }
-
-          const eventTypeMap: Record<string, VideoEventDetails["type"]> = {
-            play: "VIDEO_PLAY",
-            playing: "VIDEO_PLAY", // Alternative name
-            pause: "VIDEO_PAUSE",
-            paused: "VIDEO_PAUSE", // Alternative name
-            end: "VIDEO_ENDED",
-            ended: "VIDEO_ENDED", // Alternative name
-          };
-
-          const eventType = eventTypeMap[eventName.toLowerCase()];
-          if (eventType) {
-            const eventDetails = createEventDetails(
-              eventType,
-              embedSrc || "",
-              pageId,
-              eventType === "VIDEO_ENDED" ? undefined : lastKnownTime,
-            );
-
-            logVideoEvent(eventDetails, dispatch);
-          }
+        if (data.method !== "_trigger" || !Array.isArray(data.args) || data.args.length === 0) {
+          return;
         }
 
-        // Handle timechange/secondchange events to track position
-        if (data.method === "_trigger" && (data.args?.[0] === "timechange" || data.args?.[0] === "secondchange")) {
-          if (typeof data.args?.[1] === "number") {
-            lastKnownTime = data.args[1];
-          } else if (typeof (data.args?.[1] as WistiaEventData)?.seconds === "number") {
-            lastKnownTime = (data.args[1] as WistiaEventData).seconds as number;
-          }
+        const eventName = data.args[0] as string;
+        const eventData = (data.args[1] || {}) as WistiaEventData;
+
+        if (isTimeChangeEvent(eventName)) {
+          updateTimeFromArgs(data.args);
+        } else {
+          handleVideoEvent(eventName, eventData);
         }
       } catch (error) {
         if (
@@ -345,7 +361,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
       if (iframe.contentWindow) {
         // Bind to all the events we care about
         const eventsToTrack = ["play", "pause", "end", "timechange", "secondchange"];
-        eventsToTrack.forEach(eventName => {
+        eventsToTrack.forEach((eventName) => {
           iframe.contentWindow?.postMessage(
             JSON.stringify({
               method: "bind",
