@@ -2,8 +2,19 @@ import React, { useState } from "react";
 import { Col, FormFeedback, FormGroup, Label, Row, UncontrolledTooltip } from "reactstrap";
 import { PasswordFeedback, ValidationUser } from "../../../../IsaacAppTypes";
 import { Immutable } from "immer";
-import { PASSWORD_REQUIREMENTS, passwordDebounce, validatePassword } from "../../../services";
+import {
+  PASSWORD_REQUIREMENTS,
+  passwordDebounce,
+  validatePassword,
+  validatePasswordMatch,
+  getPasswordValidationErrors,
+  calculatePasswordStrength,
+  getPasswordStrengthLabel,
+  getPasswordStrengthColor,
+  PasswordStrength,
+} from "../../../services";
 import Password from "./Password";
+
 interface PasswordInputProps {
   userToUpdate: Immutable<ValidationUser>;
   setUserToUpdate: (user: Immutable<ValidationUser>) => void;
@@ -23,8 +34,24 @@ export const RegistrationPasswordInputs = ({
 }: PasswordInputProps) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [passwordFeedback, setPasswordFeedback] = useState<PasswordFeedback | null>(null);
+  const [passwordTouched, setPasswordTouched] = useState(false);
+  const [confirmTouched, setConfirmTouched] = useState(false);
 
-  const passwordIsValid = userToUpdate.password == unverifiedPassword && validatePassword(userToUpdate.password || "");
+  // Calculate password strength and validation
+  const passwordStrength = unverifiedPassword ? calculatePasswordStrength(unverifiedPassword) : PasswordStrength.INVALID;
+  const passwordStrengthLabel = getPasswordStrengthLabel(passwordStrength);
+  const passwordStrengthColor = getPasswordStrengthColor(passwordStrength);
+
+  const passwordIsValid = validatePassword(unverifiedPassword || "");
+  const passwordsMatch = validatePasswordMatch(unverifiedPassword || "", userToUpdate.password || "");
+  const bothPasswordsValid = passwordIsValid && passwordsMatch;
+
+  // Get specific validation errors for display
+  const passwordErrors = unverifiedPassword ? getPasswordValidationErrors(unverifiedPassword) : [];
+
+  // Show errors if submission attempted OR if user has touched the field and there are errors
+  const showPasswordErrors = (submissionAttempted || passwordTouched) && !!unverifiedPassword && !passwordIsValid;
+  const showMatchError = (submissionAttempted || confirmTouched) && !!userToUpdate.password && !passwordsMatch;
 
   return (
     <Row>
@@ -42,21 +69,58 @@ export const RegistrationPasswordInputs = ({
             isPasswordVisible={isPasswordVisible}
             setIsPasswordVisible={setIsPasswordVisible}
             defaultValue={defaultPassword}
+            invalid={showPasswordErrors ? true : undefined}
             onChange={(e) => {
-              passwordDebounce(e.target.value, setPasswordFeedback);
+              const newValue = e.target.value;
+              setUnverifiedPassword(newValue);
+              passwordDebounce(newValue, setPasswordFeedback);
+              // Mark as touched when user starts typing
+              if (newValue.length > 0) {
+                setPasswordTouched(true);
+              }
             }}
             onBlur={(e) => {
-              setUnverifiedPassword(e.target.value);
-              passwordDebounce(e.target.value, setPasswordFeedback);
+              const newValue = e.target.value;
+              setUnverifiedPassword(newValue);
+              passwordDebounce(newValue, setPasswordFeedback);
+              setPasswordTouched(true);
             }}
             showToggleIcon={true}
             required={true}
           />
-          {passwordFeedback && (
-            <span className="float-right small mt-1">
-              <strong>Password strength: </strong>
-              <span id="password-strength-feedback">{passwordFeedback.feedbackText}</span>
-            </span>
+
+          {/* Password strength indicator - always show if there's a password */}
+          {unverifiedPassword && unverifiedPassword.length > 0 && (
+            <div className="mt-1">
+              <span className="small">
+                <strong>Password strength: </strong>
+                <span
+                  id="password-strength-feedback"
+                  style={{ color: passwordStrengthColor, fontWeight: 'bold' }}
+                >
+                  {passwordStrengthLabel}
+                </span>
+              </span>
+            </div>
+          )}
+
+          {/* Show validation errors */}
+          {showPasswordErrors && passwordErrors.length > 0 && (
+            <div className="invalid-feedback d-block mt-2">
+              <strong>Password requirements:</strong>
+              <ul className="mb-0 pl-3 mt-1" style={{ fontSize: '0.875rem' }}>
+                {passwordErrors.map((error, index) => (
+                  <li key={index}>{error}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* If no password entered on submit */}
+          {submissionAttempted && (!unverifiedPassword || unverifiedPassword.length === 0) && (
+            <div className="invalid-feedback d-block mt-2">
+              Password is required
+            </div>
           )}
         </FormGroup>
       </Col>
@@ -70,20 +134,38 @@ export const RegistrationPasswordInputs = ({
             isPasswordVisible={isPasswordVisible}
             setIsPasswordVisible={setIsPasswordVisible}
             disabled={!unverifiedPassword}
-            invalid={submissionAttempted && !passwordIsValid}
+            invalid={(showMatchError || (submissionAttempted && !bothPasswordsValid)) ? true : undefined}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setUserToUpdate({ ...userToUpdate, password: e.target.value });
+              if (e.target.value.length > 0) {
+                setConfirmTouched(true);
+              }
+            }}
+            onBlur={() => {
+              setConfirmTouched(true);
             }}
             ariaDescribedBy="invalidPassword"
             required={true}
           />
-          {/* Feedback that appears for password match before submission */}
-          <FormFeedback id="invalidPassword" className="always-show">
-            {userToUpdate.password &&
-              (!(userToUpdate.password == unverifiedPassword)
-                ? "Passwords don't match."
-                : !validatePassword(userToUpdate.password || "") && PASSWORD_REQUIREMENTS)}
-          </FormFeedback>
+
+          {/* Feedback for password match */}
+          {showMatchError && (
+            <div className="invalid-feedback d-block mt-2">
+              Passwords don't match
+            </div>
+          )}
+
+          {(submissionAttempted || confirmTouched) && userToUpdate.password && passwordsMatch && !passwordIsValid && (
+            <div className="invalid-feedback d-block mt-2">
+              Please ensure your password meets all requirements above
+            </div>
+          )}
+
+          {submissionAttempted && (!userToUpdate.password || userToUpdate.password.length === 0) && (
+            <div className="invalid-feedback d-block mt-2">
+              Please confirm your password
+            </div>
+          )}
         </FormGroup>
       </Col>
     </Row>
