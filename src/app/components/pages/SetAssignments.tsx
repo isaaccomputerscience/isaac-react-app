@@ -599,7 +599,7 @@ export const SetAssignments = () => {
 
   // Fetch board by ID if it's not in the current list (e.g., when there are more than 6 gameboards)
   const { data: boardById } = isaacApi.endpoints.getGameboardById.useQuery(
-    hashAnchor && boards && !boards.boards.find((b) => b.id === hashAnchor) ? hashAnchor : skipToken,
+    hashAnchor && boards && !boards.boards.some((b) => b.id === hashAnchor) ? hashAnchor : skipToken,
   );
 
   useEffect(() => {
