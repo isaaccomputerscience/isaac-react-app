@@ -1,6 +1,5 @@
 import React, { ReactElement, useEffect, useRef } from "react";
-import { UncontrolledTooltip, Button } from "reactstrap";
-import { Link } from "react-router-dom";
+import { UncontrolledTooltip } from "reactstrap";
 import {
   AUDIENCE_DISPLAY_FIELDS,
   filterAudienceViewsByProperties,
@@ -16,15 +15,6 @@ import classnames from "classnames";
 import { Helmet } from "react-helmet";
 import { Markup } from "./markup";
 import { EditablePageTitle } from "./inputs/EditablePageTitle";
-
-declare global {
-  interface Window {
-    followedAtLeastOneSoftLink?: boolean;
-  }
-
-  // eslint-disable-next-line no-var
-  var followedAtLeastOneSoftLink: boolean | undefined;
-}
 
 function AudienceViewer({ audienceViews }: { audienceViews: ViewingContext[] }) {
   const userContext = useUserContext();
@@ -56,68 +46,33 @@ export interface PageTitleProps {
   subTitle?: string;
   disallowLaTeX?: boolean;
   help?: ReactElement;
-  boosterVideoButton?: boolean;
   className?: string;
   audienceViews?: ViewingContext[];
   onTitleEdit?: (newTitle: string) => void;
 }
-
 export const PageTitle = ({
   currentPageTitle,
   subTitle,
   disallowLaTeX,
   help,
-  boosterVideoButton,
   className,
   audienceViews,
   onTitleEdit,
 }: PageTitleProps) => {
   const dispatch = useAppDispatch();
   const openModal = useAppSelector((state: AppState) => Boolean(state?.activeModals?.length));
-  const user = useAppSelector((state: AppState) => state?.user);
   const headerRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     dispatch(mainContentIdSlice.actions.set("main-heading"));
-  }, [dispatch]);
-
+  }, []);
   useEffect(() => {
     document.title = currentPageTitle + " — Isaac " + SITE_SUBJECT_TITLE;
     const element = headerRef.current;
-    if (element && globalThis.followedAtLeastOneSoftLink && !openModal) {
+    if (element && (window as any).followedAtLeastOneSoftLink && !openModal) {
       element.focus();
     }
-  }, [currentPageTitle, openModal]);
-
-  // Extract nested ternary logic
-  const renderHelpOrBoosterButton = () => {
-    if (boosterVideoButton) {
-      const targetPath = user?.loggedIn
-        ? "/pages/test_page_booster_recording"
-        : "/login?target=/pages/test_page_booster_recording";
-
-      return (
-        <Button tag={Link} to={targetPath} className="primary-button text-light align-self-center ml-sm-2">
-          Watch booster videos
-        </Button>
-      );
-    }
-
-    if (help) {
-      return (
-        <React.Fragment>
-          <div id="title-help" className="title-help">
-            Help
-          </div>
-          <UncontrolledTooltip target="#title-help" placement="bottom">
-            {help}
-          </UncontrolledTooltip>
-        </React.Fragment>
-      );
-    }
-
-    return null;
-  };
+  }, [currentPageTitle]);
 
   return (
     <h1 id="main-heading" tabIndex={-1} ref={headerRef} className={`h-title h-secondary d-sm-flex ${className ?? ""}`}>
@@ -133,7 +88,16 @@ export const PageTitle = ({
         <meta property="og:title" content={currentPageTitle} />
       </Helmet>
       {audienceViews && <AudienceViewer audienceViews={audienceViews} />}
-      {renderHelpOrBoosterButton()}
+      {help && (
+        <React.Fragment>
+          <div id="title-help" className="title-help">
+            Help
+          </div>
+          <UncontrolledTooltip target="#title-help" placement="bottom">
+            {help}
+          </UncontrolledTooltip>
+        </React.Fragment>
+      )}
     </h1>
   );
 };
