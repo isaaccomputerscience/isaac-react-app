@@ -82,18 +82,17 @@ export const RegistrationPasswordInputs = ({
               <strong>Password requirements:</strong>
               <ul className="mb-0 pl-3 mt-1" style={{ fontSize: "0.875rem" }}>
                 {passwordErrors.map((error) => {
-                  // Split error message for special character requirement to add line break
-                  const specialCharMatch = error.match(/^(.*special character)\s+(\(e\.g\.,.*\))$/);
-                  if (specialCharMatch) {
-                    return (
-                      <li key={error}>
-                        {specialCharMatch[1]}
-                        <br />
-                        {specialCharMatch[2]}
-                      </li>
-                    );
-                  }
-                  return <li key={error}>{error}</li>;
+                  const parts = error.split(/\n/);
+                  return (
+                    <li key={error}>
+                      {parts.map((line, i) => (
+                        <React.Fragment key={i}>
+                          {i > 0 && <br />}
+                          {line}
+                        </React.Fragment>
+                      ))}
+                    </li>
+                  );
                 })}
               </ul>
             </div>
@@ -133,9 +132,7 @@ export const RegistrationPasswordInputs = ({
           {showMatchError && <div className="invalid-feedback d-block mt-2">Passwords do not match</div>}
 
           {(submissionAttempted || confirmTouched) && userToUpdate.password && passwordsMatch && !passwordIsValid && (
-            <div className="invalid-feedback d-block mt-2">
-              Please ensure your password meets all requirements above
-            </div>
+            <div className="invalid-feedback d-block mt-2">Please ensure your password meets all requirements</div>
           )}
 
           {submissionAttempted && (!userToUpdate.password || userToUpdate.password.length === 0) && (
