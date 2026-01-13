@@ -104,8 +104,8 @@ export const RegistrationPasswordInputs = ({
             <div className="invalid-feedback d-block mt-2">
               <strong>Password requirements:</strong>
               <ul className="mb-0 pl-3 mt-1" style={{ fontSize: "0.875rem" }}>
-                {passwordErrors.map((error, index) => (
-                  <li key={index}>{error}</li>
+                {passwordErrors.map((error) => (
+                  <li key={error}>{error}</li>
                 ))}
               </ul>
             </div>
