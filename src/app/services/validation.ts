@@ -134,9 +134,7 @@ export const getPasswordValidationErrors = (password: string): string[] => {
       errors.push("Password must contain at least one uppercase letter");
     }
     if (!/[!-/:-@[-`{-~]/.test(password)) {
-      errors.push(
-        "Password must contain at least one punctuation character (e.g., !@#$%^&*()-_=+[]{};:'\",.<>/?\\|`~)",
-      );
+      errors.push("Password must contain at least one special character \n (e.g., !@#$%^&*()-_=+[]{};:'\",.<>/?\\|`~)");
     }
     return errors;
   } else {
