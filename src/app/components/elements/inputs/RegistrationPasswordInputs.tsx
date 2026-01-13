@@ -7,10 +7,6 @@ import {
   validatePassword,
   validatePasswordMatch,
   getPasswordValidationErrors,
-  calculatePasswordStrength,
-  getPasswordStrengthLabel,
-  getPasswordStrengthColor,
-  PasswordStrength,
 } from "../../../services";
 import Password from "./Password";
 
@@ -34,13 +30,6 @@ export const RegistrationPasswordInputs = ({
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [passwordTouched, setPasswordTouched] = useState(false);
   const [confirmTouched, setConfirmTouched] = useState(false);
-
-  // Calculate password strength and validation
-  const passwordStrength = unverifiedPassword
-    ? calculatePasswordStrength(unverifiedPassword)
-    : PasswordStrength.INVALID;
-  const passwordStrengthLabel = getPasswordStrengthLabel(passwordStrength);
-  const passwordStrengthColor = getPasswordStrengthColor(passwordStrength);
 
   const passwordIsValid = validatePassword(unverifiedPassword || "");
   const passwordsMatch = validatePasswordMatch(unverifiedPassword || "", userToUpdate.password || "");
@@ -87,26 +76,25 @@ export const RegistrationPasswordInputs = ({
             required={true}
           />
 
-          {/* Password strength indicator - always show if there's a password */}
-          {unverifiedPassword && unverifiedPassword.length > 0 && (
-            <div className="mt-1">
-              <span className="small">
-                <strong>Password strength: </strong>
-                <span id="password-strength-feedback" style={{ color: passwordStrengthColor, fontWeight: "bold" }}>
-                  {passwordStrengthLabel}
-                </span>
-              </span>
-            </div>
-          )}
-
           {/* Show validation errors */}
           {showPasswordErrors && passwordErrors.length > 0 && (
             <div className="invalid-feedback d-block mt-2">
               <strong>Password requirements:</strong>
               <ul className="mb-0 pl-3 mt-1" style={{ fontSize: "0.875rem" }}>
-                {passwordErrors.map((error) => (
-                  <li key={error}>{error}</li>
-                ))}
+                {passwordErrors.map((error) => {
+                  // Split error message for special character requirement to add line break
+                  const specialCharMatch = error.match(/^(.*special character)\s+(\(e\.g\.,.*\))$/);
+                  if (specialCharMatch) {
+                    return (
+                      <li key={error}>
+                        {specialCharMatch[1]}
+                        <br />
+                        {specialCharMatch[2]}
+                      </li>
+                    );
+                  }
+                  return <li key={error}>{error}</li>;
+                })}
               </ul>
             </div>
           )}
