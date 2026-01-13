@@ -21,6 +21,7 @@ import {
   UncontrolledTooltip,
 } from "reactstrap";
 import { Link, useLocation } from "react-router-dom";
+import { skipToken } from "@reduxjs/toolkit/query";
 import {
   assignGameboard,
   isaacApi,
@@ -591,20 +592,33 @@ export const SetAssignments = () => {
 
   const [modalBoard, setModalBoard] = useState<GameboardDTO>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const openAssignModal = (board: GameboardDTO) => {
+  const openAssignModal = useCallback((board: GameboardDTO) => {
     setModalBoard(board);
     setIsModalOpen(true);
-  };
+  }, []);
+
+  // Fetch board by ID if it's not in the current list (e.g., when there are more than 6 gameboards)
+  const { data: boardById } = isaacApi.endpoints.getGameboardById.useQuery(
+    hashAnchor && boards && !boards.boards.some((b) => b.id === hashAnchor) ? hashAnchor : skipToken,
+  );
 
   useEffect(() => {
     if (boards && hashAnchor) {
-      setHashAnchor(undefined);
       const board = boards.boards.find((b) => b.id === hashAnchor);
       if (board) {
+        setHashAnchor(undefined);
         openAssignModal(board);
       }
     }
-  }, [boards, hashAnchor]);
+  }, [boards, hashAnchor, openAssignModal]);
+
+  // If board wasn't found in the list, use the fetched board by ID
+  useEffect(() => {
+    if (boardById && hashAnchor && boardById.id === hashAnchor) {
+      setHashAnchor(undefined);
+      openAssignModal(boardById);
+    }
+  }, [boardById, hashAnchor, openAssignModal]);
 
   // Page help
   const pageHelp = (
