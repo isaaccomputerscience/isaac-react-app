@@ -86,7 +86,7 @@ export const RegistrationPasswordInputs = ({
                   return (
                     <li key={error}>
                       {parts.map((line, i) => (
-                        <React.Fragment key={i}>
+                        <React.Fragment key={`${error}-${i}`}>
                           {i > 0 && <br />}
                           {line}
                         </React.Fragment>
