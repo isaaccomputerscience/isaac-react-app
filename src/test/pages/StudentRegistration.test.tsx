@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { StudentRegistration } from "../../app/components/pages/StudentRegistration";
 import * as actions from "../../app/state/actions";
 import { rest } from "msw";
-import { API_PATH, PASSWORD_REQUIREMENTS } from "../../app/services";
+import { API_PATH } from "../../app/services";
 import { registrationMockUser, registrationUserData } from "../../mocks/data";
 
 const registerUserSpy = jest.spyOn(actions, "registerUser");
@@ -82,7 +82,8 @@ describe("Student Registration", () => {
     const consentCheckbox = screen.getByRole("checkbox", { name: "Consent checkbox" });
     await userEvent.click(consentCheckbox);
     await clickButton("Register my account");
-    const pwErrorMessage = screen.getByText(PASSWORD_REQUIREMENTS);
+    // Check for password validation error messages (wrongPassword is "test1234" which lacks uppercase and special char)
+    const pwErrorMessage = screen.getByText(/Password requirements:/i);
     expect(pwErrorMessage).toBeVisible();
     const generalError = screen.getByRole("heading", {
       name: /please fill out all fields/i,
