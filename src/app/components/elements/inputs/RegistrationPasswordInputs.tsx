@@ -81,7 +81,14 @@ export const RegistrationPasswordInputs = ({
               <strong>Password requirements:</strong>
               <ul className="mb-0 pl-3 mt-1" style={{ fontSize: "0.875rem" }}>
                 {passwordErrors.map((error) => (
-                  <li key={error}>{error}</li>
+                  <li key={error}>
+                    {error.split("\n").map((line, i) => (
+                      <React.Fragment key={i}>
+                        {i > 0 && <br />}
+                        {line}
+                      </React.Fragment>
+                    ))}
+                  </li>
                 ))}
               </ul>
             </div>
