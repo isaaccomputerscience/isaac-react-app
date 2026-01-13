@@ -95,6 +95,8 @@ export const Events = withRouter(({ history, location }: RouteComponentProps) =>
     dispatch(getEventMapData(startIndex, -1, typeFilter, statusFilter, stageFilter));
   }, [dispatch, typeFilter, statusFilter, stageFilter]);
 
+  const pageHelp = <span>Follow the links below to find out more about our FREE events.</span>;
+
   const metaDescriptionCS =
     "A level and GCSE Computer Science live online training. Revision and extension workshops for students.";
 
@@ -102,7 +104,7 @@ export const Events = withRouter(({ history, location }: RouteComponentProps) =>
     <>
       <div>
         <Container>
-          <TitleAndBreadcrumb currentPageTitle={"Events"} subTitle="Student Events" boosterVideoButton={true} />
+          <TitleAndBreadcrumb currentPageTitle={"Events"} subTitle="Student Events" help={pageHelp} />
           <MetaDescription description={metaDescriptionCS} />
           <div className="my-4">
             {/* Filters */}
@@ -121,7 +123,7 @@ export const Events = withRouter(({ history, location }: RouteComponentProps) =>
                     query.show_reservations_only =
                       selectedFilter === EventStatusFilter["My event reservations"] ? true : undefined;
                     query.event_status = selectedFilter == EventStatusFilter["All events"] ? "all" : undefined;
-                    history.push({ pathname: location.pathname, search: queryString.stringify(query as never) });
+                    history.push({ pathname: location.pathname, search: queryString.stringify(query as any) });
                   }}
                 >
                   {/* Tutors are considered students w.r.t. events currently, so cannot see teacher-only events */}
@@ -148,7 +150,7 @@ export const Events = withRouter(({ history, location }: RouteComponentProps) =>
                   onChange={(e) => {
                     const selectedType = e.target.value as EventTypeFilter;
                     query.types = selectedType !== EventTypeFilter["All events"] ? selectedType : undefined;
-                    history.push({ pathname: location.pathname, search: queryString.stringify(query as never) });
+                    history.push({ pathname: location.pathname, search: queryString.stringify(query as any) });
                   }}
                 >
                   {Object.entries(EventTypeFilter).map(([typeLabel, typeValue]) => (
@@ -166,7 +168,7 @@ export const Events = withRouter(({ history, location }: RouteComponentProps) =>
                     const selectedStage = e.target.value as EventStageFilter;
                     query.show_stage_only =
                       selectedStage !== EventStageFilter["All stages"] ? selectedStage : undefined;
-                    history.push({ pathname: location.pathname, search: queryString.stringify(query as never) });
+                    history.push({ pathname: location.pathname, search: queryString.stringify(query as any) });
                   }}
                 >
                   {Object.entries(EventStageFilter)
