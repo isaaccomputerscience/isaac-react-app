@@ -47,6 +47,10 @@ export function isEventManager(user?: UserRoleAndLoggedInStatus | null): boolean
   return isDefined(user) && user.role === "EVENT_MANAGER" && (user.loggedIn ?? true);
 }
 
+export function isContentEditor(user?: UserRoleAndLoggedInStatus | null): boolean {
+  return isDefined(user) && user.role === "CONTENT_EDITOR" && (user.loggedIn ?? true);
+}
+
 export function isStaff(user?: UserRoleAndLoggedInStatus | null): boolean {
   return (
     isDefined(user) &&
