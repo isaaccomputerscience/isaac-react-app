@@ -55,7 +55,7 @@ export const ListGroupFooterBottom = () => (
       </ListGroupItem>
 
       <ListGroupItem className="footer-bottom-logos border-0 px-0 py-0 bg-transparent d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center d-print-none">
-        <ExternalLink href="https://computingeducation.org.uk/" className="mb-3 mb-md-0">
+        <ExternalLink href="https://teachcomputing.org/" className="mb-3 mb-md-0">
           <img
             src="/assets/logos/ncce.svg"
             alt="National Centre for Computing Education website"
