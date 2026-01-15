@@ -4,8 +4,8 @@ import { useAppSelector, selectors } from "../../state";
 import {
   isAdmin,
   isAdminOrEventManager,
+  isContentEditor,
   isEventLeader,
-  isStaff,
   isTeacherOrAbove,
   isTutorOrAbove,
 } from "../../services";
@@ -66,13 +66,17 @@ export const NavigationBar = () => {
         <LinkItem to="/safeguarding">Safeguarding</LinkItem>
       </NavigationSection>
 
-      {(isStaff(user) || isEventLeader(user)) && (
+      {(isAdminOrEventManager(user) || isContentEditor(user) || isEventLeader(user)) && (
         <NavigationSection title="Admin" svgIcon={<img src="/assets/Vector.svg" alt="Icon" className="svgIcon" />}>
-          {isStaff(user) && <LinkItem to="/admin">Admin tools</LinkItem>}
+          {(isAdminOrEventManager(user) || isContentEditor(user)) && <LinkItem to="/admin">Admin tools</LinkItem>}
           {isAdmin(user) && <LinkItem to="/admin/usermanager">User manager</LinkItem>}
           {(isEventLeader(user) || isAdminOrEventManager(user)) && <LinkItem to="/admin/events">Event admin</LinkItem>}
-          {isStaff(user) && <LinkItem to="/admin/stats">Site statistics</LinkItem>}
-          {isStaff(user) && <LinkItem to="/admin/content_errors">Content errors</LinkItem>}
+          {(isAdminOrEventManager(user) || isContentEditor(user)) && (
+            <LinkItem to="/admin/stats">Site statistics</LinkItem>
+          )}
+          {(isAdminOrEventManager(user) || isContentEditor(user)) && (
+            <LinkItem to="/admin/content_errors">Content errors</LinkItem>
+          )}
         </NavigationSection>
       )}
     </NavBar>
