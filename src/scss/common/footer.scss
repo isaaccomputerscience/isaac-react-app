@@ -101,15 +101,6 @@
       font-size: 14px;
       color: #000000;
     }
-    @include respond-above(md) {
-      width: 40%;
-    }
-  }
-  .footer-bottom-logos {
-    @include respond-above(md) {
-      width: 30%;
-      margin-left: 8%;
-    }
   }
 }
 
@@ -127,17 +118,63 @@
   color: black !important;
 }
 
-.footer-bottom-logos img {
-  max-width: 100%;
-  height: auto;
+.footer-bottom-info-section {
+  flex: 0 0 auto;
+  max-width: 450px;
+}
+
+.footer-bottom-links {
+  white-space: nowrap;
+}
+
+.footer-bottom-info {
+  p {
+    white-space: normal;
+    margin: 0;
+  }
+}
+
+.footer-bottom-logos {
+  gap: 4rem;
+  padding-right: 3rem;
+}
+
+.footer-bottom-logo img {
+  height: 35px;
+  width: auto;
+}
+
+.footer-bottom-logo .footer-ncce-logo {
+  height: 41px;
+  width: auto;
+}
+
+.footer-bottom-logo .footer-dfe-logo {
+  height: 52px;
+  width: auto;
+}
+
+.footer-bottom-logo .footer-stem-logo {
+  height: 40px;
+  width: auto;
 }
 
 @media only screen and (min-width: 990px) {
-  .footer-bottom-logos img {
-    height: auto;
+  .footer-bottom-logo img {
+    height: 40px;
     width: auto;
-    max-width: 90%;
-    padding-left: 14px;
+  }
+
+  .footer-bottom-logo .footer-ncce-logo {
+    height: 46px;
+  }
+
+  .footer-bottom-logo .footer-dfe-logo {
+    height: 59px;
+  }
+
+  .footer-bottom-logo .footer-stem-logo {
+    height: 47px;
   }
 }
 
@@ -146,76 +183,65 @@
     padding-top: 0.5rem !important;
   }
 
-  .footer-bottom-info {
-    p {
-      padding-bottom: 1.5rem !important;
-    }
+  .footer-bottom-logo img {
+    height: 35px;
+    width: auto;
   }
 
-  .footer-bottom-logos {
-    padding-bottom: 1.5rem;
+  .footer-bottom-logo .footer-dfe-logo {
+    height: 42px;
   }
-  
-  .footer-bottom-logos img {
-    height: auto;
-    width: auto;
-    max-width: 90%;
-    padding-left: 14px;
+
+  .footer-bottom-logo .footer-stem-logo {
+    height: 30px;
   }
 }
 
-@media only screen and (min-width: 480px) and (max-width: 768px) {
+// Mobile styles (max-width: 768px)
+@media only screen and (max-width: 768px) {
   .links-col {
     padding-top: 0.5rem !important;
   }
 
-  .footer-links .footer-support-links .h5, 
+  .footer-links .footer-support-links .h5,
   .footer-bottom-links .h5 {
     margin-bottom: 15px;
     text-align: left;
   }
-  
+
   .footer-links .footer-support-links a,
   .footer-bottom-links a {
     margin-bottom: 10px;
   }
 
-  .footer-bottom-info {
-    p {
-      padding-bottom: 1.5rem !important;
-    }
+  .footer-bottom-row {
+    align-items: flex-start !important;
+  }
+
+  .footer-bottom-info-section {
+    max-width: 100%;
+    width: 100%;
   }
 
   .footer-bottom-logos {
-    padding-bottom: 1.5rem;
-    margin-left: 5%;
-    gap: 1.25rem;
+    flex-direction: column;
+    align-items: flex-start !important;
+    padding-right: 0;
+    gap: 1rem;
+    margin-top: 1rem;
   }
 
+  .footer-bottom-logo {
+    justify-content: flex-start !important;
+  }
+
+  .footer-bottom {
+    padding-left: 1rem;
+  }
 }
 
 @media only screen and (max-width: 480px) {
   .logo-col {
     padding: 20px !important;
-  }
-  
-  .links-col {
-    padding-top: 0.5rem !important;
-  }
-
-  .footer-links .footer-support-links .h5, 
-  .footer-bottom-links .h5 {
-    margin-bottom: 15px;
-    text-align: left;
-  }
-  
-  .footer-links .footer-support-links a,
-  .footer-bottom-links a {
-    margin-bottom: 10px;
-  }
-
-  .footer-bottom-logos {
-    gap: 1.25rem;
-    margin-left: 5%;
   }
 }

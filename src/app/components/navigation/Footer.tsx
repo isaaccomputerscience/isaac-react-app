@@ -4,7 +4,6 @@ import { ListGroupFooter } from "../elements/list-groups/ListGroupFooter";
 import { ListGroupSocial } from "../elements/list-groups/ListGroupSocial";
 import { ListGroupFooterBottom } from "../elements/list-groups/ListGroupFooterBottom";
 import { Link } from "react-router-dom";
-import { ExternalLink } from "../elements/ExternalLink";
 
 export const Footer = () => (
   <footer>
@@ -37,15 +36,10 @@ export const Footer = () => (
     </div>
     <div className="footerBottom">
       <Container>
-        <Row className="pt-3 px-sm-0">
+        <Row className="pt-3 pb-4 px-sm-3 footer-bottom-container">
           <ListGroupFooterBottom />
         </Row>
       </Container>
-      <div className="w-100 d-flex justify-content-end">
-        <ExternalLink href="https://www.stem.org.uk/">
-          <img src="/assets/logos/stem_footer.svg" alt="STEM Learning" className="logo-mr" height="100px" />
-        </ExternalLink>
-      </div>
     </div>
   </footer>
 );
