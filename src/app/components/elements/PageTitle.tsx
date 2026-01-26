@@ -17,15 +17,6 @@ import { Helmet } from "react-helmet";
 import { Markup } from "./markup";
 import { EditablePageTitle } from "./inputs/EditablePageTitle";
 
-declare global {
-  interface Window {
-    followedAtLeastOneSoftLink?: boolean;
-  }
-
-  // eslint-disable-next-line no-var
-  var followedAtLeastOneSoftLink: boolean | undefined;
-}
-
 function AudienceViewer({ audienceViews }: { audienceViews: ViewingContext[] }) {
   const userContext = useUserContext();
   const viewsWithMyStage = audienceViews.filter((vc) => vc.stage === userContext.stage);
@@ -41,7 +32,7 @@ function AudienceViewer({ audienceViews }: { audienceViews: ViewingContext[] }) 
             <div className="text-center align-self-center">{stageLabelMap[view.stage]}</div>
           )}
           {view.difficulty && (
-            <div className={"ml-2 ml-sm-0" + classnames({ "mr-2": i > 0 })} data-testid="difficulty-icons">
+            <div className={classnames("ml-2 ml-sm-0", { "mr-2": i > 0 })} data-testid="difficulty-icons">
               <DifficultyIcons difficulty={view.difficulty} />
             </div>
           )}
@@ -82,9 +73,9 @@ export const PageTitle = ({
   }, [dispatch]);
 
   useEffect(() => {
-    document.title = currentPageTitle + " — Isaac " + SITE_SUBJECT_TITLE;
+    document.title = `${currentPageTitle} — Isaac ${SITE_SUBJECT_TITLE}`;
     const element = headerRef.current;
-    if (element && globalThis.followedAtLeastOneSoftLink && !openModal) {
+    if (element && (window as { followedAtLeastOneSoftLink?: boolean }).followedAtLeastOneSoftLink && !openModal) {
       element.focus();
     }
   }, [currentPageTitle, openModal]);
@@ -105,14 +96,14 @@ export const PageTitle = ({
 
     if (help) {
       return (
-        <React.Fragment>
+        <>
           <div id="title-help" className="title-help">
             Help
           </div>
           <UncontrolledTooltip target="#title-help" placement="bottom">
             {help}
           </UncontrolledTooltip>
-        </React.Fragment>
+        </>
       );
     }
 
