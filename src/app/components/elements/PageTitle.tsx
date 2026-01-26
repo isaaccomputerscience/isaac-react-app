@@ -1,5 +1,6 @@
 import React, { ReactElement, useEffect, useRef } from "react";
-import { UncontrolledTooltip } from "reactstrap";
+import { UncontrolledTooltip, Button } from "reactstrap";
+import { Link } from "react-router-dom";
 import {
   AUDIENCE_DISPLAY_FIELDS,
   filterAudienceViewsByProperties,
@@ -31,7 +32,7 @@ function AudienceViewer({ audienceViews }: { audienceViews: ViewingContext[] }) 
             <div className="text-center align-self-center">{stageLabelMap[view.stage]}</div>
           )}
           {view.difficulty && (
-            <div className={"ml-2 ml-sm-0" + classnames({ "mr-2": i > 0 })} data-testid="difficulty-icons">
+            <div className={classnames("ml-2 ml-sm-0", { "mr-2": i > 0 })} data-testid="difficulty-icons">
               <DifficultyIcons difficulty={view.difficulty} />
             </div>
           )}
@@ -46,33 +47,68 @@ export interface PageTitleProps {
   subTitle?: string;
   disallowLaTeX?: boolean;
   help?: ReactElement;
+  boosterVideoButton?: boolean;
   className?: string;
   audienceViews?: ViewingContext[];
   onTitleEdit?: (newTitle: string) => void;
 }
+
 export const PageTitle = ({
   currentPageTitle,
   subTitle,
   disallowLaTeX,
   help,
+  boosterVideoButton,
   className,
   audienceViews,
   onTitleEdit,
 }: PageTitleProps) => {
   const dispatch = useAppDispatch();
   const openModal = useAppSelector((state: AppState) => Boolean(state?.activeModals?.length));
+  const user = useAppSelector((state: AppState) => state?.user);
   const headerRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     dispatch(mainContentIdSlice.actions.set("main-heading"));
-  }, []);
+  }, [dispatch]);
+
   useEffect(() => {
-    document.title = currentPageTitle + " — Isaac " + SITE_SUBJECT_TITLE;
+    document.title = `${currentPageTitle} — Isaac ${SITE_SUBJECT_TITLE}`;
     const element = headerRef.current;
-    if (element && (window as any).followedAtLeastOneSoftLink && !openModal) {
+    if (element && (globalThis as { followedAtLeastOneSoftLink?: boolean }).followedAtLeastOneSoftLink && !openModal) {
       element.focus();
     }
-  }, [currentPageTitle]);
+  }, [currentPageTitle, openModal]);
+
+  // Extract nested ternary logic
+  const renderHelpOrBoosterButton = () => {
+    if (boosterVideoButton) {
+      const targetPath = user?.loggedIn
+        ? "/pages/booster_video_binary_conversion_and_addition"
+        : "/login?target=/pages/booster_video_binary_conversion_and_addition";
+
+      return (
+        <Button tag={Link} to={targetPath} className="primary-button text-light align-self-center ml-sm-2">
+          Watch booster videos
+        </Button>
+      );
+    }
+
+    if (help) {
+      return (
+        <>
+          <div id="title-help" className="title-help">
+            Help
+          </div>
+          <UncontrolledTooltip target="#title-help" placement="bottom">
+            {help}
+          </UncontrolledTooltip>
+        </>
+      );
+    }
+
+    return null;
+  };
 
   return (
     <h1 id="main-heading" tabIndex={-1} ref={headerRef} className={`h-title h-secondary d-sm-flex ${className ?? ""}`}>
@@ -88,16 +124,7 @@ export const PageTitle = ({
         <meta property="og:title" content={currentPageTitle} />
       </Helmet>
       {audienceViews && <AudienceViewer audienceViews={audienceViews} />}
-      {help && (
-        <React.Fragment>
-          <div id="title-help" className="title-help">
-            Help
-          </div>
-          <UncontrolledTooltip target="#title-help" placement="bottom">
-            {help}
-          </UncontrolledTooltip>
-        </React.Fragment>
-      )}
+      {renderHelpOrBoosterButton()}
     </h1>
   );
 };
