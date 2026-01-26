@@ -75,7 +75,7 @@ export const PageTitle = ({
   useEffect(() => {
     document.title = `${currentPageTitle} — Isaac ${SITE_SUBJECT_TITLE}`;
     const element = headerRef.current;
-    if (element && (window as { followedAtLeastOneSoftLink?: boolean }).followedAtLeastOneSoftLink && !openModal) {
+    if (element && (globalThis as { followedAtLeastOneSoftLink?: boolean }).followedAtLeastOneSoftLink && !openModal) {
       element.focus();
     }
   }, [currentPageTitle, openModal]);
