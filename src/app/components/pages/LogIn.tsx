@@ -24,8 +24,8 @@ import {
   Row,
   UncontrolledTooltip,
 } from "reactstrap";
-import { history, PASSWORD_REQUIREMENTS, SITE_SUBJECT_TITLE, validatePassword } from "../../services";
-import { Redirect } from "react-router";
+import { history, KEY, PASSWORD_REQUIREMENTS, persistence, SITE_SUBJECT_TITLE, validatePassword } from "../../services";
+import { Redirect, useLocation } from "react-router";
 import { MetaDescription } from "../elements/MetaDescription";
 import { Loading } from "../handlers/IsaacSpinner";
 import Password from "../elements/inputs/Password";
@@ -251,6 +251,7 @@ export const EmailPasswordInputs = ({
 // Main login page component, utilises all of the components defined above
 export const LogIn = () => {
   const user = useAppSelector(selectors.user.orNull);
+  const location = useLocation();
 
   const { loginFunctions, setStateFunctions, loginValues } = useLoginLogic();
   const { attemptLogIn, signUp, validateAndLogIn } = loginFunctions;
@@ -270,8 +271,16 @@ export const LogIn = () => {
   const subHeadingRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const target = params.get("target");
+    if (target) {
+      persistence.save(KEY.AFTER_AUTH_PATH, target);
+    }
+  }, [location.search]);
+
+  useEffect(() => {
     document.title = "Login — Isaac " + SITE_SUBJECT_TITLE;
-    if (!(window as any).followedAtLeastOneSoftLink) {
+    if (!(globalThis as { followedAtLeastOneSoftLink?: boolean }).followedAtLeastOneSoftLink) {
       return;
     }
     const mainHeading = headingRef.current;
