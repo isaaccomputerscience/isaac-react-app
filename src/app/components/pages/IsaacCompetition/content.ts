@@ -7,14 +7,14 @@ export default {
         "Calling all computer science fans! We are hosting a national competition to challenge students to imagine, design, and pitch a groundbreaking new product for the Internet of Everything (IOE).",
       ],
       section2: [
-        "The competition is a fantastic opportunity for students to apply their knowledge to real-world ideas. Entries open in November 2025 and last until the end of January 2026.",
+        "The competition is a fantastic opportunity for students to apply their knowledge to real-world ideas. Entries open in November 2025 and last until the end of February 2026.",
       ],
     },
     note: {
       entryDetails: "Follow our",
-      callToAction: "accounts for updates and sign up to our expression of interest form below for updates via email.",
-      xLink: "https://x.com/isaaccompsci",
+      callToAction: "accounts for updates.",
       facebookLink: "https://www.facebook.com/IsaacComputerScience",
+      instagramLink: "https://www.instagram.com/isaaccomputerscience",
     },
   },
 
@@ -86,7 +86,7 @@ export default {
         "Save the 2025/26 dates in your calendar and plan time for you or your team to develop your IoE idea before applications close.",
       entries: [
         { event: "Entries open", date: "November 2025" },
-        { event: "Entries close", date: "31 January 2026" },
+        { event: "Entries close", date: "28 February 2026" },
         { event: "Finalists selected", date: "March 2026" },
         { event: "The final", date: "18 May 2026" },
       ],
@@ -298,7 +298,7 @@ export default {
         "3.0 How to Enter",
         [
           "3.1. To enter the Competition: <ul><li>Teacher(s) and Student(s) register on the Isaac Computer Science platform or log in their existing account(s).</li><li>Teacher creates a group(s) on the Isaac Computer Science platform connecting the accounts of the Student(s) that are participating in the competition.</li><li>Student(s) works on a product concept or prototype demonstrating an IoE idea in the video format adhering to specified Entry requirements and Entry deadlines.</li><li>Teacher(s) submits a product concept or prototype demonstrating an IoE idea in the video format on behalf of a Student(s) or a group(s) of Students on the Isaac Computer Science platform.</li></ul>",
-          "3.2. <strong>All entries must be received by 31 January 2026.</strong> Any entries received after this will not be considered.",
+          "3.2. <strong>All entries must be received by 28 February 2026.</strong> Any entries received after this will not be considered.",
           "3.3. Only one entry per group or individual is allowed. Student(s) may submit one entry as an individual and one as part of a group, provided that each entry is a unique and original work with no overlap in content or materials between the two submissions.",
           "3.4. Teacher(s) must supervise each entry.",
           "3.5. Teacher(s) must ensure that all entries are following their school’s safeguarding policy.",
