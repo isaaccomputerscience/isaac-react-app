@@ -113,7 +113,7 @@
   ],
   "devDependencies": {
     "@babel/core": "^7.28.3",
-    "@babel/eslint-parser": "^7.24.1",
+    "@babel/eslint-parser": "^7.28.6",
     "@babel/plugin-transform-classes": "^7.24.7",
     "@babel/plugin-transform-modules-commonjs": "^7.24.7",
     "@babel/preset-env": "^7.27.2",
