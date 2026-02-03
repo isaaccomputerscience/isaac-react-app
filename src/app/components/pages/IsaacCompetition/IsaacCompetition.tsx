@@ -74,21 +74,21 @@ export const IsaacCompetition = () => {
               <p className="mt-4 mb-0 body-text">
                 <span>{section1.note.entryDetails} </span>
                 <a
-                  href={section1.note.xLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-decoration-underline"
-                >
-                  X
-                </a>
-                {` and `}
-                <a
                   href={section1.note.facebookLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-decoration-underline"
                 >
                   Facebook
+                </a>
+                {` and `}
+                <a
+                  href={section1.note.instagramLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-decoration-underline"
+                >
+                  Instagram
                 </a>
                 {` ${section1.note.callToAction}`}
               </p>

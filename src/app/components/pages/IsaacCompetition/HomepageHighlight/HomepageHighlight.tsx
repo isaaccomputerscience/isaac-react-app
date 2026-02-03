@@ -22,7 +22,7 @@ const HomepageHighlight = () => {
       };
     } else if (isAfterCompetitionOpenDateAndBeforeCompetitionEndDate(currentDate)) {
       return {
-        title: "Entries close on 31 January 2026",
+        title: "Entries now close on 28 February 2026",
         subtitle: "National Computer Science Competition 2025/26",
         button: {
           to: "/national-computer-science-competition",
