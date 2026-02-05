@@ -181,7 +181,7 @@ export const IsaacApp = () => {
               <TrackedRoute exact path="/search" component={Search} />
               <TrackedRoute
                 exact
-                path="/pages/booster_video_binary_conversion_and_addition"
+                path="/booster_video_binary_conversion_and_addition"
                 ifUser={isLoggedIn}
                 component={Generic}
               />
