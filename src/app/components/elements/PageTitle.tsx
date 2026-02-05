@@ -84,8 +84,8 @@ export const PageTitle = ({
   const renderHelpOrBoosterButton = () => {
     if (boosterVideoButton) {
       const targetPath = user?.loggedIn
-        ? "/pages/booster_video_binary_conversion_and_addition"
-        : "/login?target=/pages/booster_video_binary_conversion_and_addition";
+        ? "/booster_video_binary_conversion_and_addition"
+        : "/login?target=/booster_video_binary_conversion_and_addition";
 
       return (
         <Button tag={Link} to={targetPath} className="primary-button text-light align-self-center ml-sm-2">

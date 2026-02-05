@@ -184,6 +184,7 @@ export const IsaacApp = () => {
                 path="/booster_video_binary_conversion_and_addition"
                 ifUser={isLoggedIn}
                 component={Generic}
+                componentProps={{ pageIdOverride: "booster_video_binary_conversion_and_addition" }}
               />
               <TrackedRoute exact path="/pages/:pageId" component={Generic} />
               <TrackedRoute
