@@ -76,7 +76,7 @@ export default {
         "Trophies for the winners",
         "£50 Amazon gift vouchers for the winners",
         "SOLIDWORKS CAD software licences for all finalists",
-        "An exclusive experience tour hosted by a partner organisation for the winners",
+        "An exclusive experience day hosted by a partner organisation for the winners",
         "Isaac Computer Science and partner merchandise for all finalists",
       ],
     },
