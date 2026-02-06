@@ -65,7 +65,6 @@ export const PageTitle = ({
 }: PageTitleProps) => {
   const dispatch = useAppDispatch();
   const openModal = useAppSelector((state: AppState) => Boolean(state?.activeModals?.length));
-  const user = useAppSelector((state: AppState) => state?.user);
   const headerRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
@@ -83,12 +82,12 @@ export const PageTitle = ({
   // Extract nested ternary logic
   const renderHelpOrBoosterButton = () => {
     if (boosterVideoButton) {
-      const targetPath = user?.loggedIn
-        ? "/pages/booster_video_binary_conversion_and_addition"
-        : "/login?target=/pages/booster_video_binary_conversion_and_addition";
-
       return (
-        <Button tag={Link} to={targetPath} className="primary-button text-light align-self-center ml-sm-2">
+        <Button
+          tag={Link}
+          to="/booster_video_binary_conversion_and_addition"
+          className="primary-button text-light align-self-center ml-sm-2"
+        >
           Watch booster videos
         </Button>
       );

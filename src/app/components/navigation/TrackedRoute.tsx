@@ -74,29 +74,34 @@ export const TrackedRoute = function ({ component, trackingOptions, componentPro
             const userNeedsToBeTutorOrTeacher =
               rest.ifUser && [isTutorOrAbove.name, isTeacherOrAbove.name].includes(rest.ifUser.name); // TODO we should try to find a more robust way than this
             return (
-              <ShowLoading until={user}>
-                {(user && ifUser(user)) || isBot(userAgent) ? (
-                  <WrapperComponent
-                    component={component}
-                    trackingOptions={trackingOptions}
-                    {...propsWithUser}
-                    {...componentProps}
-                  />
-                ) : user && !user.loggedIn && !isTutorOrAbove(user) && userNeedsToBeTutorOrTeacher ? (
-                  persistence.save(KEY.AFTER_AUTH_PATH, props.location.pathname + props.location.search) && (
-                    <Redirect to="/login" />
-                  )
-                ) : user && !isTutorOrAbove(user) && userNeedsToBeTutorOrTeacher ? (
-                  <Redirect to={TEACHER_REQUEST_ROUTE} />
-                ) : user && user.loggedIn && !ifUser(user) ? (
-                  <Unauthorised />
-                ) : (
-                  persistence.save(
-                    KEY.AFTER_AUTH_PATH,
-                    props.location.pathname + props.location.search + props.location.hash,
-                  ) && <Redirect to="/login" />
-                )}
-              </ShowLoading>
+              <ShowLoading
+                until={user}
+                thenRender={(user) => {
+                  if (ifUser(user) || isBot(userAgent)) {
+                    return (
+                      <WrapperComponent
+                        component={component}
+                        trackingOptions={trackingOptions}
+                        {...propsWithUser}
+                        {...componentProps}
+                      />
+                    );
+                  } else if (!user.loggedIn && !isTutorOrAbove(user) && userNeedsToBeTutorOrTeacher) {
+                    persistence.save(KEY.AFTER_AUTH_PATH, props.location.pathname + props.location.search);
+                    return <Redirect to="/login" />;
+                  } else if (!isTutorOrAbove(user) && userNeedsToBeTutorOrTeacher) {
+                    return <Redirect to={TEACHER_REQUEST_ROUTE} />;
+                  } else if (user.loggedIn && !ifUser(user)) {
+                    return <Unauthorised />;
+                  } else {
+                    persistence.save(
+                      KEY.AFTER_AUTH_PATH,
+                      props.location.pathname + props.location.search + props.location.hash,
+                    );
+                    return <Redirect to="/login" />;
+                  }
+                }}
+              />
             );
           }}
         />
