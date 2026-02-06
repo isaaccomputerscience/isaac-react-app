@@ -180,6 +180,11 @@ export const IsaacApp = () => {
               <TrackedRoute exact path="/account" ifUser={isLoggedIn} component={MyAccount} />
               <TrackedRoute exact path="/search" component={Search} />
               <StaticPageRoute exact path="/booster_video_binary_conversion_and_addition" ifUser={isLoggedIn} />
+              <Redirect
+                exact
+                from="/pages/booster_video_binary_conversion_and_addition"
+                to="/booster_video_binary_conversion_and_addition"
+              />
               <TrackedRoute exact path="/pages/:pageId" component={Generic} />
               <TrackedRoute
                 exact
