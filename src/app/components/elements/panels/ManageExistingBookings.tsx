@@ -166,7 +166,7 @@ const UserBookingRow = ({
         <DateString>{booking.bookingDate}</DateString>
       </td>
       <td>
-        <DateString>{booking.updated}</DateString>
+        <DateString>{booking.updated ?? booking.bookingDate}</DateString>
       </td>
       <td>
         {Array.from(new Set(booking.userBooked?.registeredContexts?.map((rc) => stageLabelMap[rc.stage!]))).join(", ")}
