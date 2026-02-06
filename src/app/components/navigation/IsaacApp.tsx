@@ -179,13 +179,7 @@ export const IsaacApp = () => {
               {/* historic route which might get reintroduced with the introduction of dashboards */}
               <TrackedRoute exact path="/account" ifUser={isLoggedIn} component={MyAccount} />
               <TrackedRoute exact path="/search" component={Search} />
-              <TrackedRoute
-                exact
-                path="/booster_video_binary_conversion_and_addition"
-                ifUser={isLoggedIn}
-                component={Generic}
-                componentProps={{ pageIdOverride: "booster_video_binary_conversion_and_addition" }}
-              />
+              <StaticPageRoute exact path="/booster_video_binary_conversion_and_addition" ifUser={isLoggedIn} />
               <TrackedRoute exact path="/pages/:pageId" component={Generic} />
               <TrackedRoute
                 exact
