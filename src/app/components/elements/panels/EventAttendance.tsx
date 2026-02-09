@@ -224,7 +224,7 @@ export const EventAttendance = ({ user, eventId }: { user: PotentialUser; eventI
                           <DateString>{booking.bookingDate}</DateString>
                         </td>
                         <td className="align-middle">
-                          <DateString>{booking.updated ?? booking.bookingDate}</DateString>
+                          <DateString>{booking.lastUpdated ?? booking.bookingDate}</DateString>
                         </td>
                       </tr>
                     );

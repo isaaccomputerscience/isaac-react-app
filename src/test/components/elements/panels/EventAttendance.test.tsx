@@ -117,7 +117,7 @@ describe("EventAttendance", () => {
       "STUDENT",
       "another_student@test.com",
       FRIENDLY_DATE_AND_TIME.format(mockEventBookings[2].bookingDate),
-      FRIENDLY_DATE_AND_TIME.format(mockEventBookings[2].updated),
+      FRIENDLY_DATE_AND_TIME.format(mockEventBookings[2].lastUpdated),
     ];
     firstBookingRow.forEach((cell, index) => {
       if (index === 0) {
