@@ -118,7 +118,7 @@
     "@babel/plugin-transform-modules-commonjs": "^7.24.7",
     "@babel/preset-env": "^7.27.2",
     "@babel/preset-react": "^7.24.7",
-    "@babel/preset-typescript": "^7.24.1",
+    "@babel/preset-typescript": "^7.28.5",
     "@testing-library/dom": "^9.3.4",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^12.1.5",
