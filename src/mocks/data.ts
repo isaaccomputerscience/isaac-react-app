@@ -719,7 +719,7 @@ export const mockEventBookings: DetailedEventBookingDTO[] = [
     additionalInformation: {
       jobTitle: "Teacher of Computer Science",
     },
-    updated: 1695897589235,
+    lastUpdated: 1695897589235,
   },
   {
     bookingId: 1001,
@@ -749,7 +749,7 @@ export const mockEventBookings: DetailedEventBookingDTO[] = [
     additionalInformation: {
       yearGroup: "12",
     },
-    updated: 1695900107575,
+    lastUpdated: 1695900107575,
   },
   {
     bookingId: 1002,
@@ -779,7 +779,7 @@ export const mockEventBookings: DetailedEventBookingDTO[] = [
     additionalInformation: {
       yearGroup: "12",
     },
-    updated: 1695935815666,
+    lastUpdated: 1695935815666,
   },
   {
     bookingId: 1003,
@@ -809,7 +809,7 @@ export const mockEventBookings: DetailedEventBookingDTO[] = [
     additionalInformation: {
       jobTitle: "Head of CS",
     },
-    updated: 1695889960207,
+    lastUpdated: 1695889960207,
   },
   {
     bookingId: 1004,
@@ -839,7 +839,7 @@ export const mockEventBookings: DetailedEventBookingDTO[] = [
     additionalInformation: {
       yearGroup: "13",
     },
-    updated: 1695892050721,
+    lastUpdated: 1695892050721,
   },
 ];
 
@@ -871,7 +871,7 @@ export const mockEventBooking: DetailedEventBookingDTO = {
   additionalInformation: {
     jobTitle: "CS Teacher",
   },
-  updated: 1695897589235,
+  lastUpdated: 1695897589235,
 };
 
 export const mockEvent: IsaacEventPageDTO = {
@@ -1138,7 +1138,7 @@ export const buildMockUserSummaryWithGroupMembership = (
       userId: user.id,
       groupId,
       status: "ACTIVE" as const,
-      updated: 888888888888,
+      lastUpdated: 888888888888,
       created: 888888888888,
     },
   });

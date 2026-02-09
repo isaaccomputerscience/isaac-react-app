@@ -507,7 +507,7 @@ export interface EventBookingDTO {
   eventDate?: EpochTimeStamp;
   bookingStatus?: BookingStatus;
   bookingDate?: EpochTimeStamp;
-  updated?: EpochTimeStamp;
+  lastUpdated?: EpochTimeStamp;
 }
 
 export interface AbstractSegueUserDTO {

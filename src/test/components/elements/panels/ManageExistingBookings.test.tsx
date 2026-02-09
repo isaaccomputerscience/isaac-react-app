@@ -112,7 +112,7 @@ describe("ManageExistingBookings", () => {
       "CONFIRMED",
       "FEMALE",
       FRIENDLY_DATE_AND_TIME.format(new Date(mockEventBookingsForMockEvent[0].bookingDate!)),
-      FRIENDLY_DATE_AND_TIME.format(new Date(mockEventBookingsForMockEvent[0].updated!)),
+      FRIENDLY_DATE_AND_TIME.format(new Date(mockEventBookingsForMockEvent[0].lastUpdated!)),
       "All stages",
       "OCR",
       "-",
