@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, Col, CustomInput, Form, Row } from "reactstrap";
+import { Button, Col, Form, Row } from "reactstrap";
 import { closeActiveModal, selectors, store, useAppDispatch, useAppSelector } from "../../../state";
 import { useLocation } from "react-router-dom";
 import {
@@ -20,14 +20,13 @@ const LoginOrSignUpBody = () => {
 
   const { loginFunctions, setStateFunctions, loginValues } = useLoginLogic();
   const { attemptLogIn, signUp, validateAndLogIn } = loginFunctions;
-  const { setEmail, setPassword, setRememberMe, setPasswordResetAttempted } = setStateFunctions;
+  const { setEmail, setPassword, setPasswordResetAttempted } = setStateFunctions;
   const {
     email,
     totpChallengePending,
     errorMessage,
     logInAttempted,
     passwordResetAttempted,
-    rememberMe,
     isValidEmail,
     isValidPassword,
   } = loginValues;
@@ -84,7 +83,7 @@ const LoginOrSignUpBody = () => {
         )}
         <Form name="login" onSubmit={validateAndLogIn} noValidate>
           {totpChallengePending ? (
-            <TFAInput rememberMe={rememberMe} />
+            <TFAInput />
           ) : (
             <>
               <EmailPasswordInputs
@@ -105,13 +104,13 @@ const LoginOrSignUpBody = () => {
                 small
               />
 
-              <CustomInput
+              {/* <CustomInput
                 id="login-remember-me"
                 className={"mb-2"}
                 type="checkbox"
                 label="Remember me"
                 onChange={(e) => setRememberMe(e.target.checked)}
-              />
+              /> */}
               <div className="text-right">
                 <h4 role="alert" className="text-danger text-right mb-0">
                   {errorMessage}

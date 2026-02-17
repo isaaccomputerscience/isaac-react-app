@@ -15,7 +15,6 @@ import {
   CardBody,
   Col,
   Container,
-  CustomInput,
   Form,
   FormFeedback,
   FormGroup,
@@ -42,7 +41,6 @@ export const useLoginLogic = () => {
   const errorMessage = useAppSelector(selectors.error.general);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState<boolean>(false);
   const [logInAttempted, setLoginAttempted] = useState(false);
 
   const isValidEmail = email.length > 0 && email.includes("@");
@@ -54,7 +52,7 @@ export const useLoginLogic = () => {
     event.preventDefault();
     // Password check here will have to remain on old requirements as existing accounts will not be able to log in otherwise
     if (password.length > 6 && isValidEmail) {
-      dispatch(logInUser("SEGUE", { email: email, password: password, rememberMe: rememberMe }));
+      dispatch(logInUser("SEGUE", { email: email, password: password }));
     }
   };
 
@@ -69,14 +67,13 @@ export const useLoginLogic = () => {
 
   return {
     loginFunctions: { attemptLogIn, signUp, validateAndLogIn },
-    setStateFunctions: { setEmail, setPassword, setRememberMe, setPasswordResetAttempted },
+    setStateFunctions: { setEmail, setPassword, setPasswordResetAttempted },
     loginValues: {
       email,
       totpChallengePending,
       errorMessage,
       logInAttempted,
       passwordResetAttempted,
-      rememberMe,
       isValidEmail,
       isValidPassword,
     },
@@ -99,10 +96,7 @@ export const GoogleSignInButton = () => {
 };
 
 // Handles display and logic of the two-factor authentication form (usually shown after the first login step)
-export const TFAInput = React.forwardRef(function TFAForm(
-  { rememberMe }: { rememberMe: boolean },
-  ref: React.Ref<HTMLHeadingElement>,
-) {
+export const TFAInput = React.forwardRef<HTMLHeadingElement>(function TFAForm(_props, ref) {
   const dispatch = useAppDispatch();
   const [mfaVerificationCode, setMfaVerificationCode] = useState("");
 
@@ -139,7 +133,7 @@ export const TFAInput = React.forwardRef(function TFAForm(
           disabled={isNaN(Number(mfaVerificationCode))}
           onClick={(event) => {
             event.preventDefault();
-            if (mfaVerificationCode) dispatch(submitTotpChallengeResponse(mfaVerificationCode, rememberMe));
+            if (mfaVerificationCode) dispatch(submitTotpChallengeResponse(mfaVerificationCode, false));
           }}
         />
       </FormGroup>
@@ -255,14 +249,13 @@ export const LogIn = () => {
 
   const { loginFunctions, setStateFunctions, loginValues } = useLoginLogic();
   const { attemptLogIn, signUp, validateAndLogIn } = loginFunctions;
-  const { setEmail, setPassword, setRememberMe, setPasswordResetAttempted } = setStateFunctions;
+  const { setEmail, setPassword, setPasswordResetAttempted } = setStateFunctions;
   const {
     email,
     totpChallengePending,
     errorMessage,
     logInAttempted,
     passwordResetAttempted,
-    rememberMe,
     isValidEmail,
     isValidPassword,
   } = loginValues;
@@ -311,7 +304,7 @@ export const LogIn = () => {
                   Log in or sign up:
                 </h2>
                 {totpChallengePending ? (
-                  <TFAInput ref={subHeadingRef} rememberMe={rememberMe} />
+                  <TFAInput ref={subHeadingRef} />
                 ) : (
                   <React.Fragment>
                     <EmailPasswordInputs
@@ -326,14 +319,6 @@ export const LogIn = () => {
                     />
 
                     <Row className="mb-4">
-                      <Col className={"col-5 mt-1"}>
-                        <CustomInput
-                          id="login-remember-me"
-                          type="checkbox"
-                          label="Remember me"
-                          onChange={(e) => setRememberMe(e.target.checked)}
-                        />
-                      </Col>
                       <Col className="text-right">
                         <div>
                           <h4 role="alert" className="text-danger text-right mb-0">
