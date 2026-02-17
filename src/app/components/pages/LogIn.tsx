@@ -133,7 +133,7 @@ export const TFAInput = React.forwardRef<HTMLHeadingElement>(function TFAForm(_p
           disabled={isNaN(Number(mfaVerificationCode))}
           onClick={(event) => {
             event.preventDefault();
-            if (mfaVerificationCode) dispatch(submitTotpChallengeResponse(mfaVerificationCode, false));
+            if (mfaVerificationCode) dispatch(submitTotpChallengeResponse(mfaVerificationCode));
           }}
         />
       </FormGroup>

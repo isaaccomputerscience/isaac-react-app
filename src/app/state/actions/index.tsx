@@ -169,21 +169,20 @@ export const unlinkAccount = (provider: AuthenticationProvider) => async (dispat
   }
 };
 
-export const submitTotpChallengeResponse =
-  (mfaVerificationCode: string, rememberMe: boolean) => async (dispatch: Dispatch<Action>) => {
-    dispatch({ type: ACTION_TYPE.USER_AUTH_MFA_CHALLENGE_REQUEST });
-    try {
-      const result = await api.authentication.mfaCompleteLogin(mfaVerificationCode, rememberMe);
-      // Request user preferences, as we do in the requestCurrentUser action:
-      await Promise.all([dispatch(getUserAuthSettings() as any), dispatch(getUserPreferences() as any)]);
-      dispatch({ type: ACTION_TYPE.USER_AUTH_MFA_CHALLENGE_SUCCESS });
-      dispatch({ type: ACTION_TYPE.USER_LOG_IN_RESPONSE_SUCCESS, user: result.data });
-      history.replace(persistence.pop(KEY.AFTER_AUTH_PATH) || "/");
-    } catch (e: any) {
-      dispatch({ type: ACTION_TYPE.USER_AUTH_MFA_CHALLENGE_FAILURE, errorMessage: extractMessage(e) });
-      dispatch(showAxiosErrorToastIfNeeded("Error with verification code.", e));
-    }
-  };
+export const submitTotpChallengeResponse = (mfaVerificationCode: string) => async (dispatch: Dispatch<Action>) => {
+  dispatch({ type: ACTION_TYPE.USER_AUTH_MFA_CHALLENGE_REQUEST });
+  try {
+    const result = await api.authentication.mfaCompleteLogin(mfaVerificationCode);
+    // Request user preferences, as we do in the requestCurrentUser action:
+    await Promise.all([dispatch(getUserAuthSettings() as any), dispatch(getUserPreferences() as any)]);
+    dispatch({ type: ACTION_TYPE.USER_AUTH_MFA_CHALLENGE_SUCCESS });
+    dispatch({ type: ACTION_TYPE.USER_LOG_IN_RESPONSE_SUCCESS, user: result.data });
+    history.replace(persistence.pop(KEY.AFTER_AUTH_PATH) || "/");
+  } catch (e: any) {
+    dispatch({ type: ACTION_TYPE.USER_AUTH_MFA_CHALLENGE_FAILURE, errorMessage: extractMessage(e) });
+    dispatch(showAxiosErrorToastIfNeeded("Error with verification code.", e));
+  }
+};
 
 export const getUserPreferences = () => async (dispatch: Dispatch<Action>) => {
   dispatch({ type: ACTION_TYPE.USER_PREFERENCES_REQUEST });
