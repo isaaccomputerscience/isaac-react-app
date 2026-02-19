@@ -705,7 +705,6 @@ export interface AdditionalInformation {
 export interface CredentialsAuthDTO {
   email: string;
   password: string;
-  rememberMe: boolean;
 }
 
 export interface PaddedCredentialsAuthDTO extends CredentialsAuthDTO {

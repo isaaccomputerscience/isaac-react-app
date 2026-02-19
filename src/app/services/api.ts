@@ -155,8 +155,8 @@ export const api = {
     ): AxiosPromise<ApiTypes.RegisteredUserDTO> => {
       return endpoint.post(`/auth/${provider}/authenticate`, securePadCredentials(credentials));
     },
-    mfaCompleteLogin: (mfaVerificationCode: string, rememberMe: boolean): AxiosPromise => {
-      return endpoint.post(`/auth/mfa/challenge`, { mfaVerificationCode: mfaVerificationCode, rememberMe });
+    mfaCompleteLogin: (mfaVerificationCode: string): AxiosPromise => {
+      return endpoint.post(`/auth/mfa/challenge`, { mfaVerificationCode: mfaVerificationCode });
     },
     getCurrentUserAuthSettings: (): AxiosPromise<ApiTypes.UserAuthenticationSettingsDTO> => {
       return endpoint.get(`/auth/user_authentication_settings`);
