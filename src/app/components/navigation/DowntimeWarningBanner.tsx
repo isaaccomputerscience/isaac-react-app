@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Alert, Button, Col, Container, Row } from "reactstrap";
 import Cookies from "js-cookie";
-import { SITE_SUBJECT_TITLE, SOCIAL_LINKS } from "../../services";
+import { SITE_SUBJECT_TITLE } from "../../services";
 
 const DOWNTIME_COOKIE = "downtimeBannerDismissed";
 
@@ -29,10 +29,6 @@ export const DowntimeWarningBanner = () => {
                 <sup>rd</sup> July for essential maintenance. You will need to log in again once the maintenance is
                 complete.
                 <br />
-                <a href={SOCIAL_LINKS.twitter.href} target="_blank" rel="noopener noreferrer">
-                  Check our Twitter feed
-                </a>{" "}
-                for any updates on the day.
               </span>
             </Col>
             <Col xs={12} md={3} className="text-center">

@@ -60,7 +60,6 @@ export const SOCIAL_LINKS = {
   youtube: { name: "YouTube", href: "https://www.youtube.com/@isaaccomputerscience" },
   facebook: { name: "Facebook", href: "https://www.facebook.com/IsaacComputerScience" },
   instagram: { name: "Instagram", href: "https://www.instagram.com/isaaccompsci" },
-  twitter: { name: "Twitter", href: "https://twitter.com/isaaccompsci" },
 };
 
 // Change to "http://localhost:3000" if you want to run a local version of the code editor
