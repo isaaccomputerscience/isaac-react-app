@@ -13,8 +13,7 @@ interface RegistrationEmailPreferenceProps {
 
 type EmailPreferenceDescriptions = {
   assignments: string;
-  news: string;
-  events: string;
+  newsAndUpdates: string;
 };
 
 export const RegistrationEmailPreference = ({
@@ -29,13 +28,11 @@ export const RegistrationEmailPreference = ({
       property: "ASSIGNMENTS",
       condition: userRole === "STUDENT",
     },
-    { key: "news", property: "NEWS_AND_UPDATES" },
-    { key: "events", property: "EVENTS" },
+    { key: "newsAndUpdates", property: "NEWS_AND_UPDATES" },
   ];
   const isaacEmailPreferenceDescriptions: EmailPreferenceDescriptions = {
     assignments: "Receive assignment notifications from your teacher.",
-    news: "Be the first to know about new topics, new platform features, and our fantastic competition giveaways.",
-    events: "Get valuable updates on our free student workshops happening near you.",
+    newsAndUpdates: "Be the first to know about new topics, platform features, competitions and free student events.",
   };
 
   return (
