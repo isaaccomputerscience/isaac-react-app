@@ -25,10 +25,11 @@ export const RegistrationEmailPreference = ({
   const preferences = [
     {
       key: "assignments",
+      label: "Assignments",
       property: "ASSIGNMENTS",
       condition: userRole === "STUDENT",
     },
-    { key: "newsAndUpdates", property: "NEWS_AND_UPDATES" },
+    { key: "newsAndUpdates", label: "News and Updates", property: "NEWS_AND_UPDATES" },
   ];
   const isaacEmailPreferenceDescriptions: EmailPreferenceDescriptions = {
     assignments: "Receive assignment notifications from your teacher.",
@@ -47,7 +48,7 @@ export const RegistrationEmailPreference = ({
               const description = isaacEmailPreferenceDescriptions[preference.key as keyof EmailPreferenceDescriptions];
               return preference.condition === undefined || preference.condition ? (
                 <tr key={index}>
-                  <td>{preference.key.charAt(0).toUpperCase() + preference.key.slice(1)}</td>
+                  <td>{preference.label}</td>
                   <td className="d-none d-sm-table-cell">{description}</td>
                   <td className="text-center">
                     <TrueFalseRadioInput
