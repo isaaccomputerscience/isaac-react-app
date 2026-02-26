@@ -9,14 +9,12 @@ describe("RegistrationEmailPreference", () => {
 
   const getOptions = {
     assignments: () => screen.getByText("Assignments"),
-    news: () => screen.getByText("News"),
-    // events: () => screen.getByText("Events"),
+    newsAndUpdates: () => screen.getByText("News and Updates"),
     assignmentsDescription: () => screen.getByText("Receive assignment notifications from your teacher."),
-    newsDescription: () =>
+    newsAndUpdatesDescription: () =>
       screen.getByText(
-        "Be the first to know about new topics, new platform features, and our fantastic competition giveaways.",
+        "Be the first to know about new topics, platform features, competitions and free student events.",
       ),
-    // eventsDescription: () => screen.getByText("Get valuable updates on our free student workshops happening near you."),
   };
 
   const setupTest = (role: TestUserRole, props = {}) => {
@@ -36,8 +34,8 @@ describe("RegistrationEmailPreference", () => {
 
   it("renders correct options for student registration", () => {
     setupTest("STUDENT");
-    const { assignments, news, assignmentsDescription, newsDescription } = getOptions;
-    const allOptions = [assignments(), assignmentsDescription(), news(), newsDescription()];
+    const { assignments, newsAndUpdates, assignmentsDescription, newsAndUpdatesDescription } = getOptions;
+    const allOptions = [assignments(), assignmentsDescription(), newsAndUpdates(), newsAndUpdatesDescription()];
     allOptions.forEach((option) => {
       expect(option).toBeInTheDocument();
     });
@@ -45,8 +43,8 @@ describe("RegistrationEmailPreference", () => {
 
   it("renders correct options for teacher registration", () => {
     setupTest("TEACHER");
-    const { news, newsDescription } = getOptions;
-    [news(), newsDescription()].forEach((option) => {
+    const { newsAndUpdates, newsAndUpdatesDescription } = getOptions;
+    [newsAndUpdates(), newsAndUpdatesDescription()].forEach((option) => {
       expect(option).toBeInTheDocument();
     });
     const assignmentsOption = screen.queryByText("Assignments");
@@ -79,7 +77,7 @@ describe("RegistrationEmailPreference", () => {
     expect(newsPreferenceTrueLabel).toBeInvalid();
     expect(newsPreferenceFalseLabel).toBeInvalid();
     const emailPreferenceFeedback = screen.getByText("required", {
-      selector: "#news-feedback",
+      selector: "#newsAndUpdates-feedback",
     });
     expect(emailPreferenceFeedback).toBeInTheDocument();
   });
