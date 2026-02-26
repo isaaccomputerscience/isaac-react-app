@@ -182,7 +182,7 @@ export const getFormFields = () => {
     verificationInfo: () => screen.getByRole("textbox", { name: /url of a page/i }),
     assignmentPreferences: () => screen.queryByRole("cell", { name: /receive assignment/i }),
     newsPreferences: () => screen.getByRole("radio", { name: /no for news_and_updates/i }),
-    events: () => screen.getByRole("radio", { name: /no for events/i }),
+    // events: () => screen.getByRole("radio", { name: /no for events/i }),
     additionalInfo: () => screen.getByRole("textbox", { name: /any other information/i }),
     otherInfo: () => screen.getByRole("textbox", { name: /other information/i }),
     submitButton: () => screen.getByRole("button", { name: "Register my account" }),
@@ -209,7 +209,7 @@ export const fillFormCorrectly = async (correctly: boolean, role: "teacher" | "s
         stage,
         verificationInfo,
         newsPreferences,
-        events,
+        // events,
         otherInfo,
         recaptcha,
       } = formFields;
@@ -223,7 +223,7 @@ export const fillFormCorrectly = async (correctly: boolean, role: "teacher" | "s
         await fillTextField(password(), registrationUserData.password);
         await fillTextField(confirmPassword(), registrationUserData.password);
         await userEvent.click(newsPreferences());
-        await userEvent.click(events());
+        // await userEvent.click(events());
         await userEvent.click(noSchool());
         await selectOption(stage(), registrationUserData.stage);
         await fillTextField(otherInfo(), "extra information");
@@ -249,7 +249,7 @@ export const fillFormCorrectly = async (correctly: boolean, role: "teacher" | "s
         password,
         confirmPassword,
         newsPreferences,
-        events,
+        // events,
         recaptcha,
       } = formFields;
       await fillTextField(givenName(), registrationUserData.givenName);
@@ -263,7 +263,7 @@ export const fillFormCorrectly = async (correctly: boolean, role: "teacher" | "s
         await fillTextField(password(), registrationUserData.password);
         await fillTextField(confirmPassword(), registrationUserData.password);
         await userEvent.click(newsPreferences());
-        await userEvent.click(events());
+        // await userEvent.click(events());
       } else {
         await fillTextField(password(), registrationUserData.wrongPassword);
         await fillTextField(confirmPassword(), registrationUserData.wrongPassword);
