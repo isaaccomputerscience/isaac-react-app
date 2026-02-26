@@ -5,18 +5,18 @@ import { TestUserRole, renderTestEnvironment } from "../../../utils";
 
 describe("RegistrationEmailPreference", () => {
   const mockSetEmailPreferences = jest.fn();
-  const preferences = ["NEWS_AND_UPDATES", "ASSIGNMENTS", "EVENTS"];
+  const preferences = ["NEWS_AND_UPDATES", "ASSIGNMENTS"];
 
   const getOptions = {
     assignments: () => screen.getByText("Assignments"),
     news: () => screen.getByText("News"),
-    events: () => screen.getByText("Events"),
+    // events: () => screen.getByText("Events"),
     assignmentsDescription: () => screen.getByText("Receive assignment notifications from your teacher."),
     newsDescription: () =>
       screen.getByText(
         "Be the first to know about new topics, new platform features, and our fantastic competition giveaways.",
       ),
-    eventsDescription: () => screen.getByText("Get valuable updates on our free student workshops happening near you."),
+    // eventsDescription: () => screen.getByText("Get valuable updates on our free student workshops happening near you."),
   };
 
   const setupTest = (role: TestUserRole, props = {}) => {
@@ -36,15 +36,8 @@ describe("RegistrationEmailPreference", () => {
 
   it("renders correct options for student registration", () => {
     setupTest("STUDENT");
-    const { assignments, news, events, assignmentsDescription, newsDescription, eventsDescription } = getOptions;
-    const allOptions = [
-      assignments(),
-      assignmentsDescription(),
-      news(),
-      newsDescription(),
-      events(),
-      eventsDescription(),
-    ];
+    const { assignments, news, assignmentsDescription, newsDescription } = getOptions;
+    const allOptions = [assignments(), assignmentsDescription(), news(), newsDescription()];
     allOptions.forEach((option) => {
       expect(option).toBeInTheDocument();
     });
@@ -52,8 +45,8 @@ describe("RegistrationEmailPreference", () => {
 
   it("renders correct options for teacher registration", () => {
     setupTest("TEACHER");
-    const { news, newsDescription, events, eventsDescription } = getOptions;
-    [news(), newsDescription(), events(), eventsDescription()].forEach((option) => {
+    const { news, newsDescription } = getOptions;
+    [news(), newsDescription()].forEach((option) => {
       expect(option).toBeInTheDocument();
     });
     const assignmentsOption = screen.queryByText("Assignments");
@@ -79,7 +72,7 @@ describe("RegistrationEmailPreference", () => {
   it("if form submission is attempted but not all preferences are selected, affected options are marked as invalid, and 'required' feedback shows", () => {
     setupTest("STUDENT", {
       submissionAttempted: true,
-      emailPreferences: { ASSIGNMENTS: false, EVENTS: true },
+      emailPreferences: { ASSIGNMENTS: false },
     });
     const newsPreferenceTrueLabel = screen.getByLabelText(/Yes.*for NEWS_AND_UPDATES/);
     const newsPreferenceFalseLabel = screen.getByLabelText(/No.*for NEWS_AND_UPDATES/);
@@ -96,7 +89,6 @@ describe("RegistrationEmailPreference", () => {
       submissionAttempted: true,
       emailPreferences: {
         ASSIGNMENTS: false,
-        EVENTS: true,
         NEWS_AND_UPDATES: true,
       },
     });
