@@ -63,7 +63,7 @@ const GameboardBuilder = ({ user }: { user: RegisteredUserDTO }) => {
       if (baseGameboardId || concepts) {
         setWildcardId("random");
       } else {
-        setWildcardId((isStaff(user) && gameboard.wildCard && gameboard.wildCard.id) || "random");
+        setWildcardId((isStaff(user) && gameboard.wildCard?.id) || "random");
       }
       if (concepts && !baseGameboardId) {
         logEvent(eventLog, "GAMEBOARD_FROM_CONCEPT", { concepts: concepts });
