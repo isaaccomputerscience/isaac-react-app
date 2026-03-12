@@ -39,6 +39,10 @@ module.exports = env => {
                 },{
                     from: resolve('public/robots.txt'),
                     to: 'robots.txt',
+                }, {
+                    from: resolve('public/sitemap.xml'),
+                    to: 'sitemap.xml',
+                    noErrorOnMissing: true, // Sitemap is generated separately so is ok
                 }]
             }),
         ],
