@@ -14,12 +14,15 @@
  *   CONTENT_DATES_OUTPUT  (optional) output path, default: scripts/content-dates.json
  */
 
-import * as fs from "fs";
-import * as os from "os";
-import * as path from "path";
-import { execFileSync } from "child_process";
+import * as fs from "node:fs";
+import * as os from "node:os";
+import * as path from "node:path";
+import { execFileSync } from "node:child_process";
 
 const CONTENT_REPO_URL = "git@github.com:isaaccomputerscience/isaac-content.git";
+
+// Resolve git to its absolute path via /usr/bin/which so we never rely on PATH
+const GIT_BIN = execFileSync("/usr/bin/which", ["git"], { encoding: "utf-8" }).trim();
 
 const OUTPUT_PATH = process.env.CONTENT_DATES_OUTPUT || "scripts/content-dates.json";
 
@@ -30,7 +33,7 @@ const OUTPUT_PATH = process.env.CONTENT_DATES_OUTPUT || "scripts/content-dates.j
 function getLastCommitDate(repoPath: string, relativeFilePath: string): string | null {
   try {
     const iso = execFileSync(
-      "git", ["-C", repoPath, "log", "--format=%aI", "-1", "--", relativeFilePath],
+      GIT_BIN, ["-C", repoPath, "log", "--format=%aI", "-1", "--", relativeFilePath],
       { encoding: "utf-8", stdio: ["pipe", "pipe", "ignore"] }
     ).trim();
     if (!iso) return null;
@@ -75,7 +78,7 @@ async function main(): Promise<void> {
 
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "isaac-content-"));
   console.log(`Cloning ${CONTENT_REPO_URL} → ${tempDir}`);
-  execFileSync("git", ["clone", CONTENT_REPO_URL, tempDir], { stdio: "inherit" });
+  execFileSync(GIT_BIN, ["clone", CONTENT_REPO_URL, tempDir], { stdio: "inherit" });
   const repoPath = tempDir;
 
   console.log(`Content repo: ${repoPath}`);

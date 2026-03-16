@@ -21,6 +21,9 @@ import axios, { AxiosInstance } from "axios";
 import * as fs from "fs";
 import * as path from "path";
 import { execFileSync } from "child_process";
+
+// Resolve git to its absolute path via /usr/bin/which so we never rely on PATH
+const GIT_BIN = execFileSync("/usr/bin/which", ["git"], { encoding: "utf-8" }).trim();
 import {
   STATIC_ROUTES,
   TOPIC_IDS,
@@ -52,7 +55,7 @@ if (fs.existsSync(CONTENT_DATES_PATH)) {
 function getConfigFileDate(): string | undefined {
   try {
     const iso = execFileSync(
-      "git", ["log", "--format=%aI", "-1", "--", "scripts/sitemap-config.ts"],
+      GIT_BIN, ["log", "--format=%aI", "-1", "--", "scripts/sitemap-config.ts"],
       { encoding: "utf-8", stdio: ["pipe", "pipe", "ignore"] }
     ).trim();
     return iso ? iso.split("T")[0] : undefined;
