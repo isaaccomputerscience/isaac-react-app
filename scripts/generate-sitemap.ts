@@ -18,9 +18,9 @@
  */
 
 import axios, { AxiosInstance } from "axios";
-import * as fs from "fs";
-import * as path from "path";
-import { execFileSync } from "child_process";
+import * as fs from "node:fs";
+import * as path from "node:path";
+import { execFileSync } from "node:child_process";
 
 // Resolve git to its absolute path via /usr/bin/which so we never rely on PATH
 const GIT_BIN = execFileSync("/usr/bin/which", ["git"], { encoding: "utf-8" }).trim();
@@ -96,11 +96,11 @@ const api: AxiosInstance = axios.create({
  */
 function escapeXml(str: string): string {
   return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&apos;");
+    .replaceAll('&', "&amp;")
+    .replaceAll('<', "&lt;")
+    .replaceAll('>', "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll('\'', "&apos;");
 }
 
 /**
@@ -244,7 +244,7 @@ async function getNewsPageUrls(): Promise<SitemapURL[]> {
     const { priority, changefreq } = CONTENT_PRIORITIES.page;
 
     return pods
-      .filter((pod) => pod.url && pod.url.startsWith("/"))
+      .filter((pod) => pod.url?.startsWith("/"))
       .map((pod) => {
         // Extract the page ID from the URL path (e.g. "/pages/2025_08_exam_results" → "2025_08_exam_results")
         const pageId = pod.url!.split("/").pop();
@@ -382,7 +382,7 @@ async function generateSitemap(): Promise<void> {
 }
 
 // Run the generator
-generateSitemap().catch((error) => {
+generateSitemap().catch((error) => { // NOSONAR typescript:S7785 — top-level await not supported in CommonJS (ts-node)
   console.error("\nFatal error:", error.message);
   process.exit(1);
 });

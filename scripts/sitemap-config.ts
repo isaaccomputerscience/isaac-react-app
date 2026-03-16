@@ -68,7 +68,7 @@ export interface SitemapURL {
  */
 export const STATIC_ROUTES: SitemapRoute[] = [
   // Homepage
-  { path: "/", priority: 1.0, changefreq: "daily" },
+  { path: "/", priority: 1, changefreq: "daily" },
 
   // Topic index pages
   { path: "/topics", priority: 0.9, changefreq: "weekly" },
