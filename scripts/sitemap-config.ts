@@ -64,7 +64,7 @@ export interface SitemapURL {
 
 /**
  * Static routes to include in the sitemap (hardcoded).
- * 
+ *
  */
 export const STATIC_ROUTES: SitemapRoute[] = [
   // Homepage
@@ -75,7 +75,7 @@ export const STATIC_ROUTES: SitemapRoute[] = [
   { path: "/topics/gcse", priority: 0.9, changefreq: "weekly" },
   { path: "/topics/a_level", priority: 0.9, changefreq: "weekly" },
 
-  // Events
+  // Events listing page (individual event pages are excluded — see generate-sitemap.ts)
   { path: "/events", priority: 0.8, changefreq: "daily" },
 
   // Glossary
@@ -104,6 +104,23 @@ export const STATIC_ROUTES: SitemapRoute[] = [
   { path: "/safeguarding", priority: 0.4, changefreq: "yearly" },
   { path: "/teachcomputing", priority: 0.5, changefreq: "monthly" },
   { path: "/gcse_programming_challenges", priority: 0.5, changefreq: "monthly" },
+
+  // Additional pages (added per ticket requirements)
+  { path: "/pages/computer_science_journeys_gallery", priority: 0.8, changefreq: "monthly" },
+  { path: "/booster_video_binary_conversion_and_addition", priority: 0.8, changefreq: "monthly" },
+  { path: "/gcse_teaching_order", priority: 0.8, changefreq: "monthly" },
+  { path: "/teaching_order", priority: 0.8, changefreq: "monthly" },
+  { path: "/teacher_gcse_revision_page", priority: 0.8, changefreq: "monthly" },
+  { path: "/pages/top-tips-alevel", priority: 0.8, changefreq: "monthly" },
+  { path: "/pages/hints-and-tips-teaching-gcse", priority: 0.8, changefreq: "monthly" },
+  { path: "/pages/tips-for-your-alevel-students", priority: 0.8, changefreq: "monthly" },
+  { path: "/pages/questionfinder", priority: 0.8, changefreq: "monthly" },
+  { path: "/pages/gcse-events-feb24", priority: 0.8, changefreq: "monthly" },
+  { path: "/pages/gameboard-tutorial", priority: 0.8, changefreq: "monthly" },
+
+  // News / announcement pages (also fetched dynamically via news pods — deduplication handles overlaps)
+  { path: "/pages/2025_10_competition_last_year", priority: 0.5, changefreq: "monthly" },
+  { path: "/pages/2025_08_exam_results", priority: 0.5, changefreq: "monthly" },
 ];
 
 /**
@@ -194,6 +211,23 @@ export const HIDDEN_TOPICS: string[] = [
   "machine_learning",
   "regression",
   "declarative_programming",
+];
+
+/**
+ * Content IDs to explicitly exclude from the sitemap.
+ * Used to strip test/QA pages that appear in the API but have no SEO value.
+ */
+export const EXCLUDED_IDS: string[] = [
+  // Test concept pages
+  "isaac-callout-test-page",
+  "audience_test",
+
+  // Test question pages
+  "_regression_test_",
+  "class_test_jan20_aqa",
+  "class_test_jan20_ocr",
+  "class_test_nov19_aqa",
+  "class_test_nov19_ocr",
 ];
 
 export const CONTENT_PRIORITIES = {

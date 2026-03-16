@@ -53,6 +53,7 @@
   },
   "scripts": {
     "generate-sitemap": "ts-node --project scripts/tsconfig.json scripts/generate-sitemap.ts",
+    "index-content-dates": "ts-node --project scripts/tsconfig.json scripts/index-content-dates.ts",
     "build-cs": "webpack --env prod --config config/webpack.config.cs.js",
     "build-dev": "webpack --config config/webpack.config.cs.js",
     "start": "webpack-dev-server --hot --port 8003 --history-api-fallback --config config/webpack.config.cs.js --allowed-hosts=true",

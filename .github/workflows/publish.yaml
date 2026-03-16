@@ -31,7 +31,6 @@ jobs:
       - name: Generate sitemap
         run: yarn generate-sitemap
         env:
-          # Tags (v*) = production, pushes to main = staging
           # URLs are resolved from ISAAC_ENV in scripts/sitemap-config.ts,
           # mirroring the envSpecific() pattern from src/app/services/constants.ts
           ISAAC_ENV: ${{ startsWith(github.ref, 'refs/tags/') && 'production' || 'staging' }}

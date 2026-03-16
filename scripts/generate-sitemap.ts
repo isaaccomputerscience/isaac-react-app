@@ -20,15 +20,46 @@
 import axios, { AxiosInstance } from "axios";
 import * as fs from "fs";
 import * as path from "path";
+import { execSync } from "child_process";
 import {
   STATIC_ROUTES,
   TOPIC_IDS,
   HIDDEN_TOPICS,
+  EXCLUDED_IDS,
   CONTENT_PRIORITIES,
   API_CONFIG,
   OUTPUT_CONFIG,
   SitemapURL,
 } from "./sitemap-config";
+
+// ---------------------------------------------------------------------------
+// Content dates — populated by scripts/index-content-dates.ts from the
+// content repo's git history. Maps content ID → YYYY-MM-DD of last commit.
+// <lastMod> omitted if not generated.
+// ---------------------------------------------------------------------------
+const CONTENT_DATES_PATH = path.resolve(__dirname, "content-dates.json");
+let contentDates: Record<string, string> = {};
+if (fs.existsSync(CONTENT_DATES_PATH)) {
+  contentDates = JSON.parse(fs.readFileSync(CONTENT_DATES_PATH, "utf-8"));
+  console.log(`Loaded content dates for ${Object.keys(contentDates).length} items (${CONTENT_DATES_PATH})`);
+} else {
+  console.log("No content-dates.json found — lastmod will be omitted for dynamic content");
+}
+
+/**
+ * Get the date of the last git commit that touched scripts/sitemap-config.ts.
+ */
+function getConfigFileDate(): string | undefined {
+  try {
+    const iso = execSync(
+      'git log --format="%aI" -1 -- scripts/sitemap-config.ts',
+      { encoding: "utf-8", stdio: ["pipe", "pipe", "ignore"] }
+    ).trim();
+    return iso ? iso.split("T")[0] : undefined;
+  } catch {
+    return undefined;
+  }
+}
 
 interface ContentSummary {
   id?: string;
@@ -43,12 +74,9 @@ interface ResultsWrapper<T> {
   totalResults: number;
 }
 
-interface EventPage {
+interface NewsPod {
   id?: string;
-  title?: string;
-  date?: number;
-  endDate?: number;
-  eventStatus?: string;
+  url?: string;
 }
 
 const api: AxiosInstance = axios.create({
@@ -73,15 +101,8 @@ function escapeXml(str: string): string {
 }
 
 /**
- * Format date as YYYY-MM-DD for sitemap
- */
-function formatDate(date: Date): string {
-  return date.toISOString().split("T")[0]; // cut time after date
-}
-
-/**
  * Retry wrapper for API calls
- * Not exepected to fail but solves a headache
+ * Not exepected to fail but solves a headache :)
  */
 async function withRetry<T>(
   fn: () => Promise<T>,
@@ -105,11 +126,11 @@ async function withRetry<T>(
  * 
  */
 function getStaticUrls(): SitemapURL[] {
-  const today = formatDate(new Date());
+  const lastmod = getConfigFileDate();
 
   return STATIC_ROUTES.map((route) => ({
     loc: `${API_CONFIG.siteUrl}${route.path}`,
-    lastmod: today,
+    lastmod,
     changefreq: route.changefreq,
     priority: route.priority,
   }));
@@ -120,7 +141,6 @@ function getStaticUrls(): SitemapURL[] {
  * 
  */
 function getTopicUrls(): SitemapURL[] {
-  const today = formatDate(new Date());
   const { priority, changefreq } = CONTENT_PRIORITIES.topic;
 
   // Filter out hidden topics
@@ -128,7 +148,7 @@ function getTopicUrls(): SitemapURL[] {
 
   return visibleTopics.map((topicId) => ({
     loc: `${API_CONFIG.siteUrl}/topics/${topicId}`,
-    lastmod: today,
+    lastmod: contentDates[topicId], // git date from content repo, or undefined
     changefreq,
     priority,
   }));
@@ -151,14 +171,13 @@ async function getConceptUrls(): Promise<SitemapURL[]> {
     const concepts = response.data.results || [];
     console.log(`  Found ${concepts.length} concepts`);
 
-    const today = formatDate(new Date());
     const { priority, changefreq } = CONTENT_PRIORITIES.concept;
 
     return concepts
-      .filter((concept) => concept.id && concept.published !== false)
+      .filter((concept) => concept.id && concept.published !== false && !EXCLUDED_IDS.includes(concept.id))
       .map((concept) => ({
         loc: `${API_CONFIG.siteUrl}/concepts/${concept.id}`,
-        lastmod: today,
+        lastmod: contentDates[concept.id!], // git date from content repo, or undefined
         changefreq,
         priority,
       }));
@@ -185,14 +204,13 @@ async function getQuestionUrls(): Promise<SitemapURL[]> {
     const questions = response.data.results || [];
     console.log(`  Found ${questions.length} questions`);
 
-    const today = formatDate(new Date());
     const { priority, changefreq } = CONTENT_PRIORITIES.question;
 
     return questions
-      .filter((question) => question.id && question.published !== false)
+      .filter((question) => question.id && question.published !== false && !EXCLUDED_IDS.includes(question.id))
       .map((question) => ({
         loc: `${API_CONFIG.siteUrl}/questions/${question.id}`,
-        lastmod: today,
+        lastmod: contentDates[question.id!], // git date from content repo, or undefined
         changefreq,
         priority,
       }));
@@ -203,39 +221,39 @@ async function getQuestionUrls(): Promise<SitemapURL[]> {
 }
 
 /**
- * EVENTS
- * 
+ * NEWS PAGES
+ * Fetches news pods from the API and extracts their target URLs.
+ * Individual event pages are intentionally excluded.
  */
-async function getEventUrls(): Promise<SitemapURL[]> {
-  console.log("Fetching events...");
+async function getNewsPageUrls(): Promise<SitemapURL[]> {
+  console.log("Fetching news pages...");
 
   try {
     const response = await withRetry(() =>
-      api.get<{ results: EventPage[]; totalResults: number }>("/events", {
-        params: {
-          limit: API_CONFIG.pageLimit,
-          show_active_only: false,
-          show_inactive_only: false,
-        },
+      api.get<{ results: NewsPod[]; totalResults: number }>("/pages/pods/news", {
+        params: { limit: API_CONFIG.pageLimit },
       })
     );
 
-    const events = response.data.results || [];
-    console.log(`  Found ${events.length} events`);
+    const pods = response.data.results || [];
+    console.log(`  Found ${pods.length} news pods`);
 
-    const today = formatDate(new Date());
-    const { priority, changefreq } = CONTENT_PRIORITIES.event;
+    const { priority, changefreq } = CONTENT_PRIORITIES.page;
 
-    return events
-      .filter((event) => event.id)
-      .map((event) => ({
-        loc: `${API_CONFIG.siteUrl}/events/${event.id}`,
-        lastmod: today,
-        changefreq,
-        priority,
-      }));
+    return pods
+      .filter((pod) => pod.url && pod.url.startsWith("/"))
+      .map((pod) => {
+        // Extract the page ID from the URL path (e.g. "/pages/2025_08_exam_results" → "2025_08_exam_results")
+        const pageId = pod.url!.split("/").pop();
+        return {
+          loc: `${API_CONFIG.siteUrl}${pod.url}`,
+          lastmod: pageId ? contentDates[pageId] : undefined,
+          changefreq,
+          priority,
+        };
+      });
   } catch (error) {
-    console.error("  Error fetching events:", (error as Error).message);
+    console.error("  Error fetching news pages:", (error as Error).message);
     return [];
   }
 }
@@ -245,14 +263,14 @@ async function getEventUrls(): Promise<SitemapURL[]> {
  */
 function generateXml(urls: SitemapURL[]): string {
   const urlEntries = urls
-    .map(
-      (url) => `  <url>
-    <loc>${escapeXml(url.loc)}</loc>
-    <lastmod>${url.lastmod}</lastmod>
+    .map((url) => {
+      const lastmod = url.lastmod ? `\n    <lastmod>${url.lastmod}</lastmod>` : "";
+      return `  <url>
+    <loc>${escapeXml(url.loc)}</loc>${lastmod}
     <changefreq>${url.changefreq}</changefreq>
     <priority>${url.priority.toFixed(1)}</priority>
-  </url>`
-    )
+  </url>`;
+    })
     .join("\n");
 
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -322,8 +340,9 @@ async function generateSitemap(): Promise<void> {
   const questionUrls = await getQuestionUrls();
   allUrls.push(...questionUrls);
 
-  const eventUrls = await getEventUrls();
-  allUrls.push(...eventUrls);
+  // Individual event pages are excluded pending a separate un-indexing piece of work
+  const newsPageUrls = await getNewsPageUrls();
+  allUrls.push(...newsPageUrls);
 
   // Deduplicate and sort
   console.log("\nProcessing URLs...");
@@ -354,7 +373,7 @@ async function generateSitemap(): Promise<void> {
   console.log(`Topics: ${topicUrls.length}`);
   console.log(`Concepts: ${conceptUrls.length}`);
   console.log(`Questions: ${questionUrls.length}`);
-  console.log(`Events: ${eventUrls.length}`);
+  console.log(`News pages: ${newsPageUrls.length}`);
   console.log(`Total URLs: ${sortedUrls.length}`);
   console.log("\nDone!");
 }
