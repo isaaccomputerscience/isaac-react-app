@@ -20,7 +20,7 @@
 import axios, { AxiosInstance } from "axios";
 import * as fs from "fs";
 import * as path from "path";
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 import {
   STATIC_ROUTES,
   TOPIC_IDS,
@@ -51,8 +51,8 @@ if (fs.existsSync(CONTENT_DATES_PATH)) {
  */
 function getConfigFileDate(): string | undefined {
   try {
-    const iso = execSync(
-      'git log --format="%aI" -1 -- scripts/sitemap-config.ts',
+    const iso = execFileSync(
+      "git", ["log", "--format=%aI", "-1", "--", "scripts/sitemap-config.ts"],
       { encoding: "utf-8", stdio: ["pipe", "pipe", "ignore"] }
     ).trim();
     return iso ? iso.split("T")[0] : undefined;

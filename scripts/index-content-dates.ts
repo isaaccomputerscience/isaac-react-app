@@ -17,7 +17,7 @@
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 
 const CONTENT_REPO_URL = "git@github.com:isaaccomputerscience/isaac-content.git";
 
@@ -29,8 +29,8 @@ const OUTPUT_PATH = process.env.CONTENT_DATES_OUTPUT || "scripts/content-dates.j
  */
 function getLastCommitDate(repoPath: string, relativeFilePath: string): string | null {
   try {
-    const iso = execSync(
-      `git -C "${repoPath}" log --format="%aI" -1 -- "${relativeFilePath}"`,
+    const iso = execFileSync(
+      "git", ["-C", repoPath, "log", "--format=%aI", "-1", "--", relativeFilePath],
       { encoding: "utf-8", stdio: ["pipe", "pipe", "ignore"] }
     ).trim();
     if (!iso) return null;
@@ -75,7 +75,7 @@ async function main(): Promise<void> {
 
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "isaac-content-"));
   console.log(`Cloning ${CONTENT_REPO_URL} → ${tempDir}`);
-  execSync(`git clone "${CONTENT_REPO_URL}" "${tempDir}"`, { stdio: "inherit" });
+  execFileSync("git", ["clone", CONTENT_REPO_URL, tempDir], { stdio: "inherit" });
   const repoPath = tempDir;
 
   console.log(`Content repo: ${repoPath}`);
