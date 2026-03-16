@@ -147,7 +147,7 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((err) => {
+main().catch((err) => { // NOSONAR typescript:S7785 — top-level await not supported in CommonJS (ts-node)
   console.error("\nFatal error:", (err as Error).message);
   process.exit(1);
 });

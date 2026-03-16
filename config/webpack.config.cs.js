@@ -8,7 +8,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { merge } = require('webpack-merge');
 const webpack = require('webpack');
 
-module.exports = env => {
+const webpackConfigCs = env => {
 
     let configCS = {
         entry: {
@@ -50,3 +50,5 @@ module.exports = env => {
 
     return merge(configCommon(env), configCS);
 };
+
+module.exports = webpackConfigCs;
