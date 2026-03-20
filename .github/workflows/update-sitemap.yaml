@@ -20,9 +20,9 @@ jobs:
       - name: Checkout content repo
         uses: actions/checkout@v4
         with:
-          repository: <CONTENT_REPO> # e.g. isaacs/isaac-cs-content — fill this in
+          repository: isaaccomputerscience/isaac-content
           path: content-repo
-          token: ${{ secrets.CONTENT_REPO_TOKEN }} # PAT with read access to content repo
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
