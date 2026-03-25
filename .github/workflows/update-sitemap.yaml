@@ -36,7 +36,7 @@ jobs:
       - name: Index content dates
         run: yarn index-content-dates
         env:
-          CONTENT_REPO_PATH: ${{ github.workspace }}/content-repo
+          CONTENT_REPO_PATH: ${{ github.workspace }}/isaac-content
 
       - name: Generate sitemap
         run: yarn generate-sitemap
