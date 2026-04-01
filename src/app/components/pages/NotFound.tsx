@@ -5,13 +5,14 @@ import { TitleAndBreadcrumb } from "../elements/TitleAndBreadcrumb";
 
 export const NotFound = () => {
   const { pathname, state } = useLocation<{ overridePathname?: string }>();
-  console.log(state);
   const missingPageId = (state && state.overridePathname) || pathname;
-  const contactSubject = encodeURIComponent(`Page not found "${missingPageId}"`);
+  const contactUrl =
+    `/contact?preset=pageNotFound&page=${encodeURIComponent(missingPageId)}` +
+    `&url=${encodeURIComponent(window.location.href)}`;
   return (
     <Container>
       <div>
-        <TitleAndBreadcrumb breadcrumbTitleOverride="Unknown page" currentPageTitle="Page not found" />
+        <TitleAndBreadcrumb breadcrumbTitleOverride="Unknown page" currentPageTitle="Page not found (404)" />
         <h3 className="my-4">
           <small>
             {"Sorry, we couldn't find the page you were looking for: "}
@@ -25,7 +26,7 @@ export const NotFound = () => {
             <br />
             <br />
             {"If the web address is correct or you selected a link or button, please"}{" "}
-            <a href={`/contact?subject=${contactSubject}`} style={{ textDecoration: "none", color: "#2B77B4" }}>
+            <a href={contactUrl} style={{ textDecoration: "none", color: "#2B77B4" }}>
               contact us
             </a>{" "}
             {"to let us know."}
