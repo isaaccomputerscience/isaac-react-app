@@ -8,7 +8,7 @@ export const NotFound = () => {
   const missingPageId = state?.overridePathname || pathname;
   const contactUrl =
     `/contact?preset=pageNotFound&page=${encodeURIComponent(missingPageId)}` +
-    `&url=${encodeURIComponent(window.location.href)}`;
+    `&url=${encodeURIComponent(globalThis.location.href)}`;
   return (
     <Container>
       <div>
