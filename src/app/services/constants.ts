@@ -40,9 +40,14 @@ if (document.location.hostname === "localhost") {
   apiPath = `${STAGING_URL}/api/any/api`;
 } else if (document.location.hostname.endsWith(".eu.ngrok.io")) {
   apiPath = "https://isaacscience.eu.ngrok.io/isaac-api/api";
+} else if (document.location.hostname === "isaac-fe-alb-test.development.isaaccomputerscience.org") {
+  // ALB shadow hostname serves only the FE; API stays on the main staging hosts (ingress-nginx /api rewrite).
+  apiPath = `${STAGING_URL}/api/${API_VERSION}/api`;
 }
 export const isStaging =
-  document.location.hostname.startsWith("staging.") || document.location.hostname.startsWith("www.staging.");
+  document.location.hostname.startsWith("staging.") ||
+  document.location.hostname.startsWith("www.staging.") ||
+  document.location.hostname === "isaac-fe-alb-test.development.isaaccomputerscience.org";
 
 export const envSpecific = <L, S, D>(live: L, staging: S, dev: D) =>
   isStaging ? staging : process.env.NODE_ENV === "production" ? live : dev;
