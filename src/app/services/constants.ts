@@ -47,7 +47,8 @@ if (document.location.hostname === "localhost") {
 export const isStaging =
   document.location.hostname.startsWith("staging.") ||
   document.location.hostname.startsWith("www.staging.") ||
-  document.location.hostname === "isaac-fe-alb-test.development.isaaccomputerscience.org";
+  document.location.hostname === "isaac-fe-alb-test.development.isaaccomputerscience.org" ||
+  document.location.hostname === "isaac-stack-alb-test.development.isaaccomputerscience.org";
 
 export const envSpecific = <L, S, D>(live: L, staging: S, dev: D) =>
   isStaging ? staging : process.env.NODE_ENV === "production" ? live : dev;
