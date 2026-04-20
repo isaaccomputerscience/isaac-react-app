@@ -10,10 +10,14 @@ interface IsaacVideoProps {
 }
 
 interface VideoEventDetails {
-  type: "VIDEO_PLAY" | "VIDEO_PAUSE" | "VIDEO_ENDED";
+  type: "VIDEO_PLAY" | "VIDEO_PAUSE" | "VIDEO_ENDED" | "VIDEO_60_PERCENT_WATCHED";
+  videoId?: string;
   videoUrl: string;
+  videoDurationSeconds?: number;
   videoPosition?: number;
   pageId?: string;
+  watchedSeconds?: number;
+  watchPercent?: number;
 }
 
 interface WistiaPostMessageData {
@@ -80,6 +84,23 @@ const VIDEO_PLATFORMS = {
     ],
   },
 } as const;
+
+const VIDEO_WATCH_THRESHOLD = 0.6;
+const SEEK_DETECTION_TOLERANCE_SECONDS = 2.5;
+
+interface WatchedSegment {
+watchedSegmentStart: number;
+watchedSegmentEnd: number;
+}
+
+interface VideoProgressState {
+  totalVideoDurationInSeconds: number | null;
+  segments: WatchedSegment[];
+  currentSegmentStart: number | null;
+  lastKnownTime: number | null;
+  isPlaying: boolean;
+  thresholdLogged: boolean;
+}
 
 /**
  * Check if a URL hostname matches allowed hosts for a platform
@@ -150,6 +171,8 @@ function extractVideoId(embedSrc: string, pattern: RegExp): string | null {
   const match = pattern.exec(embedSrc);
   return match ? match[1] : null;
 }
+
+
 
 /**
  * Log video events to the backend
