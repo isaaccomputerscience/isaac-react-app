@@ -90,8 +90,8 @@ const SEEK_DETECTION_TOLERANCE_SECONDS = 2.5;
 const VIDEO_PROGRESS_STORAGE_PREFIX = "video-progress:";
 
 interface WatchedSegment {
-watchedSegmentStart: number;
-watchedSegmentEnd: number;
+  watchedSegmentStart: number;
+  watchedSegmentEnd: number;
 }
 
 interface VideoProgressState {
@@ -184,6 +184,31 @@ function isValidNumber(value: unknown): value is number {
 //clamp function is to ensure tat the value of video segments is between 0 and total video duration
 function clampVideoProgressValue(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(value, max));
+}
+
+function mergeSegments(segments: WatchedSegment[]): WatchedSegment[] {
+  if (segments.length === 0) return [];
+
+  const sortedSegments = [...segments].sort((a, b) => a.watchedSegmentStart - b.watchedSegmentStart);
+
+  // Initialize merged segments with the first segment
+  const mergedSegments: WatchedSegment[] = [{ ...sortedSegments[0] }];
+  // Iterate through sorted segments from the second one onwards
+  for (let i = 1; i < sortedSegments.length; i++) {
+    const currentSegment = sortedSegments[i];
+    const lastMergedSegment = mergedSegments[mergedSegments.length - 1];
+
+    if (currentSegment.watchedSegmentStart <= lastMergedSegment.watchedSegmentEnd + 0.5) {
+      lastMergedSegment.watchedSegmentEnd = Math.max(
+        lastMergedSegment.watchedSegmentEnd,
+        currentSegment.watchedSegmentEnd,
+      );
+    } else {
+      mergedSegments.push({ ...currentSegment });
+    }
+  }
+
+  return mergedSegments;
 }
 
 /**
