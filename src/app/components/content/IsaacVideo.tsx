@@ -87,6 +87,7 @@ const VIDEO_PLATFORMS = {
 
 const VIDEO_WATCH_THRESHOLD = 0.6;
 const SEEK_DETECTION_TOLERANCE_SECONDS = 2.5;
+const VIDEO_PROGRESS_STORAGE_PREFIX = "video-progress:";
 
 interface WatchedSegment {
 watchedSegmentStart: number;
@@ -172,7 +173,18 @@ function extractVideoId(embedSrc: string, pattern: RegExp): string | null {
   return match ? match[1] : null;
 }
 
+function getVideoProgressStorageKey(videoId: string): string {
+  return `${VIDEO_PROGRESS_STORAGE_PREFIX}${videoId}`;
+}
 
+function isValidNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+//clamp function is to ensure tat the value of video segments is between 0 and total video duration
+function clampVideoProgressValue(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(value, max));
+}
 
 /**
  * Log video events to the backend
