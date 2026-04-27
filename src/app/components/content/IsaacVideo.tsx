@@ -207,8 +207,19 @@ function mergeSegments(segments: WatchedSegment[]): WatchedSegment[] {
       mergedSegments.push({ ...currentSegment });
     }
   }
-
   return mergedSegments;
+}
+
+function getUniqueWatchedSeconds(segments: WatchedSegment[]): number {
+  return segments.reduce(
+    (total, segment) => total + Math.max(0, segment.watchedSegmentEnd - segment.watchedSegmentStart),
+    0,
+  );
+}
+
+function getWatchPercent(uniqueWatchedSeconds: number, totalVideoDurationInSeconds: number): number {
+  if (!isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) return 0;
+  return uniqueWatchedSeconds / totalVideoDurationInSeconds;
 }
 
 /**
