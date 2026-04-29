@@ -20,6 +20,12 @@ interface VideoEventDetails {
   watchPercent?: number;
 }
 
+interface VideoProgressStore {
+  durationSeconds: number | null;
+  segments: WatchedSegment[];
+  thresholdLogged: boolean;
+}
+
 interface WistiaPostMessageData {
   method: string;
   args: Array<string | number | Record<string, unknown>>;
@@ -220,6 +226,31 @@ function getUniqueWatchedSeconds(segments: WatchedSegment[]): number {
 function getWatchPercent(uniqueWatchedSeconds: number, totalVideoDurationInSeconds: number): number {
   if (!isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) return 0;
   return uniqueWatchedSeconds / totalVideoDurationInSeconds;
+}
+
+function loadVideoProgress(videoId: string): VideoProgressStore | null {
+  try {
+    const localStorageVideoData = globalThis.localStorage?.getItem(getVideoProgressStorageKey(videoId));
+    if (!localStorageVideoData) return null;
+    const parsed = JSON.parse(localStorageVideoData) as Partial<VideoProgressStore>;
+    const durationSeconds =
+      isValidNumber(parsed.durationSeconds) && parsed.durationSeconds > 0 ? parsed.durationSeconds : null;
+    const segments = Array.isArray(parsed.segments)
+      ? mergeSegments(
+          parsed.segments
+            .filter(
+              (s): s is WatchedSegment =>
+                isValidNumber((s as WatchedSegment).watchedSegmentStart) &&
+                isValidNumber((s as WatchedSegment).watchedSegmentEnd),
+            )
+            .map((s) => ({ watchedSegmentStart: s.watchedSegmentStart, watchedSegmentEnd: s.watchedSegmentEnd })),
+        )
+      : [];
+    const thresholdLogged = parsed.thresholdLogged === true;
+    return { durationSeconds, segments, thresholdLogged };
+  } catch {
+    return null;
+  }
 }
 
 /**
