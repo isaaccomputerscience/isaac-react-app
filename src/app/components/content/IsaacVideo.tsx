@@ -253,6 +253,29 @@ function loadVideoProgress(videoId: string): VideoProgressStore | null {
   }
 }
 
+function createInitialVideoProgressState(videoId: string | null): VideoProgressState {
+  if (!videoId) {
+    return {
+      totalVideoDurationInSeconds: null,
+      segments: [],
+      currentSegmentStart: null,
+      lastKnownTime: null,
+      isPlaying: false,
+      thresholdLogged: false,
+    };
+  }
+
+  const stored = loadVideoProgress(videoId);
+  return {
+    totalVideoDurationInSeconds: stored?.durationSeconds ?? null,
+    segments: stored?.segments ?? [],
+    currentSegmentStart: null,
+    lastKnownTime: null,
+    isPlaying: false,
+    thresholdLogged: stored?.thresholdLogged ?? false,
+  };
+}
+
 /**
  * Log video events to the backend
  */
