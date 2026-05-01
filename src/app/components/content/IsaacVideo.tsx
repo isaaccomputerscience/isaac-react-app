@@ -276,6 +276,19 @@ function createInitialVideoProgressState(videoId: string | null): VideoProgressS
   };
 }
 
+function saveVideoProgress(videoId: string, state: VideoProgressState): void {
+  try {
+    const toStore: VideoProgressStore = {
+      durationSeconds: state.totalVideoDurationInSeconds,
+      segments: state.segments,
+      thresholdLogged: state.thresholdLogged,
+    };
+    globalThis.localStorage?.setItem(getVideoProgressStorageKey(videoId), JSON.stringify(toStore));
+  } catch {
+    // ignore localStorage failures
+  }
+}
+
 /**
  * Log video events to the backend
  */
