@@ -11,7 +11,7 @@ interface IsaacVideoProps {
 
 interface VideoEventDetails {
   type: "VIDEO_PLAY" | "VIDEO_PAUSE" | "VIDEO_ENDED" | "VIDEO_60_PERCENT_WATCHED";
-  videoId?: string;
+  videoId: string;
   videoUrl: string;
   videoDurationSeconds?: number;
   videoPosition?: number;
@@ -317,16 +317,30 @@ async function logVideoEvent(
 function createEventDetails(
   type: VideoEventDetails["type"],
   videoUrl: string,
-  pageId?: string,
-  videoPosition?: number,
+  videoId: string,
+  options?: {
+    pageId?: string;
+    videoPosition?: number;
+    videoDurationSeconds?: number;
+    watchedSeconds?: number;
+    watchPercent?: number;
+  },
 ): VideoEventDetails {
-  const details: VideoEventDetails = { type, videoUrl };
-  if (pageId) details.pageId = pageId;
-  if (videoPosition !== undefined) details.videoPosition = videoPosition;
+  const details: VideoEventDetails = { type, videoUrl, videoId };
+  if (options?.pageId) details.pageId = options.pageId;
+  if (options?.videoPosition !== undefined) details.videoPosition = options.videoPosition;
+  if (options?.videoDurationSeconds !== undefined) details.videoDurationSeconds = options.videoDurationSeconds;
+  if (options?.watchedSeconds !== undefined) details.watchedSeconds = options.watchedSeconds;
+  if (options?.watchPercent !== undefined) details.watchPercent = options.watchPercent;
   return details;
 }
 
-function onPlayerStateChange(event: YouTubeEvent, pageId?: string, dispatch?: ReturnType<typeof useAppDispatch>): void {
+function onPlayerStateChange(
+  event: YouTubeEvent,
+  videoId: string,
+  pageId?: string,
+  dispatch?: ReturnType<typeof useAppDispatch>,
+): void {
   const YT = globalThis.YT;
   if (!YT) return;
 
@@ -348,12 +362,10 @@ function onPlayerStateChange(event: YouTubeEvent, pageId?: string, dispatch?: Re
       return;
   }
 
-  const eventDetails = createEventDetails(
-    eventType,
-    videoUrl,
+  const eventDetails = createEventDetails(eventType, videoUrl, videoId, {
     pageId,
-    eventType === "VIDEO_ENDED" ? undefined : videoPosition,
-  );
+    videoPosition: eventType === "VIDEO_ENDED" ? undefined : videoPosition,
+  });
 
   logVideoEvent(eventDetails, dispatch);
 }
@@ -451,12 +463,10 @@ export function IsaacVideo(props: IsaacVideoProps) {
       const eventType = eventTypeMap[eventName.toLowerCase()];
       if (!eventType) return;
 
-      const eventDetails = createEventDetails(
-        eventType,
-        embedSrc || "",
+      const eventDetails = createEventDetails(eventType, embedSrc || "", wistiaVideoId, {
         pageId,
-        eventType === "VIDEO_ENDED" ? undefined : lastKnownTime,
-      );
+        videoPosition: eventType === "VIDEO_ENDED" ? undefined : lastKnownTime,
+      });
 
       logVideoEvent(eventDetails, dispatch);
     };
@@ -540,7 +550,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
               origin: globalThis.location.origin,
             },
             events: {
-              onStateChange: (event: YouTubeEvent) => onPlayerStateChange(event, pageId, dispatch),
+              onStateChange: (event: YouTubeEvent) => onPlayerStateChange(event, youtubeVideoId, pageId, dispatch),
             },
           });
         });
