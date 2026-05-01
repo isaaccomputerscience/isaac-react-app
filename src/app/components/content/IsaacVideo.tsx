@@ -21,7 +21,7 @@ interface VideoEventDetails {
 }
 
 interface VideoProgressStore {
-  durationSeconds: number | null;
+  totalVideoDurationInSeconds: number | null;
   segments: WatchedSegment[];
   thresholdLogged: boolean;
 }
@@ -233,8 +233,10 @@ function loadVideoProgress(videoId: string): VideoProgressStore | null {
     const localStorageVideoData = globalThis.localStorage?.getItem(getVideoProgressStorageKey(videoId));
     if (!localStorageVideoData) return null;
     const parsed = JSON.parse(localStorageVideoData) as Partial<VideoProgressStore>;
-    const durationSeconds =
-      isValidNumber(parsed.durationSeconds) && parsed.durationSeconds > 0 ? parsed.durationSeconds : null;
+    const totalVideoDurationInSeconds =
+      isValidNumber(parsed.totalVideoDurationInSeconds) && parsed.totalVideoDurationInSeconds > 0
+        ? parsed.totalVideoDurationInSeconds
+        : null;
     const segments = Array.isArray(parsed.segments)
       ? mergeSegments(
           parsed.segments
@@ -247,7 +249,7 @@ function loadVideoProgress(videoId: string): VideoProgressStore | null {
         )
       : [];
     const thresholdLogged = parsed.thresholdLogged === true;
-    return { durationSeconds, segments, thresholdLogged };
+    return { totalVideoDurationInSeconds, segments, thresholdLogged };
   } catch {
     return null;
   }
@@ -267,7 +269,7 @@ function createInitialVideoProgressState(videoId: string | null): VideoProgressS
 
   const stored = loadVideoProgress(videoId);
   return {
-    totalVideoDurationInSeconds: stored?.durationSeconds ?? null,
+    totalVideoDurationInSeconds: stored?.totalVideoDurationInSeconds ?? null,
     segments: stored?.segments ?? [],
     currentSegmentStart: null,
     lastKnownTime: null,
@@ -279,7 +281,7 @@ function createInitialVideoProgressState(videoId: string | null): VideoProgressS
 function saveVideoProgress(videoId: string, state: VideoProgressState): void {
   try {
     const toStore: VideoProgressStore = {
-      durationSeconds: state.totalVideoDurationInSeconds,
+      totalVideoDurationInSeconds: state.totalVideoDurationInSeconds,
       segments: state.segments,
       thresholdLogged: state.thresholdLogged,
     };
