@@ -403,6 +403,13 @@ export function IsaacVideo(props: IsaacVideoProps) {
     [isYouTube, embedSrc],
   );
 
+  const canonicalVideoId = youtubeVideoId || wistiaVideoId;
+  const progressReference = useRef<VideoProgressState>(createInitialVideoProgressState(canonicalVideoId));
+
+  React.useEffect(() => {
+    progressReference.current = createInitialVideoProgressState(canonicalVideoId);
+  }, [canonicalVideoId]);
+
   // Load Wistia API script
   React.useEffect(() => {
     if (!isWistia || globalThis.Wistia) return;
