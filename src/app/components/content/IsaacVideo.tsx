@@ -421,7 +421,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
   );
 
   const checkIf60PercentWatchedAndLog = useCallback(
-    (videoUrl: string) => {
+    (videoId: string, videoUrl: string) => {
       if (!canonicalVideoId || progressReference.current.thresholdLogged) return;
       const totalVideoDurationInSeconds = progressReference.current.totalVideoDurationInSeconds;
       if (!isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) return;
@@ -433,16 +433,51 @@ export function IsaacVideo(props: IsaacVideoProps) {
       progressReference.current.thresholdLogged = true;
       saveVideoProgress(canonicalVideoId, progressReference.current);
 
-      const eventDetails = createEventDetails("VIDEO_60_PERCENT_WATCHED", videoUrl, {
+      const eventDetails = createEventDetails("VIDEO_60_PERCENT_WATCHED", videoUrl, videoId, {
         pageId,
-        videoId: canonicalVideoId,
         videoDurationSeconds: totalVideoDurationInSeconds,
-        watchedSeconds,
+        watchedSeconds: uniqueWatchedSeconds,
         watchPercent,
       });
       logVideoEvent(eventDetails, dispatch);
     },
     [canonicalVideoId, dispatch, pageId],
+  );
+
+  const appendSegment = useCallback(
+    (segmentStart: number, segmentEnd: number, videoId: string, videoUrl: string) => {
+      const totalVideoDurationInSeconds = progressReference.current.totalVideoDurationInSeconds;
+      if (!isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) return;
+
+      const clampedStart = clampVideoProgressValue(segmentStart, 0, totalVideoDurationInSeconds);
+      const clampedEnd = clampVideoProgressValue(segmentEnd, 0, totalVideoDurationInSeconds);
+      if (clampedEnd - clampedStart < 0.5) return;
+
+      progressReference.current.segments = mergeSegments([
+        ...progressReference.current.segments,
+        { watchedSegmentStart: clampedStart, watchedSegmentEnd: clampedEnd },
+      ]);
+      if (canonicalVideoId) {
+        saveVideoProgress(canonicalVideoId, progressReference.current);
+      }
+      checkIf60PercentWatchedAndLog(videoId, videoUrl);
+    },
+    [canonicalVideoId, checkIf60PercentWatchedAndLog],
+  );
+
+  const startCurrentSegment = useCallback((segmentStart: number) => {
+    progressReference.current.currentSegmentStart = segmentStart;
+    progressReference.current.lastKnownTime = segmentStart;
+  }, []);
+
+  const closeCurrentSegment = useCallback(
+    (segmentEnd: number, videoUrl: string, videoId: string) => {
+      const currentSegmentStart = progressReference.current.currentSegmentStart;
+      if (!isValidNumber(currentSegmentStart)) return;
+      appendSegment(currentSegmentStart, segmentEnd, videoId, videoUrl);
+      progressReference.current.currentSegmentStart = null;
+    },
+    [appendSegment],
   );
 
   // Load Wistia API script
@@ -502,7 +537,29 @@ export function IsaacVideo(props: IsaacVideoProps) {
     const handleVideoEvent = (eventName: string, eventData: WistiaEventData): void => {
       updateTimeFromEventData(eventData);
 
-      const eventType = eventTypeMap[eventName.toLowerCase()];
+      const durationFromEventData = typeof eventData.duration === "number" ? eventData.duration : undefined;
+      setTotalVideoDurationIfPresent(durationFromEventData);
+
+      const lowerCaseEventName = eventName.toLowerCase();
+      if (lowerCaseEventName === "play" || lowerCaseEventName === "playing") {
+        if (!progressReference.current.isPlaying) {
+          progressReference.current.isPlaying = true;
+          progressReference.current.currentSegmentStart = lastKnownTime;
+        }
+      } else if (
+        lowerCaseEventName === "pause" ||
+        lowerCaseEventName === "paused" ||
+        lowerCaseEventName === "end" ||
+        lowerCaseEventName === "ended"
+      ) {
+        if (isValidNumber(progressReference.current.currentSegmentStart)) {
+          appendSegment(progressReference.current.currentSegmentStart, lastKnownTime, wistiaVideoId, embedSrc || "");
+        }
+        progressReference.current.currentSegmentStart = null;
+        progressReference.current.isPlaying = false;
+      }
+
+      const eventType = eventTypeMap[lowerCaseEventName];
       if (!eventType) return;
 
       const eventDetails = createEventDetails(eventType, embedSrc || "", wistiaVideoId, {
@@ -572,7 +629,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
       globalThis.removeEventListener("message", handleWistiaMessage);
       clearTimeout(timer);
     };
-  }, [isWistia, wistiaVideoId, embedSrc, pageId, dispatch]);
+  }, [isWistia, wistiaVideoId, embedSrc, pageId, dispatch, appendSegment, setTotalVideoDurationIfPresent]);
 
   // YouTube video initialization
   const youtubeRef = useCallback(
