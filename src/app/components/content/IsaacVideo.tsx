@@ -410,6 +410,41 @@ export function IsaacVideo(props: IsaacVideoProps) {
     progressReference.current = createInitialVideoProgressState(canonicalVideoId);
   }, [canonicalVideoId]);
 
+  const setTotalVideoDurationIfPresent = useCallback(
+    (totalVideoDurationInSeconds: number | null | undefined) => {
+      if (!canonicalVideoId || !isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) return;
+      if (progressReference.current.totalVideoDurationInSeconds === totalVideoDurationInSeconds) return;
+      progressReference.current.totalVideoDurationInSeconds = totalVideoDurationInSeconds;
+      saveVideoProgress(canonicalVideoId, progressReference.current);
+    },
+    [canonicalVideoId],
+  );
+
+  const checkIf60PercentWatchedAndLog = useCallback(
+    (videoUrl: string) => {
+      if (!canonicalVideoId || progressReference.current.thresholdLogged) return;
+      const totalVideoDurationInSeconds = progressReference.current.totalVideoDurationInSeconds;
+      if (!isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) return;
+
+      const uniqueWatchedSeconds = getUniqueWatchedSeconds(progressReference.current.segments);
+      const watchPercent = getWatchPercent(uniqueWatchedSeconds, totalVideoDurationInSeconds);
+      if (watchPercent < VIDEO_WATCH_THRESHOLD) return;
+
+      progressReference.current.thresholdLogged = true;
+      saveVideoProgress(canonicalVideoId, progressReference.current);
+
+      const eventDetails = createEventDetails("VIDEO_60_PERCENT_WATCHED", videoUrl, {
+        pageId,
+        videoId: canonicalVideoId,
+        videoDurationSeconds: totalVideoDurationInSeconds,
+        watchedSeconds,
+        watchPercent,
+      });
+      logVideoEvent(eventDetails, dispatch);
+    },
+    [canonicalVideoId, dispatch, pageId],
+  );
+
   // Load Wistia API script
   React.useEffect(() => {
     if (!isWistia || globalThis.Wistia) return;
