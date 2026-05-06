@@ -467,7 +467,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
 
   const startCurrentSegment = useCallback((segmentStart: number) => {
     progressReference.current.currentSegmentStart = segmentStart;
-    progressReference.current.lastKnownTime = segmentStart;
+    progressReference.current.lastKnownTime = segmentStart; // this will set a baseline time when a new segment starts, so that we can detect seeks
   }, []);
 
   const closeCurrentSegment = useCallback(
@@ -478,6 +478,26 @@ export function IsaacVideo(props: IsaacVideoProps) {
       progressReference.current.currentSegmentStart = null;
     },
     [appendSegment],
+  );
+
+  // this function is used to update the playback progress of the video, and detect seeks by comparing the current time with the last known time.
+  const updatePlaybackProgress = useCallback(
+    (currentTime: number, videoUrl: string, videoId: string) => {
+      if (!isValidNumber(currentTime)) return;
+      const lastKnownTime = progressReference.current.lastKnownTime;
+      if (!progressReference.current.isPlaying || !isValidNumber(lastKnownTime)) {
+        progressReference.current.lastKnownTime = currentTime;
+        return;
+      }
+
+      const diff = currentTime - lastKnownTime;
+      const isSeek = Math.abs(diff) > SEEK_DETECTION_TOLERANCE_SECONDS;
+      if (isSeek) {
+        closeCurrentSegment(lastKnownTime, videoUrl, videoId);
+        startCurrentSegment(currentTime);
+      }
+    },
+    [closeCurrentSegment, startCurrentSegment],
   );
 
   // Load Wistia API script
@@ -535,39 +555,26 @@ export function IsaacVideo(props: IsaacVideoProps) {
     };
 
     const handleVideoEvent = (eventName: string, eventData: WistiaEventData): void => {
-      updateTimeFromEventData(eventData);
-
-      const durationFromEventData = typeof eventData.duration === "number" ? eventData.duration : undefined;
-      setTotalVideoDurationIfPresent(durationFromEventData);
-
-      const lowerCaseEventName = eventName.toLowerCase();
-      if (lowerCaseEventName === "play" || lowerCaseEventName === "playing") {
-        if (!progressReference.current.isPlaying) {
-          progressReference.current.isPlaying = true;
-          progressReference.current.currentSegmentStart = lastKnownTime;
-        }
-      } else if (
-        lowerCaseEventName === "pause" ||
-        lowerCaseEventName === "paused" ||
-        lowerCaseEventName === "end" ||
-        lowerCaseEventName === "ended"
-      ) {
-        if (isValidNumber(progressReference.current.currentSegmentStart)) {
-          appendSegment(progressReference.current.currentSegmentStart, lastKnownTime, wistiaVideoId, embedSrc || "");
-        }
-        progressReference.current.currentSegmentStart = null;
-        progressReference.current.isPlaying = false;
+      const videoUrl = embedSrc || "";
+      const eventTime = getTimeFromEventData(eventData) ?? progressReference.current.lastKnownTime ?? 0;
+      const totalVideoDurationInSeconds = getTotalVideoDurationInSecondsFromEventData(eventData);
+      if (isValidNumber(totalVideoDurationInSeconds) && totalVideoDurationInSeconds > 0) {
+        setTotalVideoDurationIfPresent(totalVideoDurationInSeconds);
       }
 
-      const eventType = eventTypeMap[lowerCaseEventName];
+      const eventType = eventTypeMap[eventName.toLowerCase()];
       if (!eventType) return;
 
-      const eventDetails = createEventDetails(eventType, embedSrc || "", wistiaVideoId, {
-        pageId,
-        videoPosition: eventType === "VIDEO_ENDED" ? undefined : lastKnownTime,
-      });
+      if (eventType === "VIDEO_PLAY") {
+        progressReference.current.isPlaying = true;
+        startCurrentSegment(eventTime);
+      } else {
+        progressReference.current.isPlaying = false;
+        closeCurrentSegment(eventTime, videoUrl);
+        progressRef.current.lastKnownTime = eventTime;
+      }
 
-      logVideoEvent(eventDetails, dispatch);
+      logPlayerEvent(eventType, videoUrl, eventType === "VIDEO_ENDED" ? undefined : eventTime);
     };
 
     const isTimeChangeEvent = (eventName: string): boolean => {
