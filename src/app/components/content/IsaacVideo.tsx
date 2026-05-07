@@ -500,6 +500,18 @@ export function IsaacVideo(props: IsaacVideoProps) {
     [closeCurrentSegment, startCurrentSegment],
   );
 
+  const logPlayerEvent = useCallback(
+    (eventType: VideoEventDetails["type"], videoUrl: string, videoId: string, videoPosition?: number) => {
+      const eventDetails = createEventDetails(eventType, videoUrl, videoId, {
+        pageId,
+        videoPosition: eventType === "VIDEO_ENDED" ? undefined : videoPosition,
+        videoDurationSeconds: progressReference.current.totalVideoDurationInSeconds ?? undefined,
+      });
+      logVideoEvent(eventDetails, dispatch);
+    },
+    [dispatch, pageId],
+  );
+
   // Load Wistia API script
   React.useEffect(() => {
     if (!isWistia || globalThis.Wistia) return;
@@ -520,7 +532,6 @@ export function IsaacVideo(props: IsaacVideoProps) {
     if (!isWistia || !wistiaVideoId || !wistiaIframeRef.current) return;
 
     const iframe = wistiaIframeRef.current;
-    let lastKnownTime = 0;
 
     // Event type mapping for video events
     const eventTypeMap: Record<string, VideoEventDetails["type"]> = {
@@ -540,24 +551,30 @@ export function IsaacVideo(props: IsaacVideoProps) {
 
     const updateTimeFromEventData = (eventData: WistiaEventData): void => {
       if (typeof eventData.seconds === "number") {
-        lastKnownTime = eventData.seconds;
+        progressReference.current.lastKnownTime = eventData.seconds;
       } else if (typeof eventData.secondsWatched === "number") {
-        lastKnownTime = eventData.secondsWatched;
+        progressReference.current.lastKnownTime = eventData.secondsWatched;
       }
     };
 
     const updateTimeFromArgs = (args: Array<string | number | Record<string, unknown>>): void => {
       if (typeof args[1] === "number") {
-        lastKnownTime = args[1];
+        progressReference.current.lastKnownTime = args[1];
       } else if (typeof (args[1] as WistiaEventData)?.seconds === "number") {
-        lastKnownTime = (args[1] as WistiaEventData).seconds as number;
+        progressReference.current.lastKnownTime = (args[1] as WistiaEventData).seconds as number;
       }
     };
 
+    const getTotalDurationInSecondsForWistiaVideoFromEventData = (eventData: WistiaEventData): number | null => {
+      const possibleDuration = eventData["duration"];
+      return isValidNumber(possibleDuration) ? possibleDuration : null;
+    };
+
     const handleVideoEvent = (eventName: string, eventData: WistiaEventData): void => {
+      updateTimeFromEventData(eventData);
       const videoUrl = embedSrc || "";
-      const eventTime = getTimeFromEventData(eventData) ?? progressReference.current.lastKnownTime ?? 0;
-      const totalVideoDurationInSeconds = getTotalVideoDurationInSecondsFromEventData(eventData);
+      const eventTime = progressReference.current.lastKnownTime ?? 0;
+      const totalVideoDurationInSeconds = getTotalDurationInSecondsForWistiaVideoFromEventData(eventData);
       if (isValidNumber(totalVideoDurationInSeconds) && totalVideoDurationInSeconds > 0) {
         setTotalVideoDurationIfPresent(totalVideoDurationInSeconds);
       }
@@ -570,11 +587,11 @@ export function IsaacVideo(props: IsaacVideoProps) {
         startCurrentSegment(eventTime);
       } else {
         progressReference.current.isPlaying = false;
-        closeCurrentSegment(eventTime, videoUrl);
-        progressRef.current.lastKnownTime = eventTime;
+        closeCurrentSegment(eventTime, videoUrl, wistiaVideoId);
+        progressReference.current.lastKnownTime = eventTime;
       }
 
-      logPlayerEvent(eventType, videoUrl, eventType === "VIDEO_ENDED" ? undefined : eventTime);
+      logPlayerEvent(eventType, videoUrl, wistiaVideoId, eventType === "VIDEO_ENDED" ? undefined : eventTime);
     };
 
     const isTimeChangeEvent = (eventName: string): boolean => {
@@ -596,6 +613,9 @@ export function IsaacVideo(props: IsaacVideoProps) {
 
         if (isTimeChangeEvent(eventName)) {
           updateTimeFromArgs(data.args);
+          if (isValidNumber(progressReference.current.lastKnownTime)) {
+            updatePlaybackProgress(progressReference.current.lastKnownTime, embedSrc || "", wistiaVideoId);
+          }
         } else {
           handleVideoEvent(eventName, eventData);
         }
@@ -636,7 +656,19 @@ export function IsaacVideo(props: IsaacVideoProps) {
       globalThis.removeEventListener("message", handleWistiaMessage);
       clearTimeout(timer);
     };
-  }, [isWistia, wistiaVideoId, embedSrc, pageId, dispatch, appendSegment, setTotalVideoDurationIfPresent]);
+  }, [
+    isWistia,
+    wistiaVideoId,
+    embedSrc,
+    pageId,
+    dispatch,
+    appendSegment,
+    setTotalVideoDurationIfPresent,
+    closeCurrentSegment,
+    logPlayerEvent,
+    startCurrentSegment,
+    updatePlaybackProgress,
+  ]);
 
   // YouTube video initialization
   const youtubeRef = useCallback(
