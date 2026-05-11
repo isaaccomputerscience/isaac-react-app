@@ -14,7 +14,7 @@ const HomepageHighlight = () => {
     if (isBeforeCompetitionOpenDate(currentDate)) {
       return {
         subtitle:
-          "We're currently experiencing issues with Google authentication on our website. The Isaac Computer Science team is actively investigating and working on a fix. Thank you for your patience.",
+          "We're currently experiencing issues with Google authentication on our website. Our team is actively investigating and working on a fix. Thank you for your patience.",
       };
     } else if (isAfterCompetitionOpenDateAndBeforeCompetitionEndDate(currentDate)) {
       return {
