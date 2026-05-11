@@ -496,6 +496,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
         closeCurrentSegment(lastKnownTime, videoUrl, videoId);
         startCurrentSegment(currentTime);
       }
+      progressReference.current.lastKnownTime = currentTime;
     },
     [closeCurrentSegment, startCurrentSegment],
   );
@@ -549,31 +550,29 @@ export function IsaacVideo(props: IsaacVideoProps) {
       );
     };
 
-    const updateTimeFromEventData = (eventData: WistiaEventData): void => {
-      if (typeof eventData.seconds === "number") {
-        progressReference.current.lastKnownTime = eventData.seconds;
-      } else if (typeof eventData.secondsWatched === "number") {
-        progressReference.current.lastKnownTime = eventData.secondsWatched;
-      }
+    const updateTimeFromEventData = (eventData: WistiaEventData): number | null => {
+      if (typeof eventData.seconds === "number") return eventData.seconds;
+      if (typeof eventData.secondsWatched === "number") return eventData.secondsWatched;
+      return null;
     };
 
-    const updateTimeFromArgs = (args: Array<string | number | Record<string, unknown>>): void => {
+    const updateTimeFromArgs = (args: Array<string | number | Record<string, unknown>>): number | null => {
       if (typeof args[1] === "number") {
-        progressReference.current.lastKnownTime = args[1];
+        return args[1];
       } else if (typeof (args[1] as WistiaEventData)?.seconds === "number") {
-        progressReference.current.lastKnownTime = (args[1] as WistiaEventData).seconds as number;
+        return (args[1] as WistiaEventData).seconds as number;
       }
+      return null;
     };
 
     const getTotalDurationInSecondsForWistiaVideoFromEventData = (eventData: WistiaEventData): number | null => {
-      const possibleDuration = eventData["duration"];
-      return isValidNumber(possibleDuration) ? possibleDuration : null;
+      const videoDuration = eventData["duration"];
+      return isValidNumber(videoDuration) ? videoDuration : null;
     };
 
     const handleVideoEvent = (eventName: string, eventData: WistiaEventData): void => {
-      updateTimeFromEventData(eventData);
       const videoUrl = embedSrc || "";
-      const eventTime = progressReference.current.lastKnownTime ?? 0;
+      const eventTime = updateTimeFromEventData(eventData) ?? progressReference.current.lastKnownTime ?? 0;
       const totalVideoDurationInSeconds = getTotalDurationInSecondsForWistiaVideoFromEventData(eventData);
       if (isValidNumber(totalVideoDurationInSeconds) && totalVideoDurationInSeconds > 0) {
         setTotalVideoDurationIfPresent(totalVideoDurationInSeconds);
@@ -612,9 +611,13 @@ export function IsaacVideo(props: IsaacVideoProps) {
         const eventData = (data.args[1] || {}) as WistiaEventData;
 
         if (isTimeChangeEvent(eventName)) {
-          updateTimeFromArgs(data.args);
-          if (isValidNumber(progressReference.current.lastKnownTime)) {
-            updatePlaybackProgress(progressReference.current.lastKnownTime, embedSrc || "", wistiaVideoId);
+          const currentTime = updateTimeFromArgs(data.args);
+          if (isValidNumber(currentTime)) {
+            updatePlaybackProgress(currentTime, embedSrc || "", wistiaVideoId);
+          }
+          const totalVideoDurationInSeconds = getTotalDurationInSecondsForWistiaVideoFromEventData(eventData);
+          if (isValidNumber(totalVideoDurationInSeconds) && totalVideoDurationInSeconds > 0) {
+            setTotalVideoDurationIfPresent(totalVideoDurationInSeconds);
           }
         } else {
           handleVideoEvent(eventName, eventData);
@@ -636,7 +639,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
     const setupWistiaBindings = () => {
       if (iframe.contentWindow) {
         // Bind to all the events we care about
-        const eventsToTrack = ["play", "pause", "end", "timechange", "secondchange"];
+        const eventsToTrack = ["play", "pause", "end", "timechange", "secondchange", "durationchange"];
         eventsToTrack.forEach((eventName) => {
           iframe.contentWindow?.postMessage(
             JSON.stringify({
