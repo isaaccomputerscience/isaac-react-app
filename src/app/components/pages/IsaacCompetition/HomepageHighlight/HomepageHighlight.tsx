@@ -13,12 +13,8 @@ const HomepageHighlight = () => {
   const getBannerContent = () => {
     if (isBeforeCompetitionOpenDate(currentDate)) {
       return {
-        title: "National Computer Science Competition 2025/26",
-        subtitle: "Opening November 2025",
-        button: {
-          to: "https://forms.office.com/e/23bsQuZfjm",
-          label: "Be the first one to know",
-        },
+        subtitle:
+          "We're currently experiencing issues with Google authentication on our website. The Isaac Computer Science team is actively investigating and working on a fix. Thank you for your patience.",
       };
     } else if (isAfterCompetitionOpenDateAndBeforeCompetitionEndDate(currentDate)) {
       return {
@@ -57,14 +53,14 @@ const HomepageHighlight = () => {
         <>
           <h1 className="homepage-highlight-title pb-3 pt-4">{bannerContent.title}</h1>
           <h1 className="homepage-highlight-sub-title px-2 ">{bannerContent.subtitle1}</h1>
-          <h1 className="homepage-highlight-sub-title px-2  pb-4">{bannerContent.subtitle2}</h1>
+          <h1 className="homepage-highlight-sub-title px-2 pb-4">{bannerContent.subtitle2}</h1>
         </>
       );
     }
 
     return (
       <>
-        <h1 className="homepage-highlight-title px-1 pt-4">{bannerContent.title}</h1>
+        <h1 className="homepage-highlight-title px-1">{bannerContent.title}</h1>
         <h1 className="homepage-highlight-sub-title p-2">{bannerContent.subtitle}</h1>
       </>
     );
