@@ -40,6 +40,7 @@ interface WistiaEventData {
 interface YouTubePlayer {
   getVideoUrl: () => string;
   getCurrentTime: () => number;
+  getDuration: () => number;
 }
 
 interface YouTubeEvent {
@@ -335,41 +336,6 @@ function createEventDetails(
   return details;
 }
 
-function onPlayerStateChange(
-  event: YouTubeEvent,
-  videoId: string,
-  pageId?: string,
-  dispatch?: ReturnType<typeof useAppDispatch>,
-): void {
-  const YT = globalThis.YT;
-  if (!YT) return;
-
-  const videoUrl = event.target.getVideoUrl();
-  const videoPosition = event.target.getCurrentTime();
-  let eventType: VideoEventDetails["type"] | null = null;
-
-  switch (event.data) {
-    case YT.PlayerState.PLAYING:
-      eventType = "VIDEO_PLAY";
-      break;
-    case YT.PlayerState.PAUSED:
-      eventType = "VIDEO_PAUSE";
-      break;
-    case YT.PlayerState.ENDED:
-      eventType = "VIDEO_ENDED";
-      break;
-    default:
-      return;
-  }
-
-  const eventDetails = createEventDetails(eventType, videoUrl, videoId, {
-    pageId,
-    videoPosition: eventType === "VIDEO_ENDED" ? undefined : videoPosition,
-  });
-
-  logVideoEvent(eventDetails, dispatch);
-}
-
 export function pauseAllVideos(): void {
   const iframes = document.querySelectorAll("iframe");
   iframes.forEach((iframe) => {
@@ -388,6 +354,8 @@ export function IsaacVideo(props: IsaacVideoProps) {
   const altTextToUse = `Embedded video: ${altText || src}.`;
 
   const wistiaIframeRef = useRef<HTMLIFrameElement>(null);
+  const youtubePlayerRef = useRef<YouTubePlayer | null>(null);
+  const youtubePollTimerRef = useRef<ReturnType<typeof globalThis.setInterval> | null>(null);
 
   const platform = React.useMemo(() => (src ? detectPlatform(src) : null), [src]);
   const isYouTube = platform === "youtube";
@@ -635,7 +603,6 @@ export function IsaacVideo(props: IsaacVideoProps) {
 
     globalThis.addEventListener("message", handleWistiaMessage);
 
-    // Setup Wistia bindings once iframe is loaded
     const setupWistiaBindings = () => {
       if (iframe.contentWindow) {
         // Bind to all the events we care about
@@ -691,7 +658,63 @@ export function IsaacVideo(props: IsaacVideoProps) {
               origin: globalThis.location.origin,
             },
             events: {
-              onStateChange: (event: YouTubeEvent) => onPlayerStateChange(event, youtubeVideoId, pageId, dispatch),
+              onReady: (event: YouTubeEvent) => {
+                youtubePlayerRef.current = event.target;
+                setTotalVideoDurationIfPresent(event.target.getDuration());
+              },
+              onStateChange: (event: YouTubeEvent) => {
+                youtubePlayerRef.current = event.target;
+                setTotalVideoDurationIfPresent(event.target.getDuration());
+
+                const videoUrl = event.target.getVideoUrl();
+                const videoPosition = event.target.getCurrentTime();
+                let eventType: VideoEventDetails["type"] | null = null;
+
+                switch (event.data) {
+                  case YT.PlayerState.PLAYING:
+                    eventType = "VIDEO_PLAY";
+                    progressReference.current.isPlaying = true;
+                    startCurrentSegment(videoPosition);
+                    if (youtubePollTimerRef.current) {
+                      globalThis.clearInterval(youtubePollTimerRef.current);
+                    }
+                    youtubePollTimerRef.current = globalThis.setInterval(() => {
+                      const player = youtubePlayerRef.current;
+                      if (!player) return;
+                      updatePlaybackProgress(player.getCurrentTime(), player.getVideoUrl(), youtubeVideoId);
+                    }, 1000);
+                    break;
+                  case YT.PlayerState.PAUSED:
+                    eventType = "VIDEO_PAUSE";
+                    progressReference.current.isPlaying = false;
+                    closeCurrentSegment(videoPosition, videoUrl, youtubeVideoId);
+                    progressReference.current.lastKnownTime = videoPosition;
+                    if (youtubePollTimerRef.current) {
+                      globalThis.clearInterval(youtubePollTimerRef.current);
+                      youtubePollTimerRef.current = null;
+                    }
+                    break;
+                  case YT.PlayerState.ENDED:
+                    eventType = "VIDEO_ENDED";
+                    progressReference.current.isPlaying = false;
+                    closeCurrentSegment(videoPosition, videoUrl, youtubeVideoId);
+                    progressReference.current.lastKnownTime = videoPosition;
+                    if (youtubePollTimerRef.current) {
+                      globalThis.clearInterval(youtubePollTimerRef.current);
+                      youtubePollTimerRef.current = null;
+                    }
+                    break;
+                  default:
+                    return;
+                }
+
+                logPlayerEvent(
+                  eventType,
+                  videoUrl,
+                  youtubeVideoId,
+                  eventType === "VIDEO_ENDED" ? undefined : videoPosition,
+                );
+              },
             },
           });
         });
@@ -704,7 +727,14 @@ export function IsaacVideo(props: IsaacVideoProps) {
         });
       }
     },
-    [dispatch, pageId, youtubeVideoId],
+    [
+      closeCurrentSegment,
+      logPlayerEvent,
+      setTotalVideoDurationIfPresent,
+      startCurrentSegment,
+      updatePlaybackProgress,
+      youtubeVideoId,
+    ],
   );
 
   const detailsForPrintOut = <div className="only-print py-2 mb-4">{altTextToUse}</div>;
