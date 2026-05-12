@@ -13,8 +13,12 @@ const HomepageHighlight = () => {
   const getBannerContent = () => {
     if (isBeforeCompetitionOpenDate(currentDate)) {
       return {
-        subtitle:
-          "We're currently experiencing issues with Google authentication on our website. Our team is actively investigating and working on a fix. Thank you for your patience.",
+        title: "National Computer Science Competition 2025/26",
+        subtitle: "Opening November 2025",
+        button: {
+          to: "https://forms.office.com/e/23bsQuZfjm",
+          label: "Be the first one to know",
+        },
       };
     } else if (isAfterCompetitionOpenDateAndBeforeCompetitionEndDate(currentDate)) {
       return {
@@ -60,7 +64,7 @@ const HomepageHighlight = () => {
 
     return (
       <>
-        <h1 className="homepage-highlight-title px-1">{bannerContent.title}</h1>
+        <h1 className="homepage-highlight-title px-1 pt-4">{bannerContent.title}</h1>
         <h1 className="homepage-highlight-sub-title p-2">{bannerContent.subtitle}</h1>
       </>
     );
