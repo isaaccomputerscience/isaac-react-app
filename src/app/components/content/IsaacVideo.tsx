@@ -491,12 +491,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
     document.body.appendChild(script);
   }, [isWistia]);
 
-  // Setup Wistia tracking using postMessage API
-  //
-  // Wistia's iframe postMessage API allows us to track video events and position.
-  // We explicitly bind to play, pause, end, timechange, and secondchange events.
-  // The timechange/secondchange events continuously update our local lastKnownTime variable,
-  // which is then used when logging play/pause/end events to capture accurate video positions.
+  // Wistia: postMessage API — play/pause/end and time ticks feed the same segment tracker as YouTube
   React.useEffect(() => {
     if (!isWistia || !wistiaVideoId || !wistiaIframeRef.current) return;
 
@@ -625,17 +620,19 @@ export function IsaacVideo(props: IsaacVideoProps) {
     return () => {
       globalThis.removeEventListener("message", handleWistiaMessage);
       clearTimeout(timer);
+      const lastTime = progressReference.current.lastKnownTime;
+      if (progressReference.current.isPlaying && isValidNumber(lastTime)) {
+        closeCurrentSegment(lastTime, embedSrc || "", wistiaVideoId);
+      }
+      progressReference.current.isPlaying = false;
     };
   }, [
     isWistia,
     wistiaVideoId,
     embedSrc,
-    pageId,
-    dispatch,
-    appendSegment,
-    setTotalVideoDurationIfPresent,
     closeCurrentSegment,
     logPlayerEvent,
+    setTotalVideoDurationIfPresent,
     startCurrentSegment,
     updatePlaybackProgress,
   ]);
@@ -736,6 +733,21 @@ export function IsaacVideo(props: IsaacVideoProps) {
       youtubeVideoId,
     ],
   );
+
+  // Close any open YouTube segment and stop polling when leaving the page or changing video
+  React.useEffect(() => {
+    return () => {
+      if (youtubePollTimerRef.current) {
+        globalThis.clearInterval(youtubePollTimerRef.current);
+        youtubePollTimerRef.current = null;
+      }
+      const player = youtubePlayerRef.current;
+      if (player && youtubeVideoId) {
+        closeCurrentSegment(player.getCurrentTime(), player.getVideoUrl(), youtubeVideoId);
+        progressReference.current.isPlaying = false;
+      }
+    };
+  }, [closeCurrentSegment, youtubeVideoId]);
 
   const detailsForPrintOut = <div className="only-print py-2 mb-4">{altTextToUse}</div>;
 
