@@ -563,6 +563,9 @@ export function IsaacVideo(props: IsaacVideoProps) {
     const handleWistiaMessage = (event: MessageEvent): void => {
       if (!isValidWistiaOrigin(event.origin)) return;
 
+      //Check to make sure the message is coming from the same origin as the iframe. This is to prevent XSS attacks, especially when we have multiple videos on the same page.
+      if (event.source !== iframe.contentWindow) return;
+
       try {
         const data: WistiaPostMessageData = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
 
