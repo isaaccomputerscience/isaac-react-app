@@ -180,8 +180,9 @@ function extractVideoId(embedSrc: string, pattern: RegExp): string | null {
   return match ? match[1] : null;
 }
 
-function getVideoProgressStorageKey(videoId: string): string {
-  return `${VIDEO_PROGRESS_STORAGE_PREFIX}${videoId}`;
+// The video progress storage key is a combination of the user storage scope (logged-in or not logged in users) and the video id. This is to ensure that the video progress is scoped to the user.
+function getVideoProgressStorageKey(userStorageScope: string, videoId: string): string {
+  return `${VIDEO_PROGRESS_STORAGE_PREFIX}${userStorageScope}:${videoId}`;
 }
 
 function isValidNumber(value: unknown): value is number {
@@ -229,9 +230,11 @@ function getWatchPercent(uniqueWatchedSeconds: number, totalVideoDurationInSecon
   return uniqueWatchedSeconds / totalVideoDurationInSeconds;
 }
 
-function loadVideoProgress(videoId: string): VideoProgressStore | null {
+function loadVideoProgress(userStorageScope: string, videoId: string): VideoProgressStore | null {
   try {
-    const localStorageVideoData = globalThis.localStorage?.getItem(getVideoProgressStorageKey(videoId));
+    const localStorageVideoData = globalThis.localStorage?.getItem(
+      getVideoProgressStorageKey(userStorageScope, videoId),
+    );
     if (!localStorageVideoData) return null;
     const parsed = JSON.parse(localStorageVideoData) as Partial<VideoProgressStore>;
     const totalVideoDurationInSeconds =
@@ -256,19 +259,23 @@ function loadVideoProgress(videoId: string): VideoProgressStore | null {
   }
 }
 
-function createInitialVideoProgressState(videoId: string | null): VideoProgressState {
-  if (!videoId) {
-    return {
-      totalVideoDurationInSeconds: null,
-      segments: [],
-      currentSegmentStart: null,
-      lastKnownTime: null,
-      isPlaying: false,
-      thresholdLogged: false,
-    };
+function createEmptyVideoProgressState(): VideoProgressState {
+  return {
+    totalVideoDurationInSeconds: null,
+    segments: [],
+    currentSegmentStart: null,
+    lastKnownTime: null,
+    isPlaying: false,
+    thresholdLogged: false,
+  };
+}
+
+function createInitialVideoProgressState(userStorageScope: string | null, videoId: string | null): VideoProgressState {
+  if (!userStorageScope || !videoId) {
+    return createEmptyVideoProgressState();
   }
 
-  const stored = loadVideoProgress(videoId);
+  const stored = loadVideoProgress(userStorageScope, videoId);
   return {
     totalVideoDurationInSeconds: stored?.totalVideoDurationInSeconds ?? null,
     segments: stored?.segments ?? [],
@@ -279,14 +286,15 @@ function createInitialVideoProgressState(videoId: string | null): VideoProgressS
   };
 }
 
-function saveVideoProgress(videoId: string, state: VideoProgressState): void {
+function saveVideoProgress(userStorageScope: string | null, videoId: string, state: VideoProgressState): void {
+  if (!userStorageScope) return;
   try {
     const toStore: VideoProgressStore = {
       totalVideoDurationInSeconds: state.totalVideoDurationInSeconds,
       segments: state.segments,
       thresholdLogged: state.thresholdLogged,
     };
-    globalThis.localStorage?.setItem(getVideoProgressStorageKey(videoId), JSON.stringify(toStore));
+    globalThis.localStorage?.setItem(getVideoProgressStorageKey(userStorageScope, videoId), JSON.stringify(toStore));
   } catch {
     // ignore localStorage failures
   }
@@ -349,6 +357,10 @@ export function IsaacVideo(props: IsaacVideoProps) {
     doc: { src, altText },
   } = props;
   const page = useAppSelector(selectors.doc.get);
+  const user = useAppSelector(selectors.user.loggedInOrNull);
+
+  // Progress tracking and 60% KPI logging are scoped to logged-in users only.
+  const userStorageScope = user?.id != null ? String(user.id) : null;
   const pageId = (page && page !== NOT_FOUND && page.id) || undefined;
   const embedSrc = src && rewrite(src);
   const altTextToUse = `Embedded video: ${altText || src}.`;
@@ -372,25 +384,27 @@ export function IsaacVideo(props: IsaacVideoProps) {
   );
 
   const canonicalVideoId = youtubeVideoId || wistiaVideoId;
-  const progressReference = useRef<VideoProgressState>(createInitialVideoProgressState(canonicalVideoId));
+  const progressReference = useRef<VideoProgressState>(
+    createInitialVideoProgressState(userStorageScope, canonicalVideoId),
+  );
 
   React.useEffect(() => {
-    progressReference.current = createInitialVideoProgressState(canonicalVideoId);
-  }, [canonicalVideoId]);
+    progressReference.current = createInitialVideoProgressState(userStorageScope, canonicalVideoId);
+  }, [canonicalVideoId, userStorageScope]);
 
   const setTotalVideoDurationIfPresent = useCallback(
     (totalVideoDurationInSeconds: number | null | undefined) => {
       if (!canonicalVideoId || !isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) return;
       if (progressReference.current.totalVideoDurationInSeconds === totalVideoDurationInSeconds) return;
       progressReference.current.totalVideoDurationInSeconds = totalVideoDurationInSeconds;
-      saveVideoProgress(canonicalVideoId, progressReference.current);
+      saveVideoProgress(userStorageScope, canonicalVideoId, progressReference.current);
     },
-    [canonicalVideoId],
+    [canonicalVideoId, userStorageScope],
   );
 
   const checkIf60PercentWatchedAndLog = useCallback(
     (videoId: string, videoUrl: string) => {
-      if (!canonicalVideoId || progressReference.current.thresholdLogged) return;
+      if (!userStorageScope || !canonicalVideoId || progressReference.current.thresholdLogged) return;
       const totalVideoDurationInSeconds = progressReference.current.totalVideoDurationInSeconds;
       if (!isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) return;
 
@@ -399,7 +413,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
       if (watchPercent < VIDEO_WATCH_THRESHOLD) return;
 
       progressReference.current.thresholdLogged = true;
-      saveVideoProgress(canonicalVideoId, progressReference.current);
+      saveVideoProgress(userStorageScope, canonicalVideoId, progressReference.current);
 
       const eventDetails = createEventDetails("VIDEO_60_PERCENT_WATCHED", videoUrl, videoId, {
         pageId,
@@ -409,11 +423,12 @@ export function IsaacVideo(props: IsaacVideoProps) {
       });
       logVideoEvent(eventDetails, dispatch);
     },
-    [canonicalVideoId, dispatch, pageId],
+    [canonicalVideoId, dispatch, pageId, userStorageScope],
   );
 
   const appendSegment = useCallback(
     (segmentStart: number, segmentEnd: number, videoId: string, videoUrl: string) => {
+      if (!userStorageScope) return;
       const totalVideoDurationInSeconds = progressReference.current.totalVideoDurationInSeconds;
       if (!isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) return;
 
@@ -426,11 +441,11 @@ export function IsaacVideo(props: IsaacVideoProps) {
         { watchedSegmentStart: clampedStart, watchedSegmentEnd: clampedEnd },
       ]);
       if (canonicalVideoId) {
-        saveVideoProgress(canonicalVideoId, progressReference.current);
+        saveVideoProgress(userStorageScope, canonicalVideoId, progressReference.current);
       }
       checkIf60PercentWatchedAndLog(videoId, videoUrl);
     },
-    [canonicalVideoId, checkIf60PercentWatchedAndLog],
+    [canonicalVideoId, checkIf60PercentWatchedAndLog, userStorageScope],
   );
 
   const startCurrentSegment = useCallback((segmentStart: number) => {
