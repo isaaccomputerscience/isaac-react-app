@@ -14,7 +14,7 @@ const HomepageHighlight = () => {
     if (isBeforeCompetitionOpenDate(currentDate)) {
       return {
         subtitle:
-          "Some users may be experiencing issues when attempting questions. We’re actively working on a fix and will restore normal service as soon as possible. Thank you for your patience.",
+          "Some users are experiencing issues when attempting questions on mobile devices, including iPads. Please use a computer for now if possible while we fix this. Thank you for your patience.",
       };
     } else if (isAfterCompetitionOpenDateAndBeforeCompetitionEndDate(currentDate)) {
       return {
