@@ -204,7 +204,7 @@ function mergeSegments(segments: WatchedSegment[]): WatchedSegment[] {
   // Iterate through sorted segments from the second one onwards
   for (let i = 1; i < sortedSegments.length; i++) {
     const currentSegment = sortedSegments[i];
-    const lastMergedSegment = mergedSegments[mergedSegments.length - 1];
+    const lastMergedSegment = mergedSegments.at(-1)!;
 
     if (currentSegment.watchedSegmentStart <= lastMergedSegment.watchedSegmentEnd + 0.5) {
       lastMergedSegment.watchedSegmentEnd = Math.max(
@@ -245,9 +245,7 @@ function loadVideoProgress(userStorageScope: string, videoId: string): VideoProg
       ? mergeSegments(
           parsed.segments
             .filter(
-              (s): s is WatchedSegment =>
-                isValidNumber((s as WatchedSegment).watchedSegmentStart) &&
-                isValidNumber((s as WatchedSegment).watchedSegmentEnd),
+              (s): s is WatchedSegment => isValidNumber(s.watchedSegmentStart) && isValidNumber(s.watchedSegmentEnd),
             )
             .map((s) => ({ watchedSegmentStart: s.watchedSegmentStart, watchedSegmentEnd: s.watchedSegmentEnd })),
         )
@@ -360,7 +358,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
   const user = useAppSelector(selectors.user.loggedInOrNull);
 
   // Progress tracking and 60% KPI logging are scoped to logged-in users only.
-  const userStorageScope = user?.id != null ? String(user.id) : null;
+  const userStorageScope = user?.id == null ? null : String(user.id);
   const pageId = (page && page !== NOT_FOUND && page.id) || undefined;
   const embedSrc = src && rewrite(src);
   const altTextToUse = `Embedded video: ${altText || src}.`;
@@ -655,6 +653,81 @@ export function IsaacVideo(props: IsaacVideoProps) {
     updatePlaybackProgress,
   ]);
 
+  const stopYouTubePollTimer = useCallback(() => {
+    if (!youtubePollTimerRef.current) return;
+    globalThis.clearInterval(youtubePollTimerRef.current);
+    youtubePollTimerRef.current = null;
+  }, []);
+
+  const pollYouTubePlayerProgress = useCallback(() => {
+    const player = youtubePlayerRef.current;
+    if (!player || !youtubeVideoId) return;
+    updatePlaybackProgress(player.getCurrentTime(), player.getVideoUrl(), youtubeVideoId);
+  }, [updatePlaybackProgress, youtubeVideoId]);
+
+  const startYouTubePollTimer = useCallback(() => {
+    stopYouTubePollTimer();
+    youtubePollTimerRef.current = globalThis.setInterval(pollYouTubePlayerProgress, 1000);
+  }, [pollYouTubePlayerProgress, stopYouTubePollTimer]);
+
+  const handleYouTubePlayerReady = useCallback(
+    (event: YouTubeEvent) => {
+      youtubePlayerRef.current = event.target;
+      setTotalVideoDurationIfPresent(event.target.getDuration());
+    },
+    [setTotalVideoDurationIfPresent],
+  );
+
+  const handleYouTubePlayerStateChange = useCallback(
+    (event: YouTubeEvent) => {
+      const YT = globalThis.YT;
+      if (!YT || !youtubeVideoId) return;
+
+      youtubePlayerRef.current = event.target;
+      setTotalVideoDurationIfPresent(event.target.getDuration());
+
+      const videoUrl = event.target.getVideoUrl();
+      const videoPosition = event.target.getCurrentTime();
+      let eventType: VideoEventDetails["type"] | null = null;
+
+      switch (event.data) {
+        case YT.PlayerState.PLAYING:
+          eventType = "VIDEO_PLAY";
+          progressReference.current.isPlaying = true;
+          startCurrentSegment(videoPosition);
+          startYouTubePollTimer();
+          break;
+        case YT.PlayerState.PAUSED:
+          eventType = "VIDEO_PAUSE";
+          progressReference.current.isPlaying = false;
+          closeCurrentSegment(videoPosition, videoUrl, youtubeVideoId);
+          progressReference.current.lastKnownTime = videoPosition;
+          stopYouTubePollTimer();
+          break;
+        case YT.PlayerState.ENDED:
+          eventType = "VIDEO_ENDED";
+          progressReference.current.isPlaying = false;
+          closeCurrentSegment(videoPosition, videoUrl, youtubeVideoId);
+          progressReference.current.lastKnownTime = videoPosition;
+          stopYouTubePollTimer();
+          break;
+        default:
+          return;
+      }
+
+      logPlayerEvent(eventType, videoUrl, youtubeVideoId, eventType === "VIDEO_ENDED" ? undefined : videoPosition);
+    },
+    [
+      closeCurrentSegment,
+      logPlayerEvent,
+      setTotalVideoDurationIfPresent,
+      startCurrentSegment,
+      startYouTubePollTimer,
+      stopYouTubePollTimer,
+      youtubeVideoId,
+    ],
+  );
+
   // YouTube video initialization
   const youtubeRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -673,63 +746,8 @@ export function IsaacVideo(props: IsaacVideoProps) {
               origin: globalThis.location.origin,
             },
             events: {
-              onReady: (event: YouTubeEvent) => {
-                youtubePlayerRef.current = event.target;
-                setTotalVideoDurationIfPresent(event.target.getDuration());
-              },
-              onStateChange: (event: YouTubeEvent) => {
-                youtubePlayerRef.current = event.target;
-                setTotalVideoDurationIfPresent(event.target.getDuration());
-
-                const videoUrl = event.target.getVideoUrl();
-                const videoPosition = event.target.getCurrentTime();
-                let eventType: VideoEventDetails["type"] | null = null;
-
-                switch (event.data) {
-                  case YT.PlayerState.PLAYING:
-                    eventType = "VIDEO_PLAY";
-                    progressReference.current.isPlaying = true;
-                    startCurrentSegment(videoPosition);
-                    if (youtubePollTimerRef.current) {
-                      globalThis.clearInterval(youtubePollTimerRef.current);
-                    }
-                    youtubePollTimerRef.current = globalThis.setInterval(() => {
-                      const player = youtubePlayerRef.current;
-                      if (!player) return;
-                      updatePlaybackProgress(player.getCurrentTime(), player.getVideoUrl(), youtubeVideoId);
-                    }, 1000);
-                    break;
-                  case YT.PlayerState.PAUSED:
-                    eventType = "VIDEO_PAUSE";
-                    progressReference.current.isPlaying = false;
-                    closeCurrentSegment(videoPosition, videoUrl, youtubeVideoId);
-                    progressReference.current.lastKnownTime = videoPosition;
-                    if (youtubePollTimerRef.current) {
-                      globalThis.clearInterval(youtubePollTimerRef.current);
-                      youtubePollTimerRef.current = null;
-                    }
-                    break;
-                  case YT.PlayerState.ENDED:
-                    eventType = "VIDEO_ENDED";
-                    progressReference.current.isPlaying = false;
-                    closeCurrentSegment(videoPosition, videoUrl, youtubeVideoId);
-                    progressReference.current.lastKnownTime = videoPosition;
-                    if (youtubePollTimerRef.current) {
-                      globalThis.clearInterval(youtubePollTimerRef.current);
-                      youtubePollTimerRef.current = null;
-                    }
-                    break;
-                  default:
-                    return;
-                }
-
-                logPlayerEvent(
-                  eventType,
-                  videoUrl,
-                  youtubeVideoId,
-                  eventType === "VIDEO_ENDED" ? undefined : videoPosition,
-                );
-              },
+              onReady: handleYouTubePlayerReady,
+              onStateChange: handleYouTubePlayerStateChange,
             },
           });
         });
@@ -742,14 +760,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
         });
       }
     },
-    [
-      closeCurrentSegment,
-      logPlayerEvent,
-      setTotalVideoDurationIfPresent,
-      startCurrentSegment,
-      updatePlaybackProgress,
-      youtubeVideoId,
-    ],
+    [handleYouTubePlayerReady, handleYouTubePlayerStateChange, youtubeVideoId],
   );
 
   // Close any open YouTube segment and stop polling when leaving the page or changing video
