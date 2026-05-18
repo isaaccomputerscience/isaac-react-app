@@ -293,8 +293,8 @@ export const api = {
     answer: (
       id: string,
       answer: Immutable<ApiTypes.ChoiceDTO>,
-        console.log("MMM_SUBMIT_ANSWER questionId=" + id);
-          ): AxiosPromise<ApiTypes.QuestionValidationResponseDTO> => {
+    ): AxiosPromise<ApiTypes.QuestionValidationResponseDTO> => {
+      console.log("MMM_SUBMIT_ANSWER questionId=" + id);
       return endpoint.post(`/questions/${id}/answer`, answer);
     },
     answeredQuestionsByDate: (
