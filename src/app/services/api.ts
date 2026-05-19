@@ -295,10 +295,8 @@ export const api = {
       id: string,
       answer: Immutable<ApiTypes.ChoiceDTO>,
     ): AxiosPromise<ApiTypes.QuestionValidationResponseDTO> => {
-      console.log("MMM_SUBMIT_ANSWER questionId=" + id);
       // URL-encode the ID to handle special characters like pipe '|' in question IDs
       const encodedId = encodeURIComponent(id);
-      console.log("MMM_SUBMIT_ANSWER encodedId=" + encodedId);
       return endpoint.post(`/questions/${encodedId}/answer`, answer);
     },
     answeredQuestionsByDate: (
