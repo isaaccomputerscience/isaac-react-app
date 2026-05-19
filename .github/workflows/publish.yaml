@@ -62,7 +62,7 @@ jobs:
             # tag event
             type=ref,event=tag
       - name: Build and push cs Docker image
-        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
         with:
           file: Dockerfile-react
           context: .
@@ -72,7 +72,7 @@ jobs:
           tags: ${{ steps.meta-cs.outputs.tags }}
           labels: ${{ steps.meta-cs.outputs.labels }}
       - name: Build and push cs-renderer Docker image
-        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
         with:
           file: Dockerfile-react
           context: .
