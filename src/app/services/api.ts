@@ -283,7 +283,8 @@ export const api = {
   },
   questions: {
     get: (id: string): AxiosPromise<ApiTypes.IsaacQuestionPageDTO> => {
-      return endpoint.get(`/pages/questions/${id}`);
+      // URL-encode the ID to handle special characters like pipe '|' in question IDs
+      return endpoint.get(`/pages/questions/${encodeURIComponent(id)}`);
     },
     search: (query: QuestionSearchQuery): AxiosPromise<QuestionSearchResponse> => {
       return endpoint.get(`/pages/questions/`, {
@@ -294,7 +295,9 @@ export const api = {
       id: string,
       answer: Immutable<ApiTypes.ChoiceDTO>,
     ): AxiosPromise<ApiTypes.QuestionValidationResponseDTO> => {
-      return endpoint.post(`/questions/${id}/answer`, answer);
+      // URL-encode the ID to handle special characters like pipe '|' in question IDs
+      const encodedId = encodeURIComponent(id);
+      return endpoint.post(`/questions/${encodedId}/answer`, answer);
     },
     answeredQuestionsByDate: (
       userId: number | string,
