@@ -21,6 +21,7 @@ import { isQuestion } from "../../services";
 import { IsaacCodeTabs } from "./IsaacCodeTabs";
 import { IsaacInteractiveCodeSnippet } from "./IsaacInteractiveCodeSnippet";
 import { IsaacCallout } from "./IsaacCallout";
+import { IsaacEventsCarousel } from "./IsaacEventsCarousel";
 const IsaacCodeSnippet = lazy(() => import("./IsaacCodeSnippet"));
 
 const classBasedLayouts = {
@@ -89,6 +90,9 @@ export const IsaacContent = withRouter((props: IsaacContentProps) => {
         break;
       case "codeTabs":
         selectedComponent = <IsaacCodeTabs {...props} />;
+        break;
+      case "isaacEventsCarousel":
+        selectedComponent = <IsaacEventsCarousel />;
         break;
       default:
         switch (layout) {
