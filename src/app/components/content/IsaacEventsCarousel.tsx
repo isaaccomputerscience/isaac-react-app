@@ -6,7 +6,7 @@ export const IsaacEventsCarousel = () => {
   return (
     <div className="isaac-events-carousel" data-testid="isaac-events-carousel">
       <EventsCarousel />
-      <div className="center-container">
+      <div className="center-container pb-5">
         <Link className="browse-events" to="/events">
           Browse all events
         </Link>
