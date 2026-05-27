@@ -301,7 +301,7 @@ function saveVideoProgress(userStorageScope: string | null, videoId: string, sta
 /**
  * Log video events to the backend
  */
-async function logVideoEvent(
+export async function logVideoEvent(
   eventDetails: VideoEventDetails,
   dispatch?: ReturnType<typeof useAppDispatch>,
 ): Promise<void> {
@@ -321,7 +321,7 @@ async function logVideoEvent(
 /**
  * Create video event details object
  */
-function createEventDetails(
+export function createEventDetails(
   type: VideoEventDetails["type"],
   videoUrl: string,
   videoId: string,
@@ -340,6 +340,42 @@ function createEventDetails(
   if (options?.watchedSeconds !== undefined) details.watchedSeconds = options.watchedSeconds;
   if (options?.watchPercent !== undefined) details.watchPercent = options.watchPercent;
   return details;
+}
+
+export function onPlayerStateChange(
+  event: YouTubeEvent,
+  pageId?: string,
+  dispatch?: ReturnType<typeof useAppDispatch>,
+): void {
+  const YT = globalThis.YT;
+  if (!YT) return;
+
+  const videoUrl = event.target.getVideoUrl();
+  const videoPosition = event.target.getCurrentTime();
+  let eventType: VideoEventDetails["type"] | null = null;
+
+  switch (event.data) {
+    case YT.PlayerState.PLAYING:
+      eventType = "VIDEO_PLAY";
+      break;
+    case YT.PlayerState.PAUSED:
+      eventType = "VIDEO_PAUSE";
+      break;
+    case YT.PlayerState.ENDED:
+      eventType = "VIDEO_ENDED";
+      break;
+    default:
+      return;
+  }
+
+  const eventDetails = createEventDetails(
+    eventType,
+    videoUrl,
+    pageId,
+    eventType === "VIDEO_ENDED" ? undefined : videoPosition,
+  );
+
+  logVideoEvent(eventDetails, dispatch);
 }
 
 export function pauseAllVideos(): void {
