@@ -1,5 +1,10 @@
 import { jest } from "@jest/globals";
-import { logVideoEvent, rewrite, onPlayerStateChange } from "../../../../app/components/content/IsaacVideo";
+import {
+  logVideoEvent,
+  rewrite,
+  onPlayerStateChange,
+  pauseAllVideos,
+} from "../../../../app/components/content/IsaacVideo";
 import { ACTION_TYPE, api } from "../../../../app/services";
 
 describe("rewrite", () => {
@@ -123,5 +128,24 @@ describe("onPlayerStateChange", () => {
     onPlayerStateChange({ target: mockPlayer, data: 1 }, "page-1", mockDispatch);
     await flushPromises();
     expect(mockDispatchFn).not.toHaveBeenCalled();
+  });
+});
+
+// video pause tests will ensure thatwhen user switches tabs/closes accordion, playing videos are paused instead of continuing in the background.
+describe("pauseAllVideos", () => {
+  it("sends pause commands to all iframe content windows", () => {
+    const postMessage = jest.fn();
+    const iframe = document.createElement("iframe");
+    Object.defineProperty(iframe, "contentWindow", {
+      value: { postMessage },
+      configurable: true,
+    });
+    document.body.appendChild(iframe);
+
+    pauseAllVideos();
+
+    expect(postMessage).toHaveBeenCalledWith(JSON.stringify({ event: "command", func: "pauseVideo" }), "*");
+
+    document.body.removeChild(iframe);
   });
 });
