@@ -1,5 +1,5 @@
 import { jest } from "@jest/globals";
-import { logVideoEvent, rewrite } from "../../../../app/components/content/IsaacVideo";
+import { logVideoEvent, rewrite, onPlayerStateChange } from "../../../../app/components/content/IsaacVideo";
 import { ACTION_TYPE, api } from "../../../../app/services";
 
 describe("rewrite", () => {
@@ -42,6 +42,7 @@ describe("logVideoEvent", () => {
     expect(logSpy).toHaveBeenCalledWith(eventDetails);
   });
 
+  //Testing that logger API is always called irrespective of whether dispatch is provided or not.
   it("calls only the logger API when dispatch is omitted", async () => {
     const dispatch = jest.fn() as VideoEventDispatch;
     const logSpy = jest.spyOn(api.logger, "log").mockResolvedValue({} as never);
@@ -56,5 +57,71 @@ describe("logVideoEvent", () => {
     jest.spyOn(api.logger, "log").mockRejectedValue(new Error("network error"));
 
     await expect(logVideoEvent(eventDetails)).resolves.toBeUndefined();
+  });
+});
+
+describe("onPlayerStateChange", () => {
+  const originalYT = globalThis.YT;
+
+  const mockDispatchFn = jest.fn();
+  const mockDispatch = mockDispatchFn as VideoEventDispatch;
+  const mockPlayer = {
+    getVideoUrl: () => "https://www.youtube.com/watch?v=test123ABCde",
+    getCurrentTime: () => 30,
+  };
+
+  beforeEach(() => {
+    mockDispatchFn.mockClear();
+    globalThis.YT = {
+      Player: jest.fn() as never,
+      ready: jest.fn(),
+      PlayerState: {
+        PLAYING: 1,
+        PAUSED: 2,
+        ENDED: 0,
+      },
+    };
+    jest.spyOn(api.logger, "log").mockResolvedValue({} as never);
+  });
+
+  afterEach(() => {
+    globalThis.YT = originalYT;
+    jest.restoreAllMocks();
+  });
+
+  const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
+
+  it.each([
+    [1, "VIDEO_PLAY"],
+    [2, "VIDEO_PAUSE"],
+    [0, "VIDEO_ENDED"],
+  ])("maps YouTube player state %i to %s and logs via dispatch", async (playerState, expectedEventType) => {
+    onPlayerStateChange({ target: mockPlayer, data: playerState }, "page-1", mockDispatch);
+    await flushPromises();
+
+    const expectedEventDetails: Record<string, unknown> = {
+      type: expectedEventType,
+      videoUrl: "https://www.youtube.com/watch?v=test123ABCde",
+      pageId: "page-1",
+    };
+    if (expectedEventType !== "VIDEO_ENDED") {
+      expectedEventDetails.videoPosition = 30;
+    }
+
+    expect(mockDispatchFn).toHaveBeenCalledWith({
+      type: ACTION_TYPE.LOG_EVENT,
+      eventDetails: expectedEventDetails,
+    });
+  });
+
+  it("does not log for unhandled player states or when the YouTube API is unavailable", async () => {
+    onPlayerStateChange({ target: mockPlayer, data: 99 }, "page-1", mockDispatch);
+    await flushPromises();
+    expect(mockDispatchFn).not.toHaveBeenCalled();
+
+    globalThis.YT = undefined;
+    onPlayerStateChange({ target: mockPlayer, data: 1 }, "page-1", mockDispatch);
+    await flushPromises();
+    expect(mockDispatchFn).not.toHaveBeenCalled();
   });
 });
