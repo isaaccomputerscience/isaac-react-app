@@ -33,6 +33,7 @@ type VideoEventDispatch = NonNullable<Parameters<typeof logVideoEvent>[1]>;
 describe("logVideoEvent", () => {
   const eventDetails = {
     type: "VIDEO_PLAY" as const,
+    videoId: "test123ABCde",
     videoUrl: "https://www.youtube.com/watch?v=test123ABCde",
     pageId: "page-1",
     videoPosition: 10,
@@ -78,6 +79,7 @@ describe("onPlayerStateChange", () => {
   const mockPlayer = {
     getVideoUrl: () => "https://www.youtube.com/watch?v=test123ABCde",
     getCurrentTime: () => 30,
+    getDuration: () => 120,
   };
 
   beforeEach(() => {
@@ -106,7 +108,7 @@ describe("onPlayerStateChange", () => {
     [2, "VIDEO_PAUSE"],
     [0, "VIDEO_ENDED"],
   ])("maps YouTube player state %i to %s and logs via dispatch", async (playerState, expectedEventType) => {
-    onPlayerStateChange({ target: mockPlayer, data: playerState }, "page-1", mockDispatch);
+    onPlayerStateChange({ target: mockPlayer, data: playerState }, "test123ABCde", "page-1", mockDispatch);
     await flushPromises();
 
     const expectedEventDetails: Record<string, unknown> = {
@@ -125,12 +127,12 @@ describe("onPlayerStateChange", () => {
   });
 
   it("does not log for unhandled player states or when the YouTube API is unavailable", async () => {
-    onPlayerStateChange({ target: mockPlayer, data: 99 }, "page-1", mockDispatch);
+    onPlayerStateChange({ target: mockPlayer, data: 99 }, "test123ABCde", "page-1", mockDispatch);
     await flushPromises();
     expect(mockDispatchFn).not.toHaveBeenCalled();
 
     globalThis.YT = undefined;
-    onPlayerStateChange({ target: mockPlayer, data: 1 }, "page-1", mockDispatch);
+    onPlayerStateChange({ target: mockPlayer, data: 1 }, "test123ABCde", "page-1", mockDispatch);
     await flushPromises();
     expect(mockDispatchFn).not.toHaveBeenCalled();
   });
@@ -164,7 +166,12 @@ describe("Wistia helpers", () => {
     const result = processWistiaMessage(
       "https://fast.wistia.net",
       JSON.stringify({ method: "_trigger", args: ["timechange", 17] }),
-      { lastKnownTime: 3, embedSrc: "https://fast.wistia.net/embed/iframe/abc123", pageId: "page-1" },
+      {
+        lastKnownTime: 3,
+        embedSrc: "https://fast.wistia.net/embed/iframe/abc123",
+        videoId: "abc123",
+        pageId: "page-1",
+      },
     );
 
     expect(result).toEqual({ lastKnownTime: 17 });
@@ -174,12 +181,18 @@ describe("Wistia helpers", () => {
     const playResult = processWistiaMessage(
       "https://fast.wistia.net",
       JSON.stringify({ method: "_trigger", args: ["play", { seconds: 21 }] }),
-      { lastKnownTime: 3, embedSrc: "https://fast.wistia.net/embed/iframe/abc123", pageId: "page-1" },
+      {
+        lastKnownTime: 3,
+        embedSrc: "https://fast.wistia.net/embed/iframe/abc123",
+        videoId: "abc123",
+        pageId: "page-1",
+      },
     );
     expect(playResult).toEqual({
       lastKnownTime: 21,
       eventDetails: {
         type: "VIDEO_PLAY",
+        videoId: "abc123",
         videoUrl: "https://fast.wistia.net/embed/iframe/abc123",
         pageId: "page-1",
         videoPosition: 21,
@@ -189,12 +202,18 @@ describe("Wistia helpers", () => {
     const endedResult = processWistiaMessage(
       "https://fast.wistia.net",
       JSON.stringify({ method: "_trigger", args: ["ended", { seconds: 60 }] }),
-      { lastKnownTime: 21, embedSrc: "https://fast.wistia.net/embed/iframe/abc123", pageId: "page-1" },
+      {
+        lastKnownTime: 21,
+        embedSrc: "https://fast.wistia.net/embed/iframe/abc123",
+        videoId: "abc123",
+        pageId: "page-1",
+      },
     );
     expect(endedResult).toEqual({
       lastKnownTime: 60,
       eventDetails: {
         type: "VIDEO_ENDED",
+        videoId: "abc123",
         videoUrl: "https://fast.wistia.net/embed/iframe/abc123",
         pageId: "page-1",
       },
@@ -205,14 +224,24 @@ describe("Wistia helpers", () => {
     const originRejected = processWistiaMessage(
       "https://youtube.com",
       JSON.stringify({ method: "_trigger", args: ["play", { seconds: 12 }] }),
-      { lastKnownTime: 7, embedSrc: "https://fast.wistia.net/embed/iframe/abc123", pageId: "page-1" },
+      {
+        lastKnownTime: 7,
+        embedSrc: "https://fast.wistia.net/embed/iframe/abc123",
+        videoId: "abc123",
+        pageId: "page-1",
+      },
     );
     expect(originRejected).toEqual({ lastKnownTime: 7 });
 
     const methodRejected = processWistiaMessage(
       "https://fast.wistia.net",
       JSON.stringify({ method: "noop", args: ["play", { seconds: 12 }] }),
-      { lastKnownTime: 7, embedSrc: "https://fast.wistia.net/embed/iframe/abc123", pageId: "page-1" },
+      {
+        lastKnownTime: 7,
+        embedSrc: "https://fast.wistia.net/embed/iframe/abc123",
+        videoId: "abc123",
+        pageId: "page-1",
+      },
     );
     expect(methodRejected).toEqual({ lastKnownTime: 7 });
   });
