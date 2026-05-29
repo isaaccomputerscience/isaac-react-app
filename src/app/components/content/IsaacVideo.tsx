@@ -37,6 +37,28 @@ interface WistiaEventData {
   [key: string]: unknown;
 }
 
+interface WistiaMessageProcessingContext {
+  lastKnownTime: number;
+  embedSrc: string;
+  pageId?: string;
+}
+
+interface WistiaMessageProcessingResult {
+  lastKnownTime: number;
+  eventDetails?: VideoEventDetails;
+}
+
+interface WistiaMessageProcessingContext {
+  lastKnownTime: number;
+  embedSrc: string;
+  pageId?: string;
+}
+
+interface WistiaMessageProcessingResult {
+  lastKnownTime: number;
+  eventDetails?: VideoEventDetails;
+}
+
 interface YouTubePlayer {
   getVideoUrl: () => string;
   getCurrentTime: () => number;
@@ -46,6 +68,33 @@ interface YouTubePlayer {
 interface YouTubeEvent {
   target: YouTubePlayer;
   data: number;
+}
+
+const VIDEO_WATCH_THRESHOLD = 0.6;
+const SEEK_DETECTION_TOLERANCE_SECONDS = 2.5;
+const VIDEO_PROGRESS_STORAGE_PREFIX = "video-progress:";
+
+interface WatchedSegment {
+  watchedSegmentStart: number;
+  watchedSegmentEnd: number;
+}
+
+const WISTIA_EVENT_TYPE_MAP: Record<string, VideoEventDetails["type"]> = {
+  play: "VIDEO_PLAY",
+  playing: "VIDEO_PLAY",
+  pause: "VIDEO_PAUSE",
+  paused: "VIDEO_PAUSE",
+  end: "VIDEO_ENDED",
+  ended: "VIDEO_ENDED",
+};
+
+interface VideoProgressState {
+  totalVideoDurationInSeconds: number | null;
+  segments: WatchedSegment[];
+  currentSegmentStart: number | null;
+  lastKnownTime: number | null;
+  isPlaying: boolean;
+  thresholdLogged: boolean;
 }
 
 declare global {
@@ -91,24 +140,6 @@ const VIDEO_PLATFORMS = {
     ],
   },
 } as const;
-
-const VIDEO_WATCH_THRESHOLD = 0.6;
-const SEEK_DETECTION_TOLERANCE_SECONDS = 2.5;
-const VIDEO_PROGRESS_STORAGE_PREFIX = "video-progress:";
-
-interface WatchedSegment {
-  watchedSegmentStart: number;
-  watchedSegmentEnd: number;
-}
-
-interface VideoProgressState {
-  totalVideoDurationInSeconds: number | null;
-  segments: WatchedSegment[];
-  currentSegmentStart: number | null;
-  lastKnownTime: number | null;
-  isPlaying: boolean;
-  thresholdLogged: boolean;
-}
 
 /**
  * Check if a URL hostname matches allowed hosts for a platform
@@ -342,6 +373,78 @@ export function createEventDetails(
   return details;
 }
 
+export function updateWistiaTimeFromEventData(lastKnownTime: number, eventData: WistiaEventData): number {
+  if (typeof eventData.seconds === "number") {
+    return eventData.seconds;
+  }
+  if (typeof eventData.secondsWatched === "number") {
+    return eventData.secondsWatched;
+  }
+  return lastKnownTime;
+}
+
+export function updateWistiaTimeFromArgs(
+  lastKnownTime: number,
+  args: Array<string | number | Record<string, unknown>>,
+): number {
+  if (typeof args[1] === "number") {
+    return args[1];
+  }
+  if (typeof (args[1] as WistiaEventData)?.seconds === "number") {
+    return (args[1] as WistiaEventData).seconds as number;
+  }
+  return lastKnownTime;
+}
+
+export function isWistiaTimeChangeEvent(eventName: string): boolean {
+  return eventName === "timechange" || eventName === "secondchange";
+}
+
+export function processWistiaMessage(
+  origin: string,
+  rawData: unknown,
+  context: WistiaMessageProcessingContext,
+): WistiaMessageProcessingResult {
+  if (!isValidWistiaOrigin(origin)) {
+    return { lastKnownTime: context.lastKnownTime };
+  }
+
+  const data: WistiaPostMessageData =
+    typeof rawData === "string" ? JSON.parse(rawData) : (rawData as WistiaPostMessageData);
+  if (data.method !== "_trigger" || !Array.isArray(data.args) || data.args.length === 0) {
+    return { lastKnownTime: context.lastKnownTime };
+  }
+
+  const eventName = String(data.args[0]).toLowerCase();
+  if (isWistiaTimeChangeEvent(eventName)) {
+    return {
+      lastKnownTime: updateWistiaTimeFromArgs(context.lastKnownTime, data.args),
+    };
+  }
+
+  const nextKnownTime = updateWistiaTimeFromEventData(context.lastKnownTime, (data.args[1] || {}) as WistiaEventData);
+  const eventType = WISTIA_EVENT_TYPE_MAP[eventName];
+  if (!eventType) {
+    return { lastKnownTime: nextKnownTime };
+  }
+
+  return {
+    lastKnownTime: nextKnownTime,
+    eventDetails: createEventDetails(
+      eventType,
+      context.embedSrc,
+      context.pageId,
+      eventType === "VIDEO_ENDED" ? undefined : nextKnownTime,
+    ),
+  };
+}
+
+export function isValidWistiaOrigin(origin: string): boolean {
+  return VIDEO_PLATFORMS.WISTIA.allowedOrigins.some(
+    (allowed) => origin === allowed || origin.endsWith(".wistia.net") || origin.endsWith(".wistia.com"),
+  );
+}
+
 export function onPlayerStateChange(
   event: YouTubeEvent,
   pageId?: string,
@@ -545,6 +648,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
     if (!isWistia || !wistiaVideoId || !wistiaIframeRef.current) return;
 
     const iframe = wistiaIframeRef.current;
+    let lastKnownTime = 0;
 
     // Event type mapping for video events
     const eventTypeMap: Record<string, VideoEventDetails["type"]> = {
@@ -562,47 +666,36 @@ export function IsaacVideo(props: IsaacVideoProps) {
       );
     };
 
-    const updateTimeFromEventData = (eventData: WistiaEventData): number | null => {
-      if (typeof eventData.seconds === "number") return eventData.seconds;
-      if (typeof eventData.secondsWatched === "number") return eventData.secondsWatched;
-      return null;
-    };
-
-    const updateTimeFromArgs = (args: Array<string | number | Record<string, unknown>>): number | null => {
-      if (typeof args[1] === "number") {
-        return args[1];
-      } else if (typeof (args[1] as WistiaEventData)?.seconds === "number") {
-        return (args[1] as WistiaEventData).seconds as number;
+    const updateTimeFromEventData = (eventData: WistiaEventData): void => {
+      if (typeof eventData.seconds === "number") {
+        lastKnownTime = eventData.seconds;
+      } else if (typeof eventData.secondsWatched === "number") {
+        lastKnownTime = eventData.secondsWatched;
       }
-      return null;
     };
 
-    const getTotalDurationInSecondsForWistiaVideoFromEventData = (eventData: WistiaEventData): number | null => {
-      const videoDuration = eventData["duration"];
-      return isValidNumber(videoDuration) ? videoDuration : null;
+    const updateTimeFromArgs = (args: Array<string | number | Record<string, unknown>>): void => {
+      if (typeof args[1] === "number") {
+        lastKnownTime = args[1];
+      } else if (typeof (args[1] as WistiaEventData)?.seconds === "number") {
+        lastKnownTime = (args[1] as WistiaEventData).seconds as number;
+      }
     };
 
     const handleVideoEvent = (eventName: string, eventData: WistiaEventData): void => {
-      const videoUrl = embedSrc || "";
-      const eventTime = updateTimeFromEventData(eventData) ?? progressReference.current.lastKnownTime ?? 0;
-      const totalVideoDurationInSeconds = getTotalDurationInSecondsForWistiaVideoFromEventData(eventData);
-      if (isValidNumber(totalVideoDurationInSeconds) && totalVideoDurationInSeconds > 0) {
-        setTotalVideoDurationIfPresent(totalVideoDurationInSeconds);
-      }
+      updateTimeFromEventData(eventData);
 
       const eventType = eventTypeMap[eventName.toLowerCase()];
       if (!eventType) return;
 
-      if (eventType === "VIDEO_PLAY") {
-        progressReference.current.isPlaying = true;
-        startCurrentSegment(eventTime);
-      } else {
-        progressReference.current.isPlaying = false;
-        closeCurrentSegment(eventTime, videoUrl, wistiaVideoId);
-        progressReference.current.lastKnownTime = eventTime;
-      }
+      const eventDetails = createEventDetails(
+        eventType,
+        embedSrc || "",
+        pageId,
+        eventType === "VIDEO_ENDED" ? undefined : lastKnownTime,
+      );
 
-      logPlayerEvent(eventType, videoUrl, wistiaVideoId, eventType === "VIDEO_ENDED" ? undefined : eventTime);
+      logVideoEvent(eventDetails, dispatch);
     };
 
     const isTimeChangeEvent = (eventName: string): boolean => {
@@ -611,9 +704,6 @@ export function IsaacVideo(props: IsaacVideoProps) {
 
     const handleWistiaMessage = (event: MessageEvent): void => {
       if (!isValidWistiaOrigin(event.origin)) return;
-
-      //Check to make sure the message is coming from the same origin as the iframe. This is to prevent XSS attacks, especially when we have multiple videos on the same page.
-      if (event.source !== iframe.contentWindow) return;
 
       try {
         const data: WistiaPostMessageData = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
@@ -626,14 +716,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
         const eventData = (data.args[1] || {}) as WistiaEventData;
 
         if (isTimeChangeEvent(eventName)) {
-          const currentTime = updateTimeFromArgs(data.args);
-          if (isValidNumber(currentTime)) {
-            updatePlaybackProgress(currentTime, embedSrc || "", wistiaVideoId);
-          }
-          const totalVideoDurationInSeconds = getTotalDurationInSecondsForWistiaVideoFromEventData(eventData);
-          if (isValidNumber(totalVideoDurationInSeconds) && totalVideoDurationInSeconds > 0) {
-            setTotalVideoDurationIfPresent(totalVideoDurationInSeconds);
-          }
+          updateTimeFromArgs(data.args);
         } else {
           handleVideoEvent(eventName, eventData);
         }
@@ -653,7 +736,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
     const setupWistiaBindings = () => {
       if (iframe.contentWindow) {
         // Bind to all the events we care about
-        const eventsToTrack = ["play", "pause", "end", "timechange", "secondchange", "durationchange"];
+        const eventsToTrack = ["play", "pause", "end", "timechange", "secondchange"];
         eventsToTrack.forEach((eventName) => {
           iframe.contentWindow?.postMessage(
             JSON.stringify({
