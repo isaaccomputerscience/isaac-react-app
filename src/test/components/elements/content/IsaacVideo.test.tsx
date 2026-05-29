@@ -1,9 +1,11 @@
+import React from "react";
+import { act } from "@testing-library/react";
 import { jest } from "@jest/globals";
 import {
+  IsaacVideo,
   isValidWistiaOrigin,
   isWistiaTimeChangeEvent,
   logVideoEvent,
-  onPlayerStateChange,
   pauseAllVideos,
   processWistiaMessage,
   rewrite,
@@ -11,6 +13,8 @@ import {
   updateWistiaTimeFromEventData,
 } from "../../../../app/components/content/IsaacVideo";
 import { ACTION_TYPE, api } from "../../../../app/services";
+import { renderTestEnvironment } from "../../../utils";
+import { store } from "../../../../app/state";
 
 describe("rewrite", () => {
   it("parses youtube url to iframe src", () => {
@@ -53,7 +57,6 @@ describe("logVideoEvent", () => {
     expect(logSpy).toHaveBeenCalledWith(eventDetails);
   });
 
-  //Testing that logger API is always called irrespective of whether dispatch is provided or not.
   it("calls only the logger API when dispatch is omitted", async () => {
     const dispatch = jest.fn() as VideoEventDispatch;
     const logSpy = jest.spyOn(api.logger, "log").mockResolvedValue({} as never);
@@ -71,29 +74,51 @@ describe("logVideoEvent", () => {
   });
 });
 
-describe("onPlayerStateChange", () => {
+describe("YouTube player handlers", () => {
   const originalYT = globalThis.YT;
+  const youtubeSrc = "https://www.youtube.com/watch?v=test123ABCde";
+  const youtubeVideoId = "test123ABCd";
 
-  const mockDispatchFn = jest.fn();
-  const mockDispatch = mockDispatchFn as VideoEventDispatch;
+  interface CapturedYouTubePlayerConfig {
+    events?: {
+      onReady?: (event: { target: typeof mockPlayer; data: number }) => void;
+      onStateChange?: (event: { target: typeof mockPlayer; data: number }) => void;
+    };
+  }
+
+  let capturedPlayerConfig: CapturedYouTubePlayerConfig | null = null;
+
   const mockPlayer = {
-    getVideoUrl: () => "https://www.youtube.com/watch?v=test123ABCde",
+    getVideoUrl: () => youtubeSrc,
     getCurrentTime: () => 30,
     getDuration: () => 120,
   };
 
+  class MockYTPlayer {
+    constructor(_node: HTMLElement, config: CapturedYouTubePlayerConfig) {
+      capturedPlayerConfig = config;
+      config.events?.onReady?.({ target: mockPlayer, data: 0 });
+    }
+  }
+
+  const IsaacVideoHarness = () => <IsaacVideo doc={{ type: "video", src: youtubeSrc, altText: "Test video" }} />;
+
+  const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
+
   beforeEach(() => {
-    mockDispatchFn.mockClear();
+    capturedPlayerConfig = null;
+    jest.spyOn(api.logger, "log").mockResolvedValue({} as never);
+    jest.spyOn(store, "dispatch");
+
     globalThis.YT = {
-      Player: jest.fn() as never,
-      ready: jest.fn(),
+      Player: MockYTPlayer as never,
+      ready: (callback: () => void) => callback(),
       PlayerState: {
         PLAYING: 1,
         PAUSED: 2,
         ENDED: 0,
       },
     };
-    jest.spyOn(api.logger, "log").mockResolvedValue({} as never);
   });
 
   afterEach(() => {
@@ -101,40 +126,84 @@ describe("onPlayerStateChange", () => {
     jest.restoreAllMocks();
   });
 
-  const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
+  const renderYouTubeVideo = () => {
+    renderTestEnvironment({
+      role: "STUDENT",
+      PageComponent: IsaacVideoHarness,
+      initialRouteEntries: ["/"],
+    });
+  };
+
+  it("registers onReady and onStateChange when the YouTube player is created", () => {
+    renderYouTubeVideo();
+
+    expect(capturedPlayerConfig?.events?.onReady).toBeDefined();
+    expect(capturedPlayerConfig?.events?.onStateChange).toBeDefined();
+  });
+
+  it("onReady captures video duration for later tracking events", async () => {
+    renderYouTubeVideo();
+    await flushPromises();
+
+    await act(async () => {
+      capturedPlayerConfig?.events?.onStateChange?.({ target: mockPlayer, data: 1 });
+    });
+    await flushPromises();
+
+    expect(store.dispatch).toHaveBeenCalledWith({
+      type: ACTION_TYPE.LOG_EVENT,
+      eventDetails: {
+        type: "VIDEO_PLAY",
+        videoId: youtubeVideoId,
+        videoUrl: youtubeSrc,
+        videoPosition: 30,
+        videoDurationSeconds: 120,
+      },
+    });
+  });
 
   it.each([
-    [1, "VIDEO_PLAY"],
-    [2, "VIDEO_PAUSE"],
-    [0, "VIDEO_ENDED"],
-  ])("maps YouTube player state %i to %s and logs via dispatch", async (playerState, expectedEventType) => {
-    onPlayerStateChange({ target: mockPlayer, data: playerState }, "test123ABCde", "page-1", mockDispatch);
+    [1, "VIDEO_PLAY", 30],
+    [2, "VIDEO_PAUSE", 30],
+    [0, "VIDEO_ENDED", undefined],
+  ])("onStateChange maps player state %i to %s", async (playerState, expectedEventType, videoPosition) => {
+    renderYouTubeVideo();
+    await flushPromises();
+
+    await act(async () => {
+      capturedPlayerConfig?.events?.onStateChange?.({ target: mockPlayer, data: playerState });
+    });
     await flushPromises();
 
     const expectedEventDetails: Record<string, unknown> = {
       type: expectedEventType,
-      videoUrl: "https://www.youtube.com/watch?v=test123ABCde",
-      pageId: "page-1",
+      videoId: youtubeVideoId,
+      videoUrl: youtubeSrc,
+      videoDurationSeconds: 120,
     };
-    if (expectedEventType !== "VIDEO_ENDED") {
-      expectedEventDetails.videoPosition = 30;
+    if (videoPosition !== undefined) {
+      expectedEventDetails.videoPosition = videoPosition;
     }
 
-    expect(mockDispatchFn).toHaveBeenCalledWith({
+    expect(store.dispatch).toHaveBeenCalledWith({
       type: ACTION_TYPE.LOG_EVENT,
       eventDetails: expectedEventDetails,
     });
   });
 
-  it("does not log for unhandled player states or when the YouTube API is unavailable", async () => {
-    onPlayerStateChange({ target: mockPlayer, data: 99 }, "test123ABCde", "page-1", mockDispatch);
+  it("onStateChange ignores unhandled player states", async () => {
+    renderYouTubeVideo();
     await flushPromises();
-    expect(mockDispatchFn).not.toHaveBeenCalled();
 
-    globalThis.YT = undefined;
-    onPlayerStateChange({ target: mockPlayer, data: 1 }, "test123ABCde", "page-1", mockDispatch);
+    const dispatchMock = store.dispatch as jest.Mock;
+    dispatchMock.mockClear();
+
+    await act(async () => {
+      capturedPlayerConfig?.events?.onStateChange?.({ target: mockPlayer, data: 99 });
+    });
     await flushPromises();
-    expect(mockDispatchFn).not.toHaveBeenCalled();
+
+    expect(dispatchMock).not.toHaveBeenCalled();
   });
 });
 
@@ -247,7 +316,6 @@ describe("Wistia helpers", () => {
   });
 });
 
-// video pause tests will ensure thatwhen user switches tabs/closes accordion, playing videos are paused instead of continuing in the background.
 describe("pauseAllVideos", () => {
   it("sends pause commands to all iframe content windows", () => {
     const postMessage = jest.fn();

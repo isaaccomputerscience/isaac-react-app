@@ -60,33 +60,6 @@ interface YouTubeEvent {
   data: number;
 }
 
-const VIDEO_WATCH_THRESHOLD = 0.6;
-const SEEK_DETECTION_TOLERANCE_SECONDS = 2.5;
-const VIDEO_PROGRESS_STORAGE_PREFIX = "video-progress:";
-
-interface WatchedSegment {
-  watchedSegmentStart: number;
-  watchedSegmentEnd: number;
-}
-
-const WISTIA_EVENT_TYPE_MAP: Record<string, VideoEventDetails["type"]> = {
-  play: "VIDEO_PLAY",
-  playing: "VIDEO_PLAY",
-  pause: "VIDEO_PAUSE",
-  paused: "VIDEO_PAUSE",
-  end: "VIDEO_ENDED",
-  ended: "VIDEO_ENDED",
-};
-
-interface VideoProgressState {
-  totalVideoDurationInSeconds: number | null;
-  segments: WatchedSegment[];
-  currentSegmentStart: number | null;
-  lastKnownTime: number | null;
-  isPlaying: boolean;
-  thresholdLogged: boolean;
-}
-
 declare global {
   interface Window {
     YT?: {
@@ -130,6 +103,33 @@ const VIDEO_PLATFORMS = {
     ],
   },
 } as const;
+
+const VIDEO_WATCH_THRESHOLD = 0.6;
+const SEEK_DETECTION_TOLERANCE_SECONDS = 2.5;
+const VIDEO_PROGRESS_STORAGE_PREFIX = "video-progress:";
+
+interface WatchedSegment {
+  watchedSegmentStart: number;
+  watchedSegmentEnd: number;
+}
+
+const WISTIA_EVENT_TYPE_MAP: Record<string, VideoEventDetails["type"]> = {
+  play: "VIDEO_PLAY",
+  playing: "VIDEO_PLAY",
+  pause: "VIDEO_PAUSE",
+  paused: "VIDEO_PAUSE",
+  end: "VIDEO_ENDED",
+  ended: "VIDEO_ENDED",
+};
+
+interface VideoProgressState {
+  totalVideoDurationInSeconds: number | null;
+  segments: WatchedSegment[];
+  currentSegmentStart: number | null;
+  lastKnownTime: number | null;
+  isPlaying: boolean;
+  thresholdLogged: boolean;
+}
 
 /**
  * Check if a URL hostname matches allowed hosts for a platform
@@ -433,41 +433,6 @@ export function isValidWistiaOrigin(origin: string): boolean {
   );
 }
 
-export function onPlayerStateChange(
-  event: YouTubeEvent,
-  videoId: string,
-  pageId?: string,
-  dispatch?: ReturnType<typeof useAppDispatch>,
-): void {
-  const YT = globalThis.YT;
-  if (!YT) return;
-
-  const videoUrl = event.target.getVideoUrl();
-  const videoPosition = event.target.getCurrentTime();
-  let eventType: VideoEventDetails["type"] | null = null;
-
-  switch (event.data) {
-    case YT.PlayerState.PLAYING:
-      eventType = "VIDEO_PLAY";
-      break;
-    case YT.PlayerState.PAUSED:
-      eventType = "VIDEO_PAUSE";
-      break;
-    case YT.PlayerState.ENDED:
-      eventType = "VIDEO_ENDED";
-      break;
-    default:
-      return;
-  }
-
-  const eventDetails = createEventDetails(eventType, videoUrl, videoId, {
-    pageId,
-    videoPosition: eventType === "VIDEO_ENDED" ? undefined : videoPosition,
-  });
-
-  logVideoEvent(eventDetails, dispatch);
-}
-
 export function pauseAllVideos(): void {
   const iframes = document.querySelectorAll("iframe");
   iframes.forEach((iframe) => {
@@ -645,8 +610,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
     const updateTimeFromArgs = (args: Array<string | number | Record<string, unknown>>): number | null => {
       if (typeof args[1] === "number") {
         return args[1];
-      }
-      if (typeof (args[1] as WistiaEventData)?.seconds === "number") {
+      } else if (typeof (args[1] as WistiaEventData)?.seconds === "number") {
         return (args[1] as WistiaEventData).seconds as number;
       }
       return null;
@@ -736,6 +700,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
       }
     };
 
+    // Give iframe time to load
     const timer = setTimeout(setupWistiaBindings, 1000);
 
     return () => {
