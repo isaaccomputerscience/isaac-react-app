@@ -2,13 +2,24 @@ import React from "react";
 import { act } from "@testing-library/react";
 import { jest } from "@jest/globals";
 import {
+  clampVideoProgressValue,
+  createEmptyVideoProgressState,
+  createInitialVideoProgressState,
+  extractVideoId,
+  getUniqueWatchedSeconds,
+  getVideoProgressStorageKey,
+  getWatchPercent,
   IsaacVideo,
+  isValidNumber,
   isValidWistiaOrigin,
   isWistiaTimeChangeEvent,
+  loadVideoProgress,
   logVideoEvent,
+  mergeSegments,
   pauseAllVideos,
   processWistiaMessage,
   rewrite,
+  saveVideoProgress,
   updateWistiaTimeFromArgs,
   updateWistiaTimeFromEventData,
 } from "../../../../app/components/content/IsaacVideo";
@@ -313,6 +324,318 @@ describe("Wistia helpers", () => {
       },
     );
     expect(methodRejected).toEqual({ lastKnownTime: 7 });
+  });
+});
+
+describe("isValidNumber", () => {
+  it("returns true for finite numbers", () => {
+    expect(isValidNumber(0)).toBe(true);
+    expect(isValidNumber(42.5)).toBe(true);
+    expect(isValidNumber(-1)).toBe(true);
+  });
+
+  it("returns false for non-finite or non-number values", () => {
+    expect(isValidNumber(NaN)).toBe(false);
+    expect(isValidNumber(Infinity)).toBe(false);
+    expect(isValidNumber("10")).toBe(false);
+    expect(isValidNumber(null)).toBe(false);
+    expect(isValidNumber(undefined)).toBe(false);
+  });
+});
+
+describe("clampVideoProgressValue", () => {
+  it("returns the value when it is within the inclusive range", () => {
+    expect(clampVideoProgressValue(5, 0, 10)).toBe(5);
+    expect(clampVideoProgressValue(-3, 0, 100)).toBe(0);
+    expect(clampVideoProgressValue(150, 0, 100)).toBe(100);
+  });
+});
+
+describe("mergeSegments", () => {
+  it("returns an empty array when given no segments", () => {
+    expect(mergeSegments([])).toEqual([]);
+  });
+
+  it("returns a single segment unchanged", () => {
+    expect(mergeSegments([{ watchedSegmentStart: 2, watchedSegmentEnd: 8 }])).toEqual([
+      { watchedSegmentStart: 2, watchedSegmentEnd: 8 },
+    ]);
+  });
+
+  it("sorts segments by start time before merging", () => {
+    expect(
+      mergeSegments([
+        { watchedSegmentStart: 20, watchedSegmentEnd: 30 },
+        { watchedSegmentStart: 0, watchedSegmentEnd: 10 },
+      ]),
+    ).toEqual([
+      { watchedSegmentStart: 0, watchedSegmentEnd: 10 },
+      { watchedSegmentStart: 20, watchedSegmentEnd: 30 },
+    ]);
+  });
+
+  it("merges overlapping segments into one", () => {
+    expect(
+      mergeSegments([
+        { watchedSegmentStart: 0, watchedSegmentEnd: 10 },
+        { watchedSegmentStart: 5, watchedSegmentEnd: 15 },
+      ]),
+    ).toEqual([{ watchedSegmentStart: 0, watchedSegmentEnd: 15 }]);
+  });
+
+  it("merges segments separated by up to 0.5 seconds", () => {
+    expect(
+      mergeSegments([
+        { watchedSegmentStart: 0, watchedSegmentEnd: 10 },
+        { watchedSegmentStart: 10.4, watchedSegmentEnd: 20 },
+      ]),
+    ).toEqual([{ watchedSegmentStart: 0, watchedSegmentEnd: 20 }]);
+  });
+
+  it("keeps segments separated by more than 0.5 seconds apart", () => {
+    expect(
+      mergeSegments([
+        { watchedSegmentStart: 0, watchedSegmentEnd: 10 },
+        { watchedSegmentStart: 30, watchedSegmentEnd: 40 },
+        { watchedSegmentStart: 10.6, watchedSegmentEnd: 20 },
+      ]),
+    ).toEqual([
+      { watchedSegmentStart: 0, watchedSegmentEnd: 10 },
+      { watchedSegmentStart: 10.6, watchedSegmentEnd: 20 },
+      { watchedSegmentStart: 30, watchedSegmentEnd: 40 },
+    ]);
+  });
+});
+
+describe("getUniqueWatchedSeconds", () => {
+  it("returns 0 for an empty segment list", () => {
+    expect(getUniqueWatchedSeconds([])).toBe(0);
+  });
+
+  it("sums the length of a single segment", () => {
+    expect(getUniqueWatchedSeconds([{ watchedSegmentStart: 5, watchedSegmentEnd: 15 }])).toBe(10);
+  });
+
+  it("sums lengths across multiple segments", () => {
+    expect(
+      getUniqueWatchedSeconds([
+        { watchedSegmentStart: 0, watchedSegmentEnd: 10 },
+        { watchedSegmentStart: 20, watchedSegmentEnd: 25 },
+      ]),
+    ).toBe(15);
+  });
+
+  it("ignores segments where end is before start", () => {
+    expect(getUniqueWatchedSeconds([{ watchedSegmentStart: 10, watchedSegmentEnd: 5 }])).toBe(0);
+  });
+});
+
+describe("getWatchPercent", () => {
+  it("returns the ratio of watched seconds to total duration", () => {
+    expect(getWatchPercent(60, 100)).toBe(0.6);
+    expect(getWatchPercent(30, 120)).toBe(0.25);
+  });
+
+  it("returns 0 when total duration is zero, negative, or not a finite number", () => {
+    expect(getWatchPercent(60, 0)).toBe(0);
+    expect(getWatchPercent(60, -10)).toBe(0);
+    expect(getWatchPercent(60, NaN)).toBe(0);
+    expect(getWatchPercent(60, Infinity)).toBe(0);
+  });
+});
+
+describe("extractVideoId", () => {
+  it("extracts the first capture group when the pattern matches", () => {
+    expect(extractVideoId("https://www.youtube-nocookie.com/embed/test123ABCd", /embed\/([^?]+)/)).toBe("test123ABCd");
+    expect(extractVideoId("https://fast.wistia.net/embed/iframe/glytlhepl5", /embed\/iframe\/([a-zA-Z0-9]+)/)).toBe(
+      "glytlhepl5",
+    );
+  });
+
+  it("returns null when the pattern does not match", () => {
+    expect(extractVideoId("https://example.com/video", /embed\/([^?]+)/)).toBeNull();
+  });
+});
+
+describe("getVideoProgressStorageKey", () => {
+  it("builds a scoped localStorage key from user scope and video id", () => {
+    expect(getVideoProgressStorageKey("user-42", "abc123")).toBe("video-progress:user-42:abc123");
+  });
+});
+
+describe("createEmptyVideoProgressState", () => {
+  it("returns default progress tracking state", () => {
+    expect(createEmptyVideoProgressState()).toEqual({
+      totalVideoDurationInSeconds: null,
+      segments: [],
+      currentSegmentStart: null,
+      lastKnownTime: null,
+      isPlaying: false,
+      thresholdLogged: false,
+    });
+  });
+});
+
+describe("createInitialVideoProgressState", () => {
+  const userStorageScope = "user-1";
+  const videoId = "vid-1";
+  const storageKey = getVideoProgressStorageKey(userStorageScope, videoId);
+
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it("returns empty state when user scope or video id is missing", () => {
+    expect(createInitialVideoProgressState(null, videoId)).toEqual(createEmptyVideoProgressState());
+    expect(createInitialVideoProgressState(userStorageScope, null)).toEqual(createEmptyVideoProgressState());
+  });
+
+  it("hydrates state from localStorage when progress exists", () => {
+    localStorage.setItem(
+      storageKey,
+      JSON.stringify({
+        totalVideoDurationInSeconds: 120,
+        segments: [{ watchedSegmentStart: 0, watchedSegmentEnd: 30 }],
+        thresholdLogged: true,
+      }),
+    );
+
+    expect(createInitialVideoProgressState(userStorageScope, videoId)).toEqual({
+      totalVideoDurationInSeconds: 120,
+      segments: [{ watchedSegmentStart: 0, watchedSegmentEnd: 30 }],
+      currentSegmentStart: null,
+      lastKnownTime: null,
+      isPlaying: false,
+      thresholdLogged: true,
+    });
+  });
+
+  it("returns empty state when localStorage has no entry", () => {
+    expect(createInitialVideoProgressState(userStorageScope, videoId)).toEqual(createEmptyVideoProgressState());
+  });
+});
+
+describe("loadVideoProgress", () => {
+  const userStorageScope = "user-2";
+  const videoId = "vid-2";
+  const storageKey = getVideoProgressStorageKey(userStorageScope, videoId);
+
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it("returns null when nothing is stored", () => {
+    expect(loadVideoProgress(userStorageScope, videoId)).toBeNull();
+  });
+
+  it("parses and normalizes valid stored progress", () => {
+    localStorage.setItem(
+      storageKey,
+      JSON.stringify({
+        totalVideoDurationInSeconds: 90,
+        segments: [
+          { watchedSegmentStart: 10, watchedSegmentEnd: 20 },
+          { watchedSegmentStart: 0, watchedSegmentEnd: 5 },
+        ],
+        thresholdLogged: false,
+      }),
+    );
+
+    expect(loadVideoProgress(userStorageScope, videoId)).toEqual({
+      totalVideoDurationInSeconds: 90,
+      segments: [
+        { watchedSegmentStart: 0, watchedSegmentEnd: 5 },
+        { watchedSegmentStart: 10, watchedSegmentEnd: 20 },
+      ],
+      thresholdLogged: false,
+    });
+  });
+
+  it("merges overlapping segments when loading from storage", () => {
+    localStorage.setItem(
+      storageKey,
+      JSON.stringify({
+        totalVideoDurationInSeconds: 60,
+        segments: [
+          { watchedSegmentStart: 0, watchedSegmentEnd: 15 },
+          { watchedSegmentStart: 10, watchedSegmentEnd: 25 },
+        ],
+        thresholdLogged: false,
+      }),
+    );
+
+    expect(loadVideoProgress(userStorageScope, videoId)?.segments).toEqual([
+      { watchedSegmentStart: 0, watchedSegmentEnd: 25 },
+    ]);
+  });
+
+  it("filters invalid segments and rejects invalid duration", () => {
+    localStorage.setItem(
+      storageKey,
+      JSON.stringify({
+        totalVideoDurationInSeconds: -5,
+        segments: [
+          { watchedSegmentStart: 0, watchedSegmentEnd: 10 },
+          { watchedSegmentStart: "bad", watchedSegmentEnd: 20 },
+        ],
+        thresholdLogged: true,
+      }),
+    );
+
+    expect(loadVideoProgress(userStorageScope, videoId)).toEqual({
+      totalVideoDurationInSeconds: null,
+      segments: [{ watchedSegmentStart: 0, watchedSegmentEnd: 10 }],
+      thresholdLogged: true,
+    });
+  });
+
+  it("returns null for malformed JSON", () => {
+    localStorage.setItem(storageKey, "not-json");
+    expect(loadVideoProgress(userStorageScope, videoId)).toBeNull();
+  });
+});
+
+describe("saveVideoProgress", () => {
+  const userStorageScope = "user-3";
+  const videoId = "vid-3";
+  const storageKey = getVideoProgressStorageKey(userStorageScope, videoId);
+
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it("persists progress to localStorage for a scoped user", () => {
+    saveVideoProgress(userStorageScope, videoId, {
+      totalVideoDurationInSeconds: 100,
+      segments: [{ watchedSegmentStart: 5, watchedSegmentEnd: 20 }],
+      currentSegmentStart: 30,
+      lastKnownTime: 30,
+      isPlaying: true,
+      thresholdLogged: false,
+    });
+
+    expect(JSON.parse(localStorage.getItem(storageKey)!)).toEqual({
+      totalVideoDurationInSeconds: 100,
+      segments: [{ watchedSegmentStart: 5, watchedSegmentEnd: 20 }],
+      thresholdLogged: false,
+    });
+  });
+
+  it("does not write when user storage scope is missing", () => {
+    saveVideoProgress(null, videoId, createEmptyVideoProgressState());
+    expect(localStorage.getItem(storageKey)).toBeNull();
   });
 });
 

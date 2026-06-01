@@ -108,7 +108,7 @@ const VIDEO_WATCH_THRESHOLD = 0.6;
 const SEEK_DETECTION_TOLERANCE_SECONDS = 2.5;
 const VIDEO_PROGRESS_STORAGE_PREFIX = "video-progress:";
 
-interface WatchedSegment {
+export interface WatchedSegment {
   watchedSegmentStart: number;
   watchedSegmentEnd: number;
 }
@@ -196,26 +196,26 @@ function rewriteWistia(src: string): string | undefined {
 /**
  * Extract video ID from embed URL
  */
-function extractVideoId(embedSrc: string, pattern: RegExp): string | null {
+export function extractVideoId(embedSrc: string, pattern: RegExp): string | null {
   const match = pattern.exec(embedSrc);
   return match ? match[1] : null;
 }
 
 // The video progress storage key is a combination of the user storage scope (logged-in or not logged in users) and the video id. This is to ensure that the video progress is scoped to the user.
-function getVideoProgressStorageKey(userStorageScope: string, videoId: string): string {
+export function getVideoProgressStorageKey(userStorageScope: string, videoId: string): string {
   return `${VIDEO_PROGRESS_STORAGE_PREFIX}${userStorageScope}:${videoId}`;
 }
 
-function isValidNumber(value: unknown): value is number {
+export function isValidNumber(value: unknown): value is number {
   return typeof value === "number" && Number.isFinite(value);
 }
 
 //clamp function is to ensure tat the value of video segments is between 0 and total video duration
-function clampVideoProgressValue(value: number, min: number, max: number): number {
+export function clampVideoProgressValue(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(value, max));
 }
 
-function mergeSegments(segments: WatchedSegment[]): WatchedSegment[] {
+export function mergeSegments(segments: WatchedSegment[]): WatchedSegment[] {
   if (segments.length === 0) return [];
 
   const sortedSegments = [...segments].sort((a, b) => a.watchedSegmentStart - b.watchedSegmentStart);
@@ -239,19 +239,19 @@ function mergeSegments(segments: WatchedSegment[]): WatchedSegment[] {
   return mergedSegments;
 }
 
-function getUniqueWatchedSeconds(segments: WatchedSegment[]): number {
+export function getUniqueWatchedSeconds(segments: WatchedSegment[]): number {
   return segments.reduce(
     (total, segment) => total + Math.max(0, segment.watchedSegmentEnd - segment.watchedSegmentStart),
     0,
   );
 }
 
-function getWatchPercent(uniqueWatchedSeconds: number, totalVideoDurationInSeconds: number): number {
+export function getWatchPercent(uniqueWatchedSeconds: number, totalVideoDurationInSeconds: number): number {
   if (!isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) return 0;
   return uniqueWatchedSeconds / totalVideoDurationInSeconds;
 }
 
-function loadVideoProgress(userStorageScope: string, videoId: string): VideoProgressStore | null {
+export function loadVideoProgress(userStorageScope: string, videoId: string): VideoProgressStore | null {
   try {
     const localStorageVideoData = globalThis.localStorage?.getItem(
       getVideoProgressStorageKey(userStorageScope, videoId),
@@ -278,7 +278,7 @@ function loadVideoProgress(userStorageScope: string, videoId: string): VideoProg
   }
 }
 
-function createEmptyVideoProgressState(): VideoProgressState {
+export function createEmptyVideoProgressState(): VideoProgressState {
   return {
     totalVideoDurationInSeconds: null,
     segments: [],
@@ -289,7 +289,10 @@ function createEmptyVideoProgressState(): VideoProgressState {
   };
 }
 
-function createInitialVideoProgressState(userStorageScope: string | null, videoId: string | null): VideoProgressState {
+export function createInitialVideoProgressState(
+  userStorageScope: string | null,
+  videoId: string | null,
+): VideoProgressState {
   if (!userStorageScope || !videoId) {
     return createEmptyVideoProgressState();
   }
@@ -305,7 +308,7 @@ function createInitialVideoProgressState(userStorageScope: string | null, videoI
   };
 }
 
-function saveVideoProgress(userStorageScope: string | null, videoId: string, state: VideoProgressState): void {
+export function saveVideoProgress(userStorageScope: string | null, videoId: string, state: VideoProgressState): void {
   if (!userStorageScope) return;
   try {
     const toStore: VideoProgressStore = {
