@@ -494,7 +494,7 @@ describe("createInitialVideoProgressState", () => {
     expect(createInitialVideoProgressState(userStorageScope, null)).toEqual(createEmptyVideoProgressState());
   });
 
-  it("hydrates state from localStorage when progress exists", () => {
+  it("populates state from localStorage when progress exists", () => {
     localStorage.setItem(
       storageKey,
       JSON.stringify({
