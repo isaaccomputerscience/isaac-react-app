@@ -5,25 +5,46 @@ import { apiHelper, isAppLink } from "../../services";
 import { Link } from "react-router-dom";
 import { IsaacCardDTO } from "../../../IsaacApiTypes";
 
-// NOTE: Currently not in use by CS. See ticket #212 for more details.
-
 interface IsaacCardProps {
   doc: IsaacCardDTO;
   imageClassName?: string;
 }
 
 export const IsaacCard = ({ doc, imageClassName }: IsaacCardProps) => {
-  const { title, subtitle, image, clickUrl, disabled, verticalContent } = doc;
+  const { title, subtitle, image, clickUrl, disabled, verticalContent, buttonText } = doc;
   const classes = classNames({ "menu-card": true, disabled: disabled, "isaac-card-vertical": verticalContent });
   const imgSrc = image?.src && apiHelper.determineImageUrl(image.src);
+  const showButton = Boolean(buttonText && clickUrl);
 
-  const link =
+  const stretchedLink =
     clickUrl && isAppLink(clickUrl) ? (
       <Link to={clickUrl} className={classes + " stretched-link"} aria-disabled={disabled} />
     ) : (
       // eslint-disable-next-line jsx-a11y/anchor-has-content
       <a href={clickUrl} className={classes + " stretched-link"} aria-disabled={disabled} />
     );
+
+  const button = (
+    <div className="isaac-card-link-container">
+      {clickUrl && isAppLink(clickUrl) ? (
+        <Link to={clickUrl} className="isaac-card-link" aria-disabled={disabled}>
+          {buttonText}
+        </Link>
+      ) : (
+        <a
+          href={clickUrl}
+          className="isaac-card-link"
+          aria-disabled={disabled}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {buttonText}
+        </a>
+      )}
+    </div>
+  );
+
+  const footer = showButton ? button : clickUrl && stretchedLink;
 
   return verticalContent ? (
     <Card className={classes}>
@@ -44,7 +65,7 @@ export const IsaacCard = ({ doc, imageClassName }: IsaacCardProps) => {
           <Col>{subtitle}</Col>
         </Row>
       </CardBody>
-      {clickUrl && link}
+      {footer}
     </Card>
   ) : (
     <Card>
@@ -65,7 +86,7 @@ export const IsaacCard = ({ doc, imageClassName }: IsaacCardProps) => {
           </Col>
         </Row>
       </CardBody>
-      {clickUrl && link}
+      {footer}
     </Card>
   );
 };
