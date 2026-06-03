@@ -24,7 +24,13 @@ import {
   updateWistiaTimeFromEventData,
 } from "../../../../app/components/content/IsaacVideo";
 import { ACTION_TYPE, api } from "../../../../app/services";
-import { STAGING_VIDEO_TEST_PAGE_ID, STAGING_WISTIA_VIDEO } from "../../../testPages/stagingVideoTestPage";
+import {
+  STAGING_PAGE_VIDEO_IDS,
+  STAGING_VIDEO_TEST_PAGE_ID,
+  STAGING_WISTIA_VIDEOS,
+  STAGING_YOUTUBE_VIDEO,
+  stagingVideoTestPageDoc,
+} from "../../../testPages/stagingVideoTestPage";
 import { renderTestEnvironment } from "../../../utils";
 import { store } from "../../../../app/state";
 
@@ -604,88 +610,230 @@ describe("loadVideoProgress", () => {
   });
 });
 
-describe("staging video test page", () => {
-  const stagingWistiaEmbedSrc = rewrite(STAGING_WISTIA_VIDEO.src)!;
-  const stagingWistiaMessageContext = {
-    lastKnownTime: 0,
-    embedSrc: stagingWistiaEmbedSrc,
-    videoId: STAGING_WISTIA_VIDEO.videoId,
-    pageId: STAGING_VIDEO_TEST_PAGE_ID,
-  };
+const stagingWistiaMessageContext = (video: (typeof STAGING_WISTIA_VIDEOS)[number], lastKnownTime = 0) => ({
+  lastKnownTime,
+  embedSrc: rewrite(video.src)!,
+  videoId: video.videoId,
+  pageId: STAGING_VIDEO_TEST_PAGE_ID,
+});
 
-  it("rewrites the staging Wistia embed src", () => {
-    expect(stagingWistiaEmbedSrc).toContain(`embed/iframe/${STAGING_WISTIA_VIDEO.videoId}`);
-    expect(stagingWistiaEmbedSrc).toContain("videoFoam=true");
-  });
+describe("staging video test page — Wistia", () => {
+  it.each(STAGING_WISTIA_VIDEOS.map((v) => [v.videoId, v.src] as const))(
+    "rewrites staging Wistia embed src for %s",
+    (videoId, src) => {
+      const embedSrc = rewrite(src)!;
+      expect(embedSrc).toContain(`embed/iframe/${videoId}`);
+      expect(embedSrc).toContain("videoFoam=true");
+    },
+  );
 
-  it("extracts the staging Wistia video id from the embed URL", () => {
-    expect(extractVideoId(stagingWistiaEmbedSrc, /embed\/iframe\/([a-zA-Z0-9]+)/)).toBe(STAGING_WISTIA_VIDEO.videoId);
-  });
+  it.each(STAGING_WISTIA_VIDEOS.map((v) => [v.videoId, v.src] as const))(
+    "extracts staging Wistia video id for %s",
+    (videoId, src) => {
+      const embedSrc = rewrite(src)!;
+      expect(extractVideoId(embedSrc, /embed\/iframe\/([a-zA-Z0-9]+)/)).toBe(videoId);
+    },
+  );
 
-  it("maps staging Wistia play to VIDEO_PLAY with pageId", () => {
+  it.each(STAGING_WISTIA_VIDEOS)("maps staging Wistia play to VIDEO_PLAY with pageId (%s)", (video) => {
+    const context = stagingWistiaMessageContext(video);
     const result = processWistiaMessage(
       "https://fast.wistia.net",
       JSON.stringify({ method: "_trigger", args: ["play", { seconds: 10, duration: 100 }] }),
-      stagingWistiaMessageContext,
+      context,
     );
 
     expect(result).toEqual({
       lastKnownTime: 10,
       eventDetails: {
         type: "VIDEO_PLAY",
-        videoId: STAGING_WISTIA_VIDEO.videoId,
-        videoUrl: stagingWistiaEmbedSrc,
+        videoId: video.videoId,
+        videoUrl: context.embedSrc,
         pageId: STAGING_VIDEO_TEST_PAGE_ID,
         videoPosition: 10,
       },
     });
   });
 
-  it("maps staging Wistia pause to VIDEO_PAUSE with pageId", () => {
+  it.each(STAGING_WISTIA_VIDEOS)("maps staging Wistia pause to VIDEO_PAUSE with pageId (%s)", (video) => {
     const result = processWistiaMessage(
       "https://fast.wistia.net",
       JSON.stringify({ method: "_trigger", args: ["pause", { seconds: 25 }] }),
-      { ...stagingWistiaMessageContext, lastKnownTime: 25 },
+      stagingWistiaMessageContext(video, 25),
     );
 
     expect(result.eventDetails).toMatchObject({
       type: "VIDEO_PAUSE",
-      videoId: STAGING_WISTIA_VIDEO.videoId,
+      videoId: video.videoId,
       pageId: STAGING_VIDEO_TEST_PAGE_ID,
       videoPosition: 25,
     });
   });
 
-  it("updates time on staging timechange without emitting a video event", () => {
+  it.each(STAGING_WISTIA_VIDEOS)("updates time on staging timechange without logging play (%s)", (video) => {
     const result = processWistiaMessage(
       "https://fast.wistia.net",
       JSON.stringify({ method: "_trigger", args: ["timechange", 30] }),
-      { ...stagingWistiaMessageContext, lastKnownTime: 20 },
+      stagingWistiaMessageContext(video, 20),
     );
 
     expect(result).toEqual({ lastKnownTime: 30 });
     expect(result.eventDetails).toBeUndefined();
   });
 
-  it("maps staging Wistia ended to VIDEO_ENDED with pageId", () => {
+  it.each(STAGING_WISTIA_VIDEOS)("maps staging Wistia ended to VIDEO_ENDED with pageId (%s)", (video) => {
     const result = processWistiaMessage(
       "https://fast.wistia.net",
       JSON.stringify({ method: "_trigger", args: ["ended", { seconds: 100 }] }),
-      { ...stagingWistiaMessageContext, lastKnownTime: 100 },
+      stagingWistiaMessageContext(video, 100),
     );
 
     expect(result.eventDetails).toMatchObject({
       type: "VIDEO_ENDED",
-      videoId: STAGING_WISTIA_VIDEO.videoId,
+      videoId: video.videoId,
       pageId: STAGING_VIDEO_TEST_PAGE_ID,
     });
     expect(result.eventDetails?.videoPosition).toBeUndefined();
   });
 });
 
-describe("staging page progress persistence", () => {
+describe("staging video test page — YouTube", () => {
+  const stagingYoutubeEmbedSrc = rewrite(STAGING_YOUTUBE_VIDEO.src)!;
+  const stagingYoutubeVideoId = extractVideoId(stagingYoutubeEmbedSrc, /embed\/([^?]+)/)!;
+
+  it("rewrites the staging YouTube watch URL to a nocookie embed", () => {
+    expect(stagingYoutubeEmbedSrc).toContain("youtube-nocookie.com/embed/");
+    expect(stagingYoutubeEmbedSrc).toContain(STAGING_YOUTUBE_VIDEO.videoId);
+  });
+
+  it("extracts the staging YouTube video id from the embed URL", () => {
+    expect(stagingYoutubeVideoId).toBe(STAGING_YOUTUBE_VIDEO.videoId);
+  });
+
+  describe("YouTube player handlers on staging video", () => {
+    const originalYT = globalThis.YT;
+    let capturedPlayerConfig: {
+      events?: {
+        onReady?: (event: { target: typeof mockPlayer; data: number }) => void;
+        onStateChange?: (event: { target: typeof mockPlayer; data: number }) => void;
+      };
+    } | null = null;
+
+    const mockPlayer = {
+      getVideoUrl: () => STAGING_YOUTUBE_VIDEO.src,
+      getCurrentTime: () => 30,
+      getDuration: () => 120,
+    };
+
+    class MockYTPlayer {
+      constructor(_node: HTMLElement, config: NonNullable<typeof capturedPlayerConfig>) {
+        capturedPlayerConfig = config;
+        config.events?.onReady?.({ target: mockPlayer, data: 0 });
+      }
+    }
+
+    const StagingYoutubeHarness = () => (
+      <IsaacVideo doc={{ type: "video", src: STAGING_YOUTUBE_VIDEO.src, altText: "Staging YouTube test" }} />
+    );
+
+    const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
+
+    beforeEach(() => {
+      capturedPlayerConfig = null;
+      jest.spyOn(api.logger, "log").mockResolvedValue({} as never);
+      jest.spyOn(store, "dispatch");
+      globalThis.YT = {
+        Player: MockYTPlayer as never,
+        ready: (callback: () => void) => callback(),
+        PlayerState: { PLAYING: 1, PAUSED: 2, ENDED: 0 },
+      };
+    });
+
+    afterEach(() => {
+      globalThis.YT = originalYT;
+      jest.restoreAllMocks();
+    });
+
+    const renderStagingYouTube = () => {
+      renderTestEnvironment({
+        role: "STUDENT",
+        PageComponent: StagingYoutubeHarness,
+        initialRouteEntries: [`/pages/${STAGING_VIDEO_TEST_PAGE_ID}`],
+      });
+      store.dispatch({
+        type: ACTION_TYPE.DOCUMENT_RESPONSE_SUCCESS,
+        doc: stagingVideoTestPageDoc,
+      });
+    };
+
+    it("registers onReady and onStateChange for the staging YouTube player", () => {
+      renderStagingYouTube();
+      expect(capturedPlayerConfig?.events?.onReady).toBeDefined();
+      expect(capturedPlayerConfig?.events?.onStateChange).toBeDefined();
+    });
+
+    it("logs VIDEO_PLAY with staging pageId and video id on play", async () => {
+      renderStagingYouTube();
+      await flushPromises();
+      const dispatchMock = store.dispatch as jest.Mock;
+      dispatchMock.mockClear();
+
+      await act(async () => {
+        capturedPlayerConfig?.events?.onStateChange?.({ target: mockPlayer, data: 1 });
+      });
+      await flushPromises();
+
+      expect(dispatchMock).toHaveBeenCalledWith({
+        type: ACTION_TYPE.LOG_EVENT,
+        eventDetails: {
+          type: "VIDEO_PLAY",
+          videoId: stagingYoutubeVideoId,
+          videoUrl: STAGING_YOUTUBE_VIDEO.src,
+          pageId: STAGING_VIDEO_TEST_PAGE_ID,
+          videoPosition: 30,
+          videoDurationSeconds: 120,
+        },
+      });
+    });
+
+    it.each([
+      [2, "VIDEO_PAUSE", 30],
+      [0, "VIDEO_ENDED", undefined],
+    ])(
+      "onStateChange maps player state %i to %s for staging YouTube",
+      async (playerState, expectedEventType, videoPosition) => {
+        renderStagingYouTube();
+        await flushPromises();
+        const dispatchMock = store.dispatch as jest.Mock;
+        dispatchMock.mockClear();
+
+        await act(async () => {
+          capturedPlayerConfig?.events?.onStateChange?.({ target: mockPlayer, data: playerState });
+        });
+        await flushPromises();
+
+        const expectedEventDetails: Record<string, unknown> = {
+          type: expectedEventType,
+          videoId: stagingYoutubeVideoId,
+          videoUrl: STAGING_YOUTUBE_VIDEO.src,
+          pageId: STAGING_VIDEO_TEST_PAGE_ID,
+          videoDurationSeconds: 120,
+        };
+        if (videoPosition !== undefined) {
+          expectedEventDetails.videoPosition = videoPosition;
+        }
+
+        expect(dispatchMock).toHaveBeenCalledWith({
+          type: ACTION_TYPE.LOG_EVENT,
+          eventDetails: expectedEventDetails,
+        });
+      },
+    );
+  });
+});
+
+describe("staging page progress persistence — multiple videos", () => {
   const userStorageScope = "42";
-  const storageKey = getVideoProgressStorageKey(userStorageScope, STAGING_WISTIA_VIDEO.videoId);
 
   beforeEach(() => {
     localStorage.clear();
@@ -695,38 +843,89 @@ describe("staging page progress persistence", () => {
     localStorage.clear();
   });
 
-  it("stores merged segments for the staging Wistia video", () => {
-    saveVideoProgress(userStorageScope, STAGING_WISTIA_VIDEO.videoId, {
+  it("uses a distinct localStorage key per video on the staging page", () => {
+    const keys = STAGING_PAGE_VIDEO_IDS.map((videoId) => getVideoProgressStorageKey(userStorageScope, videoId));
+    expect(new Set(keys).size).toBe(STAGING_PAGE_VIDEO_IDS.length);
+    keys.forEach((key) => expect(key).toMatch(/^video-progress:42:/));
+  });
+
+  it.each(STAGING_WISTIA_VIDEOS)("stores independent progress for staging Wistia video %s", (video) => {
+    saveVideoProgress(userStorageScope, video.videoId, {
       ...createEmptyVideoProgressState(),
       totalVideoDurationInSeconds: 100,
       segments: [{ watchedSegmentStart: 0, watchedSegmentEnd: 65 }],
     });
 
-    const loaded = loadVideoProgress(userStorageScope, STAGING_WISTIA_VIDEO.videoId);
+    const loaded = loadVideoProgress(userStorageScope, video.videoId);
     expect(loaded?.totalVideoDurationInSeconds).toBe(100);
     expect(getUniqueWatchedSeconds(loaded!.segments)).toBe(65);
     expect(getWatchPercent(65, 100)).toBeGreaterThanOrEqual(0.6);
   });
 
-  it("updates initial state for the staging Wistia video", () => {
-    localStorage.setItem(
-      storageKey,
-      JSON.stringify({
-        totalVideoDurationInSeconds: 100,
-        segments: [{ watchedSegmentStart: 0, watchedSegmentEnd: 60 }],
-        thresholdLogged: true,
-      }),
-    );
+  it("stores independent progress for the staging YouTube video", () => {
+    saveVideoProgress(userStorageScope, STAGING_YOUTUBE_VIDEO.videoId, {
+      ...createEmptyVideoProgressState(),
+      totalVideoDurationInSeconds: 200,
+      segments: [{ watchedSegmentStart: 10, watchedSegmentEnd: 130 }],
+    });
 
-    expect(createInitialVideoProgressState(userStorageScope, STAGING_WISTIA_VIDEO.videoId)).toEqual({
+    const loaded = loadVideoProgress(userStorageScope, STAGING_YOUTUBE_VIDEO.videoId);
+    expect(loaded?.totalVideoDurationInSeconds).toBe(200);
+    expect(getUniqueWatchedSeconds(loaded!.segments)).toBe(120);
+    expect(getWatchPercent(120, 200)).toBeGreaterThanOrEqual(0.6);
+  });
+
+  it("does not mix progress between staging videos on the same page", () => {
+    saveVideoProgress(userStorageScope, STAGING_WISTIA_VIDEOS[0].videoId, {
+      ...createEmptyVideoProgressState(),
       totalVideoDurationInSeconds: 100,
-      segments: [{ watchedSegmentStart: 0, watchedSegmentEnd: 60 }],
-      currentSegmentStart: null,
-      lastKnownTime: null,
-      isPlaying: false,
+      segments: [{ watchedSegmentStart: 0, watchedSegmentEnd: 50 }],
       thresholdLogged: true,
     });
+    saveVideoProgress(userStorageScope, STAGING_WISTIA_VIDEOS[1].videoId, {
+      ...createEmptyVideoProgressState(),
+      totalVideoDurationInSeconds: 80,
+      segments: [{ watchedSegmentStart: 0, watchedSegmentEnd: 20 }],
+      thresholdLogged: false,
+    });
+    saveVideoProgress(userStorageScope, STAGING_YOUTUBE_VIDEO.videoId, {
+      ...createEmptyVideoProgressState(),
+      totalVideoDurationInSeconds: 120,
+      segments: [{ watchedSegmentStart: 5, watchedSegmentEnd: 80 }],
+      thresholdLogged: false,
+    });
+
+    expect(loadVideoProgress(userStorageScope, STAGING_WISTIA_VIDEOS[0].videoId)?.thresholdLogged).toBe(true);
+    expect(loadVideoProgress(userStorageScope, STAGING_WISTIA_VIDEOS[1].videoId)?.thresholdLogged).toBe(false);
+    expect(getUniqueWatchedSeconds(loadVideoProgress(userStorageScope, STAGING_YOUTUBE_VIDEO.videoId)!.segments)).toBe(
+      75,
+    );
+    expect(loadVideoProgress(userStorageScope, STAGING_WISTIA_VIDEOS[2].videoId)).toBeNull();
   });
+
+  it.each([...STAGING_WISTIA_VIDEOS, STAGING_YOUTUBE_VIDEO])(
+    "updates initial state per video from localStorage (%s)",
+    (video) => {
+      const storageKey = getVideoProgressStorageKey(userStorageScope, video.videoId);
+      localStorage.setItem(
+        storageKey,
+        JSON.stringify({
+          totalVideoDurationInSeconds: 100,
+          segments: [{ watchedSegmentStart: 0, watchedSegmentEnd: 60 }],
+          thresholdLogged: true,
+        }),
+      );
+
+      expect(createInitialVideoProgressState(userStorageScope, video.videoId)).toEqual({
+        totalVideoDurationInSeconds: 100,
+        segments: [{ watchedSegmentStart: 0, watchedSegmentEnd: 60 }],
+        currentSegmentStart: null,
+        lastKnownTime: null,
+        isPlaying: false,
+        thresholdLogged: true,
+      });
+    },
+  );
 });
 
 describe("saveVideoProgress", () => {
