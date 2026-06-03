@@ -24,6 +24,7 @@ import {
   updateWistiaTimeFromEventData,
 } from "../../../../app/components/content/IsaacVideo";
 import { ACTION_TYPE, api } from "../../../../app/services";
+import { STAGING_VIDEO_TEST_PAGE_ID, STAGING_WISTIA_VIDEO } from "../../../testPages/stagingVideoTestPage";
 import { renderTestEnvironment } from "../../../utils";
 import { store } from "../../../../app/state";
 
@@ -600,6 +601,131 @@ describe("loadVideoProgress", () => {
   it("returns null for malformed JSON", () => {
     localStorage.setItem(storageKey, "not-json");
     expect(loadVideoProgress(userStorageScope, videoId)).toBeNull();
+  });
+});
+
+describe("staging video test page", () => {
+  const stagingWistiaEmbedSrc = rewrite(STAGING_WISTIA_VIDEO.src)!;
+  const stagingWistiaMessageContext = {
+    lastKnownTime: 0,
+    embedSrc: stagingWistiaEmbedSrc,
+    videoId: STAGING_WISTIA_VIDEO.videoId,
+    pageId: STAGING_VIDEO_TEST_PAGE_ID,
+  };
+
+  it("rewrites the staging Wistia embed src", () => {
+    expect(stagingWistiaEmbedSrc).toContain(`embed/iframe/${STAGING_WISTIA_VIDEO.videoId}`);
+    expect(stagingWistiaEmbedSrc).toContain("videoFoam=true");
+  });
+
+  it("extracts the staging Wistia video id from the embed URL", () => {
+    expect(extractVideoId(stagingWistiaEmbedSrc, /embed\/iframe\/([a-zA-Z0-9]+)/)).toBe(STAGING_WISTIA_VIDEO.videoId);
+  });
+
+  it("maps staging Wistia play to VIDEO_PLAY with pageId", () => {
+    const result = processWistiaMessage(
+      "https://fast.wistia.net",
+      JSON.stringify({ method: "_trigger", args: ["play", { seconds: 10, duration: 100 }] }),
+      stagingWistiaMessageContext,
+    );
+
+    expect(result).toEqual({
+      lastKnownTime: 10,
+      eventDetails: {
+        type: "VIDEO_PLAY",
+        videoId: STAGING_WISTIA_VIDEO.videoId,
+        videoUrl: stagingWistiaEmbedSrc,
+        pageId: STAGING_VIDEO_TEST_PAGE_ID,
+        videoPosition: 10,
+      },
+    });
+  });
+
+  it("maps staging Wistia pause to VIDEO_PAUSE with pageId", () => {
+    const result = processWistiaMessage(
+      "https://fast.wistia.net",
+      JSON.stringify({ method: "_trigger", args: ["pause", { seconds: 25 }] }),
+      { ...stagingWistiaMessageContext, lastKnownTime: 25 },
+    );
+
+    expect(result.eventDetails).toMatchObject({
+      type: "VIDEO_PAUSE",
+      videoId: STAGING_WISTIA_VIDEO.videoId,
+      pageId: STAGING_VIDEO_TEST_PAGE_ID,
+      videoPosition: 25,
+    });
+  });
+
+  it("updates time on staging timechange without emitting a video event", () => {
+    const result = processWistiaMessage(
+      "https://fast.wistia.net",
+      JSON.stringify({ method: "_trigger", args: ["timechange", 30] }),
+      { ...stagingWistiaMessageContext, lastKnownTime: 20 },
+    );
+
+    expect(result).toEqual({ lastKnownTime: 30 });
+    expect(result.eventDetails).toBeUndefined();
+  });
+
+  it("maps staging Wistia ended to VIDEO_ENDED with pageId", () => {
+    const result = processWistiaMessage(
+      "https://fast.wistia.net",
+      JSON.stringify({ method: "_trigger", args: ["ended", { seconds: 100 }] }),
+      { ...stagingWistiaMessageContext, lastKnownTime: 100 },
+    );
+
+    expect(result.eventDetails).toMatchObject({
+      type: "VIDEO_ENDED",
+      videoId: STAGING_WISTIA_VIDEO.videoId,
+      pageId: STAGING_VIDEO_TEST_PAGE_ID,
+    });
+    expect(result.eventDetails?.videoPosition).toBeUndefined();
+  });
+});
+
+describe("staging page progress persistence", () => {
+  const userStorageScope = "42";
+  const storageKey = getVideoProgressStorageKey(userStorageScope, STAGING_WISTIA_VIDEO.videoId);
+
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it("stores merged segments for the staging Wistia video", () => {
+    saveVideoProgress(userStorageScope, STAGING_WISTIA_VIDEO.videoId, {
+      ...createEmptyVideoProgressState(),
+      totalVideoDurationInSeconds: 100,
+      segments: [{ watchedSegmentStart: 0, watchedSegmentEnd: 65 }],
+    });
+
+    const loaded = loadVideoProgress(userStorageScope, STAGING_WISTIA_VIDEO.videoId);
+    expect(loaded?.totalVideoDurationInSeconds).toBe(100);
+    expect(getUniqueWatchedSeconds(loaded!.segments)).toBe(65);
+    expect(getWatchPercent(65, 100)).toBeGreaterThanOrEqual(0.6);
+  });
+
+  it("updates initial state for the staging Wistia video", () => {
+    localStorage.setItem(
+      storageKey,
+      JSON.stringify({
+        totalVideoDurationInSeconds: 100,
+        segments: [{ watchedSegmentStart: 0, watchedSegmentEnd: 60 }],
+        thresholdLogged: true,
+      }),
+    );
+
+    expect(createInitialVideoProgressState(userStorageScope, STAGING_WISTIA_VIDEO.videoId)).toEqual({
+      totalVideoDurationInSeconds: 100,
+      segments: [{ watchedSegmentStart: 0, watchedSegmentEnd: 60 }],
+      currentSegmentStart: null,
+      lastKnownTime: null,
+      isPlaying: false,
+      thresholdLogged: true,
+    });
   });
 });
 
