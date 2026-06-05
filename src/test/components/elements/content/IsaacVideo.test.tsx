@@ -1,6 +1,7 @@
-import React from "react";
-import { act } from "@testing-library/react";
+import React, { useState } from "react";
+import { act, fireEvent, screen, waitFor } from "@testing-library/react";
 import { jest } from "@jest/globals";
+import { mockUser } from "../../../../mocks/data";
 import {
   clampVideoProgressValue,
   createEmptyVideoProgressState,
@@ -32,7 +33,7 @@ import {
   stagingVideoTestPageDoc,
 } from "../../../testPages/stagingVideoTestPage";
 import { renderTestEnvironment } from "../../../utils";
-import { store } from "../../../../app/state";
+import { requestCurrentUser, store } from "../../../../app/state";
 
 describe("rewrite", () => {
   it("parses youtube url to iframe src", () => {
@@ -926,6 +927,377 @@ describe("staging page progress persistence — multiple videos", () => {
       });
     },
   );
+});
+
+type StoredVideoProgress = {
+  totalVideoDurationInSeconds: number;
+  segments: { watchedSegmentStart: number; watchedSegmentEnd: number }[];
+};
+
+const readStoredProgress = (userStorageScope: string, videoId: string): StoredVideoProgress | null => {
+  const raw = localStorage.getItem(getVideoProgressStorageKey(userStorageScope, videoId));
+  return raw ? (JSON.parse(raw) as StoredVideoProgress) : null;
+};
+
+const wistiaMockContentWindows = new WeakMap<HTMLIFrameElement, Window>();
+
+const attachIframeContentWindow = (iframe: HTMLIFrameElement): Window => {
+  let mockWindow = wistiaMockContentWindows.get(iframe);
+  if (!mockWindow) {
+    mockWindow = {} as Window;
+    wistiaMockContentWindows.set(iframe, mockWindow);
+  }
+  Object.defineProperty(iframe, "contentWindow", {
+    value: mockWindow,
+    configurable: true,
+  });
+  return mockWindow;
+};
+
+const dispatchWistiaTrigger = (
+  iframe: HTMLIFrameElement,
+  eventName: string,
+  eventData: Record<string, unknown> = {},
+) => {
+  const mockWindow = attachIframeContentWindow(iframe);
+  act(() => {
+    globalThis.dispatchEvent(
+      new MessageEvent("message", {
+        origin: "https://fast.wistia.net",
+        source: mockWindow,
+        data: JSON.stringify({ method: "_trigger", args: [eventName, eventData] }),
+      }),
+    );
+  });
+};
+
+const getWistiaIframeForVideo = (videoId: string) => {
+  const iframe = screen.getByTitle(`Embedded video: ${videoId}.`) as HTMLIFrameElement;
+  return iframe;
+};
+
+const StagingMultiWistiaHarness = () => (
+  <div>
+    {STAGING_WISTIA_VIDEOS.slice(0, 2).map((video) => (
+      <IsaacVideo key={video.videoId} doc={{ type: "video", src: video.src, altText: video.videoId }} />
+    ))}
+  </div>
+);
+
+const StagingSwitchingWistiaHarness = ({ remountOnSwitch }: { remountOnSwitch: boolean }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const video = STAGING_WISTIA_VIDEOS[activeIndex];
+  return (
+    <>
+      <button type="button" onClick={() => setActiveIndex(1)}>
+        Show second video
+      </button>
+      <IsaacVideo
+        key={remountOnSwitch ? video.videoId : "shared-player"}
+        doc={{ type: "video", src: video.src, altText: video.videoId }}
+      />
+    </>
+  );
+};
+
+const stagingWistiaThenYoutube = [
+  { src: STAGING_WISTIA_VIDEOS[0].src, videoId: STAGING_WISTIA_VIDEOS[0].videoId },
+  { src: STAGING_YOUTUBE_VIDEO.src, videoId: STAGING_YOUTUBE_VIDEO.videoId },
+] as const;
+
+const StagingWistiaAndYoutubeHarness = () => (
+  <div>
+    <IsaacVideo
+      key={stagingWistiaThenYoutube[0].videoId}
+      doc={{ type: "video", src: stagingWistiaThenYoutube[0].src, altText: stagingWistiaThenYoutube[0].videoId }}
+    />
+    <IsaacVideo
+      key={stagingWistiaThenYoutube[1].videoId}
+      doc={{ type: "video", src: stagingWistiaThenYoutube[1].src, altText: stagingWistiaThenYoutube[1].videoId }}
+    />
+  </div>
+);
+
+const StagingSwitchingWistiaToYoutubeHarness = ({ remountOnSwitch }: { remountOnSwitch: boolean }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const video = stagingWistiaThenYoutube[activeIndex];
+  return (
+    <>
+      <button type="button" onClick={() => setActiveIndex(1)}>
+        Show YouTube video
+      </button>
+      <IsaacVideo
+        key={remountOnSwitch ? video.videoId : "shared-player"}
+        doc={{ type: "video", src: video.src, altText: video.videoId }}
+      />
+    </>
+  );
+};
+
+describe("IsaacVideo localStorage when moving between videos on the same page", () => {
+  const userStorageScope = String(mockUser.id);
+  const firstVideo = STAGING_WISTIA_VIDEOS[0];
+  const secondVideo = STAGING_WISTIA_VIDEOS[1];
+  const youtubeVideo = STAGING_YOUTUBE_VIDEO;
+  const wistiaDuration = { duration: 100 };
+  const youtubeDuration = 120;
+
+  const originalYT = globalThis.YT;
+  let capturedPlayerConfig: {
+    events?: {
+      onReady?: (event: { target: typeof youtubeMockPlayer; data: number }) => void;
+      onStateChange?: (event: { target: typeof youtubeMockPlayer; data: number }) => void;
+    };
+  } | null = null;
+  let youtubeCurrentTime = 0;
+
+  const youtubeMockPlayer = {
+    getVideoUrl: () => youtubeVideo.src,
+    getCurrentTime: () => youtubeCurrentTime,
+    getDuration: () => youtubeDuration,
+  };
+
+  class MockYTPlayer {
+    constructor(_node: HTMLElement, config: NonNullable<typeof capturedPlayerConfig>) {
+      capturedPlayerConfig = config;
+      config.events?.onReady?.({ target: youtubeMockPlayer, data: 0 });
+    }
+  }
+
+  const setupYoutubeApiMock = () => {
+    capturedPlayerConfig = null;
+    youtubeCurrentTime = 0;
+    globalThis.YT = {
+      Player: MockYTPlayer as never,
+      ready: (callback: () => void) => callback(),
+      PlayerState: { PLAYING: 1, PAUSED: 2, ENDED: 0 },
+    };
+  };
+
+  const waitForYoutubePlayer = async () => {
+    await waitFor(() => {
+      expect(capturedPlayerConfig?.events?.onStateChange).toBeDefined();
+    });
+  };
+
+  const triggerYoutubePlay = (time: number) => {
+    youtubeCurrentTime = time;
+    act(() => {
+      capturedPlayerConfig?.events?.onStateChange?.({ target: youtubeMockPlayer, data: 1 });
+    });
+  };
+
+  const triggerYoutubePause = (time: number) => {
+    youtubeCurrentTime = time;
+    act(() => {
+      capturedPlayerConfig?.events?.onStateChange?.({ target: youtubeMockPlayer, data: 2 });
+    });
+  };
+
+  const renderLoggedInStagingHarness = async (PageComponent: React.FC, waitForTitle?: string) => {
+    renderTestEnvironment({
+      role: "STUDENT",
+      PageComponent,
+      initialRouteEntries: [`/pages/${STAGING_VIDEO_TEST_PAGE_ID}`],
+    });
+    await act(async () => {
+      await (store.dispatch(requestCurrentUser() as never) as Promise<unknown>);
+    });
+    store.dispatch({
+      type: ACTION_TYPE.DOCUMENT_RESPONSE_SUCCESS,
+      doc: stagingVideoTestPageDoc,
+    });
+    await waitFor(() => {
+      expect(screen.getByTitle(`Embedded video: ${waitForTitle ?? firstVideo.videoId}.`)).toBeInTheDocument();
+    });
+  };
+
+  const seedProgress = (videoId: string, watchedSegmentEnd: number, totalVideoDurationInSeconds = 100) => {
+    localStorage.setItem(
+      getVideoProgressStorageKey(userStorageScope, videoId),
+      JSON.stringify({
+        totalVideoDurationInSeconds,
+        segments: [{ watchedSegmentStart: 0, watchedSegmentEnd: watchedSegmentEnd }],
+        thresholdLogged: false,
+      }),
+    );
+  };
+
+  beforeEach(() => {
+    localStorage.clear();
+    jest.spyOn(api.logger, "log").mockResolvedValue({} as never);
+    setupYoutubeApiMock();
+  });
+
+  afterEach(() => {
+    globalThis.YT = originalYT;
+    jest.restoreAllMocks();
+    localStorage.clear();
+  });
+
+  it("keeps separate localStorage progress when two Wistia players are on the page at once", async () => {
+    seedProgress(firstVideo.videoId, 10);
+    seedProgress(secondVideo.videoId, 5);
+
+    await renderLoggedInStagingHarness(StagingMultiWistiaHarness);
+
+    const firstIframe = getWistiaIframeForVideo(firstVideo.videoId);
+    dispatchWistiaTrigger(firstIframe, "play", { seconds: 10, ...wistiaDuration });
+    dispatchWistiaTrigger(firstIframe, "pause", { seconds: 25, ...wistiaDuration });
+
+    const firstVideoAfterPause = readStoredProgress(userStorageScope, firstVideo.videoId);
+    expect(firstVideoAfterPause?.segments.at(-1)?.watchedSegmentEnd).toBe(25);
+
+    const secondIframe = getWistiaIframeForVideo(secondVideo.videoId);
+    dispatchWistiaTrigger(secondIframe, "play", { seconds: 5, ...wistiaDuration });
+    dispatchWistiaTrigger(secondIframe, "pause", { seconds: 12, ...wistiaDuration });
+
+    const secondVideoStored = readStoredProgress(userStorageScope, secondVideo.videoId);
+    const firstVideoStoredAgain = readStoredProgress(userStorageScope, firstVideo.videoId);
+
+    expect(secondVideoStored?.segments.at(-1)?.watchedSegmentEnd).toBe(12);
+    expect(firstVideoStoredAgain).toEqual(firstVideoAfterPause);
+    expect(getUniqueWatchedSeconds(firstVideoStoredAgain!.segments)).toBeGreaterThan(
+      getUniqueWatchedSeconds(secondVideoStored!.segments),
+    );
+  });
+
+  it("reloads the second video's localStorage after switching away from the first (remount)", async () => {
+    seedProgress(firstVideo.videoId, 30);
+    seedProgress(secondVideo.videoId, 8);
+
+    await renderLoggedInStagingHarness(() => <StagingSwitchingWistiaHarness remountOnSwitch />);
+
+    const firstIframe = getWistiaIframeForVideo(firstVideo.videoId);
+    dispatchWistiaTrigger(firstIframe, "play", { seconds: 30, ...wistiaDuration });
+    dispatchWistiaTrigger(firstIframe, "pause", { seconds: 45, ...wistiaDuration });
+
+    const firstVideoSnapshot = readStoredProgress(userStorageScope, firstVideo.videoId);
+    expect(firstVideoSnapshot?.segments.at(-1)?.watchedSegmentEnd).toBe(45);
+
+    fireEvent.click(screen.getByRole("button", { name: "Show second video" }));
+    await waitFor(() => {
+      expect(screen.getByTitle(`Embedded video: ${secondVideo.videoId}.`)).toBeInTheDocument();
+    });
+
+    const secondIframe = getWistiaIframeForVideo(secondVideo.videoId);
+    dispatchWistiaTrigger(secondIframe, "play", { seconds: 8, ...wistiaDuration });
+    dispatchWistiaTrigger(secondIframe, "pause", { seconds: 15, ...wistiaDuration });
+
+    const secondVideoStored = readStoredProgress(userStorageScope, secondVideo.videoId);
+    expect(secondVideoStored?.segments.at(-1)?.watchedSegmentEnd).toBe(15);
+    expect(getUniqueWatchedSeconds(secondVideoStored!.segments)).toBeLessThan(20);
+    expect(readStoredProgress(userStorageScope, firstVideo.videoId)).toEqual(firstVideoSnapshot);
+  });
+
+  it("reloads the second video's localStorage when the same player receives a new src", async () => {
+    seedProgress(firstVideo.videoId, 30);
+    seedProgress(secondVideo.videoId, 8);
+
+    await renderLoggedInStagingHarness(() => <StagingSwitchingWistiaHarness remountOnSwitch={false} />);
+
+    const firstIframe = getWistiaIframeForVideo(firstVideo.videoId);
+    dispatchWistiaTrigger(firstIframe, "play", { seconds: 30, ...wistiaDuration });
+    dispatchWistiaTrigger(firstIframe, "pause", { seconds: 40, ...wistiaDuration });
+
+    const firstVideoSnapshot = readStoredProgress(userStorageScope, firstVideo.videoId);
+
+    fireEvent.click(screen.getByRole("button", { name: "Show second video" }));
+    await waitFor(() => {
+      expect(screen.getByTitle(`Embedded video: ${secondVideo.videoId}.`)).toBeInTheDocument();
+    });
+
+    const secondIframe = getWistiaIframeForVideo(secondVideo.videoId);
+    dispatchWistiaTrigger(secondIframe, "play", { seconds: 8, ...wistiaDuration });
+    dispatchWistiaTrigger(secondIframe, "pause", { seconds: 14, ...wistiaDuration });
+
+    const secondVideoStored = readStoredProgress(userStorageScope, secondVideo.videoId);
+    expect(secondVideoStored?.segments.at(-1)?.watchedSegmentEnd).toBe(14);
+    expect(getUniqueWatchedSeconds(secondVideoStored!.segments)).toBeLessThan(18);
+    expect(readStoredProgress(userStorageScope, firstVideo.videoId)).toEqual(firstVideoSnapshot);
+  });
+
+  it("keeps separate localStorage progress when Wistia and YouTube players are on the page at once", async () => {
+    seedProgress(firstVideo.videoId, 10);
+    seedProgress(youtubeVideo.videoId, 6, youtubeDuration);
+
+    await renderLoggedInStagingHarness(StagingWistiaAndYoutubeHarness);
+    await waitForYoutubePlayer();
+
+    const wistiaIframe = getWistiaIframeForVideo(firstVideo.videoId);
+    dispatchWistiaTrigger(wistiaIframe, "play", { seconds: 10, ...wistiaDuration });
+    dispatchWistiaTrigger(wistiaIframe, "pause", { seconds: 25, ...wistiaDuration });
+
+    const wistiaAfterPause = readStoredProgress(userStorageScope, firstVideo.videoId);
+    expect(wistiaAfterPause?.segments.at(-1)?.watchedSegmentEnd).toBe(25);
+
+    triggerYoutubePlay(6);
+    triggerYoutubePause(18);
+
+    const youtubeStored = readStoredProgress(userStorageScope, youtubeVideo.videoId);
+    const wistiaStoredAgain = readStoredProgress(userStorageScope, firstVideo.videoId);
+
+    expect(youtubeStored?.segments.at(-1)?.watchedSegmentEnd).toBe(18);
+    expect(wistiaStoredAgain).toEqual(wistiaAfterPause);
+    expect(getUniqueWatchedSeconds(wistiaStoredAgain!.segments)).toBeGreaterThan(
+      getUniqueWatchedSeconds(youtubeStored!.segments),
+    );
+  });
+
+  it("reloads YouTube localStorage after switching away from Wistia (remount)", async () => {
+    seedProgress(firstVideo.videoId, 30);
+    seedProgress(youtubeVideo.videoId, 8, youtubeDuration);
+
+    await renderLoggedInStagingHarness(() => <StagingSwitchingWistiaToYoutubeHarness remountOnSwitch />);
+
+    const wistiaIframe = getWistiaIframeForVideo(firstVideo.videoId);
+    dispatchWistiaTrigger(wistiaIframe, "play", { seconds: 30, ...wistiaDuration });
+    dispatchWistiaTrigger(wistiaIframe, "pause", { seconds: 45, ...wistiaDuration });
+
+    const wistiaSnapshot = readStoredProgress(userStorageScope, firstVideo.videoId);
+    expect(wistiaSnapshot?.segments.at(-1)?.watchedSegmentEnd).toBe(45);
+
+    fireEvent.click(screen.getByRole("button", { name: "Show YouTube video" }));
+    await waitFor(() => {
+      expect(screen.getByTitle(`Embedded video: ${youtubeVideo.videoId}.`)).toBeInTheDocument();
+    });
+    await waitForYoutubePlayer();
+
+    triggerYoutubePlay(8);
+    triggerYoutubePause(22);
+
+    const youtubeStored = readStoredProgress(userStorageScope, youtubeVideo.videoId);
+    expect(youtubeStored?.segments.at(-1)?.watchedSegmentEnd).toBe(22);
+    expect(getUniqueWatchedSeconds(youtubeStored!.segments)).toBeLessThan(25);
+    expect(readStoredProgress(userStorageScope, firstVideo.videoId)).toEqual(wistiaSnapshot);
+  });
+
+  it("reloads YouTube localStorage when the same player switches from Wistia src to YouTube src", async () => {
+    seedProgress(firstVideo.videoId, 30);
+    seedProgress(youtubeVideo.videoId, 8, youtubeDuration);
+
+    await renderLoggedInStagingHarness(() => <StagingSwitchingWistiaToYoutubeHarness remountOnSwitch={false} />);
+
+    const wistiaIframe = getWistiaIframeForVideo(firstVideo.videoId);
+    dispatchWistiaTrigger(wistiaIframe, "play", { seconds: 30, ...wistiaDuration });
+    dispatchWistiaTrigger(wistiaIframe, "pause", { seconds: 40, ...wistiaDuration });
+
+    const wistiaSnapshot = readStoredProgress(userStorageScope, firstVideo.videoId);
+
+    fireEvent.click(screen.getByRole("button", { name: "Show YouTube video" }));
+    await waitFor(() => {
+      expect(screen.getByTitle(`Embedded video: ${youtubeVideo.videoId}.`)).toBeInTheDocument();
+    });
+    await waitForYoutubePlayer();
+
+    triggerYoutubePlay(8);
+    triggerYoutubePause(16);
+
+    const youtubeStored = readStoredProgress(userStorageScope, youtubeVideo.videoId);
+    expect(youtubeStored?.segments.at(-1)?.watchedSegmentEnd).toBe(16);
+    expect(getUniqueWatchedSeconds(youtubeStored!.segments)).toBeLessThan(20);
+    expect(readStoredProgress(userStorageScope, firstVideo.videoId)).toEqual(wistiaSnapshot);
+  });
 });
 
 describe("saveVideoProgress", () => {

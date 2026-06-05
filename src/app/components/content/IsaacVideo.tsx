@@ -479,10 +479,14 @@ export function IsaacVideo(props: IsaacVideoProps) {
   const progressReference = useRef<VideoProgressState>(
     createInitialVideoProgressState(userStorageScope, canonicalVideoId),
   );
-
-  React.useEffect(() => {
+  const progressScopeAndVideoRef = useRef({ userStorageScope, canonicalVideoId });
+  if (
+    progressScopeAndVideoRef.current.userStorageScope !== userStorageScope ||
+    progressScopeAndVideoRef.current.canonicalVideoId !== canonicalVideoId
+  ) {
     progressReference.current = createInitialVideoProgressState(userStorageScope, canonicalVideoId);
-  }, [canonicalVideoId, userStorageScope]);
+    progressScopeAndVideoRef.current = { userStorageScope, canonicalVideoId };
+  }
 
   const setTotalVideoDurationIfPresent = useCallback(
     (totalVideoDurationInSeconds: number | null | undefined) => {
@@ -532,12 +536,10 @@ export function IsaacVideo(props: IsaacVideoProps) {
         ...progressReference.current.segments,
         { watchedSegmentStart: clampedStart, watchedSegmentEnd: clampedEnd },
       ]);
-      if (canonicalVideoId) {
-        saveVideoProgress(userStorageScope, canonicalVideoId, progressReference.current);
-      }
+      saveVideoProgress(userStorageScope, videoId, progressReference.current);
       checkIf60PercentWatchedAndLog(videoId, videoUrl);
     },
-    [canonicalVideoId, checkIf60PercentWatchedAndLog, userStorageScope],
+    [checkIf60PercentWatchedAndLog, userStorageScope],
   );
 
   const startCurrentSegment = useCallback((segmentStart: number) => {
