@@ -1,3 +1,4 @@
+import React from "react";
 import { screen, waitFor } from "@testing-library/react";
 import { rest } from "msw";
 import { Generic } from "../../app/components/pages/Generic";
@@ -10,11 +11,18 @@ import {
   stagingVideoTestPageDoc,
 } from "../testPages/stagingVideoTestPage";
 
+interface StagingVideoTestPageHarnessProps {
+  pageIdOverride?: string;
+  match: { params: { pageId: string } };
+}
+
+const StagingVideoTestPageHarness: React.FC<StagingVideoTestPageHarnessProps> = (props) => <Generic {...props} />;
+
 describe("staging video test page", () => {
   const renderStagingPage = () =>
     renderTestEnvironment({
       role: "STUDENT",
-      PageComponent: Generic,
+      PageComponent: StagingVideoTestPageHarness,
       componentProps: {
         pageIdOverride: STAGING_VIDEO_TEST_PAGE_ID,
         match: { params: { pageId: STAGING_VIDEO_TEST_PAGE_ID } },
