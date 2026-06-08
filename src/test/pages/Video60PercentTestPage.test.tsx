@@ -18,6 +18,10 @@ interface StagingVideoTestPageHarnessProps {
 
 const StagingVideoTestPageHarness: React.FC<StagingVideoTestPageHarnessProps> = (props) => <Generic {...props} />;
 
+function MockYTPlayer() {
+  // Avoid loading real YouTube API in tests
+}
+
 describe("staging video test page", () => {
   const renderStagingPage = () =>
     renderTestEnvironment({
@@ -50,9 +54,6 @@ describe("staging video test page", () => {
 
   it("renders the staging YouTube player mount from the page API payload", async () => {
     const originalYT = globalThis.YT;
-    function MockYTPlayer() {
-      // Avoid loading real YouTube API in tests
-    }
 
     globalThis.YT = {
       Player: MockYTPlayer as unknown as NonNullable<typeof globalThis.YT>["Player"],
