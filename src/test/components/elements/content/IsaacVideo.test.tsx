@@ -357,7 +357,7 @@ describe("isValidNumber", () => {
   });
 
   it("returns false for non-finite or non-number values", () => {
-    expect(isValidNumber(NaN)).toBe(false);
+    expect(isValidNumber(Number.NaN)).toBe(false);
     expect(isValidNumber(Infinity)).toBe(false);
     expect(isValidNumber("10")).toBe(false);
     expect(isValidNumber(null)).toBe(false);
@@ -461,7 +461,7 @@ describe("getWatchPercent", () => {
   it("returns 0 when total duration is zero, negative, or not a finite number", () => {
     expect(getWatchPercent(60, 0)).toBe(0);
     expect(getWatchPercent(60, -10)).toBe(0);
-    expect(getWatchPercent(60, NaN)).toBe(0);
+    expect(getWatchPercent(60, Number.NaN)).toBe(0);
     expect(getWatchPercent(60, Infinity)).toBe(0);
   });
 });
