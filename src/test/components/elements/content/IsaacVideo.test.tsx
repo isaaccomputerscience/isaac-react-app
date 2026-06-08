@@ -1,3 +1,4 @@
+import { AxiosHeaders, type AxiosResponse } from "axios";
 import React, { useState } from "react";
 import { act, fireEvent, screen, waitFor } from "@testing-library/react";
 import { jest } from "@jest/globals";
@@ -53,6 +54,21 @@ describe("rewrite", () => {
 
 type VideoEventDispatch = NonNullable<Parameters<typeof logVideoEvent>[1]>;
 
+const voidAxiosResponse: AxiosResponse<void> = {
+  data: undefined,
+  status: 200,
+  statusText: "OK",
+  headers: {},
+  config: { headers: new AxiosHeaders() },
+};
+
+const mockApiLoggerLog = () => jest.spyOn(api.logger, "log").mockResolvedValue(voidAxiosResponse);
+
+const createVideoEventDispatchMock = () => {
+  const dispatchMock = jest.fn();
+  return { dispatchMock, dispatch: dispatchMock as unknown as VideoEventDispatch };
+};
+
 describe("logVideoEvent", () => {
   const eventDetails = {
     type: "VIDEO_PLAY" as const,
@@ -67,22 +83,22 @@ describe("logVideoEvent", () => {
   });
 
   it("dispatches LOG_EVENT and calls the logger API when dispatch is provided", async () => {
-    const dispatch = jest.fn() as VideoEventDispatch;
-    const logSpy = jest.spyOn(api.logger, "log").mockResolvedValue({} as never);
+    const { dispatchMock, dispatch } = createVideoEventDispatchMock();
+    const logSpy = mockApiLoggerLog();
 
     await logVideoEvent(eventDetails, dispatch);
 
-    expect(dispatch).toHaveBeenCalledWith({ type: ACTION_TYPE.LOG_EVENT, eventDetails });
+    expect(dispatchMock).toHaveBeenCalledWith({ type: ACTION_TYPE.LOG_EVENT, eventDetails });
     expect(logSpy).toHaveBeenCalledWith(eventDetails);
   });
 
   it("calls only the logger API when dispatch is omitted", async () => {
-    const dispatch = jest.fn() as VideoEventDispatch;
-    const logSpy = jest.spyOn(api.logger, "log").mockResolvedValue({} as never);
+    const { dispatchMock } = createVideoEventDispatchMock();
+    const logSpy = mockApiLoggerLog();
 
     await logVideoEvent(eventDetails);
 
-    expect(dispatch).not.toHaveBeenCalled();
+    expect(dispatchMock).not.toHaveBeenCalled();
     expect(logSpy).toHaveBeenCalledWith(eventDetails);
   });
 
@@ -126,11 +142,11 @@ describe("YouTube player handlers", () => {
 
   beforeEach(() => {
     capturedPlayerConfig = null;
-    jest.spyOn(api.logger, "log").mockResolvedValue({} as never);
+    mockApiLoggerLog();
     jest.spyOn(store, "dispatch");
 
     globalThis.YT = {
-      Player: MockYTPlayer as never,
+      Player: MockYTPlayer as unknown as NonNullable<typeof globalThis.YT>["Player"],
       ready: (callback: () => void) => callback(),
       PlayerState: {
         PLAYING: 1,
@@ -741,10 +757,10 @@ describe("staging video test page — YouTube", () => {
 
     beforeEach(() => {
       capturedPlayerConfig = null;
-      jest.spyOn(api.logger, "log").mockResolvedValue({} as never);
+      mockApiLoggerLog();
       jest.spyOn(store, "dispatch");
       globalThis.YT = {
-        Player: MockYTPlayer as never,
+        Player: MockYTPlayer as unknown as NonNullable<typeof globalThis.YT>["Player"],
         ready: (callback: () => void) => callback(),
         PlayerState: { PLAYING: 1, PAUSED: 2, ENDED: 0 },
       };
@@ -1068,7 +1084,7 @@ describe("IsaacVideo localStorage when moving between videos on the same page", 
     capturedPlayerConfig = null;
     youtubeCurrentTime = 0;
     globalThis.YT = {
-      Player: MockYTPlayer as never,
+      Player: MockYTPlayer as unknown as NonNullable<typeof globalThis.YT>["Player"],
       ready: (callback: () => void) => callback(),
       PlayerState: { PLAYING: 1, PAUSED: 2, ENDED: 0 },
     };
@@ -1101,7 +1117,7 @@ describe("IsaacVideo localStorage when moving between videos on the same page", 
       initialRouteEntries: [`/pages/${STAGING_VIDEO_TEST_PAGE_ID}`],
     });
     await act(async () => {
-      await (store.dispatch(requestCurrentUser() as never) as Promise<unknown>);
+      await store.dispatch(requestCurrentUser() as any);
     });
     store.dispatch({
       type: ACTION_TYPE.DOCUMENT_RESPONSE_SUCCESS,
@@ -1125,7 +1141,7 @@ describe("IsaacVideo localStorage when moving between videos on the same page", 
 
   beforeEach(() => {
     localStorage.clear();
-    jest.spyOn(api.logger, "log").mockResolvedValue({} as never);
+    mockApiLoggerLog();
     setupYoutubeApiMock();
   });
 
