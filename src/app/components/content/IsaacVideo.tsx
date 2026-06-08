@@ -407,7 +407,12 @@ export function processWistiaMessage(
     return { lastKnownTime: context.lastKnownTime };
   }
 
-  const eventName = String(data.args[0]).toLowerCase();
+  const rawEventName = data.args[0];
+  if (typeof rawEventName !== "string") {
+    return { lastKnownTime: context.lastKnownTime };
+  }
+
+  const eventName = rawEventName.toLowerCase();
   if (isWistiaTimeChangeEvent(eventName)) {
     return {
       lastKnownTime: updateWistiaTimeFromArgs(context.lastKnownTime, data.args),
@@ -661,7 +666,12 @@ export function IsaacVideo(props: IsaacVideoProps) {
           return;
         }
 
-        const eventName = data.args[0] as string;
+        const rawEventName = data.args[0];
+        if (typeof rawEventName !== "string") {
+          return;
+        }
+
+        const eventName = rawEventName;
         const eventData = (data.args[1] || {}) as WistiaEventData;
 
         if (isWistiaTimeChangeEvent(eventName)) {
