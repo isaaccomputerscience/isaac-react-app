@@ -129,11 +129,9 @@ describe("YouTube player handlers", () => {
     getDuration: () => 120,
   };
 
-  class MockYTPlayer {
-    constructor(_node: HTMLElement, config: CapturedYouTubePlayerConfig) {
-      capturedPlayerConfig = config;
-      config.events?.onReady?.({ target: mockPlayer, data: 0 });
-    }
+  function MockYTPlayer(_node: HTMLElement, config: CapturedYouTubePlayerConfig) {
+    capturedPlayerConfig = config;
+    config.events?.onReady?.({ target: mockPlayer, data: 0 });
   }
 
   const IsaacVideoHarness = () => <IsaacVideo doc={{ type: "video", src: youtubeSrc, altText: "Test video" }} />;
@@ -742,11 +740,9 @@ describe("staging video test page — YouTube", () => {
       getDuration: () => 120,
     };
 
-    class MockYTPlayer {
-      constructor(_node: HTMLElement, config: NonNullable<typeof capturedPlayerConfig>) {
-        capturedPlayerConfig = config;
-        config.events?.onReady?.({ target: mockPlayer, data: 0 });
-      }
+    function MockYTPlayer(_node: HTMLElement, config: NonNullable<typeof capturedPlayerConfig>) {
+      capturedPlayerConfig = config;
+      config.events?.onReady?.({ target: mockPlayer, data: 0 });
     }
 
     const StagingYoutubeHarness = () => (
@@ -1073,11 +1069,9 @@ describe("IsaacVideo localStorage when moving between videos on the same page", 
     getDuration: () => youtubeDuration,
   };
 
-  class MockYTPlayer {
-    constructor(_node: HTMLElement, config: NonNullable<typeof capturedPlayerConfig>) {
-      capturedPlayerConfig = config;
-      config.events?.onReady?.({ target: youtubeMockPlayer, data: 0 });
-    }
+  function MockYTPlayer(_node: HTMLElement, config: NonNullable<typeof capturedPlayerConfig>) {
+    capturedPlayerConfig = config;
+    config.events?.onReady?.({ target: youtubeMockPlayer, data: 0 });
   }
 
   const setupYoutubeApiMock = () => {
