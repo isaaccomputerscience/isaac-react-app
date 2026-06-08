@@ -50,12 +50,12 @@ describe("staging video test page", () => {
 
   it("renders the staging YouTube player mount from the page API payload", async () => {
     const originalYT = globalThis.YT;
+    function MockYTPlayer() {
+      // Avoid loading real YouTube API in tests
+    }
+
     globalThis.YT = {
-      Player: class {
-        constructor() {
-          /* noop — avoid loading real YouTube API in tests */
-        }
-      } as never,
+      Player: MockYTPlayer as unknown as NonNullable<typeof globalThis.YT>["Player"],
       ready: (callback: () => void) => callback(),
       PlayerState: { PLAYING: 1, PAUSED: 2, ENDED: 0 },
     };

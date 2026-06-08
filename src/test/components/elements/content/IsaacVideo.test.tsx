@@ -1360,6 +1360,6 @@ describe("pauseAllVideos", () => {
 
     expect(postMessage).toHaveBeenCalledWith(JSON.stringify({ event: "command", func: "pauseVideo" }), "*");
 
-    document.body.removeChild(iframe);
+    iframe.remove();
   });
 });
