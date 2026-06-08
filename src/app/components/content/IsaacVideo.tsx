@@ -26,9 +26,11 @@ interface VideoProgressStore {
   thresholdLogged: boolean;
 }
 
+type WistiaPostMessageArg = string | number | Record<string, unknown>;
+
 interface WistiaPostMessageData {
   method: string;
-  args: Array<string | number | Record<string, unknown>>;
+  args: Array<WistiaPostMessageArg>;
 }
 
 interface WistiaEventData {
@@ -376,10 +378,7 @@ export function updateWistiaTimeFromEventData(lastKnownTime: number, eventData: 
   return lastKnownTime;
 }
 
-export function updateWistiaTimeFromArgs(
-  lastKnownTime: number,
-  args: Array<string | number | Record<string, unknown>>,
-): number {
+export function updateWistiaTimeFromArgs(lastKnownTime: number, args: Array<WistiaPostMessageArg>): number {
   if (typeof args[1] === "number") {
     return args[1];
   }
@@ -612,7 +611,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
       return null;
     };
 
-    const updateTimeFromArgs = (args: Array<string | number | Record<string, unknown>>): number | null => {
+    const updateTimeFromArgs = (args: Array<WistiaPostMessageArg>): number | null => {
       if (typeof args[1] === "number") {
         return args[1];
       } else if (typeof (args[1] as WistiaEventData)?.seconds === "number") {
