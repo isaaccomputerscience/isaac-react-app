@@ -392,6 +392,41 @@ export function isWistiaTimeChangeEvent(eventName: string): boolean {
   return eventName === "timechange" || eventName === "secondchange";
 }
 
+interface WistiaTriggerMessage {
+  eventName: string;
+  eventData: WistiaEventData;
+  args: WistiaPostMessageArg[];
+}
+
+function parseWistiaTriggerMessage(rawData: unknown): WistiaTriggerMessage | null {
+  const data: WistiaPostMessageData =
+    typeof rawData === "string" ? JSON.parse(rawData) : (rawData as WistiaPostMessageData);
+  if (data.method !== "_trigger" || !Array.isArray(data.args) || data.args.length === 0) {
+    return null;
+  }
+
+  const rawEventName = data.args[0];
+  if (typeof rawEventName !== "string") {
+    return null;
+  }
+
+  return {
+    eventName: rawEventName,
+    eventData: (data.args[1] || {}) as WistiaEventData,
+    args: data.args,
+  };
+}
+
+function isWistiaMessageForIframe(event: MessageEvent, iframeContentWindow: Window | null): boolean {
+  return isValidWistiaOrigin(event.origin) && event.source === iframeContentWindow;
+}
+
+function logWistiaMessageParseError(error: unknown): void {
+  if (process.env.NODE_ENV === "development" && error instanceof Error && !error.message.includes("not valid JSON")) {
+    console.warn("Error handling Wistia message:", error);
+  }
+}
+
 export function processWistiaMessage(
   origin: string,
   rawData: unknown,
@@ -401,25 +436,19 @@ export function processWistiaMessage(
     return { lastKnownTime: context.lastKnownTime };
   }
 
-  const data: WistiaPostMessageData =
-    typeof rawData === "string" ? JSON.parse(rawData) : (rawData as WistiaPostMessageData);
-  if (data.method !== "_trigger" || !Array.isArray(data.args) || data.args.length === 0) {
+  const message = parseWistiaTriggerMessage(rawData);
+  if (!message) {
     return { lastKnownTime: context.lastKnownTime };
   }
 
-  const rawEventName = data.args[0];
-  if (typeof rawEventName !== "string") {
-    return { lastKnownTime: context.lastKnownTime };
-  }
-
-  const eventName = rawEventName.toLowerCase();
+  const eventName = message.eventName.toLowerCase();
   if (isWistiaTimeChangeEvent(eventName)) {
     return {
-      lastKnownTime: updateWistiaTimeFromArgs(context.lastKnownTime, data.args),
+      lastKnownTime: updateWistiaTimeFromArgs(context.lastKnownTime, message.args),
     };
   }
 
-  const nextKnownTime = updateWistiaTimeFromEventData(context.lastKnownTime, (data.args[1] || {}) as WistiaEventData);
+  const nextKnownTime = updateWistiaTimeFromEventData(context.lastKnownTime, message.eventData);
   const eventType = WISTIA_EVENT_TYPE_MAP[eventName];
   if (!eventType) {
     return { lastKnownTime: nextKnownTime };
@@ -653,47 +682,36 @@ export function IsaacVideo(props: IsaacVideoProps) {
       logPlayerEvent(eventType, videoUrl, wistiaVideoId, eventType === "VIDEO_ENDED" ? undefined : eventTime);
     };
 
-    const handleWistiaMessage = (event: MessageEvent): void => {
-      if (!isValidWistiaOrigin(event.origin)) return;
+    const applyWistiaTimeChange = (args: WistiaPostMessageArg[], eventData: WistiaEventData): void => {
+      const currentTime = updateTimeFromArgs(args);
+      if (isValidNumber(currentTime)) {
+        updatePlaybackProgress(currentTime, embedSrc || "", wistiaVideoId);
+      }
+      const totalVideoDurationInSeconds = getTotalDurationInSecondsForWistiaVideoFromEventData(eventData);
+      if (isValidNumber(totalVideoDurationInSeconds) && totalVideoDurationInSeconds > 0) {
+        setTotalVideoDurationIfPresent(totalVideoDurationInSeconds);
+      }
+    };
 
-      // Only accept messages from this iframe's content window (avoids cross-video / XSS issues).
-      if (event.source !== iframe.contentWindow) return;
+    const handleWistiaMessage = (event: MessageEvent): void => {
+      if (!isWistiaMessageForIframe(event, iframe.contentWindow)) {
+        return;
+      }
 
       try {
-        const data: WistiaPostMessageData = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
-
-        if (data.method !== "_trigger" || !Array.isArray(data.args) || data.args.length === 0) {
+        const message = parseWistiaTriggerMessage(event.data);
+        if (!message) {
           return;
         }
 
-        const rawEventName = data.args[0];
-        if (typeof rawEventName !== "string") {
+        if (isWistiaTimeChangeEvent(message.eventName)) {
+          applyWistiaTimeChange(message.args, message.eventData);
           return;
         }
 
-        const eventName = rawEventName;
-        const eventData = (data.args[1] || {}) as WistiaEventData;
-
-        if (isWistiaTimeChangeEvent(eventName)) {
-          const currentTime = updateTimeFromArgs(data.args);
-          if (isValidNumber(currentTime)) {
-            updatePlaybackProgress(currentTime, embedSrc || "", wistiaVideoId);
-          }
-          const totalVideoDurationInSeconds = getTotalDurationInSecondsForWistiaVideoFromEventData(eventData);
-          if (isValidNumber(totalVideoDurationInSeconds) && totalVideoDurationInSeconds > 0) {
-            setTotalVideoDurationIfPresent(totalVideoDurationInSeconds);
-          }
-        } else {
-          handleVideoEvent(eventName, eventData);
-        }
+        handleVideoEvent(message.eventName, message.eventData);
       } catch (error) {
-        if (
-          process.env.NODE_ENV === "development" &&
-          error instanceof Error &&
-          !error.message.includes("not valid JSON")
-        ) {
-          console.warn("Error handling Wistia message:", error);
-        }
+        logWistiaMessageParseError(error);
       }
     };
 
