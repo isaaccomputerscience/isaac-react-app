@@ -26,15 +26,29 @@ interface VideoProgressStore {
   thresholdLogged: boolean;
 }
 
+type WistiaPostMessageArg = string | number | Record<string, unknown>;
+
 interface WistiaPostMessageData {
   method: string;
-  args: Array<string | number | Record<string, unknown>>;
+  args: Array<WistiaPostMessageArg>;
 }
 
 interface WistiaEventData {
   secondsWatched?: number;
   seconds?: number;
   [key: string]: unknown;
+}
+
+interface WistiaMessageProcessingContext {
+  lastKnownTime: number;
+  embedSrc: string;
+  videoId: string;
+  pageId?: string;
+}
+
+interface WistiaMessageProcessingResult {
+  lastKnownTime: number;
+  eventDetails?: VideoEventDetails;
 }
 
 interface YouTubePlayer {
@@ -96,10 +110,19 @@ const VIDEO_WATCH_THRESHOLD = 0.6;
 const SEEK_DETECTION_TOLERANCE_SECONDS = 2.5;
 const VIDEO_PROGRESS_STORAGE_PREFIX = "video-progress:";
 
-interface WatchedSegment {
+export interface WatchedSegment {
   watchedSegmentStart: number;
   watchedSegmentEnd: number;
 }
+
+const WISTIA_EVENT_TYPE_MAP: Record<string, VideoEventDetails["type"]> = {
+  play: "VIDEO_PLAY",
+  playing: "VIDEO_PLAY",
+  pause: "VIDEO_PAUSE",
+  paused: "VIDEO_PAUSE",
+  end: "VIDEO_ENDED",
+  ended: "VIDEO_ENDED",
+};
 
 interface VideoProgressState {
   totalVideoDurationInSeconds: number | null;
@@ -175,26 +198,26 @@ function rewriteWistia(src: string): string | undefined {
 /**
  * Extract video ID from embed URL
  */
-function extractVideoId(embedSrc: string, pattern: RegExp): string | null {
+export function extractVideoId(embedSrc: string, pattern: RegExp): string | null {
   const match = pattern.exec(embedSrc);
   return match ? match[1] : null;
 }
 
 // The video progress storage key is a combination of the user storage scope (logged-in or not logged in users) and the video id. This is to ensure that the video progress is scoped to the user.
-function getVideoProgressStorageKey(userStorageScope: string, videoId: string): string {
+export function getVideoProgressStorageKey(userStorageScope: string, videoId: string): string {
   return `${VIDEO_PROGRESS_STORAGE_PREFIX}${userStorageScope}:${videoId}`;
 }
 
-function isValidNumber(value: unknown): value is number {
+export function isValidNumber(value: unknown): value is number {
   return typeof value === "number" && Number.isFinite(value);
 }
 
 //clamp function is to ensure tat the value of video segments is between 0 and total video duration
-function clampVideoProgressValue(value: number, min: number, max: number): number {
+export function clampVideoProgressValue(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(value, max));
 }
 
-function mergeSegments(segments: WatchedSegment[]): WatchedSegment[] {
+export function mergeSegments(segments: WatchedSegment[]): WatchedSegment[] {
   if (segments.length === 0) return [];
 
   const sortedSegments = [...segments].sort((a, b) => a.watchedSegmentStart - b.watchedSegmentStart);
@@ -218,19 +241,19 @@ function mergeSegments(segments: WatchedSegment[]): WatchedSegment[] {
   return mergedSegments;
 }
 
-function getUniqueWatchedSeconds(segments: WatchedSegment[]): number {
+export function getUniqueWatchedSeconds(segments: WatchedSegment[]): number {
   return segments.reduce(
     (total, segment) => total + Math.max(0, segment.watchedSegmentEnd - segment.watchedSegmentStart),
     0,
   );
 }
 
-function getWatchPercent(uniqueWatchedSeconds: number, totalVideoDurationInSeconds: number): number {
+export function getWatchPercent(uniqueWatchedSeconds: number, totalVideoDurationInSeconds: number): number {
   if (!isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) return 0;
   return uniqueWatchedSeconds / totalVideoDurationInSeconds;
 }
 
-function loadVideoProgress(userStorageScope: string, videoId: string): VideoProgressStore | null {
+export function loadVideoProgress(userStorageScope: string, videoId: string): VideoProgressStore | null {
   try {
     const localStorageVideoData = globalThis.localStorage?.getItem(
       getVideoProgressStorageKey(userStorageScope, videoId),
@@ -257,7 +280,7 @@ function loadVideoProgress(userStorageScope: string, videoId: string): VideoProg
   }
 }
 
-function createEmptyVideoProgressState(): VideoProgressState {
+export function createEmptyVideoProgressState(): VideoProgressState {
   return {
     totalVideoDurationInSeconds: null,
     segments: [],
@@ -268,7 +291,10 @@ function createEmptyVideoProgressState(): VideoProgressState {
   };
 }
 
-function createInitialVideoProgressState(userStorageScope: string | null, videoId: string | null): VideoProgressState {
+export function createInitialVideoProgressState(
+  userStorageScope: string | null,
+  videoId: string | null,
+): VideoProgressState {
   if (!userStorageScope || !videoId) {
     return createEmptyVideoProgressState();
   }
@@ -284,7 +310,7 @@ function createInitialVideoProgressState(userStorageScope: string | null, videoI
   };
 }
 
-function saveVideoProgress(userStorageScope: string | null, videoId: string, state: VideoProgressState): void {
+export function saveVideoProgress(userStorageScope: string | null, videoId: string, state: VideoProgressState): void {
   if (!userStorageScope) return;
   try {
     const toStore: VideoProgressStore = {
@@ -301,7 +327,7 @@ function saveVideoProgress(userStorageScope: string | null, videoId: string, sta
 /**
  * Log video events to the backend
  */
-async function logVideoEvent(
+export async function logVideoEvent(
   eventDetails: VideoEventDetails,
   dispatch?: ReturnType<typeof useAppDispatch>,
 ): Promise<void> {
@@ -321,7 +347,7 @@ async function logVideoEvent(
 /**
  * Create video event details object
  */
-function createEventDetails(
+export function createEventDetails(
   type: VideoEventDetails["type"],
   videoUrl: string,
   videoId: string,
@@ -340,6 +366,107 @@ function createEventDetails(
   if (options?.watchedSeconds !== undefined) details.watchedSeconds = options.watchedSeconds;
   if (options?.watchPercent !== undefined) details.watchPercent = options.watchPercent;
   return details;
+}
+
+export function updateWistiaTimeFromEventData(lastKnownTime: number, eventData: WistiaEventData): number {
+  if (typeof eventData.seconds === "number") {
+    return eventData.seconds;
+  }
+  if (typeof eventData.secondsWatched === "number") {
+    return eventData.secondsWatched;
+  }
+  return lastKnownTime;
+}
+
+export function updateWistiaTimeFromArgs(lastKnownTime: number, args: Array<WistiaPostMessageArg>): number {
+  if (typeof args[1] === "number") {
+    return args[1];
+  }
+  if (typeof (args[1] as WistiaEventData)?.seconds === "number") {
+    return (args[1] as WistiaEventData).seconds as number;
+  }
+  return lastKnownTime;
+}
+
+export function isWistiaTimeChangeEvent(eventName: string): boolean {
+  return eventName === "timechange" || eventName === "secondchange";
+}
+
+interface WistiaTriggerMessage {
+  eventName: string;
+  eventData: WistiaEventData;
+  args: WistiaPostMessageArg[];
+}
+
+function parseWistiaTriggerMessage(rawData: unknown): WistiaTriggerMessage | null {
+  const data: WistiaPostMessageData =
+    typeof rawData === "string" ? JSON.parse(rawData) : (rawData as WistiaPostMessageData);
+  if (data.method !== "_trigger" || !Array.isArray(data.args) || data.args.length === 0) {
+    return null;
+  }
+
+  const rawEventName = data.args[0];
+  if (typeof rawEventName !== "string") {
+    return null;
+  }
+
+  return {
+    eventName: rawEventName,
+    eventData: (data.args[1] || {}) as WistiaEventData,
+    args: data.args,
+  };
+}
+
+function isWistiaMessageForIframe(event: MessageEvent, iframeContentWindow: Window | null): boolean {
+  return isValidWistiaOrigin(event.origin) && event.source === iframeContentWindow;
+}
+
+function logWistiaMessageParseError(error: unknown): void {
+  if (process.env.NODE_ENV === "development" && error instanceof Error && !error.message.includes("not valid JSON")) {
+    console.warn("Error handling Wistia message:", error);
+  }
+}
+
+export function processWistiaMessage(
+  origin: string,
+  rawData: unknown,
+  context: WistiaMessageProcessingContext,
+): WistiaMessageProcessingResult {
+  if (!isValidWistiaOrigin(origin)) {
+    return { lastKnownTime: context.lastKnownTime };
+  }
+
+  const message = parseWistiaTriggerMessage(rawData);
+  if (!message) {
+    return { lastKnownTime: context.lastKnownTime };
+  }
+
+  const eventName = message.eventName.toLowerCase();
+  if (isWistiaTimeChangeEvent(eventName)) {
+    return {
+      lastKnownTime: updateWistiaTimeFromArgs(context.lastKnownTime, message.args),
+    };
+  }
+
+  const nextKnownTime = updateWistiaTimeFromEventData(context.lastKnownTime, message.eventData);
+  const eventType = WISTIA_EVENT_TYPE_MAP[eventName];
+  if (!eventType) {
+    return { lastKnownTime: nextKnownTime };
+  }
+
+  return {
+    lastKnownTime: nextKnownTime,
+    eventDetails: createEventDetails(eventType, context.embedSrc, context.videoId, {
+      pageId: context.pageId,
+      videoPosition: eventType === "VIDEO_ENDED" ? undefined : nextKnownTime,
+    }),
+  };
+}
+
+export function isValidWistiaOrigin(origin: string): boolean {
+  return VIDEO_PLATFORMS.WISTIA.allowedOrigins.some(
+    (allowed) => origin === allowed || origin.endsWith(".wistia.net") || origin.endsWith(".wistia.com"),
+  );
 }
 
 export function pauseAllVideos(): void {
@@ -385,10 +512,14 @@ export function IsaacVideo(props: IsaacVideoProps) {
   const progressReference = useRef<VideoProgressState>(
     createInitialVideoProgressState(userStorageScope, canonicalVideoId),
   );
-
-  React.useEffect(() => {
+  const progressScopeAndVideoRef = useRef({ userStorageScope, canonicalVideoId });
+  if (
+    progressScopeAndVideoRef.current.userStorageScope !== userStorageScope ||
+    progressScopeAndVideoRef.current.canonicalVideoId !== canonicalVideoId
+  ) {
     progressReference.current = createInitialVideoProgressState(userStorageScope, canonicalVideoId);
-  }, [canonicalVideoId, userStorageScope]);
+    progressScopeAndVideoRef.current = { userStorageScope, canonicalVideoId };
+  }
 
   const setTotalVideoDurationIfPresent = useCallback(
     (totalVideoDurationInSeconds: number | null | undefined) => {
@@ -438,12 +569,10 @@ export function IsaacVideo(props: IsaacVideoProps) {
         ...progressReference.current.segments,
         { watchedSegmentStart: clampedStart, watchedSegmentEnd: clampedEnd },
       ]);
-      if (canonicalVideoId) {
-        saveVideoProgress(userStorageScope, canonicalVideoId, progressReference.current);
-      }
+      saveVideoProgress(userStorageScope, videoId, progressReference.current);
       checkIf60PercentWatchedAndLog(videoId, videoUrl);
     },
-    [canonicalVideoId, checkIf60PercentWatchedAndLog, userStorageScope],
+    [checkIf60PercentWatchedAndLog, userStorageScope],
   );
 
   const startCurrentSegment = useCallback((segmentStart: number) => {
@@ -510,29 +639,13 @@ export function IsaacVideo(props: IsaacVideoProps) {
 
     const iframe = wistiaIframeRef.current;
 
-    // Event type mapping for video events
-    const eventTypeMap: Record<string, VideoEventDetails["type"]> = {
-      play: "VIDEO_PLAY",
-      playing: "VIDEO_PLAY",
-      pause: "VIDEO_PAUSE",
-      paused: "VIDEO_PAUSE",
-      end: "VIDEO_ENDED",
-      ended: "VIDEO_ENDED",
-    };
-
-    const isValidWistiaOrigin = (origin: string): boolean => {
-      return VIDEO_PLATFORMS.WISTIA.allowedOrigins.some(
-        (allowed) => origin === allowed || origin.endsWith(".wistia.net") || origin.endsWith(".wistia.com"),
-      );
-    };
-
     const updateTimeFromEventData = (eventData: WistiaEventData): number | null => {
       if (typeof eventData.seconds === "number") return eventData.seconds;
       if (typeof eventData.secondsWatched === "number") return eventData.secondsWatched;
       return null;
     };
 
-    const updateTimeFromArgs = (args: Array<string | number | Record<string, unknown>>): number | null => {
+    const updateTimeFromArgs = (args: Array<WistiaPostMessageArg>): number | null => {
       if (typeof args[1] === "number") {
         return args[1];
       } else if (typeof (args[1] as WistiaEventData)?.seconds === "number") {
@@ -554,7 +667,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
         setTotalVideoDurationIfPresent(totalVideoDurationInSeconds);
       }
 
-      const eventType = eventTypeMap[eventName.toLowerCase()];
+      const eventType = WISTIA_EVENT_TYPE_MAP[eventName.toLowerCase()];
       if (!eventType) return;
 
       if (eventType === "VIDEO_PLAY") {
@@ -569,46 +682,36 @@ export function IsaacVideo(props: IsaacVideoProps) {
       logPlayerEvent(eventType, videoUrl, wistiaVideoId, eventType === "VIDEO_ENDED" ? undefined : eventTime);
     };
 
-    const isTimeChangeEvent = (eventName: string): boolean => {
-      return eventName === "timechange" || eventName === "secondchange";
+    const applyWistiaTimeChange = (args: WistiaPostMessageArg[], eventData: WistiaEventData): void => {
+      const currentTime = updateTimeFromArgs(args);
+      if (isValidNumber(currentTime)) {
+        updatePlaybackProgress(currentTime, embedSrc || "", wistiaVideoId);
+      }
+      const totalVideoDurationInSeconds = getTotalDurationInSecondsForWistiaVideoFromEventData(eventData);
+      if (isValidNumber(totalVideoDurationInSeconds) && totalVideoDurationInSeconds > 0) {
+        setTotalVideoDurationIfPresent(totalVideoDurationInSeconds);
+      }
     };
 
     const handleWistiaMessage = (event: MessageEvent): void => {
-      if (!isValidWistiaOrigin(event.origin)) return;
-
-      //Check to make sure the message is coming from the same origin as the iframe. This is to prevent XSS attacks, especially when we have multiple videos on the same page.
-      if (event.source !== iframe.contentWindow) return;
+      if (!isWistiaMessageForIframe(event, iframe.contentWindow)) {
+        return;
+      }
 
       try {
-        const data: WistiaPostMessageData = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
-
-        if (data.method !== "_trigger" || !Array.isArray(data.args) || data.args.length === 0) {
+        const message = parseWistiaTriggerMessage(event.data);
+        if (!message) {
           return;
         }
 
-        const eventName = data.args[0] as string;
-        const eventData = (data.args[1] || {}) as WistiaEventData;
+        if (isWistiaTimeChangeEvent(message.eventName)) {
+          applyWistiaTimeChange(message.args, message.eventData);
+          return;
+        }
 
-        if (isTimeChangeEvent(eventName)) {
-          const currentTime = updateTimeFromArgs(data.args);
-          if (isValidNumber(currentTime)) {
-            updatePlaybackProgress(currentTime, embedSrc || "", wistiaVideoId);
-          }
-          const totalVideoDurationInSeconds = getTotalDurationInSecondsForWistiaVideoFromEventData(eventData);
-          if (isValidNumber(totalVideoDurationInSeconds) && totalVideoDurationInSeconds > 0) {
-            setTotalVideoDurationIfPresent(totalVideoDurationInSeconds);
-          }
-        } else {
-          handleVideoEvent(eventName, eventData);
-        }
+        handleVideoEvent(message.eventName, message.eventData);
       } catch (error) {
-        if (
-          process.env.NODE_ENV === "development" &&
-          error instanceof Error &&
-          !error.message.includes("not valid JSON")
-        ) {
-          console.warn("Error handling Wistia message:", error);
-        }
+        logWistiaMessageParseError(error);
       }
     };
 
@@ -616,7 +719,6 @@ export function IsaacVideo(props: IsaacVideoProps) {
 
     const setupWistiaBindings = () => {
       if (iframe.contentWindow) {
-        // Bind to all the events we care about
         const eventsToTrack = ["play", "pause", "end", "timechange", "secondchange", "durationchange"];
         eventsToTrack.forEach((eventName) => {
           iframe.contentWindow?.postMessage(
