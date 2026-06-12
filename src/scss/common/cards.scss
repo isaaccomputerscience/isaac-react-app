@@ -272,3 +272,22 @@
 .card-deck + .card-deck {
   margin-top: 1.5rem;
 }
+
+.isaac-card-link-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+  padding: 0 0 1rem;
+}
+
+.isaac-card-link {
+  color: #6b009a;
+  font-size: 1.1875rem;
+  text-decoration: none;
+
+  &:hover,
+  &:focus {
+    color: #6b009a;
+    text-decoration: underline;
+  }
+}
