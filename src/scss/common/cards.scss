@@ -273,12 +273,9 @@
   margin-top: 1.5rem;
 }
 
-// Custom call-to-action button for the IsaacCard (set via "card button text"/"card button link"
-// in the Editor). Mirrors the look and behaviour of the CareerCard/NewsCard "Read more" links.
 .isaac-card-link-container {
   display: flex;
   justify-content: center;
-  // Sufficient spacing between the card text and the button.
   margin-top: 1.5rem;
   padding: 0 0 1rem;
 }

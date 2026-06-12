@@ -55,9 +55,7 @@ describe("IsaacCard", () => {
       clickUrl: "/groups",
       verticalContent: true,
     });
-    // No visible call-to-action button is rendered...
     expect(screen.queryByRole("link", { name: /read more/i })).not.toBeInTheDocument();
-    // ...but the whole card is clickable via a stretched link.
     const link = document.querySelector("a.stretched-link");
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute("href", "/groups");
