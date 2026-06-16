@@ -4,8 +4,8 @@ import { zip } from "lodash";
 import { renderTestEnvironment, NavBarMenus, NAV_BAR_MENU_TITLE, TestUserRole } from "../utils";
 import { USER_ROLES, history } from "../../app/services";
 
-const BENEFITS_FOR_STUDENTS_PAGE = "/pages/teacher_landing_page";
-const BENEFITS_FOR_TEACHERS_PAGE = "/pages/student_landing_page";
+const BENEFITS_FOR_STUDENTS_PAGE = "/pages/student_landing_page";
+const BENEFITS_FOR_TEACHERS_PAGE = "/pages/teacher_landing_page";
 
 const myIsaacLinks = ["/assignments", "/my_gameboards", "/progress", "/tests"];
 const tutorLinks = ["/groups", "/set_assignments", "/my_markbook"];
