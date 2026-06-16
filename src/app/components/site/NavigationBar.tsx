@@ -35,7 +35,7 @@ export const NavigationBar = () => {
 
       {!isLoggedIn(user) && (
         <NavigationSection title="Teachers" svgIcon={<img src="/assets/Vector.svg" alt="Icon" className="svgIcon" />}>
-          <LinkItem to="/pages/b8e27a15-f743-4a63-ba66-eed2ed16a1c5">Benefits for teachers</LinkItem>
+          <LinkItem to="/pages/teacher_landing_page">Benefits for teachers</LinkItem>
         </NavigationSection>
       )}
 
