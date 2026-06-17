@@ -4,16 +4,21 @@ import { zip } from "lodash";
 import { renderTestEnvironment, NavBarMenus, NAV_BAR_MENU_TITLE, TestUserRole } from "../utils";
 import { USER_ROLES, history } from "../../app/services";
 
+const BENEFITS_FOR_STUDENTS_PAGE = "/pages/student_landing_page";
+const BENEFITS_FOR_TEACHERS_PAGE = "/pages/teacher_landing_page";
+
 const myIsaacLinks = ["/assignments", "/my_gameboards", "/progress", "/tests"];
 const tutorLinks = ["/groups", "/set_assignments", "/my_markbook"];
+const loggedOutTeacherLinks = [BENEFITS_FOR_TEACHERS_PAGE];
 const teacherLinks = [
   "/groups",
   "/set_assignments",
   "/my_markbook",
   "/set_tests",
-  "/teaching_order_g_ocr",
-  "/teaching_order_g_aqa",
+  "/gcse_teaching_order",
   "/teaching_order",
+  "/teacher_gcse_revision_page",
+  BENEFITS_FOR_TEACHERS_PAGE,
 ];
 const learnLinks = [
   "/topics/gcse",
@@ -23,6 +28,7 @@ const learnLinks = [
   "/pages/computer_science_journeys_gallery",
   "/careers_in_computer_science",
   "/glossary",
+  BENEFITS_FOR_STUDENTS_PAGE,
 ];
 const eventsLinks = ["/events", "/safeguarding"];
 const teacherEventLinks = ["/events?show_reservations_only=true"].concat(eventsLinks);
@@ -34,7 +40,7 @@ const navigationBarLinksPerRole: {
 } = {
   ANONYMOUS: {
     "My Isaac": myIsaacLinks,
-    Teach: null,
+    Teach: loggedOutTeacherLinks,
     Learn: learnLinks,
     Events: eventsLinks,
     Help: helpLinks,
@@ -138,6 +144,77 @@ describe("IsaacApp", () => {
     });
   });
   it.todo("should show the users number of current assignments in the navigation menu");
+
+  describe("Benefits navigation menus", () => {
+    const waitForAppToLoad = async () => {
+      await screen.findByTestId("main");
+    };
+
+    const openNavDropdown = async (menu: NavBarMenus) => {
+      await waitForAppToLoad();
+      const header = await screen.findByTestId("header");
+      const navLink = await within(header).findByText(NAV_BAR_MENU_TITLE[menu]);
+      await userEvent.click(navLink);
+      const menuSectionParent = navLink.closest("li[class*='nav-item']") as HTMLLIElement | null;
+      if (!menuSectionParent) {
+        fail(`Missing NavigationSection parent for ${menu} menu.`);
+      }
+      return within(menuSectionParent).findAllByRole("menuitem");
+    };
+
+    const expectTeachersMenuVisible = async (visible: boolean) => {
+      await waitForAppToLoad();
+      const header = await screen.findByTestId("header");
+      await waitFor(() => {
+        const navLink = within(header).queryByText(NAV_BAR_MENU_TITLE.Teach);
+        if (visible) {
+          expect(navLink).not.toBeNull();
+        } else {
+          expect(navLink).toBeNull();
+        }
+      });
+    };
+
+    it("shows Benefits for students in the Learn menu for students", async () => {
+      renderTestEnvironment({ role: "STUDENT" });
+      const learnMenuItems = await openNavDropdown("Learn");
+      const benefitsForStudents = learnMenuItems.find((item) => item.textContent?.includes("Benefits for students"));
+      expect(benefitsForStudents).toBeDefined();
+      expect(benefitsForStudents).toHaveAttribute("href", BENEFITS_FOR_STUDENTS_PAGE);
+    });
+
+    it("shows only Benefits for teachers in the Teachers menu for logged out users", async () => {
+      renderTestEnvironment({ role: "ANONYMOUS" });
+      await expectTeachersMenuVisible(true);
+      const teachersMenuItems = await openNavDropdown("Teach");
+      expect(teachersMenuItems).toHaveLength(1);
+      expect(teachersMenuItems[0]).toHaveTextContent("Benefits for teachers");
+      expect(teachersMenuItems[0]).toHaveAttribute("href", BENEFITS_FOR_TEACHERS_PAGE);
+    });
+
+    it("shows Benefits for teachers alongside other teacher menus when logged in as a teacher", async () => {
+      renderTestEnvironment({ role: "TEACHER" });
+      await expectTeachersMenuVisible(true);
+      const teachersMenuItems = await openNavDropdown("Teach");
+      const hrefs = teachersMenuItems.map((item) => item.getAttribute("href"));
+      expect(hrefs).toEqual(teacherLinks);
+      expect(hrefs).toContain(BENEFITS_FOR_TEACHERS_PAGE);
+    });
+
+    it("does not show the Teachers menu for logged in students", async () => {
+      renderTestEnvironment({ role: "STUDENT" });
+      await expectTeachersMenuVisible(false);
+    });
+
+    it("does not show Benefits for teachers in the Teachers menu for logged in tutors", async () => {
+      renderTestEnvironment({ role: "TUTOR" });
+      await expectTeachersMenuVisible(true);
+      const teachersMenuItems = await openNavDropdown("Teach");
+      const hrefs = teachersMenuItems.map((item) => item.getAttribute("href"));
+      expect(hrefs).toEqual(tutorLinks);
+      expect(hrefs).not.toContain(BENEFITS_FOR_TEACHERS_PAGE);
+    });
+  });
 
   it.each(USER_ROLES)("should not show the promo content banner for %s users", async (role) => {
     renderTestEnvironment({ role });

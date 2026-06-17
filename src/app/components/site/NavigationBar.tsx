@@ -6,6 +6,7 @@ import {
   isAdminOrEventManager,
   isContentEditor,
   isEventLeader,
+  isLoggedIn,
   isTeacherOrAbove,
   isTutorOrAbove,
 } from "../../services";
@@ -32,6 +33,12 @@ export const NavigationBar = () => {
         <LinkItem to="/tests">My tests {<MenuBadge count={quizzesCount} message="incomplete tests" />}</LinkItem>
       </NavigationSection>
 
+      {!isLoggedIn(user) && (
+        <NavigationSection title="Teachers" svgIcon={<img src="/assets/Vector.svg" alt="Icon" className="svgIcon" />}>
+          <LinkItem to="/pages/teacher_landing_page">Benefits for teachers</LinkItem>
+        </NavigationSection>
+      )}
+
       {isTutorOrAbove(user) && (
         <NavigationSection title="Teachers" svgIcon={<img src="/assets/Vector.svg" alt="Icon" className="svgIcon" />}>
           <LinkItem to="/groups">Manage groups</LinkItem>
@@ -43,6 +50,7 @@ export const NavigationBar = () => {
               <LinkItem to="/gcse_teaching_order">GCSE suggested teaching order</LinkItem>
               <LinkItem to="/teaching_order">A Level suggested teaching order</LinkItem>
               <LinkItem to="/teacher_gcse_revision_page">GCSE revision plan</LinkItem>
+              <LinkItem to="/pages/teacher_landing_page">Benefits for teachers</LinkItem>
             </>
           )}
         </NavigationSection>
@@ -57,6 +65,7 @@ export const NavigationBar = () => {
         <LinkItem to="/pages/computer_science_journeys_gallery">Computer Science Journeys</LinkItem>
         <LinkItem to="/careers_in_computer_science">Careers in Computer Science</LinkItem>
         <LinkItem to="/glossary">Glossary</LinkItem>
+        <LinkItem to="/pages/student_landing_page">Benefits for students</LinkItem>
       </NavigationSection>
 
       <NavigationSection title="Events" svgIcon={<img src="/assets/Vector.svg" alt="Icon" className="svgIcon" />}>
