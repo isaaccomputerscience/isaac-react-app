@@ -325,6 +325,23 @@ export function saveVideoProgress(userStorageScope: string | null, videoId: stri
 }
 
 /**
+ * TODO(#855) diagnostic logging for the video KPI flow. Gated by a localStorage flag so it produces no noise for
+ * normal users but can be enabled on any environment (incl. staging prod builds) by running in the console:
+ *   localStorage.setItem("isaacVideoDebug", "1")
+ * Remove once the end-to-end VIDEO_60_PERCENT_WATCHED flow is confirmed.
+ */
+export function videoDebugLog(message: string, data?: Record<string, unknown>): void {
+  try {
+    if (globalThis.localStorage?.getItem("isaacVideoDebug") === "1") {
+      // eslint-disable-next-line no-console
+      console.info(`[video-kpi] ${message}`, data ?? "");
+    }
+  } catch {
+    // ignore (e.g. localStorage unavailable)
+  }
+}
+
+/**
  * Log video events to the backend
  */
 export async function logVideoEvent(
@@ -335,9 +352,24 @@ export async function logVideoEvent(
     dispatch({ type: ACTION_TYPE.LOG_EVENT, eventDetails });
   }
 
+  videoDebugLog("logVideoEvent -> POST /log", {
+    type: eventDetails.type,
+    videoId: eventDetails.videoId,
+    watchPercent: eventDetails.watchPercent,
+    watchedSeconds: eventDetails.watchedSeconds,
+    videoDurationSeconds: eventDetails.videoDurationSeconds,
+    dispatched: Boolean(dispatch),
+  });
+
   try {
     await api.logger.log(eventDetails);
+    videoDebugLog("logVideoEvent POST /log succeeded", { type: eventDetails.type, videoId: eventDetails.videoId });
   } catch (error) {
+    videoDebugLog("logVideoEvent POST /log FAILED", {
+      type: eventDetails.type,
+      videoId: eventDetails.videoId,
+      error: error instanceof Error ? error.message : String(error),
+    });
     if (process.env.NODE_ENV === "development") {
       console.warn("Failed to log video event:", error);
     }
@@ -527,19 +559,57 @@ export function IsaacVideo(props: IsaacVideoProps) {
       if (progressReference.current.totalVideoDurationInSeconds === totalVideoDurationInSeconds) return;
       progressReference.current.totalVideoDurationInSeconds = totalVideoDurationInSeconds;
       saveVideoProgress(userStorageScope, canonicalVideoId, progressReference.current);
+      videoDebugLog("video duration captured", { videoId: canonicalVideoId, totalVideoDurationInSeconds });
     },
     [canonicalVideoId, userStorageScope],
   );
 
   const checkIf60PercentWatchedAndLog = useCallback(
-    (videoId: string, videoUrl: string) => {
-      if (!userStorageScope || !canonicalVideoId || progressReference.current.thresholdLogged) return;
+    (videoId: string, videoUrl: string, liveCurrentTime?: number) => {
+      if (!userStorageScope || !canonicalVideoId || progressReference.current.thresholdLogged) {
+        videoDebugLog("checkIf60% skipped", {
+          videoId,
+          reason: !userStorageScope ? "not-logged-in" : !canonicalVideoId ? "no-video-id" : "already-logged-this-video",
+        });
+        return;
+      }
       const totalVideoDurationInSeconds = progressReference.current.totalVideoDurationInSeconds;
-      if (!isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) return;
+      if (!isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) {
+        videoDebugLog("checkIf60% skipped", { videoId, reason: "no-duration-yet", totalVideoDurationInSeconds });
+        return;
+      }
 
-      const uniqueWatchedSeconds = getUniqueWatchedSeconds(progressReference.current.segments);
+      // Include the segment currently being watched (not yet committed while playing straight through) so the
+      // KPI fires as soon as cumulative watch time crosses the threshold, without needing a pause/seek/end/unmount.
+      const segments = [...progressReference.current.segments];
+      const openSegmentStart = progressReference.current.currentSegmentStart;
+      if (
+        progressReference.current.isPlaying &&
+        isValidNumber(openSegmentStart) &&
+        isValidNumber(liveCurrentTime) &&
+        liveCurrentTime > openSegmentStart
+      ) {
+        segments.push({ watchedSegmentStart: openSegmentStart, watchedSegmentEnd: liveCurrentTime });
+      }
+
+      const uniqueWatchedSeconds = getUniqueWatchedSeconds(mergeSegments(segments));
       const watchPercent = getWatchPercent(uniqueWatchedSeconds, totalVideoDurationInSeconds);
-      if (watchPercent < VIDEO_WATCH_THRESHOLD) return;
+      if (watchPercent < VIDEO_WATCH_THRESHOLD) {
+        videoDebugLog("checkIf60% below threshold", {
+          videoId,
+          watchPercent: Number(watchPercent.toFixed(3)),
+          uniqueWatchedSeconds: Number(uniqueWatchedSeconds.toFixed(1)),
+          totalVideoDurationInSeconds,
+        });
+        return;
+      }
+
+      videoDebugLog("checkIf60% THRESHOLD REACHED -> logging", {
+        videoId,
+        watchPercent: Number(watchPercent.toFixed(3)),
+        uniqueWatchedSeconds: Number(uniqueWatchedSeconds.toFixed(1)),
+        totalVideoDurationInSeconds,
+      });
 
       progressReference.current.thresholdLogged = true;
       saveVideoProgress(userStorageScope, canonicalVideoId, progressReference.current);
@@ -607,8 +677,11 @@ export function IsaacVideo(props: IsaacVideoProps) {
         startCurrentSegment(currentTime);
       }
       progressReference.current.lastKnownTime = currentTime;
+      // Evaluate the KPI live during playback (counting the open segment) so it fires without needing a
+      // pause/seek/end/navigation — otherwise a straight watch-through or a tab close never logs the event.
+      checkIf60PercentWatchedAndLog(videoId, videoUrl, currentTime);
     },
-    [closeCurrentSegment, startCurrentSegment],
+    [checkIf60PercentWatchedAndLog, closeCurrentSegment, startCurrentSegment],
   );
 
   const logPlayerEvent = useCallback(

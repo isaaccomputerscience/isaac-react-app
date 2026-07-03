@@ -238,6 +238,52 @@ describe("YouTube player handlers", () => {
 
     expect(dispatchMock).not.toHaveBeenCalled();
   });
+
+  it("logs VIDEO_60_PERCENT_WATCHED during continuous playback, without a pause/seek/end", async () => {
+    // Regression: the KPI must fire live from the playback poll while the segment is still open. Previously it
+    // was only evaluated when a segment closed (pause/seek/end/unmount), so a straight watch-through never logged.
+    let currentTime = 0;
+    const advancingPlayer = {
+      getVideoUrl: () => youtubeSrc,
+      getCurrentTime: () => currentTime,
+      getDuration: () => 120,
+    };
+
+    renderYouTubeVideo();
+    await flushPromises();
+
+    const dispatchMock = store.dispatch as jest.Mock;
+
+    // Fake timers must be active BEFORE play so the 1s poll interval is registered as a fake timer we can advance.
+    jest.useFakeTimers();
+    try {
+      // Start playback at t=0 (opens a segment and starts the 1s poll timer).
+      await act(async () => {
+        capturedPlayerConfig?.events?.onStateChange?.({ target: advancingPlayer, data: 1 });
+      });
+      dispatchMock.mockClear();
+
+      // Advance the player one second per poll tick (below the seek tolerance) up past 60% of 120s (= 72s).
+      for (let second = 1; second <= 75; second++) {
+        currentTime = second;
+        act(() => {
+          jest.advanceTimersByTime(1000);
+        });
+      }
+    } finally {
+      jest.useRealTimers();
+    }
+
+    type LoggedAction = { type?: string; eventDetails?: { type?: string; videoId?: string; watchPercent?: number } };
+    const thresholdLog = dispatchMock.mock.calls.find(([action]) => {
+      const a = action as LoggedAction;
+      return a?.type === ACTION_TYPE.LOG_EVENT && a?.eventDetails?.type === "VIDEO_60_PERCENT_WATCHED";
+    });
+    expect(thresholdLog).toBeDefined();
+    const eventDetails = (thresholdLog?.[0] as LoggedAction).eventDetails;
+    expect(eventDetails?.videoId).toBe(youtubeVideoId);
+    expect(eventDetails?.watchPercent).toBeGreaterThanOrEqual(0.6);
+  });
 });
 
 describe("Wistia helpers", () => {
