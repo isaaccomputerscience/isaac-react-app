@@ -673,11 +673,27 @@ export function IsaacVideo(props: IsaacVideoProps) {
         startCurrentSegment(currentTime);
       }
       progressReference.current.lastKnownTime = currentTime;
+
+      // TODO(#855) diagnostic: log every playback tick regardless of login state, so the watch progress and the
+      // logged-in/anonymous state are visible even for anonymous sessions (the KPI itself stays logged-in only).
+      const tickTotalDuration = progressReference.current.totalVideoDurationInSeconds;
+      const positionPercent =
+        isValidNumber(tickTotalDuration) && tickTotalDuration > 0 ? currentTime / tickTotalDuration : null;
+      videoDebugLog("playback tick", {
+        videoId,
+        loggedIn: Boolean(userStorageScope),
+        userStorageScope,
+        currentTime: Number(currentTime.toFixed(1)),
+        totalVideoDurationInSeconds: tickTotalDuration,
+        positionPercent: positionPercent == null ? null : Number(positionPercent.toFixed(3)),
+        crossed60ByPosition: positionPercent != null && positionPercent >= VIDEO_WATCH_THRESHOLD,
+      });
+
       // Evaluate the KPI live during playback (counting the open segment) so it fires without needing a
       // pause/seek/end/navigation — otherwise a straight watch-through or a tab close never logs the event.
       checkIf60PercentWatchedAndLog(videoId, videoUrl, currentTime);
     },
-    [checkIf60PercentWatchedAndLog, closeCurrentSegment, startCurrentSegment],
+    [checkIf60PercentWatchedAndLog, closeCurrentSegment, startCurrentSegment, userStorageScope],
   );
 
   const logPlayerEvent = useCallback(
