@@ -325,19 +325,15 @@ export function saveVideoProgress(userStorageScope: string | null, videoId: stri
 }
 
 /**
- * TODO(#855) diagnostic logging for the video KPI flow. Gated by a localStorage flag so it produces no noise for
- * normal users but can be enabled on any environment (incl. staging prod builds) by running in the console:
- *   localStorage.setItem("isaacVideoDebug", "1")
- * Remove once the end-to-end VIDEO_60_PERCENT_WATCHED flow is confirmed.
+ * TODO(#855) TEMPORARY diagnostic logging for the video KPI flow — currently logs unconditionally on every
+ * environment (including production). MUST be removed (this block and its call sites) before the prod release.
  */
 export function videoDebugLog(message: string, data?: Record<string, unknown>): void {
   try {
-    if (globalThis.localStorage?.getItem("isaacVideoDebug") === "1") {
-      // eslint-disable-next-line no-console
-      console.info(`[video-kpi] ${message}`, data ?? "");
-    }
+    // eslint-disable-next-line no-console
+    console.info(`[video-kpi] ${message}`, data ?? "");
   } catch {
-    // ignore (e.g. localStorage unavailable)
+    // ignore (e.g. console unavailable)
   }
 }
 
