@@ -22,6 +22,7 @@ import {
   processWistiaMessage,
   rewrite,
   saveVideoProgress,
+  sendVideoEngagementBeacon,
   updateWistiaTimeFromArgs,
   updateWistiaTimeFromEventData,
 } from "../../../../app/components/content/IsaacVideo";
@@ -1407,5 +1408,49 @@ describe("pauseAllVideos", () => {
     expect(postMessage).toHaveBeenCalledWith(JSON.stringify({ event: "command", func: "pauseVideo" }), "*");
 
     iframe.remove();
+  });
+});
+
+describe("sendVideoEngagementBeacon", () => {
+  const eventDetails = {
+    type: "VIDEO_60_PERCENT_WATCHED" as const,
+    videoId: "test123ABCde",
+    videoUrl: "https://www.youtube.com/watch?v=test123ABCde",
+    videoDurationSeconds: 120,
+    watchedSeconds: 80,
+    watchPercent: 0.66,
+  };
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it("POSTs the event to /log via fetch with keepalive so it survives page unload", () => {
+    const fetchMock = jest.fn(() => Promise.resolve({ ok: true } as Response));
+    jest.spyOn(globalThis, "fetch").mockImplementation(fetchMock as unknown as typeof fetch);
+
+    const dispatched = sendVideoEngagementBeacon(eventDetails);
+
+    expect(dispatched).toBe(true);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toMatch(/\/log$/);
+    expect(init.method).toBe("POST");
+    expect(init.keepalive).toBe(true);
+    expect(init.credentials).toBe("include");
+    expect(init.headers).toMatchObject({ "Content-Type": "application/json" });
+    expect(JSON.parse(init.body as string)).toMatchObject({
+      type: "VIDEO_60_PERCENT_WATCHED",
+      videoId: "test123ABCde",
+    });
+  });
+
+  it("returns false and does not throw when fetch is unavailable", () => {
+    jest.spyOn(globalThis, "fetch").mockImplementation(() => {
+      throw new Error("fetch unavailable");
+    });
+
+    expect(() => sendVideoEngagementBeacon(eventDetails)).not.toThrow();
+    expect(sendVideoEngagementBeacon(eventDetails)).toBe(false);
   });
 });

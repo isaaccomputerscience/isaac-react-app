@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useRef } from "react";
 import { VideoDTO } from "../../../IsaacApiTypes";
 import { selectors, useAppDispatch, useAppSelector } from "../../state";
-import { NOT_FOUND, api, ACTION_TYPE } from "../../services";
+import { NOT_FOUND, api, ACTION_TYPE, API_PATH } from "../../services";
 import ReactGA from "react-ga4";
 import { AccordionSectionContext } from "../../../IsaacAppTypes";
 
@@ -76,12 +76,23 @@ declare global {
     Wistia?: {
       [key: string]: unknown;
     };
+    // Wistia's E-v1.js embed exposes a `_wq` command queue; pushing a handler with an
+    // `onReady` callback yields a video API object we can read the true duration from.
+    _wq?: Array<{ id: string; onReady?: (video: WistiaVideoApi) => void; [key: string]: unknown }>;
   }
 
   // eslint-disable-next-line no-var
   var YT: Window["YT"];
   // eslint-disable-next-line no-var
   var Wistia: Window["Wistia"];
+  // eslint-disable-next-line no-var
+  var _wq: Window["_wq"];
+}
+
+interface WistiaVideoApi {
+  duration?: () => number;
+  time?: () => number;
+  [key: string]: unknown;
 }
 
 // Constants
@@ -373,6 +384,38 @@ export async function logVideoEvent(
 }
 
 /**
+ * Reliably POST a video-engagement event to /log when the page is being hidden/unloaded.
+ *
+ * A normal in-page XHR/axios POST is cancelled by the browser on navigation or tab close, which
+ * silently drops a threshold reached at the last moment. fetch with `keepalive: true` matches the
+ * existing axios request (same JSON content type + credentials, so it satisfies the identical
+ * cookie auth and CORS) but is allowed to outlive the document. Returns whether the request was
+ * dispatched (not whether the server accepted it — there is no response to await during unload).
+ */
+export function sendVideoEngagementBeacon(eventDetails: VideoEventDetails): boolean {
+  try {
+    void fetch(`${API_PATH}/log`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(eventDetails),
+      keepalive: true,
+    });
+    videoDebugLog("sendVideoEngagementBeacon dispatched", {
+      videoId: eventDetails.videoId,
+      watchPercent: eventDetails.watchPercent,
+    });
+    return true;
+  } catch (error) {
+    videoDebugLog("sendVideoEngagementBeacon FAILED", {
+      videoId: eventDetails.videoId,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return false;
+  }
+}
+
+/**
  * Create video event details object
  */
 export function createEventDetails(
@@ -521,6 +564,10 @@ export function IsaacVideo(props: IsaacVideoProps) {
   const wistiaIframeRef = useRef<HTMLIFrameElement>(null);
   const youtubePlayerRef = useRef<YouTubePlayer | null>(null);
   const youtubePollTimerRef = useRef<ReturnType<typeof globalThis.setInterval> | null>(null);
+  // Prevents re-sending VIDEO_60_PERCENT_WATCHED while an attempt is in flight. Because the KPI is
+  // now only persisted (thresholdLogged) after the backend confirms, without this guard the
+  // per-tick playback check would fire duplicate requests until the first one resolved.
+  const thresholdSendInFlightRef = useRef<boolean>(false);
 
   const platform = React.useMemo(() => (src ? detectPlatform(src) : null), [src]);
   const isYouTube = platform === "youtube";
@@ -562,10 +609,21 @@ export function IsaacVideo(props: IsaacVideoProps) {
 
   const checkIf60PercentWatchedAndLog = useCallback(
     (videoId: string, videoUrl: string, liveCurrentTime?: number) => {
-      if (!userStorageScope || !canonicalVideoId || progressReference.current.thresholdLogged) {
+      if (
+        !userStorageScope ||
+        !canonicalVideoId ||
+        progressReference.current.thresholdLogged ||
+        thresholdSendInFlightRef.current
+      ) {
         videoDebugLog("checkIf60% skipped", {
           videoId,
-          reason: !userStorageScope ? "not-logged-in" : !canonicalVideoId ? "no-video-id" : "already-logged-this-video",
+          reason: !userStorageScope
+            ? "not-logged-in"
+            : !canonicalVideoId
+            ? "no-video-id"
+            : progressReference.current.thresholdLogged
+            ? "already-logged-this-video"
+            : "send-in-flight",
         });
         return;
       }
@@ -607,16 +665,36 @@ export function IsaacVideo(props: IsaacVideoProps) {
         totalVideoDurationInSeconds,
       });
 
-      progressReference.current.thresholdLogged = true;
-      saveVideoProgress(userStorageScope, canonicalVideoId, progressReference.current);
-
       const eventDetails = createEventDetails("VIDEO_60_PERCENT_WATCHED", videoUrl, videoId, {
         pageId,
         videoDurationSeconds: totalVideoDurationInSeconds,
         watchedSeconds: uniqueWatchedSeconds,
         watchPercent,
       });
-      logVideoEvent(eventDetails, dispatch);
+
+      // Block duplicate sends from later playback ticks until this attempt resolves.
+      thresholdSendInFlightRef.current = true;
+      // Keep the redux LOG_EVENT dispatch (analytics + observability), but only persist
+      // thresholdLogged once the backend has accepted the event. Previously the flag was set
+      // optimistically before the POST, so any failure (transient network, or a backend that
+      // wasn't accepting the event yet) permanently suppressed the KPI for that user+video.
+      dispatch({ type: ACTION_TYPE.LOG_EVENT, eventDetails });
+      api.logger
+        .log(eventDetails)
+        .then(() => {
+          progressReference.current.thresholdLogged = true;
+          saveVideoProgress(userStorageScope, canonicalVideoId, progressReference.current);
+          videoDebugLog("VIDEO_60_PERCENT_WATCHED recorded; thresholdLogged persisted", { videoId });
+        })
+        .catch((error) => {
+          videoDebugLog("VIDEO_60_PERCENT_WATCHED POST failed; will retry on next update", {
+            videoId,
+            error: error instanceof Error ? error.message : String(error),
+          });
+        })
+        .finally(() => {
+          thresholdSendInFlightRef.current = false;
+        });
     },
     [canonicalVideoId, dispatch, pageId, userStorageScope],
   );
@@ -964,6 +1042,86 @@ export function IsaacVideo(props: IsaacVideoProps) {
       }
     };
   }, [closeCurrentSegment, youtubeVideoId]);
+
+  // Unload-safe backstop: when the page is hidden/closed, flush the open segment and, if the 60%
+  // threshold is met but not yet logged, send it via keepalive fetch — a normal POST is cancelled
+  // on unload. This covers a viewer who crosses the threshold and immediately leaves the page.
+  React.useEffect(() => {
+    if (!userStorageScope || !canonicalVideoId) return;
+    const videoUrl = embedSrc || "";
+
+    const flushThreshold = (reason: string) => {
+      if (progressReference.current.thresholdLogged || thresholdSendInFlightRef.current) return;
+      const totalVideoDurationInSeconds = progressReference.current.totalVideoDurationInSeconds;
+      if (!isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) return;
+
+      const segments = [...progressReference.current.segments];
+      const openSegmentStart = progressReference.current.currentSegmentStart;
+      const openSegmentEnd = progressReference.current.lastKnownTime;
+      if (
+        progressReference.current.isPlaying &&
+        isValidNumber(openSegmentStart) &&
+        isValidNumber(openSegmentEnd) &&
+        openSegmentEnd > openSegmentStart
+      ) {
+        segments.push({ watchedSegmentStart: openSegmentStart, watchedSegmentEnd: openSegmentEnd });
+      }
+      const uniqueWatchedSeconds = getUniqueWatchedSeconds(mergeSegments(segments));
+      const watchPercent = getWatchPercent(uniqueWatchedSeconds, totalVideoDurationInSeconds);
+      if (watchPercent < VIDEO_WATCH_THRESHOLD) return;
+
+      const eventDetails = createEventDetails("VIDEO_60_PERCENT_WATCHED", videoUrl, canonicalVideoId, {
+        pageId,
+        videoDurationSeconds: totalVideoDurationInSeconds,
+        watchedSeconds: uniqueWatchedSeconds,
+        watchPercent,
+      });
+      videoDebugLog("flushThreshold sending on page hide", { reason, videoId: canonicalVideoId, watchPercent });
+      dispatch({ type: ACTION_TYPE.LOG_EVENT, eventDetails });
+      // Beacon is fire-and-forget; mark logged optimistically so a following hide event does not
+      // double-send. A keepalive request is reliably queued once dispatched.
+      if (sendVideoEngagementBeacon(eventDetails)) {
+        progressReference.current.thresholdLogged = true;
+        saveVideoProgress(userStorageScope, canonicalVideoId, progressReference.current);
+      }
+    };
+
+    const onPageHide = () => flushThreshold("pagehide");
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "hidden") flushThreshold("visibilitychange:hidden");
+    };
+
+    globalThis.addEventListener("pagehide", onPageHide);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
+      globalThis.removeEventListener("pagehide", onPageHide);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, [userStorageScope, canonicalVideoId, embedSrc, pageId, dispatch]);
+
+  // Wistia: read the true duration via the Wistia JS API. The postMessage "duration" field is not
+  // always present, and without a duration the coverage/threshold calculation is skipped — so
+  // Wistia videos could otherwise never fire VIDEO_60_PERCENT_WATCHED.
+  React.useEffect(() => {
+    if (!isWistia || !wistiaVideoId) return;
+    const wistiaQueue = (globalThis._wq = globalThis._wq || []);
+    wistiaQueue.push({
+      id: wistiaVideoId,
+      onReady: (video: WistiaVideoApi) => {
+        try {
+          const duration = video.duration?.();
+          videoDebugLog("Wistia onReady duration", { wistiaVideoId, duration });
+          if (isValidNumber(duration) && duration > 0) {
+            setTotalVideoDurationIfPresent(duration);
+          }
+        } catch (error) {
+          videoDebugLog("Wistia duration read failed", {
+            error: error instanceof Error ? error.message : String(error),
+          });
+        }
+      },
+    });
+  }, [isWistia, wistiaVideoId, setTotalVideoDurationIfPresent]);
 
   const detailsForPrintOut = <div className="only-print py-2 mb-4">{altTextToUse}</div>;
 
