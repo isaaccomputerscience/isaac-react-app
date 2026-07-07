@@ -82,7 +82,7 @@ export const Homepage = () => {
                   <Col className="resources-custom-col-60">
                     <Resources
                       heading="Computer science topics"
-                      description="Discover our free computer science topics and questions, mapped to the leading exam specifications in England. Review key curriculum areas and get specific feedback to address common misconceptions."
+                      description="Discover over 50 free computer science topics and over 1000 questions, mapped to the leading exam specifications in England. Review key curriculum areas and get specific feedback to address common misconceptions."
                       links={[
                         { to: "/topics/gcse", text: "GCSE topics" },
                         { to: "/topics/a_level", text: "A level topics" },
