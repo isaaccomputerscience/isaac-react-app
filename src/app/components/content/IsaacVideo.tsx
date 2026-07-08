@@ -55,6 +55,7 @@ interface YouTubePlayer {
   getVideoUrl: () => string;
   getCurrentTime: () => number;
   getDuration: () => number;
+  destroy?: () => void;
 }
 
 interface YouTubeEvent {
@@ -65,7 +66,7 @@ interface YouTubeEvent {
 declare global {
   interface Window {
     YT?: {
-      Player: new (element: HTMLElement, config: unknown) => void;
+      Player: new (element: HTMLElement, config: unknown) => YouTubePlayer;
       ready: (callback: () => void) => void;
       PlayerState: {
         PLAYING: number;
@@ -776,6 +777,11 @@ export function IsaacVideo(props: IsaacVideoProps) {
     [appendSegment],
   );
 
+  // Latest closeCurrentSegment, read by the YouTube teardown below without making that effect depend on
+  // (and therefore re-run + tear the player down on) every callback identity change.
+  const closeCurrentSegmentRef = useRef(closeCurrentSegment);
+  closeCurrentSegmentRef.current = closeCurrentSegment;
+
   // this function is used to update the playback progress of the video, and detect seeks by comparing the current time with the last known time.
   const updatePlaybackProgress = useCallback(
     (currentTime: number, videoUrl: string, videoId: string) => {
@@ -1130,8 +1136,28 @@ export function IsaacVideo(props: IsaacVideoProps) {
     [youtubeVideoId],
   );
 
+  const handleYouTubePlayerError = useCallback(
+    (event: YouTubeEvent) => {
+      // TODO(#855) diagnostic: YouTube reported a player error (2 invalid id, 5 html5, 100 not found,
+      // 101/150 embedding disabled). The KPI cannot run if the video refuses to embed/play.
+      videoDebugLog("YouTube onError", { youtubeVideoId, errorCode: event.data });
+    },
+    [youtubeVideoId],
+  );
+
+  // The player is constructed exactly once, but auth (userStorageScope) and the page doc (pageId) can
+  // resolve AFTER construction. So we register STABLE wrapper handlers that always dispatch to the latest
+  // handler via these refs — otherwise the player would forever call handlers that closed over the
+  // logged-out / no-pageId state, and never log play/pause or the KPI once the user is actually scoped.
+  const handleYouTubePlayerReadyRef = useRef(handleYouTubePlayerReady);
+  handleYouTubePlayerReadyRef.current = handleYouTubePlayerReady;
+  const handleYouTubePlayerStateChangeRef = useRef(handleYouTubePlayerStateChange);
+  handleYouTubePlayerStateChangeRef.current = handleYouTubePlayerStateChange;
+  const handleYouTubePlayerErrorRef = useRef(handleYouTubePlayerError);
+  handleYouTubePlayerErrorRef.current = handleYouTubePlayerError;
+
   const createYouTubePlayer = useCallback(
-    (node: HTMLDivElement) => {
+    (container: HTMLDivElement) => {
       const YT = globalThis.YT;
       if (!YT || !youtubeVideoId || youtubePlayerCreatedRef.current) return;
       // Commit before the async YT.ready callback so the waiter poll cannot construct a second player.
@@ -1139,8 +1165,16 @@ export function IsaacVideo(props: IsaacVideoProps) {
       try {
         videoDebugLog("createYouTubePlayer -> YT.ready(register)", { youtubeVideoId });
         YT.ready(() => {
+          // Hand YT a plain child node to replace with its <iframe>, NOT the React-managed container
+          // itself. If YT swaps out a React-owned node, the next re-render reconciles that node out from
+          // under the widget and the enablejsapi postMessage handshake targets the wrong window
+          // ("recipient origin = app origin") — so onReady/onStateChange never fire even though the video
+          // plays. React only owns the (childless) container; this child is invisible to its reconciler.
+          const playerHost = document.createElement("div");
+          playerHost.className = "mw-100";
+          container.replaceChildren(playerHost);
           videoDebugLog("YT.ready fired -> new YT.Player", { youtubeVideoId });
-          new YT.Player(node, {
+          youtubePlayerRef.current = new YT.Player(playerHost, {
             videoId: youtubeVideoId,
             playerVars: {
               enablejsapi: 1,
@@ -1150,8 +1184,9 @@ export function IsaacVideo(props: IsaacVideoProps) {
               origin: globalThis.location.origin,
             },
             events: {
-              onReady: handleYouTubePlayerReady,
-              onStateChange: handleYouTubePlayerStateChange,
+              onReady: (event: YouTubeEvent) => handleYouTubePlayerReadyRef.current(event),
+              onStateChange: (event: YouTubeEvent) => handleYouTubePlayerStateChangeRef.current(event),
+              onError: (event: YouTubeEvent) => handleYouTubePlayerErrorRef.current(event),
             },
           });
         });
@@ -1166,15 +1201,24 @@ export function IsaacVideo(props: IsaacVideoProps) {
         });
       }
     },
-    [handleYouTubePlayerReady, handleYouTubePlayerStateChange, youtubeVideoId],
+    [youtubeVideoId],
   );
 
-  // Waiter: construct the YouTube player as soon as BOTH the div is mounted and the async YT API is
-  // loaded. This is the actual fix for a console that stops at "scope resolved" — previously, if YT
-  // wasn't ready at mount, the player was never created and there was no retry.
+  // Latest createYouTubePlayer, read by the waiter effect so it can construct with the current callbacks
+  // WITHOUT listing createYouTubePlayer as a dependency — otherwise every callback-identity change would
+  // re-run the effect, reset the guard, and build a second competing player on the same node.
+  const createYouTubePlayerRef = useRef(createYouTubePlayer);
+  createYouTubePlayerRef.current = createYouTubePlayer;
+
+  // Waiter + lifecycle owner for the YouTube player. Depends ONLY on the platform/video id, so unrelated
+  // re-renders never tear the player down or rebuild it. It (1) constructs the player as soon as both the
+  // container is mounted and the async YT API is loaded, and (2) on video change / unmount, flushes any
+  // open watched segment, stops the poll, and destroys the player so the next construction starts clean.
   React.useEffect(() => {
     if (!isYouTube || !youtubeVideoId) return;
-    youtubePlayerCreatedRef.current = false; // new video id -> allow a fresh construction
+    youtubePlayerCreatedRef.current = false; // fresh video id -> allow a new construction
+    let pollTimer: ReturnType<typeof globalThis.setInterval> | null = null;
+    let giveUpTimer: ReturnType<typeof globalThis.setTimeout> | null = null;
 
     const tryCreate = (): boolean => {
       const node = youtubeNodeRef.current;
@@ -1188,47 +1232,60 @@ export function IsaacVideo(props: IsaacVideoProps) {
         return false;
       }
       videoDebugLog("YT waiter: node + YT ready -> creating player", { youtubeVideoId });
-      createYouTubePlayer(node);
+      createYouTubePlayerRef.current(node);
       return true;
     };
 
-    if (tryCreate()) return;
-
-    const pollTimer = globalThis.setInterval(() => {
-      if (tryCreate()) globalThis.clearInterval(pollTimer);
-    }, 250);
-    // Give up after a bounded wait so we do not poll forever if the API script failed to load at all.
-    const giveUpTimer = globalThis.setTimeout(() => {
-      globalThis.clearInterval(pollTimer);
-      if (!youtubePlayerCreatedRef.current) {
-        videoDebugLog("YT waiter: GAVE UP (YT API never loaded / node never mounted)", {
-          youtubeVideoId,
-          hadNode: Boolean(youtubeNodeRef.current),
-          ytPresent: Boolean(globalThis.YT),
-        });
-      }
-    }, 15000);
+    if (!tryCreate()) {
+      pollTimer = globalThis.setInterval(() => {
+        if (tryCreate() && pollTimer) {
+          globalThis.clearInterval(pollTimer);
+          pollTimer = null;
+        }
+      }, 250);
+      // Give up after a bounded wait so we do not poll forever if the API script failed to load at all.
+      giveUpTimer = globalThis.setTimeout(() => {
+        if (pollTimer) globalThis.clearInterval(pollTimer);
+        if (!youtubePlayerCreatedRef.current) {
+          videoDebugLog("YT waiter: GAVE UP (YT API never loaded / node never mounted)", {
+            youtubeVideoId,
+            hadNode: Boolean(youtubeNodeRef.current),
+            ytPresent: Boolean(globalThis.YT),
+          });
+        }
+      }, 15000);
+    }
 
     return () => {
-      globalThis.clearInterval(pollTimer);
-      globalThis.clearTimeout(giveUpTimer);
-    };
-  }, [isYouTube, youtubeVideoId, createYouTubePlayer]);
-
-  // Close any open YouTube segment and stop polling when leaving the page or changing video
-  React.useEffect(() => {
-    return () => {
+      if (pollTimer) globalThis.clearInterval(pollTimer);
+      if (giveUpTimer) globalThis.clearTimeout(giveUpTimer);
       if (youtubePollTimerRef.current) {
         globalThis.clearInterval(youtubePollTimerRef.current);
         youtubePollTimerRef.current = null;
       }
       const player = youtubePlayerRef.current;
-      if (player && youtubeVideoId) {
-        closeCurrentSegment(player.getCurrentTime(), player.getVideoUrl(), youtubeVideoId);
+      // Flush an open segment before teardown (SPA navigate-away / video-change backstop).
+      if (player && progressReference.current.isPlaying) {
+        try {
+          closeCurrentSegmentRef.current(player.getCurrentTime(), player.getVideoUrl(), youtubeVideoId);
+        } catch {
+          /* ignore read/close errors during teardown */
+        }
         progressReference.current.isPlaying = false;
       }
+      if (player?.destroy) {
+        try {
+          player.destroy();
+        } catch {
+          /* ignore */
+        }
+      }
+      youtubePlayerRef.current = null;
+      youtubePlayerCreatedRef.current = false;
+      youtubeNodeRef.current?.replaceChildren();
+      videoDebugLog("YT waiter cleanup: segment flushed + player destroyed", { youtubeVideoId });
     };
-  }, [closeCurrentSegment, youtubeVideoId]);
+  }, [isYouTube, youtubeVideoId]);
 
   // Unload-safe backstop: when the page is hidden/closed, flush the open segment and, if the 60%
   // threshold is met but not yet logged, send it via keepalive fetch — a normal POST is cancelled
