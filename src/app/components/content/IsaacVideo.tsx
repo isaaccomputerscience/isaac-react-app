@@ -571,6 +571,9 @@ export function IsaacVideo(props: IsaacVideoProps) {
   // against constructing twice (ref callback re-fire + waiter poll).
   const youtubeNodeRef = useRef<HTMLDivElement | null>(null);
   const youtubePlayerCreatedRef = useRef<boolean>(false);
+  // Set true when onReady fires. Used by the watchdog below to distinguish "handshake still pending /
+  // video not played yet" from "enablejsapi channel never connected" (the latter = no events ever logged).
+  const youtubeReadyFiredRef = useRef<boolean>(false);
   // Prevents re-sending VIDEO_60_PERCENT_WATCHED while an attempt is in flight. Because the KPI is
   // now only persisted (thresholdLogged) after the backend confirms, without this guard the
   // per-tick playback check would fire duplicate requests until the first one resolved.
@@ -1041,8 +1044,10 @@ export function IsaacVideo(props: IsaacVideoProps) {
   const handleYouTubePlayerReady = useCallback(
     (event: YouTubeEvent) => {
       youtubePlayerRef.current = event.target;
+      youtubeReadyFiredRef.current = true;
       const duration = event.target.getDuration();
-      // TODO(#855) diagnostic: onReady fired — player object exists and duration should be known.
+      // TODO(#855) diagnostic: onReady fired — the enablejsapi handshake completed, so onStateChange/KPI
+      // logging will work. If this never appears, the API channel never connected (see the READY WATCHDOG).
       videoDebugLog("YouTube onReady", { youtubeVideoId, duration });
       setTotalVideoDurationIfPresent(duration);
     },
@@ -1173,6 +1178,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
           const playerHost = document.createElement("div");
           playerHost.className = "mw-100";
           container.replaceChildren(playerHost);
+          youtubeReadyFiredRef.current = false;
           videoDebugLog("YT.ready fired -> new YT.Player", { youtubeVideoId });
           youtubePlayerRef.current = new YT.Player(playerHost, {
             videoId: youtubeVideoId,
@@ -1189,6 +1195,31 @@ export function IsaacVideo(props: IsaacVideoProps) {
               onError: (event: YouTubeEvent) => handleYouTubePlayerErrorRef.current(event),
             },
           });
+
+          // READY WATCHDOG (TODO(#855)): if onReady has not fired a few seconds after construction, the
+          // enablejsapi handshake did not connect. Dump the real iframe state so we can tell WHY: is there
+          // an <iframe> at all, what is its src (youtube.com vs about:blank), and — the decisive tell —
+          // is its contentWindow same-origin as us (handshake will never work) or cross-origin youtube
+          // (handshake should work). This replaces guessing at the transient postMessage warm-up spam.
+          globalThis.setTimeout(() => {
+            if (youtubeReadyFiredRef.current) return;
+            const iframe = playerHost.querySelector("iframe") ?? container.querySelector("iframe");
+            let contentWindowOrigin: string;
+            try {
+              // Reading .location.origin on a cross-origin (youtube) window THROWS — that's the good case.
+              contentWindowOrigin = iframe?.contentWindow?.location?.origin ?? "(no iframe/contentWindow)";
+            } catch {
+              contentWindowOrigin = "(cross-origin — expected for a loaded youtube iframe)";
+            }
+            videoDebugLog("YouTube READY WATCHDOG: onReady NOT fired ~8s after construction", {
+              youtubeVideoId,
+              iframePresent: Boolean(iframe),
+              iframeSrc: iframe?.getAttribute("src") ?? "(none)",
+              contentWindowOrigin,
+              isPlaying: progressReference.current.isPlaying,
+              hint: "if iframeSrc is about:blank or contentWindowOrigin is our app origin, the youtube iframe never loaded (CSP/network); if it's cross-origin youtube, the video is fine and onReady is just slow/needs play.",
+            });
+          }, 8000);
         });
       } catch (error) {
         youtubePlayerCreatedRef.current = false; // allow a later retry
