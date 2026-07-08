@@ -564,6 +564,12 @@ export function IsaacVideo(props: IsaacVideoProps) {
   const wistiaIframeRef = useRef<HTMLIFrameElement>(null);
   const youtubePlayerRef = useRef<YouTubePlayer | null>(null);
   const youtubePollTimerRef = useRef<ReturnType<typeof globalThis.setInterval> | null>(null);
+  // The YouTube iframe API is loaded `async` (public/index.html), so `globalThis.YT` is often not
+  // yet defined when this component's div mounts. The ref callback captures the node here; a waiter
+  // effect then constructs the player as soon as YT is available. `youtubePlayerCreatedRef` guards
+  // against constructing twice (ref callback re-fire + waiter poll).
+  const youtubeNodeRef = useRef<HTMLDivElement | null>(null);
+  const youtubePlayerCreatedRef = useRef<boolean>(false);
   // Prevents re-sending VIDEO_60_PERCENT_WATCHED while an attempt is in flight. Because the KPI is
   // now only persisted (thresholdLogged) after the backend confirms, without this guard the
   // per-tick playback check would fire duplicate requests until the first one resolved.
@@ -745,12 +751,25 @@ export function IsaacVideo(props: IsaacVideoProps) {
   const startCurrentSegment = useCallback((segmentStart: number) => {
     progressReference.current.currentSegmentStart = segmentStart;
     progressReference.current.lastKnownTime = segmentStart; // this will set a baseline time when a new segment starts, so that we can detect seeks
+    // TODO(#855) diagnostic: mark the exact position a new watched segment opens.
+    videoDebugLog("startCurrentSegment", { segmentStart: Number(segmentStart.toFixed(1)) });
   }, []);
 
   const closeCurrentSegment = useCallback(
     (segmentEnd: number, videoUrl: string, videoId: string) => {
       const currentSegmentStart = progressReference.current.currentSegmentStart;
-      if (!isValidNumber(currentSegmentStart)) return;
+      if (!isValidNumber(currentSegmentStart)) {
+        // TODO(#855) diagnostic: closing with no open segment usually means play/pause bookkeeping got out of sync.
+        videoDebugLog("closeCurrentSegment SKIPPED", {
+          reason: "no-open-segment",
+          segmentEnd: Number(segmentEnd.toFixed(1)),
+        });
+        return;
+      }
+      videoDebugLog("closeCurrentSegment", {
+        from: Number(currentSegmentStart.toFixed(1)),
+        to: Number(segmentEnd.toFixed(1)),
+      });
       appendSegment(currentSegmentStart, segmentEnd, videoId, videoUrl);
       progressReference.current.currentSegmentStart = null;
     },
@@ -760,9 +779,22 @@ export function IsaacVideo(props: IsaacVideoProps) {
   // this function is used to update the playback progress of the video, and detect seeks by comparing the current time with the last known time.
   const updatePlaybackProgress = useCallback(
     (currentTime: number, videoUrl: string, videoId: string) => {
-      if (!isValidNumber(currentTime)) return;
+      if (!isValidNumber(currentTime)) {
+        // TODO(#855) diagnostic: getCurrentTime() returned a non-number (player not ready?).
+        videoDebugLog("updatePlaybackProgress IGNORED", { reason: "current-time-not-a-number", currentTime });
+        return;
+      }
       const lastKnownTime = progressReference.current.lastKnownTime;
       if (!progressReference.current.isPlaying || !isValidNumber(lastKnownTime)) {
+        // TODO(#855) diagnostic: this is the silent branch — a tick arrives but is dropped before any
+        // "playback tick" log because we think we're not playing or have no baseline time. If ticks
+        // vanish here while the video is visibly playing, isPlaying never got set true on PLAYING.
+        videoDebugLog("updatePlaybackProgress IGNORED", {
+          reason: !progressReference.current.isPlaying ? "not-playing" : "no-baseline-time",
+          isPlaying: progressReference.current.isPlaying,
+          lastKnownTime,
+          currentTime: Number(currentTime.toFixed(1)),
+        });
         progressReference.current.lastKnownTime = currentTime;
         return;
       }
@@ -770,6 +802,12 @@ export function IsaacVideo(props: IsaacVideoProps) {
       const diff = currentTime - lastKnownTime;
       const isSeek = Math.abs(diff) > SEEK_DETECTION_TOLERANCE_SECONDS;
       if (isSeek) {
+        // TODO(#855) diagnostic: a seek splits the open segment; log it so jumps vs. straight play are visible.
+        videoDebugLog("seek detected", {
+          from: Number(lastKnownTime.toFixed(1)),
+          to: Number(currentTime.toFixed(1)),
+          diff: Number(diff.toFixed(1)),
+        });
         closeCurrentSegment(lastKnownTime, videoUrl, videoId);
         startCurrentSegment(currentTime);
       }
@@ -811,12 +849,21 @@ export function IsaacVideo(props: IsaacVideoProps) {
 
   // Load Wistia API script
   React.useEffect(() => {
-    if (!isWistia || globalThis.Wistia) return;
+    if (!isWistia) return;
+    if (globalThis.Wistia) {
+      // TODO(#855) diagnostic: Wistia API already present; no injection needed.
+      videoDebugLog("Wistia API already loaded");
+      return;
+    }
 
     const script = document.createElement("script");
     script.src = "https://fast.wistia.com/assets/external/E-v1.js";
     script.async = true;
+    script.addEventListener("load", () => videoDebugLog("Wistia API script LOADED"));
+    script.addEventListener("error", () => videoDebugLog("Wistia API script FAILED to load"));
     document.body.appendChild(script);
+    // TODO(#855) diagnostic: injected the Wistia embed script.
+    videoDebugLog("Wistia API script injected");
   }, [isWistia]);
 
   // Wistia: postMessage API — play/pause/end and time ticks feed the same segment tracker as YouTube
@@ -854,6 +901,14 @@ export function IsaacVideo(props: IsaacVideoProps) {
       }
 
       const eventType = WISTIA_EVENT_TYPE_MAP[eventName.toLowerCase()];
+      // TODO(#855) diagnostic: log every Wistia lifecycle event, mapped type included. If mapped events
+      // never appear while the video plays, the postMessage bindings never took (see "Wistia bindings sent").
+      videoDebugLog("Wistia event", {
+        eventName,
+        mappedType: eventType ?? "(unmapped/ignored)",
+        eventTime: Number(eventTime.toFixed(1)),
+        duration: totalVideoDurationInSeconds,
+      });
       if (!eventType) return;
 
       if (eventType === "VIDEO_PLAY") {
@@ -915,6 +970,12 @@ export function IsaacVideo(props: IsaacVideoProps) {
             "https://fast.wistia.net",
           );
         });
+        // TODO(#855) diagnostic: bind messages posted to the Wistia iframe. Without these, no Wistia
+        // events arrive and the tracker stays silent after "scope resolved".
+        videoDebugLog("Wistia bindings sent", { wistiaVideoId, events: eventsToTrack });
+      } else {
+        // TODO(#855) diagnostic: iframe had no contentWindow after the 1s delay — bindings never sent.
+        videoDebugLog("Wistia bindings SKIPPED", { reason: "no-iframe-contentWindow", wistiaVideoId });
       }
     };
 
@@ -945,31 +1006,68 @@ export function IsaacVideo(props: IsaacVideoProps) {
     if (!youtubePollTimerRef.current) return;
     globalThis.clearInterval(youtubePollTimerRef.current);
     youtubePollTimerRef.current = null;
+    // TODO(#855) diagnostic: the 1s progress poll has stopped (pause/end/unmount).
+    videoDebugLog("YouTube poll timer STOPPED");
   }, []);
 
   const pollYouTubePlayerProgress = useCallback(() => {
     const player = youtubePlayerRef.current;
-    if (!player || !youtubeVideoId) return;
-    updatePlaybackProgress(player.getCurrentTime(), player.getVideoUrl(), youtubeVideoId);
+    if (!player || !youtubeVideoId) {
+      // TODO(#855) diagnostic: poll fired but we have no player/videoId to read from.
+      videoDebugLog("YouTube poll SKIPPED", { hasPlayer: Boolean(player), youtubeVideoId });
+      return;
+    }
+    const currentTime = player.getCurrentTime();
+    // TODO(#855) diagnostic: raw poll reading, before updatePlaybackProgress decides to keep or drop it.
+    videoDebugLog("YouTube poll", {
+      currentTime: isValidNumber(currentTime) ? Number(currentTime.toFixed(1)) : currentTime,
+    });
+    updatePlaybackProgress(currentTime, player.getVideoUrl(), youtubeVideoId);
   }, [updatePlaybackProgress, youtubeVideoId]);
 
   const startYouTubePollTimer = useCallback(() => {
     stopYouTubePollTimer();
     youtubePollTimerRef.current = globalThis.setInterval(pollYouTubePlayerProgress, 1000);
+    // TODO(#855) diagnostic: the 1s progress poll has started (should follow every PLAYING).
+    videoDebugLog("YouTube poll timer STARTED");
   }, [pollYouTubePlayerProgress, stopYouTubePollTimer]);
 
   const handleYouTubePlayerReady = useCallback(
     (event: YouTubeEvent) => {
       youtubePlayerRef.current = event.target;
-      setTotalVideoDurationIfPresent(event.target.getDuration());
+      const duration = event.target.getDuration();
+      // TODO(#855) diagnostic: onReady fired — player object exists and duration should be known.
+      videoDebugLog("YouTube onReady", { youtubeVideoId, duration });
+      setTotalVideoDurationIfPresent(duration);
     },
-    [setTotalVideoDurationIfPresent],
+    [setTotalVideoDurationIfPresent, youtubeVideoId],
   );
 
   const handleYouTubePlayerStateChange = useCallback(
     (event: YouTubeEvent) => {
       const YT = globalThis.YT;
-      if (!YT || !youtubeVideoId) return;
+      // TODO(#855) diagnostic: name the raw YT state so the console reads playing/paused/ended/buffering/cued
+      // instead of -1..5. -1 unstarted, 0 ended, 1 playing, 2 paused, 3 buffering, 5 cued.
+      const stateName =
+        (
+          { [-1]: "unstarted", 0: "ended", 1: "playing", 2: "paused", 3: "buffering", 5: "cued" } as Record<
+            number,
+            string
+          >
+        )[event.data] ?? String(event.data);
+      videoDebugLog("YouTube onStateChange", {
+        youtubeVideoId,
+        rawState: event.data,
+        stateName,
+        ytPresent: Boolean(YT),
+      });
+      if (!YT || !youtubeVideoId) {
+        // TODO(#855) diagnostic: if this fires we can never process play/pause/end — the whole KPI is dead here.
+        videoDebugLog("handleYouTubePlayerStateChange BAILED", {
+          reason: !YT ? "no-YT-global" : "no-youtube-video-id",
+        });
+        return;
+      }
 
       youtubePlayerRef.current = event.target;
       setTotalVideoDurationIfPresent(event.target.getDuration());
@@ -1016,14 +1114,32 @@ export function IsaacVideo(props: IsaacVideoProps) {
     ],
   );
 
-  // YouTube video initialization
+  // YouTube video initialization. The ref callback only *captures the node* — it does NOT construct the
+  // player, because YT may not be loaded yet at mount. Construction happens in the waiter effect below.
   const youtubeRef = useCallback(
     (node: HTMLDivElement | null) => {
-      const YT = globalThis.YT;
-      if (!node || !youtubeVideoId || !YT) return;
+      youtubeNodeRef.current = node;
+      // TODO(#855) diagnostic: entry point of the YouTube KPI chain. `ytPresent:false` here just means the
+      // async iframe API had not loaded yet — the waiter effect will construct the player once it does.
+      videoDebugLog("youtubeRef invoked (node captured)", {
+        hasNode: Boolean(node),
+        youtubeVideoId,
+        ytPresent: Boolean(globalThis.YT),
+      });
+    },
+    [youtubeVideoId],
+  );
 
+  const createYouTubePlayer = useCallback(
+    (node: HTMLDivElement) => {
+      const YT = globalThis.YT;
+      if (!YT || !youtubeVideoId || youtubePlayerCreatedRef.current) return;
+      // Commit before the async YT.ready callback so the waiter poll cannot construct a second player.
+      youtubePlayerCreatedRef.current = true;
       try {
+        videoDebugLog("createYouTubePlayer -> YT.ready(register)", { youtubeVideoId });
         YT.ready(() => {
+          videoDebugLog("YT.ready fired -> new YT.Player", { youtubeVideoId });
           new YT.Player(node, {
             videoId: youtubeVideoId,
             playerVars: {
@@ -1040,8 +1156,10 @@ export function IsaacVideo(props: IsaacVideoProps) {
           });
         });
       } catch (error) {
+        youtubePlayerCreatedRef.current = false; // allow a later retry
         const errorMessage = error instanceof Error ? error.message : "problem with YT library";
         console.error("Error with YouTube library: ", error);
+        videoDebugLog("createYouTubePlayer THREW", { youtubeVideoId, error: errorMessage });
         ReactGA.gtag("event", "exception", {
           description: `youtube_error: ${errorMessage}`,
           fatal: false,
@@ -1050,6 +1168,52 @@ export function IsaacVideo(props: IsaacVideoProps) {
     },
     [handleYouTubePlayerReady, handleYouTubePlayerStateChange, youtubeVideoId],
   );
+
+  // Waiter: construct the YouTube player as soon as BOTH the div is mounted and the async YT API is
+  // loaded. This is the actual fix for a console that stops at "scope resolved" — previously, if YT
+  // wasn't ready at mount, the player was never created and there was no retry.
+  React.useEffect(() => {
+    if (!isYouTube || !youtubeVideoId) return;
+    youtubePlayerCreatedRef.current = false; // new video id -> allow a fresh construction
+
+    const tryCreate = (): boolean => {
+      const node = youtubeNodeRef.current;
+      if (youtubePlayerCreatedRef.current) return true;
+      if (!node) {
+        videoDebugLog("YT waiter: waiting for node");
+        return false;
+      }
+      if (!globalThis.YT) {
+        videoDebugLog("YT waiter: waiting for YT API to load");
+        return false;
+      }
+      videoDebugLog("YT waiter: node + YT ready -> creating player", { youtubeVideoId });
+      createYouTubePlayer(node);
+      return true;
+    };
+
+    if (tryCreate()) return;
+
+    const pollTimer = globalThis.setInterval(() => {
+      if (tryCreate()) globalThis.clearInterval(pollTimer);
+    }, 250);
+    // Give up after a bounded wait so we do not poll forever if the API script failed to load at all.
+    const giveUpTimer = globalThis.setTimeout(() => {
+      globalThis.clearInterval(pollTimer);
+      if (!youtubePlayerCreatedRef.current) {
+        videoDebugLog("YT waiter: GAVE UP (YT API never loaded / node never mounted)", {
+          youtubeVideoId,
+          hadNode: Boolean(youtubeNodeRef.current),
+          ytPresent: Boolean(globalThis.YT),
+        });
+      }
+    }, 15000);
+
+    return () => {
+      globalThis.clearInterval(pollTimer);
+      globalThis.clearTimeout(giveUpTimer);
+    };
+  }, [isYouTube, youtubeVideoId, createYouTubePlayer]);
 
   // Close any open YouTube segment and stop polling when leaving the page or changing video
   React.useEffect(() => {
