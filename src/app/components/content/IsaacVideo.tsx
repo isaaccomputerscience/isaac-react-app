@@ -596,6 +596,18 @@ export function IsaacVideo(props: IsaacVideoProps) {
     progressScopeAndVideoRef.current = { userStorageScope, canonicalVideoId };
   }
 
+  // TODO(#855) TEMPORARY diagnostic: log the resolved tracking scope whenever it changes, so it is
+  // obvious whether the 60% KPI is enabled on this video and, if not, exactly why.
+  React.useEffect(() => {
+    videoDebugLog("scope resolved", {
+      userStorageScope,
+      canonicalVideoId,
+      loggedIn: Boolean(user),
+      trackingEnabled: Boolean(userStorageScope && canonicalVideoId),
+      reason: !userStorageScope ? "not-logged-in" : !canonicalVideoId ? "no-canonical-video-id" : "enabled",
+    });
+  }, [userStorageScope, canonicalVideoId, user]);
+
   const setTotalVideoDurationIfPresent = useCallback(
     (totalVideoDurationInSeconds: number | null | undefined) => {
       if (!canonicalVideoId || !isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) return;
@@ -701,13 +713,24 @@ export function IsaacVideo(props: IsaacVideoProps) {
 
   const appendSegment = useCallback(
     (segmentStart: number, segmentEnd: number, videoId: string, videoUrl: string) => {
-      if (!userStorageScope) return;
+      // TODO(#855) TEMPORARY diagnostic: log each condition that gates whether a watched segment is
+      // recorded (and therefore whether the 60% check can eventually fire), with the deciding values.
+      if (!userStorageScope) {
+        videoDebugLog("appendSegment SKIPPED", { reason: "not-logged-in", segmentStart, segmentEnd });
+        return;
+      }
       const totalVideoDurationInSeconds = progressReference.current.totalVideoDurationInSeconds;
-      if (!isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) return;
+      if (!isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) {
+        videoDebugLog("appendSegment SKIPPED", { reason: "duration-unknown", totalVideoDurationInSeconds });
+        return;
+      }
 
       const clampedStart = clampVideoProgressValue(segmentStart, 0, totalVideoDurationInSeconds);
       const clampedEnd = clampVideoProgressValue(segmentEnd, 0, totalVideoDurationInSeconds);
-      if (clampedEnd - clampedStart < 0.5) return;
+      if (clampedEnd - clampedStart < 0.5) {
+        videoDebugLog("appendSegment SKIPPED", { reason: "segment-too-short", clampedStart, clampedEnd });
+        return;
+      }
 
       progressReference.current.segments = mergeSegments([
         ...progressReference.current.segments,

@@ -12,6 +12,7 @@ import {
 } from "../../state";
 import { Route, Router, Switch } from "react-router-dom";
 import ErrorClear from "./ErrorClear";
+import { AuthDebugLogger } from "./AuthDebugLogger";
 import { Footer } from "./Footer";
 import { Question } from "../pages/Question";
 import { Concept } from "../pages/Concept";
@@ -156,6 +157,8 @@ export const IsaacApp = () => {
   // Render
   return (
     <Router history={history}>
+      {/* TODO(#855) TEMPORARY diagnostic: logs auth/user state on every navigation. Remove before prod. */}
+      <AuthDebugLogger />
       <ErrorClear />
       <Header />
       <Toasts />

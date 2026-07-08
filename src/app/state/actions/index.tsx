@@ -3,6 +3,7 @@ import {
   ACTION_TYPE,
   api,
   API_REQUEST_FAILURE_MESSAGE,
+  debugLog,
   atLeastOne,
   augmentEvent,
   DOCUMENT_TYPE,
@@ -196,13 +197,25 @@ export const getUserPreferences = () => async (dispatch: Dispatch<Action>) => {
 
 export const requestCurrentUser = () => async (dispatch: Dispatch<Action>) => {
   dispatch({ type: ACTION_TYPE.CURRENT_USER_REQUEST });
+  // TODO(#855) TEMPORARY diagnostic: trace the current_user lifecycle so we can see exactly when
+  // and why the app flips to anonymous (which disables the video KPI).
+  debugLog("auth", "current_user request");
   try {
     // Request the user
     const currentUser = await api.users.getCurrent();
     // Now with that information request auth settings and preferences asynchronously
     await Promise.all([dispatch(getUserAuthSettings() as any), dispatch(getUserPreferences() as any)]);
+    debugLog("auth", "current_user OK", {
+      userId: currentUser.data?.id,
+      role: currentUser.data?.role,
+      loggedIn: true,
+    });
     dispatch({ type: ACTION_TYPE.CURRENT_USER_RESPONSE_SUCCESS, user: currentUser.data });
   } catch (e) {
+    debugLog("auth", "current_user FAILED (app is now anonymous)", {
+      status: (e as { response?: { status?: number } })?.response?.status,
+      message: (e as Error)?.message,
+    });
     dispatch({ type: ACTION_TYPE.CURRENT_USER_RESPONSE_FAILURE });
   }
 };

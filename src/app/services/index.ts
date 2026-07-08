@@ -1,4 +1,5 @@
 // No internal app dependencies
+export * from "./debug";
 export * from "./localStorage";
 export * from "./siteConstants";
 export * from "./demoTools";
