@@ -15,12 +15,13 @@ describe("Careers", () => {
   it("renders section title, video, description and more videos button for logged out user", () => {
     renderCareers();
     const sectionTitle = screen.getByRole("heading", { name: /Careers/i, level: 4 });
+    // The video renders through IsaacVideo: in jsdom the YouTube iframe API never loads, so we
+    // assert on the titled player container rather than an iframe src.
     const video = screen.getByTitle(/career-video/i);
     const videoDescription = screen.getByText(/Enrich your understanding of computer science curriculum/i);
     const button = screen.getByRole("link", { name: /see more career videos/i });
     [button, sectionTitle, video, videoDescription].forEach((element) => expect(element).toBeInTheDocument());
     expect(button).toHaveAttribute("href", "/careers_in_computer_science");
-    expect(video).toHaveAttribute("src", expect.stringContaining("https://www.youtube-nocookie.com/embed/"));
   });
 
   it("renders CS Journeys", async () => {

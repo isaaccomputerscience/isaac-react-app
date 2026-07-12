@@ -337,19 +337,6 @@ export function saveVideoProgress(userStorageScope: string | null, videoId: stri
 }
 
 /**
- * TODO(#855) TEMPORARY diagnostic logging for the video KPI flow — currently logs unconditionally on every
- * environment (including production). MUST be removed (this block and its call sites) before the prod release.
- */
-export function videoDebugLog(message: string, data?: Record<string, unknown>): void {
-  try {
-    // eslint-disable-next-line no-console
-    console.info(`[video-kpi] ${message}`, data ?? "");
-  } catch {
-    // ignore (e.g. console unavailable)
-  }
-}
-
-/**
  * Log video events to the backend
  */
 export async function logVideoEvent(
@@ -360,24 +347,9 @@ export async function logVideoEvent(
     dispatch({ type: ACTION_TYPE.LOG_EVENT, eventDetails });
   }
 
-  videoDebugLog("logVideoEvent -> POST /log", {
-    type: eventDetails.type,
-    videoId: eventDetails.videoId,
-    watchPercent: eventDetails.watchPercent,
-    watchedSeconds: eventDetails.watchedSeconds,
-    videoDurationSeconds: eventDetails.videoDurationSeconds,
-    dispatched: Boolean(dispatch),
-  });
-
   try {
     await api.logger.log(eventDetails);
-    videoDebugLog("logVideoEvent POST /log succeeded", { type: eventDetails.type, videoId: eventDetails.videoId });
   } catch (error) {
-    videoDebugLog("logVideoEvent POST /log FAILED", {
-      type: eventDetails.type,
-      videoId: eventDetails.videoId,
-      error: error instanceof Error ? error.message : String(error),
-    });
     if (process.env.NODE_ENV === "development") {
       console.warn("Failed to log video event:", error);
     }
@@ -402,16 +374,8 @@ export function sendVideoEngagementBeacon(eventDetails: VideoEventDetails): bool
       body: JSON.stringify(eventDetails),
       keepalive: true,
     });
-    videoDebugLog("sendVideoEngagementBeacon dispatched", {
-      videoId: eventDetails.videoId,
-      watchPercent: eventDetails.watchPercent,
-    });
     return true;
-  } catch (error) {
-    videoDebugLog("sendVideoEngagementBeacon FAILED", {
-      videoId: eventDetails.videoId,
-      error: error instanceof Error ? error.message : String(error),
-    });
+  } catch {
     return false;
   }
 }
@@ -574,6 +538,10 @@ export function IsaacVideo(props: IsaacVideoProps) {
   // Set true when onReady fires. Used by the watchdog below to distinguish "handshake still pending /
   // video not played yet" from "enablejsapi channel never connected" (the latter = no events ever logged).
   const youtubeReadyFiredRef = useRef<boolean>(false);
+  // One-shot guard for the ready watchdog: a failed handshake gets a single destroy+recreate;
+  // if that also fails we leave the player alone rather than loop.
+  const youtubeReadyRetryUsedRef = useRef<boolean>(false);
+  const youtubeReadyWatchdogRef = useRef<ReturnType<typeof globalThis.setTimeout> | null>(null);
   // Prevents re-sending VIDEO_60_PERCENT_WATCHED while an attempt is in flight. Because the KPI is
   // now only persisted (thresholdLogged) after the backend confirms, without this guard the
   // per-tick playback check would fire duplicate requests until the first one resolved.
@@ -606,25 +574,12 @@ export function IsaacVideo(props: IsaacVideoProps) {
     progressScopeAndVideoRef.current = { userStorageScope, canonicalVideoId };
   }
 
-  // TODO(#855) TEMPORARY diagnostic: log the resolved tracking scope whenever it changes, so it is
-  // obvious whether the 60% KPI is enabled on this video and, if not, exactly why.
-  React.useEffect(() => {
-    videoDebugLog("scope resolved", {
-      userStorageScope,
-      canonicalVideoId,
-      loggedIn: Boolean(user),
-      trackingEnabled: Boolean(userStorageScope && canonicalVideoId),
-      reason: !userStorageScope ? "not-logged-in" : !canonicalVideoId ? "no-canonical-video-id" : "enabled",
-    });
-  }, [userStorageScope, canonicalVideoId, user]);
-
   const setTotalVideoDurationIfPresent = useCallback(
     (totalVideoDurationInSeconds: number | null | undefined) => {
       if (!canonicalVideoId || !isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) return;
       if (progressReference.current.totalVideoDurationInSeconds === totalVideoDurationInSeconds) return;
       progressReference.current.totalVideoDurationInSeconds = totalVideoDurationInSeconds;
       saveVideoProgress(userStorageScope, canonicalVideoId, progressReference.current);
-      videoDebugLog("video duration captured", { videoId: canonicalVideoId, totalVideoDurationInSeconds });
     },
     [canonicalVideoId, userStorageScope],
   );
@@ -637,21 +592,10 @@ export function IsaacVideo(props: IsaacVideoProps) {
         progressReference.current.thresholdLogged ||
         thresholdSendInFlightRef.current
       ) {
-        videoDebugLog("checkIf60% skipped", {
-          videoId,
-          reason: !userStorageScope
-            ? "not-logged-in"
-            : !canonicalVideoId
-            ? "no-video-id"
-            : progressReference.current.thresholdLogged
-            ? "already-logged-this-video"
-            : "send-in-flight",
-        });
         return;
       }
       const totalVideoDurationInSeconds = progressReference.current.totalVideoDurationInSeconds;
       if (!isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) {
-        videoDebugLog("checkIf60% skipped", { videoId, reason: "no-duration-yet", totalVideoDurationInSeconds });
         return;
       }
 
@@ -671,21 +615,8 @@ export function IsaacVideo(props: IsaacVideoProps) {
       const uniqueWatchedSeconds = getUniqueWatchedSeconds(mergeSegments(segments));
       const watchPercent = getWatchPercent(uniqueWatchedSeconds, totalVideoDurationInSeconds);
       if (watchPercent < VIDEO_WATCH_THRESHOLD) {
-        videoDebugLog("checkIf60% below threshold", {
-          videoId,
-          watchPercent: Number(watchPercent.toFixed(3)),
-          uniqueWatchedSeconds: Number(uniqueWatchedSeconds.toFixed(1)),
-          totalVideoDurationInSeconds,
-        });
         return;
       }
-
-      videoDebugLog("checkIf60% THRESHOLD REACHED -> logging", {
-        videoId,
-        watchPercent: Number(watchPercent.toFixed(3)),
-        uniqueWatchedSeconds: Number(uniqueWatchedSeconds.toFixed(1)),
-        totalVideoDurationInSeconds,
-      });
 
       const eventDetails = createEventDetails("VIDEO_60_PERCENT_WATCHED", videoUrl, videoId, {
         pageId,
@@ -706,13 +637,9 @@ export function IsaacVideo(props: IsaacVideoProps) {
         .then(() => {
           progressReference.current.thresholdLogged = true;
           saveVideoProgress(userStorageScope, canonicalVideoId, progressReference.current);
-          videoDebugLog("VIDEO_60_PERCENT_WATCHED recorded; thresholdLogged persisted", { videoId });
         })
-        .catch((error) => {
-          videoDebugLog("VIDEO_60_PERCENT_WATCHED POST failed; will retry on next update", {
-            videoId,
-            error: error instanceof Error ? error.message : String(error),
-          });
+        .catch(() => {
+          // Swallow the failure: thresholdLogged stays false, so the next playback tick retries.
         })
         .finally(() => {
           thresholdSendInFlightRef.current = false;
@@ -723,22 +650,17 @@ export function IsaacVideo(props: IsaacVideoProps) {
 
   const appendSegment = useCallback(
     (segmentStart: number, segmentEnd: number, videoId: string, videoUrl: string) => {
-      // TODO(#855) TEMPORARY diagnostic: log each condition that gates whether a watched segment is
-      // recorded (and therefore whether the 60% check can eventually fire), with the deciding values.
       if (!userStorageScope) {
-        videoDebugLog("appendSegment SKIPPED", { reason: "not-logged-in", segmentStart, segmentEnd });
         return;
       }
       const totalVideoDurationInSeconds = progressReference.current.totalVideoDurationInSeconds;
       if (!isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) {
-        videoDebugLog("appendSegment SKIPPED", { reason: "duration-unknown", totalVideoDurationInSeconds });
         return;
       }
 
       const clampedStart = clampVideoProgressValue(segmentStart, 0, totalVideoDurationInSeconds);
       const clampedEnd = clampVideoProgressValue(segmentEnd, 0, totalVideoDurationInSeconds);
       if (clampedEnd - clampedStart < 0.5) {
-        videoDebugLog("appendSegment SKIPPED", { reason: "segment-too-short", clampedStart, clampedEnd });
         return;
       }
 
@@ -755,25 +677,14 @@ export function IsaacVideo(props: IsaacVideoProps) {
   const startCurrentSegment = useCallback((segmentStart: number) => {
     progressReference.current.currentSegmentStart = segmentStart;
     progressReference.current.lastKnownTime = segmentStart; // this will set a baseline time when a new segment starts, so that we can detect seeks
-    // TODO(#855) diagnostic: mark the exact position a new watched segment opens.
-    videoDebugLog("startCurrentSegment", { segmentStart: Number(segmentStart.toFixed(1)) });
   }, []);
 
   const closeCurrentSegment = useCallback(
     (segmentEnd: number, videoUrl: string, videoId: string) => {
       const currentSegmentStart = progressReference.current.currentSegmentStart;
       if (!isValidNumber(currentSegmentStart)) {
-        // TODO(#855) diagnostic: closing with no open segment usually means play/pause bookkeeping got out of sync.
-        videoDebugLog("closeCurrentSegment SKIPPED", {
-          reason: "no-open-segment",
-          segmentEnd: Number(segmentEnd.toFixed(1)),
-        });
         return;
       }
-      videoDebugLog("closeCurrentSegment", {
-        from: Number(currentSegmentStart.toFixed(1)),
-        to: Number(segmentEnd.toFixed(1)),
-      });
       appendSegment(currentSegmentStart, segmentEnd, videoId, videoUrl);
       progressReference.current.currentSegmentStart = null;
     },
@@ -789,21 +700,10 @@ export function IsaacVideo(props: IsaacVideoProps) {
   const updatePlaybackProgress = useCallback(
     (currentTime: number, videoUrl: string, videoId: string) => {
       if (!isValidNumber(currentTime)) {
-        // TODO(#855) diagnostic: getCurrentTime() returned a non-number (player not ready?).
-        videoDebugLog("updatePlaybackProgress IGNORED", { reason: "current-time-not-a-number", currentTime });
         return;
       }
       const lastKnownTime = progressReference.current.lastKnownTime;
       if (!progressReference.current.isPlaying || !isValidNumber(lastKnownTime)) {
-        // TODO(#855) diagnostic: this is the silent branch — a tick arrives but is dropped before any
-        // "playback tick" log because we think we're not playing or have no baseline time. If ticks
-        // vanish here while the video is visibly playing, isPlaying never got set true on PLAYING.
-        videoDebugLog("updatePlaybackProgress IGNORED", {
-          reason: !progressReference.current.isPlaying ? "not-playing" : "no-baseline-time",
-          isPlaying: progressReference.current.isPlaying,
-          lastKnownTime,
-          currentTime: Number(currentTime.toFixed(1)),
-        });
         progressReference.current.lastKnownTime = currentTime;
         return;
       }
@@ -811,37 +711,16 @@ export function IsaacVideo(props: IsaacVideoProps) {
       const diff = currentTime - lastKnownTime;
       const isSeek = Math.abs(diff) > SEEK_DETECTION_TOLERANCE_SECONDS;
       if (isSeek) {
-        // TODO(#855) diagnostic: a seek splits the open segment; log it so jumps vs. straight play are visible.
-        videoDebugLog("seek detected", {
-          from: Number(lastKnownTime.toFixed(1)),
-          to: Number(currentTime.toFixed(1)),
-          diff: Number(diff.toFixed(1)),
-        });
         closeCurrentSegment(lastKnownTime, videoUrl, videoId);
         startCurrentSegment(currentTime);
       }
       progressReference.current.lastKnownTime = currentTime;
 
-      // TODO(#855) diagnostic: log every playback tick regardless of login state, so the watch progress and the
-      // logged-in/anonymous state are visible even for anonymous sessions (the KPI itself stays logged-in only).
-      const tickTotalDuration = progressReference.current.totalVideoDurationInSeconds;
-      const positionPercent =
-        isValidNumber(tickTotalDuration) && tickTotalDuration > 0 ? currentTime / tickTotalDuration : null;
-      videoDebugLog("playback tick", {
-        videoId,
-        loggedIn: Boolean(userStorageScope),
-        userStorageScope,
-        currentTime: Number(currentTime.toFixed(1)),
-        totalVideoDurationInSeconds: tickTotalDuration,
-        positionPercent: positionPercent == null ? null : Number(positionPercent.toFixed(3)),
-        crossed60ByPosition: positionPercent != null && positionPercent >= VIDEO_WATCH_THRESHOLD,
-      });
-
       // Evaluate the KPI live during playback (counting the open segment) so it fires without needing a
       // pause/seek/end/navigation — otherwise a straight watch-through or a tab close never logs the event.
       checkIf60PercentWatchedAndLog(videoId, videoUrl, currentTime);
     },
-    [checkIf60PercentWatchedAndLog, closeCurrentSegment, startCurrentSegment, userStorageScope],
+    [checkIf60PercentWatchedAndLog, closeCurrentSegment, startCurrentSegment],
   );
 
   const logPlayerEvent = useCallback(
@@ -860,19 +739,13 @@ export function IsaacVideo(props: IsaacVideoProps) {
   React.useEffect(() => {
     if (!isWistia) return;
     if (globalThis.Wistia) {
-      // TODO(#855) diagnostic: Wistia API already present; no injection needed.
-      videoDebugLog("Wistia API already loaded");
       return;
     }
 
     const script = document.createElement("script");
     script.src = "https://fast.wistia.com/assets/external/E-v1.js";
     script.async = true;
-    script.addEventListener("load", () => videoDebugLog("Wistia API script LOADED"));
-    script.addEventListener("error", () => videoDebugLog("Wistia API script FAILED to load"));
     document.body.appendChild(script);
-    // TODO(#855) diagnostic: injected the Wistia embed script.
-    videoDebugLog("Wistia API script injected");
   }, [isWistia]);
 
   // Wistia: postMessage API — play/pause/end and time ticks feed the same segment tracker as YouTube
@@ -910,14 +783,6 @@ export function IsaacVideo(props: IsaacVideoProps) {
       }
 
       const eventType = WISTIA_EVENT_TYPE_MAP[eventName.toLowerCase()];
-      // TODO(#855) diagnostic: log every Wistia lifecycle event, mapped type included. If mapped events
-      // never appear while the video plays, the postMessage bindings never took (see "Wistia bindings sent").
-      videoDebugLog("Wistia event", {
-        eventName,
-        mappedType: eventType ?? "(unmapped/ignored)",
-        eventTime: Number(eventTime.toFixed(1)),
-        duration: totalVideoDurationInSeconds,
-      });
       if (!eventType) return;
 
       if (eventType === "VIDEO_PLAY") {
@@ -979,12 +844,6 @@ export function IsaacVideo(props: IsaacVideoProps) {
             "https://fast.wistia.net",
           );
         });
-        // TODO(#855) diagnostic: bind messages posted to the Wistia iframe. Without these, no Wistia
-        // events arrive and the tracker stays silent after "scope resolved".
-        videoDebugLog("Wistia bindings sent", { wistiaVideoId, events: eventsToTrack });
-      } else {
-        // TODO(#855) diagnostic: iframe had no contentWindow after the 1s delay — bindings never sent.
-        videoDebugLog("Wistia bindings SKIPPED", { reason: "no-iframe-contentWindow", wistiaVideoId });
       }
     };
 
@@ -1015,30 +874,20 @@ export function IsaacVideo(props: IsaacVideoProps) {
     if (!youtubePollTimerRef.current) return;
     globalThis.clearInterval(youtubePollTimerRef.current);
     youtubePollTimerRef.current = null;
-    // TODO(#855) diagnostic: the 1s progress poll has stopped (pause/end/unmount).
-    videoDebugLog("YouTube poll timer STOPPED");
   }, []);
 
   const pollYouTubePlayerProgress = useCallback(() => {
     const player = youtubePlayerRef.current;
     if (!player || !youtubeVideoId) {
-      // TODO(#855) diagnostic: poll fired but we have no player/videoId to read from.
-      videoDebugLog("YouTube poll SKIPPED", { hasPlayer: Boolean(player), youtubeVideoId });
       return;
     }
     const currentTime = player.getCurrentTime();
-    // TODO(#855) diagnostic: raw poll reading, before updatePlaybackProgress decides to keep or drop it.
-    videoDebugLog("YouTube poll", {
-      currentTime: isValidNumber(currentTime) ? Number(currentTime.toFixed(1)) : currentTime,
-    });
     updatePlaybackProgress(currentTime, player.getVideoUrl(), youtubeVideoId);
   }, [updatePlaybackProgress, youtubeVideoId]);
 
   const startYouTubePollTimer = useCallback(() => {
     stopYouTubePollTimer();
     youtubePollTimerRef.current = globalThis.setInterval(pollYouTubePlayerProgress, 1000);
-    // TODO(#855) diagnostic: the 1s progress poll has started (should follow every PLAYING).
-    videoDebugLog("YouTube poll timer STARTED");
   }, [pollYouTubePlayerProgress, stopYouTubePollTimer]);
 
   const handleYouTubePlayerReady = useCallback(
@@ -1046,37 +895,15 @@ export function IsaacVideo(props: IsaacVideoProps) {
       youtubePlayerRef.current = event.target;
       youtubeReadyFiredRef.current = true;
       const duration = event.target.getDuration();
-      // TODO(#855) diagnostic: onReady fired — the enablejsapi handshake completed, so onStateChange/KPI
-      // logging will work. If this never appears, the API channel never connected (see the READY WATCHDOG).
-      videoDebugLog("YouTube onReady", { youtubeVideoId, duration });
       setTotalVideoDurationIfPresent(duration);
     },
-    [setTotalVideoDurationIfPresent, youtubeVideoId],
+    [setTotalVideoDurationIfPresent],
   );
 
   const handleYouTubePlayerStateChange = useCallback(
     (event: YouTubeEvent) => {
       const YT = globalThis.YT;
-      // TODO(#855) diagnostic: name the raw YT state so the console reads playing/paused/ended/buffering/cued
-      // instead of -1..5. -1 unstarted, 0 ended, 1 playing, 2 paused, 3 buffering, 5 cued.
-      const stateName =
-        (
-          { [-1]: "unstarted", 0: "ended", 1: "playing", 2: "paused", 3: "buffering", 5: "cued" } as Record<
-            number,
-            string
-          >
-        )[event.data] ?? String(event.data);
-      videoDebugLog("YouTube onStateChange", {
-        youtubeVideoId,
-        rawState: event.data,
-        stateName,
-        ytPresent: Boolean(YT),
-      });
       if (!YT || !youtubeVideoId) {
-        // TODO(#855) diagnostic: if this fires we can never process play/pause/end — the whole KPI is dead here.
-        videoDebugLog("handleYouTubePlayerStateChange BAILED", {
-          reason: !YT ? "no-YT-global" : "no-youtube-video-id",
-        });
         return;
       }
 
@@ -1127,28 +954,9 @@ export function IsaacVideo(props: IsaacVideoProps) {
 
   // YouTube video initialization. The ref callback only *captures the node* — it does NOT construct the
   // player, because YT may not be loaded yet at mount. Construction happens in the waiter effect below.
-  const youtubeRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      youtubeNodeRef.current = node;
-      // TODO(#855) diagnostic: entry point of the YouTube KPI chain. `ytPresent:false` here just means the
-      // async iframe API had not loaded yet — the waiter effect will construct the player once it does.
-      videoDebugLog("youtubeRef invoked (node captured)", {
-        hasNode: Boolean(node),
-        youtubeVideoId,
-        ytPresent: Boolean(globalThis.YT),
-      });
-    },
-    [youtubeVideoId],
-  );
-
-  const handleYouTubePlayerError = useCallback(
-    (event: YouTubeEvent) => {
-      // TODO(#855) diagnostic: YouTube reported a player error (2 invalid id, 5 html5, 100 not found,
-      // 101/150 embedding disabled). The KPI cannot run if the video refuses to embed/play.
-      videoDebugLog("YouTube onError", { youtubeVideoId, errorCode: event.data });
-    },
-    [youtubeVideoId],
-  );
+  const youtubeRef = useCallback((node: HTMLDivElement | null) => {
+    youtubeNodeRef.current = node;
+  }, []);
 
   // The player is constructed exactly once, but auth (userStorageScope) and the page doc (pageId) can
   // resolve AFTER construction. So we register STABLE wrapper handlers that always dispatch to the latest
@@ -1158,8 +966,6 @@ export function IsaacVideo(props: IsaacVideoProps) {
   handleYouTubePlayerReadyRef.current = handleYouTubePlayerReady;
   const handleYouTubePlayerStateChangeRef = useRef(handleYouTubePlayerStateChange);
   handleYouTubePlayerStateChangeRef.current = handleYouTubePlayerStateChange;
-  const handleYouTubePlayerErrorRef = useRef(handleYouTubePlayerError);
-  handleYouTubePlayerErrorRef.current = handleYouTubePlayerError;
 
   const createYouTubePlayer = useCallback(
     (container: HTMLDivElement) => {
@@ -1168,7 +974,6 @@ export function IsaacVideo(props: IsaacVideoProps) {
       // Commit before the async YT.ready callback so the waiter poll cannot construct a second player.
       youtubePlayerCreatedRef.current = true;
       try {
-        videoDebugLog("createYouTubePlayer -> YT.ready(register)", { youtubeVideoId });
         YT.ready(() => {
           // Hand YT a plain child node to replace with its <iframe>, NOT the React-managed container
           // itself. If YT swaps out a React-owned node, the next re-render reconciles that node out from
@@ -1179,7 +984,6 @@ export function IsaacVideo(props: IsaacVideoProps) {
           playerHost.className = "mw-100";
           container.replaceChildren(playerHost);
           youtubeReadyFiredRef.current = false;
-          videoDebugLog("YT.ready fired -> new YT.Player", { youtubeVideoId });
           youtubePlayerRef.current = new YT.Player(playerHost, {
             videoId: youtubeVideoId,
             playerVars: {
@@ -1192,40 +996,34 @@ export function IsaacVideo(props: IsaacVideoProps) {
             events: {
               onReady: (event: YouTubeEvent) => handleYouTubePlayerReadyRef.current(event),
               onStateChange: (event: YouTubeEvent) => handleYouTubePlayerStateChangeRef.current(event),
-              onError: (event: YouTubeEvent) => handleYouTubePlayerErrorRef.current(event),
             },
           });
 
-          // READY WATCHDOG (TODO(#855)): if onReady has not fired a few seconds after construction, the
-          // enablejsapi handshake did not connect. Dump the real iframe state so we can tell WHY: is there
-          // an <iframe> at all, what is its src (youtube.com vs about:blank), and — the decisive tell —
-          // is its contentWindow same-origin as us (handshake will never work) or cross-origin youtube
-          // (handshake should work). This replaces guessing at the transient postMessage warm-up spam.
-          globalThis.setTimeout(() => {
-            if (youtubeReadyFiredRef.current) return;
-            const iframe = playerHost.querySelector("iframe") ?? container.querySelector("iframe");
-            let contentWindowOrigin: string;
+          // READY WATCHDOG: if onReady has not fired a few seconds after construction, the enablejsapi
+          // handshake did not connect. Known trigger: an earlier YT widget in this document (e.g. a raw
+          // enablejsapi iframe wrapped by GA4's video measurement) was unmounted without destroy(),
+          // corrupting the widget API's message routing so later players never receive onReady.
+          // Destroy the half-dead player and reconstruct once — a fresh widget registration recovers.
+          youtubeReadyWatchdogRef.current = globalThis.setTimeout(() => {
+            if (youtubeReadyFiredRef.current || youtubeReadyRetryUsedRef.current) return;
+            const node = youtubeNodeRef.current;
+            if (!node) return; // unmounted while waiting
+            youtubeReadyRetryUsedRef.current = true;
             try {
-              // Reading .location.origin on a cross-origin (youtube) window THROWS — that's the good case.
-              contentWindowOrigin = iframe?.contentWindow?.location?.origin ?? "(no iframe/contentWindow)";
+              youtubePlayerRef.current?.destroy?.();
             } catch {
-              contentWindowOrigin = "(cross-origin — expected for a loaded youtube iframe)";
+              /* ignore teardown errors on a broken player */
             }
-            videoDebugLog("YouTube READY WATCHDOG: onReady NOT fired ~8s after construction", {
-              youtubeVideoId,
-              iframePresent: Boolean(iframe),
-              iframeSrc: iframe?.getAttribute("src") ?? "(none)",
-              contentWindowOrigin,
-              isPlaying: progressReference.current.isPlaying,
-              hint: "if iframeSrc is about:blank or contentWindowOrigin is our app origin, the youtube iframe never loaded (CSP/network); if it's cross-origin youtube, the video is fine and onReady is just slow/needs play.",
-            });
+            youtubePlayerRef.current = null;
+            youtubePlayerCreatedRef.current = false;
+            node.replaceChildren();
+            createYouTubePlayerRef.current(node);
           }, 8000);
         });
       } catch (error) {
         youtubePlayerCreatedRef.current = false; // allow a later retry
         const errorMessage = error instanceof Error ? error.message : "problem with YT library";
         console.error("Error with YouTube library: ", error);
-        videoDebugLog("createYouTubePlayer THREW", { youtubeVideoId, error: errorMessage });
         ReactGA.gtag("event", "exception", {
           description: `youtube_error: ${errorMessage}`,
           fatal: false,
@@ -1248,6 +1046,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
   React.useEffect(() => {
     if (!isYouTube || !youtubeVideoId) return;
     youtubePlayerCreatedRef.current = false; // fresh video id -> allow a new construction
+    youtubeReadyRetryUsedRef.current = false; // fresh video id -> watchdog may retry once again
     let pollTimer: ReturnType<typeof globalThis.setInterval> | null = null;
     let giveUpTimer: ReturnType<typeof globalThis.setTimeout> | null = null;
 
@@ -1255,14 +1054,11 @@ export function IsaacVideo(props: IsaacVideoProps) {
       const node = youtubeNodeRef.current;
       if (youtubePlayerCreatedRef.current) return true;
       if (!node) {
-        videoDebugLog("YT waiter: waiting for node");
         return false;
       }
       if (!globalThis.YT) {
-        videoDebugLog("YT waiter: waiting for YT API to load");
         return false;
       }
-      videoDebugLog("YT waiter: node + YT ready -> creating player", { youtubeVideoId });
       createYouTubePlayerRef.current(node);
       return true;
     };
@@ -1277,19 +1073,16 @@ export function IsaacVideo(props: IsaacVideoProps) {
       // Give up after a bounded wait so we do not poll forever if the API script failed to load at all.
       giveUpTimer = globalThis.setTimeout(() => {
         if (pollTimer) globalThis.clearInterval(pollTimer);
-        if (!youtubePlayerCreatedRef.current) {
-          videoDebugLog("YT waiter: GAVE UP (YT API never loaded / node never mounted)", {
-            youtubeVideoId,
-            hadNode: Boolean(youtubeNodeRef.current),
-            ytPresent: Boolean(globalThis.YT),
-          });
-        }
       }, 15000);
     }
 
     return () => {
       if (pollTimer) globalThis.clearInterval(pollTimer);
       if (giveUpTimer) globalThis.clearTimeout(giveUpTimer);
+      if (youtubeReadyWatchdogRef.current) {
+        globalThis.clearTimeout(youtubeReadyWatchdogRef.current);
+        youtubeReadyWatchdogRef.current = null;
+      }
       if (youtubePollTimerRef.current) {
         globalThis.clearInterval(youtubePollTimerRef.current);
         youtubePollTimerRef.current = null;
@@ -1314,7 +1107,6 @@ export function IsaacVideo(props: IsaacVideoProps) {
       youtubePlayerRef.current = null;
       youtubePlayerCreatedRef.current = false;
       youtubeNodeRef.current?.replaceChildren();
-      videoDebugLog("YT waiter cleanup: segment flushed + player destroyed", { youtubeVideoId });
     };
   }, [isYouTube, youtubeVideoId]);
 
@@ -1325,7 +1117,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
     if (!userStorageScope || !canonicalVideoId) return;
     const videoUrl = embedSrc || "";
 
-    const flushThreshold = (reason: string) => {
+    const flushThreshold = () => {
       if (progressReference.current.thresholdLogged || thresholdSendInFlightRef.current) return;
       const totalVideoDurationInSeconds = progressReference.current.totalVideoDurationInSeconds;
       if (!isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) return;
@@ -1351,7 +1143,6 @@ export function IsaacVideo(props: IsaacVideoProps) {
         watchedSeconds: uniqueWatchedSeconds,
         watchPercent,
       });
-      videoDebugLog("flushThreshold sending on page hide", { reason, videoId: canonicalVideoId, watchPercent });
       dispatch({ type: ACTION_TYPE.LOG_EVENT, eventDetails });
       // Beacon is fire-and-forget; mark logged optimistically so a following hide event does not
       // double-send. A keepalive request is reliably queued once dispatched.
@@ -1361,9 +1152,9 @@ export function IsaacVideo(props: IsaacVideoProps) {
       }
     };
 
-    const onPageHide = () => flushThreshold("pagehide");
+    const onPageHide = () => flushThreshold();
     const onVisibilityChange = () => {
-      if (document.visibilityState === "hidden") flushThreshold("visibilitychange:hidden");
+      if (document.visibilityState === "hidden") flushThreshold();
     };
 
     globalThis.addEventListener("pagehide", onPageHide);
@@ -1385,14 +1176,11 @@ export function IsaacVideo(props: IsaacVideoProps) {
       onReady: (video: WistiaVideoApi) => {
         try {
           const duration = video.duration?.();
-          videoDebugLog("Wistia onReady duration", { wistiaVideoId, duration });
           if (isValidNumber(duration) && duration > 0) {
             setTotalVideoDurationIfPresent(duration);
           }
-        } catch (error) {
-          videoDebugLog("Wistia duration read failed", {
-            error: error instanceof Error ? error.message : String(error),
-          });
+        } catch {
+          /* ignore duration read errors */
         }
       },
     });

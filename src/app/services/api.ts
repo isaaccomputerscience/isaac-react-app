@@ -1,6 +1,5 @@
 import axios, { AxiosPromise } from "axios";
 import { API_PATH, EventStageFilter, EventTypeFilter, securePadCredentials, securePadPasswordReset, TAG_ID } from "./";
-import { debugLog } from "./debug";
 import * as ApiTypes from "../../IsaacApiTypes";
 import {
   AuthenticationProvider,
@@ -519,24 +518,7 @@ export const api = {
   },
   logger: {
     log: (eventDetails: object): AxiosPromise<void> => {
-      // TODO(#855) TEMPORARY diagnostic: trace every event POSTed to /log (payload + result).
-      // This is the single choke point all client log events pass through (LOG_EVENT redux action
-      // and IsaacVideo's play/pause/ended/60% logging), so it captures them all.
-      const eventType = (eventDetails as { type?: string })?.type;
-      debugLog("backend-log", "POST /log →", eventDetails);
-      const request = endpoint.post<void>(`/log`, eventDetails);
-      // Side-branch handlers only — the original `request` promise is returned unchanged so callers
-      // still receive success/failure exactly as before.
-      request
-        .then((response) => debugLog("backend-log", "POST /log OK", { status: response.status, type: eventType }))
-        .catch((error) =>
-          debugLog("backend-log", "POST /log FAILED", {
-            status: error?.response?.status,
-            type: eventType,
-            message: error?.message,
-          }),
-        );
-      return request;
+      return endpoint.post(`/log`, eventDetails);
     },
   },
   websockets: {

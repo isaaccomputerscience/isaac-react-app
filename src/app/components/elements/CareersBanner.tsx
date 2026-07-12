@@ -5,6 +5,7 @@ import { isStudent } from "../../services";
 import careerVideos from "../../assets/career_videos.json";
 import { Link } from "react-router-dom";
 import TestimonialComment from "./TestimonialComment";
+import { IsaacVideo } from "../content/IsaacVideo";
 
 const CsAtWorkDescription = () => {
   const user = useAppSelector(selectors.user.orNull);
@@ -74,14 +75,11 @@ export const CareersBanner = () => {
                 linkText="See more career videos"
               >
                 <div className="career-media-row-column">
-                  <iframe
-                    title="career-video"
-                    className="career-media-row-video no-border"
-                    id="ytplayer"
-                    width="100%"
-                    height="100%"
-                    src={`https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&fs=1&modestbranding=1`}
-                    allowFullScreen
+                  {/* Rendered through IsaacVideo so the banner video gets engagement tracking and a
+                      player that is destroyed on unmount (a raw enablejsapi iframe left behind by SPA
+                      navigation corrupts the YT widget API for players created later). */}
+                  <IsaacVideo
+                    doc={{ type: "video", src: `https://www.youtube.com/watch?v=${videoId}`, altText: "career-video" }}
                   />
                 </div>
               </CareerCard>
