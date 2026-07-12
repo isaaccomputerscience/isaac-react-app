@@ -25,18 +25,17 @@ describe("Careers", () => {
 
   it.each(careerVideos)(
     "shows $title video, with link to content page, correct speaker name, role, description and link to video",
-    ({ id, video, title, description, name, job, url }) => {
+    ({ id, title, description, name, job, url }) => {
       renderCareers();
-      const careerVideo = screen.getByTitle(title);
+      // Career videos render through IsaacVideo, which titles its player container
+      // "Embedded video: <altText>." — in jsdom the YouTube iframe API never loads,
+      // so there is no iframe/src to assert on.
+      const careerVideo = screen.getByTitle(`Embedded video: ${title}.`);
       const speakerName = screen.getAllByTestId("video-speaker");
       const speakerRole = screen.getAllByTestId("speaker-role");
       const videoDescription = screen.getAllByTestId("video-description");
       const videoTitleAndLink = screen.getByText(title);
       expect(careerVideo).toBeInTheDocument();
-      expect(careerVideo).toHaveAttribute(
-        "src",
-        `https://www.youtube-nocookie.com/embed/${video}?enablejsapi=1&fs=1&modestbranding=1`,
-      );
       expect(speakerName[id - 1]).toHaveTextContent(name);
       expect(speakerRole[id - 1]).toHaveTextContent(job);
       const expectedText = description.trim();
