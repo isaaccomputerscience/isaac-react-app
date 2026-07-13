@@ -19,9 +19,6 @@ interface CareerPanelProps {
 const CareerPanel = ({ video, title, description, name, job, reversed, url }: CareerPanelProps) => {
   const videoColumn = (
     <Col xs={12} sm={6} className="video-column">
-      {/* Rendering through IsaacVideo gives career videos the same engagement tracking
-          (play/pause/ended + VIDEO_60_PERCENT_WATCHED) as content videos, and a player
-          that is properly destroyed on unmount. */}
       <IsaacVideo doc={{ type: "video", src: `https://www.youtube.com/watch?v=${video}`, altText: title }} />
     </Col>
   );

@@ -27,9 +27,6 @@ describe("Careers", () => {
     "shows $title video, with link to content page, correct speaker name, role, description and link to video",
     ({ id, title, description, name, job, url }) => {
       renderCareers();
-      // Career videos render through IsaacVideo, which titles its player container
-      // "Embedded video: <altText>." — in jsdom the YouTube iframe API never loads,
-      // so there is no iframe/src to assert on.
       const careerVideo = screen.getByTitle(`Embedded video: ${title}.`);
       const speakerName = screen.getAllByTestId("video-speaker");
       const speakerRole = screen.getAllByTestId("speaker-role");

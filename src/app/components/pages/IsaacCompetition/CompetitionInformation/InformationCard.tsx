@@ -60,8 +60,6 @@ const InformationCard = ({
   return (
     <Card className={`h-100 ${className} competition-information-no-border`}>
       {videoUrl && (
-        // IsaacVideo supplies its own responsive 16:9 container (.content-video-container) and adds
-        // engagement tracking plus proper player teardown on unmount.
         <IsaacVideo
           doc={{ type: "video", src: `https://www.youtube.com/watch?v=${videoUrl}`, altText: `${title} video` }}
         />

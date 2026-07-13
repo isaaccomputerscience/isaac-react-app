@@ -77,8 +77,6 @@ declare global {
     Wistia?: {
       [key: string]: unknown;
     };
-    // Wistia's E-v1.js embed exposes a `_wq` command queue; pushing a handler with an
-    // `onReady` callback yields a video API object we can read the true duration from.
     _wq?: Array<{ id: string; onReady?: (video: WistiaVideoApi) => void; [key: string]: unknown }>;
   }
 
@@ -356,15 +354,6 @@ export async function logVideoEvent(
   }
 }
 
-/**
- * Reliably POST a video-engagement event to /log when the page is being hidden/unloaded.
- *
- * A normal in-page XHR/axios POST is cancelled by the browser on navigation or tab close, which
- * silently drops a threshold reached at the last moment. fetch with `keepalive: true` matches the
- * existing axios request (same JSON content type + credentials, so it satisfies the identical
- * cookie auth and CORS) but is allowed to outlive the document. Returns whether the request was
- * dispatched (not whether the server accepted it — there is no response to await during unload).
- */
 export function sendVideoEngagementBeacon(eventDetails: VideoEventDetails): boolean {
   try {
     void fetch(`${API_PATH}/log`, {
@@ -529,22 +518,11 @@ export function IsaacVideo(props: IsaacVideoProps) {
   const wistiaIframeRef = useRef<HTMLIFrameElement>(null);
   const youtubePlayerRef = useRef<YouTubePlayer | null>(null);
   const youtubePollTimerRef = useRef<ReturnType<typeof globalThis.setInterval> | null>(null);
-  // The YouTube iframe API is loaded `async` (public/index.html), so `globalThis.YT` is often not
-  // yet defined when this component's div mounts. The ref callback captures the node here; a waiter
-  // effect then constructs the player as soon as YT is available. `youtubePlayerCreatedRef` guards
-  // against constructing twice (ref callback re-fire + waiter poll).
   const youtubeNodeRef = useRef<HTMLDivElement | null>(null);
   const youtubePlayerCreatedRef = useRef<boolean>(false);
-  // Set true when onReady fires. Used by the watchdog below to distinguish "handshake still pending /
-  // video not played yet" from "enablejsapi channel never connected" (the latter = no events ever logged).
   const youtubeReadyFiredRef = useRef<boolean>(false);
-  // One-shot guard for the ready watchdog: a failed handshake gets a single destroy+recreate;
-  // if that also fails we leave the player alone rather than loop.
   const youtubeReadyRetryUsedRef = useRef<boolean>(false);
   const youtubeReadyWatchdogRef = useRef<ReturnType<typeof globalThis.setTimeout> | null>(null);
-  // Prevents re-sending VIDEO_60_PERCENT_WATCHED while an attempt is in flight. Because the KPI is
-  // now only persisted (thresholdLogged) after the backend confirms, without this guard the
-  // per-tick playback check would fire duplicate requests until the first one resolved.
   const thresholdSendInFlightRef = useRef<boolean>(false);
 
   const platform = React.useMemo(() => (src ? detectPlatform(src) : null), [src]);
@@ -599,8 +577,6 @@ export function IsaacVideo(props: IsaacVideoProps) {
         return;
       }
 
-      // Include the segment currently being watched (not yet committed while playing straight through) so the
-      // KPI fires as soon as cumulative watch time crosses the threshold, without needing a pause/seek/end/unmount.
       const segments = [...progressReference.current.segments];
       const openSegmentStart = progressReference.current.currentSegmentStart;
       if (
@@ -625,12 +601,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
         watchPercent,
       });
 
-      // Block duplicate sends from later playback ticks until this attempt resolves.
       thresholdSendInFlightRef.current = true;
-      // Keep the redux LOG_EVENT dispatch (analytics + observability), but only persist
-      // thresholdLogged once the backend has accepted the event. Previously the flag was set
-      // optimistically before the POST, so any failure (transient network, or a backend that
-      // wasn't accepting the event yet) permanently suppressed the KPI for that user+video.
       dispatch({ type: ACTION_TYPE.LOG_EVENT, eventDetails });
       api.logger
         .log(eventDetails)
@@ -691,8 +662,6 @@ export function IsaacVideo(props: IsaacVideoProps) {
     [appendSegment],
   );
 
-  // Latest closeCurrentSegment, read by the YouTube teardown below without making that effect depend on
-  // (and therefore re-run + tear the player down on) every callback identity change.
   const closeCurrentSegmentRef = useRef(closeCurrentSegment);
   closeCurrentSegmentRef.current = closeCurrentSegment;
 
@@ -716,8 +685,6 @@ export function IsaacVideo(props: IsaacVideoProps) {
       }
       progressReference.current.lastKnownTime = currentTime;
 
-      // Evaluate the KPI live during playback (counting the open segment) so it fires without needing a
-      // pause/seek/end/navigation — otherwise a straight watch-through or a tab close never logs the event.
       checkIf60PercentWatchedAndLog(videoId, videoUrl, currentTime);
     },
     [checkIf60PercentWatchedAndLog, closeCurrentSegment, startCurrentSegment],
@@ -952,16 +919,11 @@ export function IsaacVideo(props: IsaacVideoProps) {
     ],
   );
 
-  // YouTube video initialization. The ref callback only *captures the node* — it does NOT construct the
-  // player, because YT may not be loaded yet at mount. Construction happens in the waiter effect below.
+  // YouTube video initialization.
   const youtubeRef = useCallback((node: HTMLDivElement | null) => {
     youtubeNodeRef.current = node;
   }, []);
 
-  // The player is constructed exactly once, but auth (userStorageScope) and the page doc (pageId) can
-  // resolve AFTER construction. So we register STABLE wrapper handlers that always dispatch to the latest
-  // handler via these refs — otherwise the player would forever call handlers that closed over the
-  // logged-out / no-pageId state, and never log play/pause or the KPI once the user is actually scoped.
   const handleYouTubePlayerReadyRef = useRef(handleYouTubePlayerReady);
   handleYouTubePlayerReadyRef.current = handleYouTubePlayerReady;
   const handleYouTubePlayerStateChangeRef = useRef(handleYouTubePlayerStateChange);
@@ -971,15 +933,9 @@ export function IsaacVideo(props: IsaacVideoProps) {
     (container: HTMLDivElement) => {
       const YT = globalThis.YT;
       if (!YT || !youtubeVideoId || youtubePlayerCreatedRef.current) return;
-      // Commit before the async YT.ready callback so the waiter poll cannot construct a second player.
       youtubePlayerCreatedRef.current = true;
       try {
         YT.ready(() => {
-          // Hand YT a plain child node to replace with its <iframe>, NOT the React-managed container
-          // itself. If YT swaps out a React-owned node, the next re-render reconciles that node out from
-          // under the widget and the enablejsapi postMessage handshake targets the wrong window
-          // ("recipient origin = app origin") — so onReady/onStateChange never fire even though the video
-          // plays. React only owns the (childless) container; this child is invisible to its reconciler.
           const playerHost = document.createElement("div");
           playerHost.className = "mw-100";
           container.replaceChildren(playerHost);
@@ -998,12 +954,6 @@ export function IsaacVideo(props: IsaacVideoProps) {
               onStateChange: (event: YouTubeEvent) => handleYouTubePlayerStateChangeRef.current(event),
             },
           });
-
-          // READY WATCHDOG: if onReady has not fired a few seconds after construction, the enablejsapi
-          // handshake did not connect. Known trigger: an earlier YT widget in this document (e.g. a raw
-          // enablejsapi iframe wrapped by GA4's video measurement) was unmounted without destroy(),
-          // corrupting the widget API's message routing so later players never receive onReady.
-          // Destroy the half-dead player and reconstruct once — a fresh widget registration recovers.
           youtubeReadyWatchdogRef.current = globalThis.setTimeout(() => {
             if (youtubeReadyFiredRef.current || youtubeReadyRetryUsedRef.current) return;
             const node = youtubeNodeRef.current;
@@ -1033,16 +983,9 @@ export function IsaacVideo(props: IsaacVideoProps) {
     [youtubeVideoId],
   );
 
-  // Latest createYouTubePlayer, read by the waiter effect so it can construct with the current callbacks
-  // WITHOUT listing createYouTubePlayer as a dependency — otherwise every callback-identity change would
-  // re-run the effect, reset the guard, and build a second competing player on the same node.
   const createYouTubePlayerRef = useRef(createYouTubePlayer);
   createYouTubePlayerRef.current = createYouTubePlayer;
 
-  // Waiter + lifecycle owner for the YouTube player. Depends ONLY on the platform/video id, so unrelated
-  // re-renders never tear the player down or rebuild it. It (1) constructs the player as soon as both the
-  // container is mounted and the async YT API is loaded, and (2) on video change / unmount, flushes any
-  // open watched segment, stops the poll, and destroys the player so the next construction starts clean.
   React.useEffect(() => {
     if (!isYouTube || !youtubeVideoId) return;
     youtubePlayerCreatedRef.current = false; // fresh video id -> allow a new construction
@@ -1070,7 +1013,6 @@ export function IsaacVideo(props: IsaacVideoProps) {
           pollTimer = null;
         }
       }, 250);
-      // Give up after a bounded wait so we do not poll forever if the API script failed to load at all.
       giveUpTimer = globalThis.setTimeout(() => {
         if (pollTimer) globalThis.clearInterval(pollTimer);
       }, 15000);
@@ -1110,9 +1052,6 @@ export function IsaacVideo(props: IsaacVideoProps) {
     };
   }, [isYouTube, youtubeVideoId]);
 
-  // Unload-safe backstop: when the page is hidden/closed, flush the open segment and, if the 60%
-  // threshold is met but not yet logged, send it via keepalive fetch — a normal POST is cancelled
-  // on unload. This covers a viewer who crosses the threshold and immediately leaves the page.
   React.useEffect(() => {
     if (!userStorageScope || !canonicalVideoId) return;
     const videoUrl = embedSrc || "";
@@ -1144,8 +1083,6 @@ export function IsaacVideo(props: IsaacVideoProps) {
         watchPercent,
       });
       dispatch({ type: ACTION_TYPE.LOG_EVENT, eventDetails });
-      // Beacon is fire-and-forget; mark logged optimistically so a following hide event does not
-      // double-send. A keepalive request is reliably queued once dispatched.
       if (sendVideoEngagementBeacon(eventDetails)) {
         progressReference.current.thresholdLogged = true;
         saveVideoProgress(userStorageScope, canonicalVideoId, progressReference.current);
@@ -1165,9 +1102,6 @@ export function IsaacVideo(props: IsaacVideoProps) {
     };
   }, [userStorageScope, canonicalVideoId, embedSrc, pageId, dispatch]);
 
-  // Wistia: read the true duration via the Wistia JS API. The postMessage "duration" field is not
-  // always present, and without a duration the coverage/threshold calculation is skipped — so
-  // Wistia videos could otherwise never fire VIDEO_60_PERCENT_WATCHED.
   React.useEffect(() => {
     if (!isWistia || !wistiaVideoId) return;
     const wistiaQueue = (globalThis._wq = globalThis._wq || []);
