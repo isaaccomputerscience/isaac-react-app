@@ -736,7 +736,8 @@ export function IsaacVideo(props: IsaacVideoProps) {
     }
 
     const script = document.createElement("script");
-    script.src = "https://fast.wistia.com/assets/external/E-v1.js";
+    // Must be fast.wistia.net (not .com): the site CSP's script-src only allows the .net domain
+    script.src = "https://fast.wistia.net/assets/external/E-v1.js";
     script.async = true;
     document.body.appendChild(script);
   }, [isWistia]);
