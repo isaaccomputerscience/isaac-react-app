@@ -88,9 +88,13 @@ declare global {
   var _wq: Window["_wq"];
 }
 
+type WistiaEventCallback = (...args: unknown[]) => void;
+
 interface WistiaVideoApi {
   duration?: () => number;
   time?: () => number;
+  bind?: (eventName: string, callback: WistiaEventCallback) => void;
+  unbind?: (eventName: string, callback: WistiaEventCallback) => void;
   [key: string]: unknown;
 }
 
@@ -524,6 +528,9 @@ export function IsaacVideo(props: IsaacVideoProps) {
   const youtubeReadyRetryUsedRef = useRef<boolean>(false);
   const youtubeReadyWatchdogRef = useRef<ReturnType<typeof globalThis.setTimeout> | null>(null);
   const thresholdSendInFlightRef = useRef<boolean>(false);
+  // True once the official Wistia player API (E-v1.js) has attached; the postMessage
+  // fallback below must then stand down to avoid double-logging and double-counting.
+  const wistiaApiAttachedRef = useRef<boolean>(false);
 
   const platform = React.useMemo(() => (src ? detectPlatform(src) : null), [src]);
   const isYouTube = platform === "youtube";
@@ -702,6 +709,25 @@ export function IsaacVideo(props: IsaacVideoProps) {
     [dispatch, pageId],
   );
 
+  // Latest render's callbacks/values for the Wistia API effect, which deliberately only
+  // re-runs when the video changes (re-pushing to _wq would double-bind handlers).
+  const wistiaCallbacksRef = useRef({
+    embedSrc,
+    logPlayerEvent,
+    updatePlaybackProgress,
+    startCurrentSegment,
+    closeCurrentSegment,
+    setTotalVideoDurationIfPresent,
+  });
+  wistiaCallbacksRef.current = {
+    embedSrc,
+    logPlayerEvent,
+    updatePlaybackProgress,
+    startCurrentSegment,
+    closeCurrentSegment,
+    setTotalVideoDurationIfPresent,
+  };
+
   // Load Wistia API script
   React.useEffect(() => {
     if (!isWistia) return;
@@ -776,7 +802,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
     };
 
     const handleWistiaMessage = (event: MessageEvent): void => {
-      if (!isWistiaMessageForIframe(event, iframe.contentWindow)) {
+      if (wistiaApiAttachedRef.current || !isWistiaMessageForIframe(event, iframe.contentWindow)) {
         return;
       }
 
@@ -1102,23 +1128,100 @@ export function IsaacVideo(props: IsaacVideoProps) {
     };
   }, [userStorageScope, canonicalVideoId, embedSrc, pageId, dispatch]);
 
+  // Wistia: official player API (E-v1.js / _wq). This is the primary tracking path —
+  // real play/pause/end events carry no payload and the postMessage protocol above is
+  // undocumented, so duration and time ticks are only reliable through the API handle.
   React.useEffect(() => {
     if (!isWistia || !wistiaVideoId) return;
+
+    let cancelled = false;
+    let boundVideo: WistiaVideoApi | null = null;
+    const boundHandlers: Array<[string, WistiaEventCallback]> = [];
+
+    const bindVideoEvent = (video: WistiaVideoApi, eventName: string, handler: WistiaEventCallback) => {
+      video.bind?.(eventName, handler);
+      boundHandlers.push([eventName, handler]);
+    };
+
     const wistiaQueue = (globalThis._wq = globalThis._wq || []);
     wistiaQueue.push({
       id: wistiaVideoId,
       onReady: (video: WistiaVideoApi) => {
-        try {
-          const duration = video.duration?.();
-          if (isValidNumber(duration) && duration > 0) {
-            setTotalVideoDurationIfPresent(duration);
+        if (cancelled || boundVideo) return;
+        boundVideo = video;
+        wistiaApiAttachedRef.current = true;
+
+        const readDuration = () => {
+          try {
+            const duration = video.duration?.();
+            if (isValidNumber(duration) && duration > 0) {
+              wistiaCallbacksRef.current.setTotalVideoDurationIfPresent(duration);
+            }
+          } catch {
+            /* ignore duration read errors */
           }
-        } catch {
-          /* ignore duration read errors */
-        }
+        };
+        readDuration();
+
+        const readCurrentTime = (): number => {
+          try {
+            const time = video.time?.();
+            return isValidNumber(time) ? time : progressReference.current.lastKnownTime ?? 0;
+          } catch {
+            return progressReference.current.lastKnownTime ?? 0;
+          }
+        };
+
+        bindVideoEvent(video, "play", () => {
+          readDuration();
+          const time = readCurrentTime();
+          const { embedSrc: videoUrl, startCurrentSegment, logPlayerEvent } = wistiaCallbacksRef.current;
+          progressReference.current.isPlaying = true;
+          startCurrentSegment(time);
+          logPlayerEvent("VIDEO_PLAY", videoUrl || "", wistiaVideoId, time);
+        });
+
+        bindVideoEvent(video, "pause", () => {
+          const time = readCurrentTime();
+          const { embedSrc: videoUrl, closeCurrentSegment, logPlayerEvent } = wistiaCallbacksRef.current;
+          progressReference.current.isPlaying = false;
+          closeCurrentSegment(time, videoUrl || "", wistiaVideoId);
+          progressReference.current.lastKnownTime = time;
+          logPlayerEvent("VIDEO_PAUSE", videoUrl || "", wistiaVideoId, time);
+        });
+
+        bindVideoEvent(video, "end", () => {
+          const time = readCurrentTime();
+          const { embedSrc: videoUrl, closeCurrentSegment, logPlayerEvent } = wistiaCallbacksRef.current;
+          progressReference.current.isPlaying = false;
+          closeCurrentSegment(time, videoUrl || "", wistiaVideoId);
+          progressReference.current.lastKnownTime = time;
+          logPlayerEvent("VIDEO_ENDED", videoUrl || "", wistiaVideoId);
+        });
+
+        bindVideoEvent(video, "timechange", (t: unknown) => {
+          if (!isValidNumber(t)) return;
+          if (progressReference.current.totalVideoDurationInSeconds === null) readDuration();
+          const { embedSrc: videoUrl, updatePlaybackProgress } = wistiaCallbacksRef.current;
+          updatePlaybackProgress(t, videoUrl || "", wistiaVideoId);
+        });
       },
     });
-  }, [isWistia, wistiaVideoId, setTotalVideoDurationIfPresent]);
+
+    return () => {
+      cancelled = true;
+      wistiaApiAttachedRef.current = false;
+      if (boundVideo) {
+        for (const [eventName, handler] of boundHandlers) {
+          try {
+            boundVideo.unbind?.(eventName, handler);
+          } catch {
+            /* ignore unbind errors during teardown */
+          }
+        }
+      }
+    };
+  }, [isWistia, wistiaVideoId]);
 
   const detailsForPrintOut = <div className="only-print py-2 mb-4">{altTextToUse}</div>;
 
@@ -1138,7 +1241,8 @@ export function IsaacVideo(props: IsaacVideoProps) {
             ) : (
               <iframe
                 ref={isWistia ? wistiaIframeRef : null}
-                className="mw-100"
+                // wistia_embed lets E-v1.js discover the iframe and expose the player API (_wq onReady)
+                className={isWistia ? "mw-100 wistia_embed" : "mw-100"}
                 title={altTextToUse}
                 src={embedSrc}
                 frameBorder="0"
