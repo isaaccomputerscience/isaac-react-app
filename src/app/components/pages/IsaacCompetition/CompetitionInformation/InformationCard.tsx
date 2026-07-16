@@ -1,5 +1,6 @@
 import React from "react";
 import { Card, CardTitle, CardBody, CardText } from "reactstrap";
+import { IsaacVideo } from "../../../content/IsaacVideo";
 
 interface InformationCardProps {
   title: string;
@@ -59,17 +60,9 @@ const InformationCard = ({
   return (
     <Card className={`h-100 ${className} competition-information-no-border`}>
       {videoUrl && (
-        <div className="" style={{ position: "relative", paddingBottom: "56.25%" }}>
-          <iframe
-            title={`${title} video`}
-            src={`https://www.youtube-nocookie.com/embed/${videoUrl}?enablejsapi=1&rel=0&fs=1&modestbranding=1`}
-            id="ytplayer"
-            width="100%"
-            height="100%"
-            style={{ position: "absolute", border: "none", borderRadius: "4px" }}
-            allowFullScreen
-          />
-        </div>
+        <IsaacVideo
+          doc={{ type: "video", src: `https://www.youtube.com/watch?v=${videoUrl}`, altText: `${title} video` }}
+        />
       )}
       <CardTitle tag="h3" className="competition-information-title pt-4 px-4">
         {title}

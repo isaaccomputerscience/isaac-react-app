@@ -3,6 +3,7 @@ import { Col, Container, Row } from "reactstrap";
 import { TitleAndBreadcrumb } from "../elements/TitleAndBreadcrumb";
 import { Link } from "react-router-dom";
 import { EventsCarousel } from "../elements/EventsCarousel";
+import { IsaacVideo } from "../content/IsaacVideo";
 import careerVideos from "../../assets/career_videos.json";
 
 interface CareerPanelProps {
@@ -18,14 +19,7 @@ interface CareerPanelProps {
 const CareerPanel = ({ video, title, description, name, job, reversed, url }: CareerPanelProps) => {
   const videoColumn = (
     <Col xs={12} sm={6} className="video-column">
-      <iframe
-        title={title}
-        className="no-border mh-100"
-        width="100%"
-        height="100%"
-        src={`https://www.youtube-nocookie.com/embed/${video}?enablejsapi=1&fs=1&modestbranding=1`}
-        allowFullScreen
-      />
+      <IsaacVideo doc={{ type: "video", src: `https://www.youtube.com/watch?v=${video}`, altText: title }} />
     </Col>
   );
 

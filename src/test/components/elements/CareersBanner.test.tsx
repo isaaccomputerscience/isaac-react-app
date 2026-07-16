@@ -20,7 +20,6 @@ describe("Careers", () => {
     const button = screen.getByRole("link", { name: /see more career videos/i });
     [button, sectionTitle, video, videoDescription].forEach((element) => expect(element).toBeInTheDocument());
     expect(button).toHaveAttribute("href", "/careers_in_computer_science");
-    expect(video).toHaveAttribute("src", expect.stringContaining("https://www.youtube-nocookie.com/embed/"));
   });
 
   it("renders CS Journeys", async () => {

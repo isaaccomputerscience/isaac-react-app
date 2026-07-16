@@ -1,6 +1,6 @@
 import { AxiosHeaders, type AxiosResponse } from "axios";
 import React, { useState } from "react";
-import { act, fireEvent, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, screen, waitFor } from "@testing-library/react";
 import { jest } from "@jest/globals";
 import { mockUser } from "../../../../mocks/data";
 import {
@@ -22,6 +22,7 @@ import {
   processWistiaMessage,
   rewrite,
   saveVideoProgress,
+  sendVideoEngagementBeacon,
   updateWistiaTimeFromArgs,
   updateWistiaTimeFromEventData,
 } from "../../../../app/components/content/IsaacVideo";
@@ -237,6 +238,47 @@ describe("YouTube player handlers", () => {
     await flushPromises();
 
     expect(dispatchMock).not.toHaveBeenCalled();
+  });
+
+  it("logs VIDEO_60_PERCENT_WATCHED during continuous playback, without a pause/seek/end", async () => {
+    let currentTime = 0;
+    const advancingPlayer = {
+      getVideoUrl: () => youtubeSrc,
+      getCurrentTime: () => currentTime,
+      getDuration: () => 120,
+    };
+
+    renderYouTubeVideo();
+    await flushPromises();
+
+    const dispatchMock = store.dispatch as jest.Mock;
+
+    jest.useFakeTimers();
+    try {
+      await act(async () => {
+        capturedPlayerConfig?.events?.onStateChange?.({ target: advancingPlayer, data: 1 });
+      });
+      dispatchMock.mockClear();
+
+      for (let second = 1; second <= 75; second++) {
+        currentTime = second;
+        act(() => {
+          jest.advanceTimersByTime(1000);
+        });
+      }
+    } finally {
+      jest.useRealTimers();
+    }
+
+    type LoggedAction = { type?: string; eventDetails?: { type?: string; videoId?: string; watchPercent?: number } };
+    const thresholdLog = dispatchMock.mock.calls.find(([action]) => {
+      const a = action as LoggedAction;
+      return a?.type === ACTION_TYPE.LOG_EVENT && a?.eventDetails?.type === "VIDEO_60_PERCENT_WATCHED";
+    });
+    expect(thresholdLog).toBeDefined();
+    const eventDetails = (thresholdLog?.[0] as LoggedAction).eventDetails;
+    expect(eventDetails?.videoId).toBe(youtubeVideoId);
+    expect(eventDetails?.watchPercent).toBeGreaterThanOrEqual(0.6);
   });
 });
 
@@ -984,8 +1026,7 @@ const dispatchWistiaTrigger = (
 };
 
 const getWistiaIframeForVideo = (videoId: string) => {
-  const iframe = screen.getByTitle(`Embedded video: ${videoId}.`) as HTMLIFrameElement;
-  return iframe;
+  return screen.getByTitle(`Embedded video: ${videoId}.`) as HTMLIFrameElement;
 };
 
 const StagingMultiWistiaHarness = () => (
@@ -1361,5 +1402,216 @@ describe("pauseAllVideos", () => {
     expect(postMessage).toHaveBeenCalledWith(JSON.stringify({ event: "command", func: "pauseVideo" }), "*");
 
     iframe.remove();
+  });
+});
+
+describe("sendVideoEngagementBeacon", () => {
+  const eventDetails = {
+    type: "VIDEO_60_PERCENT_WATCHED" as const,
+    videoId: "test123ABCde",
+    videoUrl: "https://www.youtube.com/watch?v=test123ABCde",
+    videoDurationSeconds: 120,
+    watchedSeconds: 80,
+    watchPercent: 0.66,
+  };
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it("POSTs the event to /log via fetch with keepalive so it survives page unload", () => {
+    const fetchMock = jest.fn(() => Promise.resolve({ ok: true } as Response));
+    jest.spyOn(globalThis, "fetch").mockImplementation(fetchMock as unknown as typeof fetch);
+
+    const dispatched = sendVideoEngagementBeacon(eventDetails);
+
+    expect(dispatched).toBe(true);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toMatch(/\/log$/);
+    expect(init.method).toBe("POST");
+    expect(init.keepalive).toBe(true);
+    expect(init.credentials).toBe("include");
+    expect(init.headers).toMatchObject({ "Content-Type": "application/json" });
+    expect(JSON.parse(init.body as string)).toMatchObject({
+      type: "VIDEO_60_PERCENT_WATCHED",
+      videoId: "test123ABCde",
+    });
+  });
+
+  it("returns false and does not throw when fetch is unavailable", () => {
+    jest.spyOn(globalThis, "fetch").mockImplementation(() => {
+      throw new Error("fetch unavailable");
+    });
+
+    expect(() => sendVideoEngagementBeacon(eventDetails)).not.toThrow();
+    expect(sendVideoEngagementBeacon(eventDetails)).toBe(false);
+  });
+});
+
+describe("Wistia official player API (_wq) tracking", () => {
+  const userStorageScope = String(mockUser.id);
+  const video = STAGING_WISTIA_VIDEOS[0];
+  const videoDurationSeconds = 100;
+
+  type TestWistiaCallback = (...args: unknown[]) => void;
+  type WqEntry = NonNullable<Window["_wq"]>[number];
+  type WistiaHandle = Parameters<NonNullable<WqEntry["onReady"]>>[0];
+
+  const createMockWistiaHandle = () => {
+    const handlers = new Map<string, TestWistiaCallback[]>();
+    let currentTime = 0;
+    const unbind = jest.fn((eventName: string, callback: TestWistiaCallback) => {
+      handlers.set(
+        eventName,
+        (handlers.get(eventName) ?? []).filter((cb) => cb !== callback),
+      );
+    });
+    const handle = {
+      duration: () => videoDurationSeconds,
+      time: () => currentTime,
+      bind: (eventName: string, callback: TestWistiaCallback) => {
+        handlers.set(eventName, [...(handlers.get(eventName) ?? []), callback]);
+      },
+      unbind,
+    };
+    const fire = (eventName: string, ...args: unknown[]) => {
+      act(() => {
+        handlers.get(eventName)?.forEach((callback) => callback(...args));
+      });
+    };
+    const setTime = (time: number) => {
+      currentTime = time;
+    };
+    return { handle: handle as unknown as WistiaHandle, fire, setTime, unbind, handlers };
+  };
+
+  const attachWistiaApi = (handle: WistiaHandle) => {
+    const entry = (globalThis._wq ?? []).filter((queued) => queued.id === video.videoId).at(-1);
+    expect(entry?.onReady).toBeDefined();
+    act(() => entry!.onReady!(handle));
+  };
+
+  const renderLoggedInWistiaVideo = async () => {
+    renderTestEnvironment({
+      role: "STUDENT",
+      PageComponent: () => <IsaacVideo doc={{ type: "video", src: video.src, altText: video.videoId }} />,
+      initialRouteEntries: [`/pages/${STAGING_VIDEO_TEST_PAGE_ID}`],
+    });
+    await act(async () => {
+      await store.dispatch(requestCurrentUser() as any);
+    });
+    await waitFor(() => {
+      expect(screen.getByTitle(`Embedded video: ${video.videoId}.`)).toBeInTheDocument();
+    });
+  };
+
+  let logSpy: ReturnType<typeof mockApiLoggerLog>;
+
+  beforeEach(() => {
+    localStorage.clear();
+    globalThis._wq = [];
+    logSpy = mockApiLoggerLog();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+    localStorage.clear();
+    globalThis._wq = [];
+  });
+
+  const loggedEventsOfType = (type: string) =>
+    logSpy.mock.calls.map(([details]) => details as Record<string, unknown>).filter((details) => details.type === type);
+
+  it("reads the duration from video.duration() at onReady and persists it", async () => {
+    await renderLoggedInWistiaVideo();
+    attachWistiaApi(createMockWistiaHandle().handle);
+
+    const stored = readStoredProgress(userStorageScope, video.videoId);
+    expect(stored?.totalVideoDurationInSeconds).toBe(videoDurationSeconds);
+  });
+
+  it("tracks payloadless play + timechange ticks and fires VIDEO_60_PERCENT_WATCHED", async () => {
+    await renderLoggedInWistiaVideo();
+    const { handle, fire, setTime } = createMockWistiaHandle();
+    attachWistiaApi(handle);
+
+    // Real Wistia play events carry no arguments; position must come from video.time()
+    fire("play");
+    expect(loggedEventsOfType("VIDEO_PLAY").at(-1)).toMatchObject({
+      videoId: video.videoId,
+      videoPosition: 0,
+      videoDurationSeconds,
+    });
+
+    for (let t = 1; t <= 61; t++) {
+      setTime(t);
+      fire("timechange", t);
+    }
+
+    await waitFor(() => {
+      expect(loggedEventsOfType("VIDEO_60_PERCENT_WATCHED")).toHaveLength(1);
+    });
+    expect(loggedEventsOfType("VIDEO_60_PERCENT_WATCHED")[0]).toMatchObject({
+      videoId: video.videoId,
+      videoDurationSeconds,
+      watchedSeconds: 60,
+      watchPercent: 0.6,
+    });
+    await waitFor(() => {
+      expect(readStoredProgress(userStorageScope, video.videoId)).toMatchObject({ thresholdLogged: true });
+    });
+  });
+
+  it("closes the watched segment at video.time() on a payloadless pause", async () => {
+    await renderLoggedInWistiaVideo();
+    const { handle, fire, setTime } = createMockWistiaHandle();
+    attachWistiaApi(handle);
+
+    fire("play");
+    for (let t = 1; t <= 30; t++) {
+      setTime(t);
+      fire("timechange", t);
+    }
+    fire("pause");
+
+    expect(loggedEventsOfType("VIDEO_PAUSE").at(-1)).toMatchObject({
+      videoId: video.videoId,
+      videoPosition: 30,
+      videoDurationSeconds,
+    });
+    expect(readStoredProgress(userStorageScope, video.videoId)?.segments).toEqual([
+      { watchedSegmentStart: 0, watchedSegmentEnd: 30 },
+    ]);
+  });
+
+  it("stands down the postMessage fallback once the API is attached", async () => {
+    await renderLoggedInWistiaVideo();
+    const iframe = getWistiaIframeForVideo(video.videoId);
+
+    // Before the API attaches, the postMessage fallback still logs events
+    dispatchWistiaTrigger(iframe, "play", { seconds: 5 });
+    expect(loggedEventsOfType("VIDEO_PLAY")).toHaveLength(1);
+
+    const { handle, fire } = createMockWistiaHandle();
+    attachWistiaApi(handle);
+
+    // The same postMessage is now ignored; only API-driven events are logged
+    dispatchWistiaTrigger(iframe, "play", { seconds: 10 });
+    expect(loggedEventsOfType("VIDEO_PLAY")).toHaveLength(1);
+
+    fire("play");
+    expect(loggedEventsOfType("VIDEO_PLAY")).toHaveLength(2);
+  });
+
+  it("unbinds all API handlers on unmount", async () => {
+    await renderLoggedInWistiaVideo();
+    const { handle, unbind } = createMockWistiaHandle();
+    attachWistiaApi(handle);
+
+    cleanup();
+
+    const unboundEvents = unbind.mock.calls.map(([eventName]) => eventName).sort();
+    expect(unboundEvents).toEqual(["end", "pause", "play", "timechange"]);
   });
 });

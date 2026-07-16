@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useRef } from "react";
 import { VideoDTO } from "../../../IsaacApiTypes";
 import { selectors, useAppDispatch, useAppSelector } from "../../state";
-import { NOT_FOUND, api, ACTION_TYPE } from "../../services";
+import { NOT_FOUND, api, ACTION_TYPE, API_PATH } from "../../services";
 import ReactGA from "react-ga4";
 import { AccordionSectionContext } from "../../../IsaacAppTypes";
 
@@ -55,6 +55,7 @@ interface YouTubePlayer {
   getVideoUrl: () => string;
   getCurrentTime: () => number;
   getDuration: () => number;
+  destroy?: () => void;
 }
 
 interface YouTubeEvent {
@@ -65,7 +66,7 @@ interface YouTubeEvent {
 declare global {
   interface Window {
     YT?: {
-      Player: new (element: HTMLElement, config: unknown) => void;
+      Player: new (element: HTMLElement, config: unknown) => YouTubePlayer;
       ready: (callback: () => void) => void;
       PlayerState: {
         PLAYING: number;
@@ -76,12 +77,25 @@ declare global {
     Wistia?: {
       [key: string]: unknown;
     };
+    _wq?: Array<{ id: string; onReady?: (video: WistiaVideoApi) => void; [key: string]: unknown }>;
   }
 
   // eslint-disable-next-line no-var
   var YT: Window["YT"];
   // eslint-disable-next-line no-var
   var Wistia: Window["Wistia"];
+  // eslint-disable-next-line no-var
+  var _wq: Window["_wq"];
+}
+
+type WistiaEventCallback = (...args: unknown[]) => void;
+
+interface WistiaVideoApi {
+  duration?: () => number;
+  time?: () => number;
+  bind?: (eventName: string, callback: WistiaEventCallback) => void;
+  unbind?: (eventName: string, callback: WistiaEventCallback) => void;
+  [key: string]: unknown;
 }
 
 // Constants
@@ -344,6 +358,21 @@ export async function logVideoEvent(
   }
 }
 
+export function sendVideoEngagementBeacon(eventDetails: VideoEventDetails): boolean {
+  try {
+    void fetch(`${API_PATH}/log`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(eventDetails),
+      keepalive: true,
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Create video event details object
  */
@@ -493,6 +522,15 @@ export function IsaacVideo(props: IsaacVideoProps) {
   const wistiaIframeRef = useRef<HTMLIFrameElement>(null);
   const youtubePlayerRef = useRef<YouTubePlayer | null>(null);
   const youtubePollTimerRef = useRef<ReturnType<typeof globalThis.setInterval> | null>(null);
+  const youtubeNodeRef = useRef<HTMLDivElement | null>(null);
+  const youtubePlayerCreatedRef = useRef<boolean>(false);
+  const youtubeReadyFiredRef = useRef<boolean>(false);
+  const youtubeReadyRetryUsedRef = useRef<boolean>(false);
+  const youtubeReadyWatchdogRef = useRef<ReturnType<typeof globalThis.setTimeout> | null>(null);
+  const thresholdSendInFlightRef = useRef<boolean>(false);
+  // True once the official Wistia player API (E-v1.js) has attached; the postMessage
+  // fallback below must then stand down to avoid double-logging and double-counting.
+  const wistiaApiAttachedRef = useRef<boolean>(false);
 
   const platform = React.useMemo(() => (src ? detectPlatform(src) : null), [src]);
   const isYouTube = platform === "youtube";
@@ -532,17 +570,36 @@ export function IsaacVideo(props: IsaacVideoProps) {
   );
 
   const checkIf60PercentWatchedAndLog = useCallback(
-    (videoId: string, videoUrl: string) => {
-      if (!userStorageScope || !canonicalVideoId || progressReference.current.thresholdLogged) return;
+    (videoId: string, videoUrl: string, liveCurrentTime?: number) => {
+      if (
+        !userStorageScope ||
+        !canonicalVideoId ||
+        progressReference.current.thresholdLogged ||
+        thresholdSendInFlightRef.current
+      ) {
+        return;
+      }
       const totalVideoDurationInSeconds = progressReference.current.totalVideoDurationInSeconds;
-      if (!isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) return;
+      if (!isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) {
+        return;
+      }
 
-      const uniqueWatchedSeconds = getUniqueWatchedSeconds(progressReference.current.segments);
+      const segments = [...progressReference.current.segments];
+      const openSegmentStart = progressReference.current.currentSegmentStart;
+      if (
+        progressReference.current.isPlaying &&
+        isValidNumber(openSegmentStart) &&
+        isValidNumber(liveCurrentTime) &&
+        liveCurrentTime > openSegmentStart
+      ) {
+        segments.push({ watchedSegmentStart: openSegmentStart, watchedSegmentEnd: liveCurrentTime });
+      }
+
+      const uniqueWatchedSeconds = getUniqueWatchedSeconds(mergeSegments(segments));
       const watchPercent = getWatchPercent(uniqueWatchedSeconds, totalVideoDurationInSeconds);
-      if (watchPercent < VIDEO_WATCH_THRESHOLD) return;
-
-      progressReference.current.thresholdLogged = true;
-      saveVideoProgress(userStorageScope, canonicalVideoId, progressReference.current);
+      if (watchPercent < VIDEO_WATCH_THRESHOLD) {
+        return;
+      }
 
       const eventDetails = createEventDetails("VIDEO_60_PERCENT_WATCHED", videoUrl, videoId, {
         pageId,
@@ -550,20 +607,40 @@ export function IsaacVideo(props: IsaacVideoProps) {
         watchedSeconds: uniqueWatchedSeconds,
         watchPercent,
       });
-      logVideoEvent(eventDetails, dispatch);
+
+      thresholdSendInFlightRef.current = true;
+      dispatch({ type: ACTION_TYPE.LOG_EVENT, eventDetails });
+      api.logger
+        .log(eventDetails)
+        .then(() => {
+          progressReference.current.thresholdLogged = true;
+          saveVideoProgress(userStorageScope, canonicalVideoId, progressReference.current);
+        })
+        .catch(() => {
+          // Swallow the failure: thresholdLogged stays false, so the next playback tick retries.
+        })
+        .finally(() => {
+          thresholdSendInFlightRef.current = false;
+        });
     },
     [canonicalVideoId, dispatch, pageId, userStorageScope],
   );
 
   const appendSegment = useCallback(
     (segmentStart: number, segmentEnd: number, videoId: string, videoUrl: string) => {
-      if (!userStorageScope) return;
+      if (!userStorageScope) {
+        return;
+      }
       const totalVideoDurationInSeconds = progressReference.current.totalVideoDurationInSeconds;
-      if (!isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) return;
+      if (!isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) {
+        return;
+      }
 
       const clampedStart = clampVideoProgressValue(segmentStart, 0, totalVideoDurationInSeconds);
       const clampedEnd = clampVideoProgressValue(segmentEnd, 0, totalVideoDurationInSeconds);
-      if (clampedEnd - clampedStart < 0.5) return;
+      if (clampedEnd - clampedStart < 0.5) {
+        return;
+      }
 
       progressReference.current.segments = mergeSegments([
         ...progressReference.current.segments,
@@ -583,17 +660,24 @@ export function IsaacVideo(props: IsaacVideoProps) {
   const closeCurrentSegment = useCallback(
     (segmentEnd: number, videoUrl: string, videoId: string) => {
       const currentSegmentStart = progressReference.current.currentSegmentStart;
-      if (!isValidNumber(currentSegmentStart)) return;
+      if (!isValidNumber(currentSegmentStart)) {
+        return;
+      }
       appendSegment(currentSegmentStart, segmentEnd, videoId, videoUrl);
       progressReference.current.currentSegmentStart = null;
     },
     [appendSegment],
   );
 
+  const closeCurrentSegmentRef = useRef(closeCurrentSegment);
+  closeCurrentSegmentRef.current = closeCurrentSegment;
+
   // this function is used to update the playback progress of the video, and detect seeks by comparing the current time with the last known time.
   const updatePlaybackProgress = useCallback(
     (currentTime: number, videoUrl: string, videoId: string) => {
-      if (!isValidNumber(currentTime)) return;
+      if (!isValidNumber(currentTime)) {
+        return;
+      }
       const lastKnownTime = progressReference.current.lastKnownTime;
       if (!progressReference.current.isPlaying || !isValidNumber(lastKnownTime)) {
         progressReference.current.lastKnownTime = currentTime;
@@ -607,8 +691,10 @@ export function IsaacVideo(props: IsaacVideoProps) {
         startCurrentSegment(currentTime);
       }
       progressReference.current.lastKnownTime = currentTime;
+
+      checkIf60PercentWatchedAndLog(videoId, videoUrl, currentTime);
     },
-    [closeCurrentSegment, startCurrentSegment],
+    [checkIf60PercentWatchedAndLog, closeCurrentSegment, startCurrentSegment],
   );
 
   const logPlayerEvent = useCallback(
@@ -623,12 +709,35 @@ export function IsaacVideo(props: IsaacVideoProps) {
     [dispatch, pageId],
   );
 
+  // Latest render's callbacks/values for the Wistia API effect, which deliberately only
+  // re-runs when the video changes (re-pushing to _wq would double-bind handlers).
+  const wistiaCallbacksRef = useRef({
+    embedSrc,
+    logPlayerEvent,
+    updatePlaybackProgress,
+    startCurrentSegment,
+    closeCurrentSegment,
+    setTotalVideoDurationIfPresent,
+  });
+  wistiaCallbacksRef.current = {
+    embedSrc,
+    logPlayerEvent,
+    updatePlaybackProgress,
+    startCurrentSegment,
+    closeCurrentSegment,
+    setTotalVideoDurationIfPresent,
+  };
+
   // Load Wistia API script
   React.useEffect(() => {
-    if (!isWistia || globalThis.Wistia) return;
+    if (!isWistia) return;
+    if (globalThis.Wistia) {
+      return;
+    }
 
     const script = document.createElement("script");
-    script.src = "https://fast.wistia.com/assets/external/E-v1.js";
+    // Must be fast.wistia.net (not .com): the site CSP's script-src only allows the .net domain
+    script.src = "https://fast.wistia.net/assets/external/E-v1.js";
     script.async = true;
     document.body.appendChild(script);
   }, [isWistia]);
@@ -694,7 +803,7 @@ export function IsaacVideo(props: IsaacVideoProps) {
     };
 
     const handleWistiaMessage = (event: MessageEvent): void => {
-      if (!isWistiaMessageForIframe(event, iframe.contentWindow)) {
+      if (wistiaApiAttachedRef.current || !isWistiaMessageForIframe(event, iframe.contentWindow)) {
         return;
       }
 
@@ -763,8 +872,11 @@ export function IsaacVideo(props: IsaacVideoProps) {
 
   const pollYouTubePlayerProgress = useCallback(() => {
     const player = youtubePlayerRef.current;
-    if (!player || !youtubeVideoId) return;
-    updatePlaybackProgress(player.getCurrentTime(), player.getVideoUrl(), youtubeVideoId);
+    if (!player || !youtubeVideoId) {
+      return;
+    }
+    const currentTime = player.getCurrentTime();
+    updatePlaybackProgress(currentTime, player.getVideoUrl(), youtubeVideoId);
   }, [updatePlaybackProgress, youtubeVideoId]);
 
   const startYouTubePollTimer = useCallback(() => {
@@ -775,7 +887,9 @@ export function IsaacVideo(props: IsaacVideoProps) {
   const handleYouTubePlayerReady = useCallback(
     (event: YouTubeEvent) => {
       youtubePlayerRef.current = event.target;
-      setTotalVideoDurationIfPresent(event.target.getDuration());
+      youtubeReadyFiredRef.current = true;
+      const duration = event.target.getDuration();
+      setTotalVideoDurationIfPresent(duration);
     },
     [setTotalVideoDurationIfPresent],
   );
@@ -783,7 +897,9 @@ export function IsaacVideo(props: IsaacVideoProps) {
   const handleYouTubePlayerStateChange = useCallback(
     (event: YouTubeEvent) => {
       const YT = globalThis.YT;
-      if (!YT || !youtubeVideoId) return;
+      if (!YT || !youtubeVideoId) {
+        return;
+      }
 
       youtubePlayerRef.current = event.target;
       setTotalVideoDurationIfPresent(event.target.getDuration());
@@ -830,15 +946,28 @@ export function IsaacVideo(props: IsaacVideoProps) {
     ],
   );
 
-  // YouTube video initialization
-  const youtubeRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      const YT = globalThis.YT;
-      if (!node || !youtubeVideoId || !YT) return;
+  // YouTube video initialization.
+  const youtubeRef = useCallback((node: HTMLDivElement | null) => {
+    youtubeNodeRef.current = node;
+  }, []);
 
+  const handleYouTubePlayerReadyRef = useRef(handleYouTubePlayerReady);
+  handleYouTubePlayerReadyRef.current = handleYouTubePlayerReady;
+  const handleYouTubePlayerStateChangeRef = useRef(handleYouTubePlayerStateChange);
+  handleYouTubePlayerStateChangeRef.current = handleYouTubePlayerStateChange;
+
+  const createYouTubePlayer = useCallback(
+    (container: HTMLDivElement) => {
+      const YT = globalThis.YT;
+      if (!YT || !youtubeVideoId || youtubePlayerCreatedRef.current) return;
+      youtubePlayerCreatedRef.current = true;
       try {
         YT.ready(() => {
-          new YT.Player(node, {
+          const playerHost = document.createElement("div");
+          playerHost.className = "mw-100";
+          container.replaceChildren(playerHost);
+          youtubeReadyFiredRef.current = false;
+          youtubePlayerRef.current = new YT.Player(playerHost, {
             videoId: youtubeVideoId,
             playerVars: {
               enablejsapi: 1,
@@ -848,12 +977,28 @@ export function IsaacVideo(props: IsaacVideoProps) {
               origin: globalThis.location.origin,
             },
             events: {
-              onReady: handleYouTubePlayerReady,
-              onStateChange: handleYouTubePlayerStateChange,
+              onReady: (event: YouTubeEvent) => handleYouTubePlayerReadyRef.current(event),
+              onStateChange: (event: YouTubeEvent) => handleYouTubePlayerStateChangeRef.current(event),
             },
           });
+          youtubeReadyWatchdogRef.current = globalThis.setTimeout(() => {
+            if (youtubeReadyFiredRef.current || youtubeReadyRetryUsedRef.current) return;
+            const node = youtubeNodeRef.current;
+            if (!node) return; // unmounted while waiting
+            youtubeReadyRetryUsedRef.current = true;
+            try {
+              youtubePlayerRef.current?.destroy?.();
+            } catch {
+              /* ignore teardown errors on a broken player */
+            }
+            youtubePlayerRef.current = null;
+            youtubePlayerCreatedRef.current = false;
+            node.replaceChildren();
+            createYouTubePlayerRef.current(node);
+          }, 8000);
         });
       } catch (error) {
+        youtubePlayerCreatedRef.current = false; // allow a later retry
         const errorMessage = error instanceof Error ? error.message : "problem with YT library";
         console.error("Error with YouTube library: ", error);
         ReactGA.gtag("event", "exception", {
@@ -862,23 +1007,222 @@ export function IsaacVideo(props: IsaacVideoProps) {
         });
       }
     },
-    [handleYouTubePlayerReady, handleYouTubePlayerStateChange, youtubeVideoId],
+    [youtubeVideoId],
   );
 
-  // Close any open YouTube segment and stop polling when leaving the page or changing video
+  const createYouTubePlayerRef = useRef(createYouTubePlayer);
+  createYouTubePlayerRef.current = createYouTubePlayer;
+
   React.useEffect(() => {
+    if (!isYouTube || !youtubeVideoId) return;
+    youtubePlayerCreatedRef.current = false; // fresh video id -> allow a new construction
+    youtubeReadyRetryUsedRef.current = false; // fresh video id -> watchdog may retry once again
+    let pollTimer: ReturnType<typeof globalThis.setInterval> | null = null;
+    let giveUpTimer: ReturnType<typeof globalThis.setTimeout> | null = null;
+
+    const tryCreate = (): boolean => {
+      const node = youtubeNodeRef.current;
+      if (youtubePlayerCreatedRef.current) return true;
+      if (!node) {
+        return false;
+      }
+      if (!globalThis.YT) {
+        return false;
+      }
+      createYouTubePlayerRef.current(node);
+      return true;
+    };
+
+    if (!tryCreate()) {
+      pollTimer = globalThis.setInterval(() => {
+        if (tryCreate() && pollTimer) {
+          globalThis.clearInterval(pollTimer);
+          pollTimer = null;
+        }
+      }, 250);
+      giveUpTimer = globalThis.setTimeout(() => {
+        if (pollTimer) globalThis.clearInterval(pollTimer);
+      }, 15000);
+    }
+
     return () => {
+      if (pollTimer) globalThis.clearInterval(pollTimer);
+      if (giveUpTimer) globalThis.clearTimeout(giveUpTimer);
+      if (youtubeReadyWatchdogRef.current) {
+        globalThis.clearTimeout(youtubeReadyWatchdogRef.current);
+        youtubeReadyWatchdogRef.current = null;
+      }
       if (youtubePollTimerRef.current) {
         globalThis.clearInterval(youtubePollTimerRef.current);
         youtubePollTimerRef.current = null;
       }
       const player = youtubePlayerRef.current;
-      if (player && youtubeVideoId) {
-        closeCurrentSegment(player.getCurrentTime(), player.getVideoUrl(), youtubeVideoId);
+      // Flush an open segment before teardown (SPA navigate-away / video-change backstop).
+      if (player && progressReference.current.isPlaying) {
+        try {
+          closeCurrentSegmentRef.current(player.getCurrentTime(), player.getVideoUrl(), youtubeVideoId);
+        } catch {
+          /* ignore read/close errors during teardown */
+        }
         progressReference.current.isPlaying = false;
       }
+      if (player?.destroy) {
+        try {
+          player.destroy();
+        } catch {
+          /* ignore */
+        }
+      }
+      youtubePlayerRef.current = null;
+      youtubePlayerCreatedRef.current = false;
+      youtubeNodeRef.current?.replaceChildren();
     };
-  }, [closeCurrentSegment, youtubeVideoId]);
+  }, [isYouTube, youtubeVideoId]);
+
+  React.useEffect(() => {
+    if (!userStorageScope || !canonicalVideoId) return;
+    const videoUrl = embedSrc || "";
+
+    const flushThreshold = () => {
+      if (progressReference.current.thresholdLogged || thresholdSendInFlightRef.current) return;
+      const totalVideoDurationInSeconds = progressReference.current.totalVideoDurationInSeconds;
+      if (!isValidNumber(totalVideoDurationInSeconds) || totalVideoDurationInSeconds <= 0) return;
+
+      const segments = [...progressReference.current.segments];
+      const openSegmentStart = progressReference.current.currentSegmentStart;
+      const openSegmentEnd = progressReference.current.lastKnownTime;
+      if (
+        progressReference.current.isPlaying &&
+        isValidNumber(openSegmentStart) &&
+        isValidNumber(openSegmentEnd) &&
+        openSegmentEnd > openSegmentStart
+      ) {
+        segments.push({ watchedSegmentStart: openSegmentStart, watchedSegmentEnd: openSegmentEnd });
+      }
+      const uniqueWatchedSeconds = getUniqueWatchedSeconds(mergeSegments(segments));
+      const watchPercent = getWatchPercent(uniqueWatchedSeconds, totalVideoDurationInSeconds);
+      if (watchPercent < VIDEO_WATCH_THRESHOLD) return;
+
+      const eventDetails = createEventDetails("VIDEO_60_PERCENT_WATCHED", videoUrl, canonicalVideoId, {
+        pageId,
+        videoDurationSeconds: totalVideoDurationInSeconds,
+        watchedSeconds: uniqueWatchedSeconds,
+        watchPercent,
+      });
+      dispatch({ type: ACTION_TYPE.LOG_EVENT, eventDetails });
+      if (sendVideoEngagementBeacon(eventDetails)) {
+        progressReference.current.thresholdLogged = true;
+        saveVideoProgress(userStorageScope, canonicalVideoId, progressReference.current);
+      }
+    };
+
+    const onPageHide = () => flushThreshold();
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "hidden") flushThreshold();
+    };
+
+    globalThis.addEventListener("pagehide", onPageHide);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
+      globalThis.removeEventListener("pagehide", onPageHide);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, [userStorageScope, canonicalVideoId, embedSrc, pageId, dispatch]);
+
+  // Wistia: official player API (E-v1.js / _wq). This is the primary tracking path —
+  // real play/pause/end events carry no payload and the postMessage protocol above is
+  // undocumented, so duration and time ticks are only reliable through the API handle.
+  React.useEffect(() => {
+    if (!isWistia || !wistiaVideoId) return;
+
+    let cancelled = false;
+    let boundVideo: WistiaVideoApi | null = null;
+    const boundHandlers: Array<[string, WistiaEventCallback]> = [];
+
+    const bindVideoEvent = (video: WistiaVideoApi, eventName: string, handler: WistiaEventCallback) => {
+      video.bind?.(eventName, handler);
+      boundHandlers.push([eventName, handler]);
+    };
+
+    const wistiaQueue = (globalThis._wq = globalThis._wq || []);
+    wistiaQueue.push({
+      id: wistiaVideoId,
+      onReady: (video: WistiaVideoApi) => {
+        if (cancelled || boundVideo) return;
+        boundVideo = video;
+        wistiaApiAttachedRef.current = true;
+
+        const readDuration = () => {
+          try {
+            const duration = video.duration?.();
+            if (isValidNumber(duration) && duration > 0) {
+              wistiaCallbacksRef.current.setTotalVideoDurationIfPresent(duration);
+            }
+          } catch {
+            /* ignore duration read errors */
+          }
+        };
+        readDuration();
+
+        const readCurrentTime = (): number => {
+          try {
+            const time = video.time?.();
+            return isValidNumber(time) ? time : progressReference.current.lastKnownTime ?? 0;
+          } catch {
+            return progressReference.current.lastKnownTime ?? 0;
+          }
+        };
+
+        bindVideoEvent(video, "play", () => {
+          readDuration();
+          const time = readCurrentTime();
+          const { embedSrc: videoUrl, startCurrentSegment, logPlayerEvent } = wistiaCallbacksRef.current;
+          progressReference.current.isPlaying = true;
+          startCurrentSegment(time);
+          logPlayerEvent("VIDEO_PLAY", videoUrl || "", wistiaVideoId, time);
+        });
+
+        bindVideoEvent(video, "pause", () => {
+          const time = readCurrentTime();
+          const { embedSrc: videoUrl, closeCurrentSegment, logPlayerEvent } = wistiaCallbacksRef.current;
+          progressReference.current.isPlaying = false;
+          closeCurrentSegment(time, videoUrl || "", wistiaVideoId);
+          progressReference.current.lastKnownTime = time;
+          logPlayerEvent("VIDEO_PAUSE", videoUrl || "", wistiaVideoId, time);
+        });
+
+        bindVideoEvent(video, "end", () => {
+          const time = readCurrentTime();
+          const { embedSrc: videoUrl, closeCurrentSegment, logPlayerEvent } = wistiaCallbacksRef.current;
+          progressReference.current.isPlaying = false;
+          closeCurrentSegment(time, videoUrl || "", wistiaVideoId);
+          progressReference.current.lastKnownTime = time;
+          logPlayerEvent("VIDEO_ENDED", videoUrl || "", wistiaVideoId);
+        });
+
+        bindVideoEvent(video, "timechange", (t: unknown) => {
+          if (!isValidNumber(t)) return;
+          if (progressReference.current.totalVideoDurationInSeconds === null) readDuration();
+          const { embedSrc: videoUrl, updatePlaybackProgress } = wistiaCallbacksRef.current;
+          updatePlaybackProgress(t, videoUrl || "", wistiaVideoId);
+        });
+      },
+    });
+
+    return () => {
+      cancelled = true;
+      wistiaApiAttachedRef.current = false;
+      if (boundVideo) {
+        for (const [eventName, handler] of boundHandlers) {
+          try {
+            boundVideo.unbind?.(eventName, handler);
+          } catch {
+            /* ignore unbind errors during teardown */
+          }
+        }
+      }
+    };
+  }, [isWistia, wistiaVideoId]);
 
   const detailsForPrintOut = <div className="only-print py-2 mb-4">{altTextToUse}</div>;
 
@@ -898,7 +1242,8 @@ export function IsaacVideo(props: IsaacVideoProps) {
             ) : (
               <iframe
                 ref={isWistia ? wistiaIframeRef : null}
-                className="mw-100"
+                // wistia_embed lets E-v1.js discover the iframe and expose the player API (_wq onReady)
+                className={isWistia ? "mw-100 wistia_embed" : "mw-100"}
                 title={altTextToUse}
                 src={embedSrc}
                 frameBorder="0"
