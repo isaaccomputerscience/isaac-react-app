@@ -48,6 +48,14 @@ export const Homepage = () => {
           </Container>
         </section>
 
+        <section id="why-choose-us" className="bg-white">
+          <div className="why-choose-us-section">
+            <Container className="pt-4 pb-5">
+              <h1 className="primary-heading">Why choose us</h1>
+            </Container>
+          </div>
+        </section>
+
         {!user?.loggedIn && (
           <section id="events" className="event-section">
             <div className="event-section-background-img">
