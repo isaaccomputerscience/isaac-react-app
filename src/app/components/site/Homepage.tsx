@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useAppSelector, selectors, isaacApi } from "../../state";
 import { Link } from "react-router-dom";
-import { Col, Container, Row } from "reactstrap";
+import { Button, Col, Container, Row } from "reactstrap";
 import { SITE_SUBJECT_TITLE } from "../../services";
 import { NewsCarousel } from "../elements/NewsCarousel";
 import { EventsCarousel } from "../elements/EventsCarousel";
@@ -52,6 +52,37 @@ export const Homepage = () => {
           <div className="why-choose-us-section">
             <Container className="pt-4 pb-5">
               <h1 className="primary-heading">Why choose us</h1>
+              <Row className="mt-4 align-items-start">
+                <Col lg={6} xs={12} className="pb-3 pb-lg-0">
+                  <img
+                    src="/assets/homepage-students-image.png"
+                    alt="Students learning computer science with Isaac"
+                    className="img-fluid"
+                    style={{ maxWidth: "100%", height: "auto" }}
+                  />
+                </Col>
+                <Col lg={6} xs={12} className="mt-4 mt-lg-0">
+                  <ul className="body-text mt-0">
+                    <li>Free computer science learning resources backed by experts</li>
+                    <li>Teachers save 2.8 hours a week on teaching and lesson planning when using Isaac</li>
+                    <li>Smooth progression for GCSE students to A level computer science</li>
+                    <li>Connect computer science to real-world application and careers</li>
+                    <li>Funded by the Department for Education</li>
+                  </ul>
+                  <Row className="mt-4">
+                    <Col xs={12} md={6} className="py-1">
+                      <Button size="lg" tag={Link} to="/pages/teacher_landing_page" color="secondary" block>
+                        Benefits for teachers
+                      </Button>
+                    </Col>
+                    <Col xs={12} md={6} className="py-1">
+                      <Button size="lg" tag={Link} to="/pages/student_landing_page" color="secondary" block>
+                        Benefits for students
+                      </Button>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
             </Container>
           </div>
         </section>
