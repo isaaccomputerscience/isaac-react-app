@@ -56,7 +56,7 @@ export const Homepage = () => {
                 <Col lg={6} xs={12} className="pb-3 pb-lg-0">
                   <img
                     src="/assets/homepage-students-image.png"
-                    alt="Students learning computer science with Isaac"
+                    alt="A teacher sat with students in a library, talking about content in a textbook in front of them."
                     className="img-fluid"
                     style={{ maxWidth: "100%", height: "auto" }}
                   />
@@ -71,12 +71,26 @@ export const Homepage = () => {
                   </ul>
                   <Row className="mt-4">
                     <Col xs={12} md={6} className="py-1">
-                      <Button size="lg" tag={Link} to="/pages/teacher_landing_page" color="secondary" block>
+                      <Button
+                        size="lg"
+                        tag={Link}
+                        to="/pages/teacher_landing_page"
+                        target="_blank"
+                        color="secondary"
+                        block
+                      >
                         Benefits for teachers
                       </Button>
                     </Col>
                     <Col xs={12} md={6} className="py-1">
-                      <Button size="lg" tag={Link} to="/pages/student_landing_page" color="secondary" block>
+                      <Button
+                        size="lg"
+                        tag={Link}
+                        to="/pages/student_landing_page"
+                        target="_blank"
+                        color="secondary"
+                        block
+                      >
                         Benefits for students
                       </Button>
                     </Col>
