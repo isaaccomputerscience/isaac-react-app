@@ -17,7 +17,7 @@ describe("Homepage", () => {
       screen.getByRole("img", {
         name: "A teacher sat with students in a library, talking about content in a textbook in front of them.",
       }),
-    ).toHaveAttribute("src", "/assets/homepage-students-image.png");
+    ).toHaveAttribute("src", "/assets/why-choose-us.png");
 
     const teacherLink = screen.getByRole("link", { name: /Benefits for teachers/i });
     const studentLink = screen.getByRole("link", { name: /Benefits for students/i });
