@@ -459,6 +459,63 @@ h2.h-title {
 
 .why-choose-us-section {
   background-color: white;
+
+  .why-choose-us-row {
+    @include media-breakpoint-up(lg) {
+      align-items: stretch;
+    }
+  }
+
+  .why-choose-us-copy {
+    display: flex;
+    flex-direction: column;
+
+    @include media-breakpoint-down(md) {
+      margin-top: 1.5rem;
+    }
+  }
+
+  .why-choose-us-intro {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    // Trim half-leading above caps so the line aligns with the image top
+    text-box: trim-start cap alphabetic;
+  }
+
+  .why-choose-us-list {
+    padding-left: 1.25rem;
+    margin-bottom: 0;
+  }
+
+  .why-choose-us-buttons {
+    display: flex;
+    flex-direction: column;
+    margin-top: auto;
+    padding-top: 1.5rem;
+
+    @include media-breakpoint-up(md) {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    .btn {
+      margin: 0;
+      width: 100%;
+
+      @include media-breakpoint-up(md) {
+        width: auto;
+        flex: 0 1 47%;
+      }
+
+      &:not(:last-child) {
+        margin-bottom: 1rem;
+
+        @include media-breakpoint-up(md) {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
 }
 
 // ----------------------------------------------

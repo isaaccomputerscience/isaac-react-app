@@ -52,7 +52,7 @@ export const Homepage = () => {
           <div className="why-choose-us-section pt-5 pb-4">
             <Container className="pt-4 pb-5">
               <h1 className="primary-heading mb-4">Why choose us</h1>
-              <Row className="pt-4 mb-2 align-items-start">
+              <Row className="pt-4 mb-2 why-choose-us-row">
                 <Col lg={6} xs={12} className="pb-3 pb-lg-0">
                   <img
                     src="/assets/why-choose-us.png"
@@ -61,7 +61,7 @@ export const Homepage = () => {
                   />
                 </Col>
                 <Col lg={6} xs={12} className="why-choose-us-copy">
-                  <p className="body-text mt-0 mb-3">Why should you choose Isaac Computer Science:</p>
+                  <p className="body-text why-choose-us-intro">Why should you choose Isaac Computer Science:</p>
                   <ul className="body-text mt-0 why-choose-us-list">
                     <li>Free computer science learning resources backed by experts</li>
                     <li>Teachers save 2.8 hours a week on teaching and lesson planning when using Isaac</li>
