@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Col, Row } from "reactstrap";
+import { Button } from "reactstrap";
 import { useHistory, useLocation } from "react-router-dom";
 import { persistence, KEY } from "../../../../services";
 
@@ -28,15 +28,13 @@ const CompetitionButton = ({ buttons }: CompetitionButtonProps) => {
   };
 
   return (
-    <Row>
+    <>
       {buttons.map(({ to, label }) => (
-        <Col xs={12} className="py-1" key={to}>
-          <Button size="lg" onClick={() => handleClick(to)} block className="primary-button text-light">
-            {label}
-          </Button>
-        </Col>
+        <Button key={to} size="lg" onClick={() => handleClick(to)} className="primary-button text-light">
+          {label}
+        </Button>
       ))}
-    </Row>
+    </>
   );
 };
 

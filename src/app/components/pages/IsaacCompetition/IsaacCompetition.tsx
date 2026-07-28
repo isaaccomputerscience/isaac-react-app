@@ -7,7 +7,9 @@ import "../../../../scss/cs/competition.scss";
 import Accordion from "./Accordion/Accordion";
 import InformationCard from "./CompetitionInformation/InformationCard";
 import CompetitionTimeline from "./CompetitionInformation/CompetitionTimeline";
-import EntryFormHandler from "./EntryForm/EntryFormHandler";
+import EntryFormHandler, { eoiButton } from "./EntryForm/EntryFormHandler";
+import CompetitionButton from "./Buttons/CompetitionButton";
+import CompetitionWrapper from "./CompetitionWrapper";
 import { liveQandASessionDate } from "./dateUtils";
 
 const { section1, section3, accordion } = content;
@@ -66,7 +68,7 @@ export const IsaacCompetition = () => {
       </Container>
       <section id="competition-headline-section">
         <Container className="pt-4 z1">
-          <Row>
+          <Row className="pb-5">
             <h1 className="primary-heading pl-3">National Computer Science Competition</h1>
             <Col xs={12} md={6} lg={8} className="pb-3">
               <p className="mt-4 body-text">{section1.header.section1}</p>
@@ -92,7 +94,13 @@ export const IsaacCompetition = () => {
                 </a>
                 {` ${section1.note.callToAction}`}
               </p>
-              <Row className="justify-content-left mt-4"></Row>
+              <Row className="justify-content-left mt-4">
+                <Col xs="auto">
+                  <CompetitionWrapper beforeCompetitionOpenContent={<CompetitionButton buttons={[eoiButton]} />}>
+                    {null}
+                  </CompetitionWrapper>
+                </Col>
+              </Row>
             </Col>
             <Col lg={4} md={6} className="order-lg-2 order-3 mt-4 mt-lg-0 pb-md-0">
               <img
