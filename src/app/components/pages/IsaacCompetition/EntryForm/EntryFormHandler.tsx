@@ -7,6 +7,12 @@ import { isStudent, isAdmin, isTeacher } from "../../../../services";
 import CompetitionWrapper from "../CompetitionWrapper";
 import { CLOSED_MESSAGE, STUDENT_MESSAGE, TEACHER_MESSAGE } from "../constants";
 
+// EOI button configuration - same as HomepageHighlight
+export const eoiButton = {
+  to: "https://forms.cloud.microsoft/e/K4GmaA3QEF",
+  label: "Express your interest",
+};
+
 const StudentMessage = () => (
   <Container>
     <Col className="d-flex flex-column align-items-start pb-4 pl-0" xs="auto">
@@ -36,12 +42,6 @@ interface EntryFormHandlerProps {
 const EntryFormHandler = ({ buttons, handleTermsClick }: EntryFormHandlerProps) => {
   const user = useAppSelector(selectors.user.orNull);
 
-  // EOI button configuration - same as HomepageHighlight
-  const eoiButton = {
-    to: "https://forms.office.com/e/23bsQuZfjm",
-    label: "Express your interest",
-  };
-
   const renderEntryForm = () => {
     // Revert this: Only ADMIN users can see and submit the competition form
     if (isAdmin(user) || isTeacher(user)) {
@@ -59,13 +59,8 @@ const EntryFormHandler = ({ buttons, handleTermsClick }: EntryFormHandlerProps) 
 
   return (
     <CompetitionWrapper
-      beforeCompetitionOpenContent={
-        <Container>
-          <Col className="d-flex flex-column align-items-start pb-4 pl-0" xs="auto">
-            <CompetitionButton buttons={[eoiButton]} />
-          </Col>
-        </Container>
-      }
+      // EOI button is rendered in the headline text column for correct alignment
+      beforeCompetitionOpenContent={null}
       closedCompetitionContent={
         <Container>
           <Col className="d-flex flex-column align-items-start pb-4 pl-0" xs="auto">

@@ -7,7 +7,7 @@ export default {
         "Calling all computer science fans! We are hosting a national competition to challenge students to imagine, design, and pitch a groundbreaking new product for the Internet of Everything (IOE).",
       ],
       section2: [
-        "The competition is a fantastic opportunity for students to apply their knowledge to real-world ideas. Entries open in November 2025 and last until the end of February 2026.",
+        "The competition is a fantastic opportunity for students to apply their knowledge to real-world ideas.",
       ],
     },
     note: {

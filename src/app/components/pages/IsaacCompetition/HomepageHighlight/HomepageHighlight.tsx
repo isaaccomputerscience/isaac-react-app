@@ -13,8 +13,12 @@ const HomepageHighlight = () => {
   const getBannerContent = () => {
     if (isBeforeCompetitionOpenDate(currentDate)) {
       return {
-        subtitle:
-          "Some users are experiencing issues when attempting questions on mobile devices, including iPads. Please use a computer for now if possible while we fix this. Thank you for your patience.",
+        title: "National Computer Science Competition 2026/27",
+        subtitle: "Opening October 2026",
+        button: {
+          to: "https://forms.cloud.microsoft/e/K4GmaA3QEFn",
+          label: "Be the first one to know",
+        },
       };
     } else if (isAfterCompetitionOpenDateAndBeforeCompetitionEndDate(currentDate)) {
       return {
