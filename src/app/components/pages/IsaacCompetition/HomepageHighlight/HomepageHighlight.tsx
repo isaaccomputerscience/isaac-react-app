@@ -22,8 +22,8 @@ const HomepageHighlight = () => {
       };
     } else if (isAfterCompetitionOpenDateAndBeforeCompetitionEndDate(currentDate)) {
       return {
-        title: "Entries now close on 28 February 2026",
-        subtitle: "National Computer Science Competition 2025/26",
+        title: "Entries are now open",
+        subtitle: "National Computer Science Competition 2026/27",
         button: {
           to: "/national-computer-science-competition",
           label: "Enter the competition",
@@ -32,9 +32,9 @@ const HomepageHighlight = () => {
       };
     } else if (isAfterCompetitionEndDateAndBeforeEntriesClosedBannerEndDate(currentDate)) {
       return {
-        title: "National Computer Science Competition 2025/26",
+        title: "National Computer Science Competition 2026/27",
         subtitle1: "Entries for this competition have now closed.",
-        subtitle2: "The finalists will be announced in March 2026",
+        subtitle2: "The finalists will be announced in May 2027",
         button: null,
         isClosedState: true, // Special flag for closed state styling
       };
@@ -64,8 +64,8 @@ const HomepageHighlight = () => {
 
     return (
       <>
-        <h1 className="homepage-highlight-title px-1">{bannerContent.title}</h1>
-        <h1 className="homepage-highlight-sub-title p-2">{bannerContent.subtitle}</h1>
+        <h1 className="homepage-highlight-title pb-3 pt-4">{bannerContent.title}</h1>
+        <h1 className="homepage-highlight-sub-title px-2">{bannerContent.subtitle}</h1>
       </>
     );
   };
