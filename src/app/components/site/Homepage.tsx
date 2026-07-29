@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useAppSelector, selectors, isaacApi } from "../../state";
 import { Link } from "react-router-dom";
-import { Col, Container, Row } from "reactstrap";
+import { Button, Col, Container, Row } from "reactstrap";
 import { SITE_SUBJECT_TITLE } from "../../services";
 import { NewsCarousel } from "../elements/NewsCarousel";
 import { EventsCarousel } from "../elements/EventsCarousel";
@@ -46,6 +46,55 @@ export const Homepage = () => {
           <Container className="pt-4 z1 pb-4">
             <Dashboard promoItem={teacherPromoItem} featuredNewsItem={featuredNewsItem} />
           </Container>
+        </section>
+
+        <section id="why-choose-us" className="bg-white">
+          <div className="why-choose-us-section pt-5 pb-4">
+            <Container className="pt-4 pb-5">
+              <h1 className="primary-heading mb-4">Why choose us</h1>
+              <Row className="pt-4 mb-2 why-choose-us-row">
+                <Col lg={6} xs={12} className="pb-3 pb-lg-0">
+                  <img
+                    src="/assets/why-choose-us.png"
+                    alt="A teacher sat with students in a library, talking about content in a textbook in front of them."
+                    className="img-fluid d-block"
+                  />
+                </Col>
+                <Col lg={6} xs={12} className="why-choose-us-copy">
+                  <p className="body-text why-choose-us-intro">Why should you choose Isaac Computer Science:</p>
+                  <ul className="body-text mt-0 why-choose-us-list">
+                    <li>Free computer science learning resources backed by experts</li>
+                    <li>Teachers save 2.8 hours a week on teaching and lesson planning when using Isaac</li>
+                    <li>Smooth progression for GCSE students to A level computer science</li>
+                    <li>Connect computer science to real-world application and careers</li>
+                    <li>Funded by the Department for Education</li>
+                  </ul>
+                  <div className="why-choose-us-buttons">
+                    <Button
+                      size="lg"
+                      tag={Link}
+                      to="/pages/teacher_landing_page"
+                      target="_blank"
+                      className="primary-button text-light"
+                      block
+                    >
+                      Benefits for teachers
+                    </Button>
+                    <Button
+                      size="lg"
+                      tag={Link}
+                      to="/pages/student_landing_page"
+                      target="_blank"
+                      className="primary-button text-light"
+                      block
+                    >
+                      Benefits for students
+                    </Button>
+                  </div>
+                </Col>
+              </Row>
+            </Container>
+          </div>
         </section>
 
         {!user?.loggedIn && (
