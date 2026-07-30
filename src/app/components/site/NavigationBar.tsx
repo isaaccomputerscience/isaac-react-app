@@ -70,7 +70,7 @@ export const NavigationBar = () => {
 
       <NavigationSection title="Events" svgIcon={<img src="/assets/Vector.svg" alt="Icon" className="svgIcon" />}>
         {isTeacherOrAbove(user) && <LinkItem to="/events?show_reservations_only=true">My event reservations</LinkItem>}
-        <LinkItem to="/events">Events</LinkItem>
+        <LinkItem to="/events">Live Events</LinkItem>
         <LinkItem to="/national-computer-science-competition">National competition</LinkItem>
         <LinkItem to="/safeguarding">Safeguarding</LinkItem>
       </NavigationSection>
