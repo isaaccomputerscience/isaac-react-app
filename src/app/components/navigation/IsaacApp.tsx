@@ -185,6 +185,18 @@ export const IsaacApp = () => {
                 from="/pages/booster_video_binary_conversion_and_addition"
                 to="/booster_video_binary_conversion_and_addition"
               />
+              <StaticPageRoute exact path="/booster_video_systems_architecture" ifUser={isLoggedIn} />
+              <Redirect
+                exact
+                from="/pages/booster_video_systems_architecture"
+                to="/booster_video_systems_architecture"
+              />
+              <StaticPageRoute exact path="/booster_video_boolean_logic" ifUser={isLoggedIn} />
+              <Redirect exact from="/pages/booster_video_boolean_logic" to="/booster_video_boolean_logic" />
+              <StaticPageRoute exact path="/booster_video_robust_programs" ifUser={isLoggedIn} />
+              <Redirect exact from="/pages/booster_video_robust_programs" to="/booster_video_robust_programs" />
+              <StaticPageRoute exact path="/on-demand-discovery-events" ifUser={isLoggedIn} />
+              <Redirect exact from="/pages/on-demand-discovery-events" to="/on-demand-discovery-events" />
               <TrackedRoute exact path="/pages/:pageId" component={Generic} />
               <TrackedRoute
                 exact
