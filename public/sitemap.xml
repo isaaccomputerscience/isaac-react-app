@@ -2,97 +2,121 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://isaaccomputerscience.org/</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/topics</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/topics/a_level</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/topics/gcse</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/booster_video_binary_conversion_and_addition</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://isaaccomputerscience.org/booster_video_boolean_logic</loc>
+    <lastmod>2026-08-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://isaaccomputerscience.org/booster_video_robust_programs</loc>
+    <lastmod>2026-08-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://isaaccomputerscience.org/booster_video_systems_architecture</loc>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/events</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/gcse_teaching_order</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://isaaccomputerscience.org/on-demand-discovery-events</loc>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/pages/computer_science_journeys_gallery</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/pages/gameboard-tutorial</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/pages/gcse-events-feb24</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/pages/hints-and-tips-teaching-gcse</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/pages/questionfinder</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/pages/tips-for-your-alevel-students</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/pages/top-tips-alevel</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/teacher_gcse_revision_page</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/teaching_order</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -418,12 +442,6 @@
   <url>
     <loc>https://isaaccomputerscience.org/concepts/data_dbs_dml</loc>
     <lastmod>2024-03-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://isaaccomputerscience.org/concepts/data_dbs_dql</loc>
-    <lastmod>2024-04-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -791,12 +809,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://isaaccomputerscience.org/concepts/dsa_datastruct_array</loc>
-    <lastmod>2024-04-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://isaaccomputerscience.org/concepts/dsa_datastruct_definitions</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
@@ -833,12 +845,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://isaaccomputerscience.org/concepts/dsa_datastruct_linked_list</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://isaaccomputerscience.org/concepts/dsa_datastruct_list</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
@@ -857,19 +863,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://isaaccomputerscience.org/concepts/dsa_datastruct_queue</loc>
-    <lastmod>2024-04-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://isaaccomputerscience.org/concepts/dsa_datastruct_record</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://isaaccomputerscience.org/concepts/dsa_datastruct_stack</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -1001,12 +995,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://isaaccomputerscience.org/concepts/dsa_toc_regex_fsm</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://isaaccomputerscience.org/concepts/dsa_toc_rpn</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
@@ -1124,12 +1112,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://isaaccomputerscience.org/concepts/net_hard_devices</loc>
-    <lastmod>2024-04-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://isaaccomputerscience.org/concepts/net_hard_wireless</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
@@ -1154,12 +1136,6 @@
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/concepts/net_internet_domain_name_system_g</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://isaaccomputerscience.org/concepts/net_internet_fundamentals</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -1289,12 +1265,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://isaaccomputerscience.org/concepts/net_sec_viruses</loc>
-    <lastmod>2024-04-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://isaaccomputerscience.org/concepts/prog_concepts_arithmetic</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
@@ -1309,12 +1279,6 @@
   <url>
     <loc>https://isaaccomputerscience.org/concepts/prog_concepts_good_practice</loc>
     <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://isaaccomputerscience.org/concepts/prog_concepts_input_output</loc>
-    <lastmod>2024-04-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -1404,12 +1368,6 @@
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/concepts/prog_cwk_evaluation_ocr</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://isaaccomputerscience.org/concepts/prog_cwk_introduction_aqa</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -1632,12 +1590,6 @@
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/concepts/prog_softeng_case_studies</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://isaaccomputerscience.org/concepts/prog_softeng_debug</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -1899,12 +1851,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://isaaccomputerscience.org/concepts/sys_bool_what_is_boolean_logic</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://isaaccomputerscience.org/concepts/sys_bool_write_expression</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
@@ -2078,13 +2024,13 @@
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/glossary</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/national-computer-science-competition</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -2209,11 +2155,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://isaaccomputerscience.org/questions/bt_crackers_02</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://isaaccomputerscience.org/questions/bt_crackers_03</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -2269,12 +2210,6 @@
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/questions/cyb_mal_g03</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://isaaccomputerscience.org/questions/cyb_mal_g04</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -2365,12 +2300,6 @@
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/questions/cyb_sec_g08</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://isaaccomputerscience.org/questions/cyb_sec_g09</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -2537,18 +2466,6 @@
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/questions/data_compr_07</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://isaaccomputerscience.org/questions/data_compr_08</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://isaaccomputerscience.org/questions/data_compr_08_v2</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -4218,12 +4135,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://isaaccomputerscience.org/questions/dsa_datastruct_09</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://isaaccomputerscience.org/questions/dsa_datastruct_10_aqa</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -4260,24 +4171,6 @@
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/questions/dsa_datastruct_15</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://isaaccomputerscience.org/questions/dsa_datastruct_16</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://isaaccomputerscience.org/questions/dsa_datastruct_17</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://isaaccomputerscience.org/questions/dsa_datastruct_18</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -4423,12 +4316,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://isaaccomputerscience.org/questions/dsa_datastruct_40</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://isaaccomputerscience.org/questions/dsa_datastruct_41</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
@@ -4502,12 +4389,6 @@
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/questions/dsa_datastruct_winter_01</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://isaaccomputerscience.org/questions/dsa_datastruct_winter_09</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -5062,18 +4943,6 @@
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/questions/gcse_bool_02</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://isaaccomputerscience.org/questions/gcse_bool_03</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://isaaccomputerscience.org/questions/gcse_bool_04</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -6747,12 +6616,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://isaaccomputerscience.org/questions/prog_gui_09</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://isaaccomputerscience.org/questions/prog_gui_10</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
@@ -6840,12 +6703,6 @@
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/questions/prog_oop_09</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://isaaccomputerscience.org/questions/prog_oop_10</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -7144,12 +7001,6 @@
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/questions/prog_softeng_ide_g03</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://isaaccomputerscience.org/questions/prog_softeng_ide_g04</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -7844,12 +7695,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://isaaccomputerscience.org/questions/sys_bool_10</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://isaaccomputerscience.org/questions/sys_bool_11</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
@@ -7857,12 +7702,6 @@
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/questions/sys_bool_13</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://isaaccomputerscience.org/questions/sys_bool_14</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -7905,12 +7744,6 @@
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/questions/sys_bool_21</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://isaaccomputerscience.org/questions/sys_bool_22</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -8019,18 +7852,6 @@
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/questions/sys_bool_40</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://isaaccomputerscience.org/questions/sys_bool_41</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://isaaccomputerscience.org/questions/sys_bool_42</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -8682,12 +8503,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://isaaccomputerscience.org/questions/sys_trans_07</loc>
-    <lastmod>2023-03-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://isaaccomputerscience.org/questions/sys_trans_08</loc>
     <lastmod>2023-03-01</lastmod>
     <changefreq>monthly</changefreq>
@@ -8778,37 +8593,37 @@
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/students</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/teachers</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/careers_in_computer_science</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/contact</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/about</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/gcse_programming_challenges</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -8820,13 +8635,19 @@
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/pages/2025_08_exam_results</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/pages/2025_10_competition_last_year</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://isaaccomputerscience.org/pages/2026_03_booster_events</loc>
+    <lastmod>2026-03-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -8848,49 +8669,44 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://isaaccomputerscience.org/pages/september_privacy_policy_update</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
     <loc>https://isaaccomputerscience.org/support</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/teachcomputing</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/accessibility</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/cookies</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/privacy</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/safeguarding</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/terms</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
