@@ -108,6 +108,11 @@ export const STATIC_ROUTES: SitemapRoute[] = [
   // Additional pages (added per ticket requirements)
   { path: "/pages/computer_science_journeys_gallery", priority: 0.8, changefreq: "monthly" },
   { path: "/booster_video_binary_conversion_and_addition", priority: 0.8, changefreq: "monthly" },
+  { path: "/booster_video_binary_conversion_and_addition", priority: 0.8, changefreq: "monthly" },
+  { path: "/booster_video_systems_architecture", priority: 0.8, changefreq: "monthly" },
+  { path: "/booster_video_boolean_logic", priority: 0.8, changefreq: "monthly" },
+  { path: "/booster_video_robust_programs", priority: 0.8, changefreq: "monthly" },
+  { path: "/on-demand-discovery-events", priority: 0.8, changefreq: "monthly" },
   { path: "/gcse_teaching_order", priority: 0.8, changefreq: "monthly" },
   { path: "/teaching_order", priority: 0.8, changefreq: "monthly" },
   { path: "/teacher_gcse_revision_page", priority: 0.8, changefreq: "monthly" },
