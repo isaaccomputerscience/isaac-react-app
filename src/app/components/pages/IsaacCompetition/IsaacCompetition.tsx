@@ -125,6 +125,7 @@ export const IsaacCompetition = () => {
               <InformationCard
                 title={section3.howItWorks.title}
                 content={section3.howItWorks.steps}
+                // description={section3.howItWorks.description}
                 className="competition-information-default-background"
                 onFaqClick={handleFaqClick}
               />
@@ -153,7 +154,8 @@ export const IsaacCompetition = () => {
             <Col xs={12} lg={6}>
               <InformationCard
                 title={section3.eligibility.title}
-                content={[section3.eligibility.description, section3.eligibility.requirements]}
+                content={section3.eligibility.joinList}
+                isList
                 className="competition-information-default-background"
               />
             </Col>
