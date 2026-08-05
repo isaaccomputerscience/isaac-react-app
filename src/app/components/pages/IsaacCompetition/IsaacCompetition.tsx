@@ -46,7 +46,6 @@ export const IsaacCompetition = () => {
     event.preventDefault();
     if (accordionRef.current) {
       accordionRef.current.scrollIntoView({ behavior: "smooth" });
-      setOpen("4");
     }
   };
 

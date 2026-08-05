@@ -23,12 +23,12 @@ export default {
       title: "How does it work?",
       steps: [
         "1. Students ask their teacher to get involved and work on their projects",
-        "2. Students create a project, record a video, and ask their teacher to submit it",
+        "2. Students create a project, record a video no longer than 5 minutes",
         "3. Teachers create (or use) a student group and submit projects on behalf of their students",
         {
-          text5: "Teachers, see our ",
-          link5: { text: "FAQ guide", href: "#" },
-          text6: " for help and how to enter.",
+          text5: "See our ",
+          link5: { text: "rules and support section", href: "#accordion" },
+          text6: " for everything you need to know before creating and submitting a project.",
         },
       ],
     },

@@ -21,41 +21,45 @@ const InformationCard = ({
   videoUrl,
   onFaqClick,
 }: InformationCardProps) => {
-  const renderStepWithLinks = (step: any, index: number) => (
-    <CardText key={index} className="competition-information-text">
-      {step.text}
-      {step.link1 && (
-        <a href={step.link1.href} target="_blank" rel="noopener noreferrer">
-          {step.link1.text}
-        </a>
-      )}
-      {step.text2}
-      {step.link2 && (
-        <a href={step.link2.href} target="_blank" rel="noopener noreferrer" style={{ color: "#1D70B8" }}>
-          {step.link2.text}
-        </a>
-      )}
-      {step.text3}
-      {step.link3 && (
-        <a href={step.link3.href} target="_blank" rel="noopener noreferrer">
-          {step.link3.text}
-        </a>
-      )}
-      {step.text4}
-      {step.text5}
-      {step.link5 && (
-        <a
-          href={step.link5.href}
-          target={step.link5.text === "FAQ guide" ? undefined : "_blank"}
-          rel={step.link5.text === "FAQ guide" ? undefined : "noopener noreferrer"}
-          onClick={step.link5.text === "FAQ guide" ? onFaqClick : undefined}
-        >
-          {step.link5.text}
-        </a>
-      )}
-      {step.text6}
-    </CardText>
-  );
+  const renderStepWithLinks = (step: any, index: number) => {
+    const isInPageLink = typeof step.link5?.href === "string" && step.link5.href.startsWith("#");
+
+    return (
+      <CardText key={index} className="competition-information-text">
+        {step.text}
+        {step.link1 && (
+          <a href={step.link1.href} target="_blank" rel="noopener noreferrer">
+            {step.link1.text}
+          </a>
+        )}
+        {step.text2}
+        {step.link2 && (
+          <a href={step.link2.href} target="_blank" rel="noopener noreferrer" style={{ color: "#1D70B8" }}>
+            {step.link2.text}
+          </a>
+        )}
+        {step.text3}
+        {step.link3 && (
+          <a href={step.link3.href} target="_blank" rel="noopener noreferrer">
+            {step.link3.text}
+          </a>
+        )}
+        {step.text4}
+        {step.text5}
+        {step.link5 && (
+          <a
+            href={step.link5.href}
+            target={isInPageLink ? undefined : "_blank"}
+            rel={isInPageLink ? undefined : "noopener noreferrer"}
+            onClick={isInPageLink ? onFaqClick : undefined}
+          >
+            {step.link5.text}
+          </a>
+        )}
+        {step.text6}
+      </CardText>
+    );
+  };
 
   return (
     <Card className={`h-100 ${className} competition-information-no-border`}>
