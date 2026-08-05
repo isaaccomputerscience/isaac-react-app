@@ -9,7 +9,7 @@ interface InformationCardProps {
   isList?: boolean;
   className?: string;
   videoUrl?: string;
-  onFaqClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
+  onRulesAndSupportClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }
 
 const InformationCard = ({
@@ -19,7 +19,7 @@ const InformationCard = ({
   isList = false,
   className = "",
   videoUrl,
-  onFaqClick,
+  onRulesAndSupportClick,
 }: InformationCardProps) => {
   const renderStepWithLinks = (step: any, index: number) => {
     const isInPageLink = typeof step.link5?.href === "string" && step.link5.href.startsWith("#");
@@ -51,7 +51,7 @@ const InformationCard = ({
             href={step.link5.href}
             target={isInPageLink ? undefined : "_blank"}
             rel={isInPageLink ? undefined : "noopener noreferrer"}
-            onClick={isInPageLink ? onFaqClick : undefined}
+            onClick={isInPageLink ? onRulesAndSupportClick : undefined}
           >
             {step.link5.text}
           </a>

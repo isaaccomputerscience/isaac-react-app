@@ -42,7 +42,7 @@ export const IsaacCompetition = () => {
     }
   };
 
-  const handleFaqClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+  const handleRulesAndSupportClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
     if (accordionRef.current) {
       accordionRef.current.scrollIntoView({ behavior: "smooth" });
@@ -124,9 +124,8 @@ export const IsaacCompetition = () => {
               <InformationCard
                 title={section3.howItWorks.title}
                 content={section3.howItWorks.steps}
-                // description={section3.howItWorks.description}
                 className="competition-information-default-background"
-                onFaqClick={handleFaqClick}
+                onRulesAndSupportClick={handleRulesAndSupportClick}
               />
             </Col>
             {liveQandASessionDate > new Date() ? (
