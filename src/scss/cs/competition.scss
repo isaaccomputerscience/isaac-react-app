@@ -15,6 +15,11 @@
 }
 
 .accordion {
+  &-title {
+    color: #120540;
+    font-size: 24px;
+    font-weight: 500;
+  }
   &-button {
     background-color: white;
     color: #130019;

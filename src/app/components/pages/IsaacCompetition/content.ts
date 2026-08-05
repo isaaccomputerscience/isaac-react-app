@@ -78,6 +78,7 @@ export default {
     },
   },
   accordion: {
+    title: "Rules and support",
     internetOfEverything: {
       title: "What is the Internet of Everything?",
       section: [

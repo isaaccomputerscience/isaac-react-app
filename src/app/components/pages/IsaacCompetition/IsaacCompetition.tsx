@@ -179,7 +179,12 @@ export const IsaacCompetition = () => {
           <Row className="py-4">
             <Col>
               <div ref={accordionRef}>
-                <Accordion sections={accordionSections} open={open} setOpenState={setOpenState} />
+                <Accordion
+                  title={accordion.title}
+                  sections={accordionSections}
+                  open={open}
+                  setOpenState={setOpenState}
+                />
               </div>
             </Col>
           </Row>
