@@ -42,8 +42,7 @@ export default {
     },
     qanda: {
       title: "Q&A - Everything you need to know",
-      description:
-        "Learn about the competition essentials to get started.<br>This Q&A session covers key dates, entry requirements, and details about the final event at the inspiring <br> Innovation Fest! ",
+      description: "",
       videoUrl: "p04Ve9dM3oA",
     },
 
@@ -57,7 +56,7 @@ export default {
     },
     prizes: {
       title: "🏆 The prizes",
-      description: "As well as the glory of being a IOE innovator, we also have prizes available, which may include:",
+      description: "",
       prizeList: [
         "Trophies for the winners",
         "£50 Amazon gift vouchers for the winners",
@@ -68,7 +67,7 @@ export default {
     timeline: {
       title: "Competition Timeline",
       content:
-        "Save the 2025/26 dates in your calendar and plan time for you or your team to develop your IoE idea before applications close.",
+        "Save the 2026/27 dates in your calendar and plan time for your team to develop your idea before applications close. The final event will take place at the National STEM Learning Centre in York.",
       entries: [
         { event: "Entries open", date: "October 2026" },
         { event: "Entries close", date: "31 March 2027" },

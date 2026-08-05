@@ -163,7 +163,7 @@ export const IsaacCompetition = () => {
                 description={section3.prizes.description}
                 content={section3.prizes.prizeList}
                 isList
-                className="competition-information-prizes-background prizesCard"
+                className="competition-information-prizes-background"
               />
             </Col>
           </Row>
