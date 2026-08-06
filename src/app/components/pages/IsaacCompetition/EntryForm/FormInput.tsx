@@ -19,6 +19,7 @@ interface FormInputProps {
   setSelectedGroup?: (group: AppGroup | null) => void;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   tooltipMessage?: string;
+  rows?: number;
 }
 
 const FormInput = ({
@@ -36,6 +37,7 @@ const FormInput = ({
   setSelectedGroup,
   onChange,
   tooltipMessage,
+  rows,
 }: FormInputProps) => {
   return (
     <FormGroup>
@@ -85,6 +87,7 @@ const FormInput = ({
           value={value}
           placeholder={placeholder}
           onChange={onChange}
+          rows={rows}
           className={id === "projectTitle" || id === "projectLink" ? "white-bg" : undefined}
           autoComplete={id === "projectTitle" || id === "projectLink" ? "off" : undefined}
         />
