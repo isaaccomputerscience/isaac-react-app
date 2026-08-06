@@ -383,7 +383,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                   rows={4}
                   className="mb-2"
                 />
-                <div>Characters left: {250 - projectDescription.length} </div>
+                <div className="mb-3">Characters left: {250 - projectDescription.length} </div>
               </Col>
             </Row>
 
