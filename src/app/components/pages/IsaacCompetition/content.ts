@@ -23,7 +23,7 @@ export default {
       title: "How does it work?",
       steps: [
         "1. Students ask their teacher to get involved and work on their projects",
-        "2. Students create a project, record a video no longer than 5 minutes",
+        "2. Students create a project and record a video no longer than 5 minutes",
         "3. Teachers create (or use) a student group and submit projects on behalf of their students",
         {
           text5: "See our ",
