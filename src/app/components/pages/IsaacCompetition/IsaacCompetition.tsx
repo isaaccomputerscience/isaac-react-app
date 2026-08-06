@@ -42,11 +42,10 @@ export const IsaacCompetition = () => {
     }
   };
 
-  const handleFaqClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+  const handleRulesAndSupportClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
     if (accordionRef.current) {
       accordionRef.current.scrollIntoView({ behavior: "smooth" });
-      setOpen("4");
     }
   };
 
@@ -126,7 +125,7 @@ export const IsaacCompetition = () => {
                 title={section3.howItWorks.title}
                 content={section3.howItWorks.steps}
                 className="competition-information-default-background"
-                onFaqClick={handleFaqClick}
+                onRulesAndSupportClick={handleRulesAndSupportClick}
               />
             </Col>
             {liveQandASessionDate > new Date() ? (
@@ -153,7 +152,8 @@ export const IsaacCompetition = () => {
             <Col xs={12} lg={6}>
               <InformationCard
                 title={section3.eligibility.title}
-                content={[section3.eligibility.description, section3.eligibility.requirements]}
+                content={section3.eligibility.joinList}
+                isList
                 className="competition-information-default-background"
               />
             </Col>
@@ -163,7 +163,7 @@ export const IsaacCompetition = () => {
                 description={section3.prizes.description}
                 content={section3.prizes.prizeList}
                 isList
-                className="competition-information-prizes-background prizesCard"
+                className="competition-information-prizes-background"
               />
             </Col>
           </Row>
@@ -179,7 +179,12 @@ export const IsaacCompetition = () => {
           <Row className="py-4">
             <Col>
               <div ref={accordionRef}>
-                <Accordion sections={accordionSections} open={open} setOpenState={setOpenState} />
+                <Accordion
+                  title={accordion.title}
+                  sections={accordionSections}
+                  open={open}
+                  setOpenState={setOpenState}
+                />
               </div>
             </Col>
           </Row>

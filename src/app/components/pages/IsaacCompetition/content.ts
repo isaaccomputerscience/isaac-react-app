@@ -1,5 +1,5 @@
-import { liveQandASessionDate } from "./dateUtils";
-const isBeforeQandALiveSession = liveQandASessionDate > new Date();
+// import { liveQandASessionDate } from "./dateUtils";
+// const isBeforeQandALiveSession = liveQandASessionDate > new Date();
 export default {
   section1: {
     header: {
@@ -22,28 +22,13 @@ export default {
     howItWorks: {
       title: "How does it work?",
       steps: [
-        "1. Students ask their teacher to get involved and log in or create an account",
+        "1. Students ask their teacher to get involved and work on their projects",
+        "2. Students create a project, record a video no longer than 5 minutes",
+        "3. Teachers create (or use) a student group and submit projects on behalf of their students",
         {
-          ...(isBeforeQandALiveSession ? { text: "2. Join our " } : { text: "2. Watch the Q&A session recording" }),
-          ...(isBeforeQandALiveSession && {
-            link1: {
-              text: "live Q&A session",
-              href: "https://isaaccomputerscience.org/events/20251113_national_competition_q_and_a",
-            },
-          }),
-          text2: " and boost skills with ",
-          link2: { text: "Boosters", href: "https://isaaccomputerscience.org/events" },
-          text3: " and ",
-          link3: { text: "Gameboards", href: "https://isaaccomputerscience.org/gameboards/new" },
-          text4: " (optional)",
-        },
-        "3. Students create a project, record a video, and ask their teacher to submit it",
-        "4. Teachers create (or use) a student group and submit the entry form with a cloud storage link to the project",
-        "5. Shortlisted finalists will be invited to Birmingham in May 2026!",
-        {
-          text5: "Teachers, see our ",
-          link5: { text: "FAQ guide", href: "#" },
-          text6: " for help and how to enter.",
+          text5: "See our ",
+          link5: { text: "rules and support section", href: "#accordion" },
+          text6: " for everything you need to know before creating and submitting a project.",
         },
       ],
     },
@@ -57,25 +42,24 @@ export default {
     },
     qanda: {
       title: "Q&A - Everything you need to know",
-      description:
-        "Learn about the competition essentials to get started.<br>This Q&A session covers key dates, entry requirements, and details about the final event at the inspiring <br> Innovation Fest! ",
+      description: "",
       videoUrl: "p04Ve9dM3oA",
     },
 
     eligibility: {
       title: "Who can join?",
-      description:
-        "Groups of up to 4 students are able to join in! We will also accept individual entries with teacher support.",
-      requirements:
-        "Eligible participants must be in Year 9, 10, or 11 during the 2025/2026 academic year and attend a state-funded school in England; private, independent, and home-educated students are not eligible.",
+      joinList: [
+        "Teams of 2-4 students and individual entries",
+        "Must be in Year 9, 10, or 11 during the 2026/2027 academic year",
+        "Attend a state-funded school in England; private, independent, and home-educated students are not eligible",
+      ],
     },
     prizes: {
       title: "🏆 The prizes",
-      description: "As well as the glory of being a IOE innovator, we also have prizes available, which may include:",
+      description: "",
       prizeList: [
         "Trophies for the winners",
         "£50 Amazon gift vouchers for the winners",
-        "SOLIDWORKS CAD software licences for all finalists",
         "An exclusive experience day hosted by a partner organisation for the winners",
         "Isaac Computer Science and partner merchandise for all finalists",
       ],
@@ -83,16 +67,17 @@ export default {
     timeline: {
       title: "Competition Timeline",
       content:
-        "Save the 2025/26 dates in your calendar and plan time for you or your team to develop your IoE idea before applications close.",
+        "Save the 2026/27 dates in your calendar and plan time for your team to develop your idea before applications close. The final event will take place at the National STEM Learning Centre in York.",
       entries: [
-        { event: "Entries open", date: "November 2025" },
-        { event: "Entries close", date: "28 February 2026" },
-        { event: "Finalists selected", date: "March 2026" },
-        { event: "The final", date: "18 May 2026" },
+        { event: "Entries open", date: "October 2026" },
+        { event: "Entries close", date: "31 March 2027" },
+        { event: "Finalists selected", date: "May 2027" },
+        { event: "The final", date: "June 2027" },
       ],
     },
   },
   accordion: {
+    title: "Rules and support",
     internetOfEverything: {
       title: "What is the Internet of Everything?",
       section: [
