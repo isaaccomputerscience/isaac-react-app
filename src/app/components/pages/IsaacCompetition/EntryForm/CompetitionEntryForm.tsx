@@ -376,11 +376,14 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                   id="projectDescription"
                   required
                   disabled={false}
+                  maxLength={250}
                   value={projectDescription}
                   onChange={(e) => setProjectDescription(e.target.value)}
                   placeholder="Write a brief description of the project"
                   rows={4}
+                  className="mb-2"
                 />
+                <div>Characters left: {250 - projectDescription.length} </div>
               </Col>
             </Row>
 
