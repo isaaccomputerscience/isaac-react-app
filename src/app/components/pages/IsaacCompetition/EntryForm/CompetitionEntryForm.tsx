@@ -19,6 +19,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
   const [projectTitle, setProjectTitle] = useState("");
   const [projectLink, setProjectLink] = useState("");
+  const [projectDescription, setProjectDescription] = useState("");
   const [submissionAttempted, setSubmissionAttempted] = useState(false);
   const [isLoadingMembers, setIsLoadingMembers] = useState(false);
   const activeGroups = useActiveGroups();
@@ -367,6 +368,22 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                   placeholder="Add a link to a project saved in the cloud (e.g., Google Drive, Dropbox)"
                   tooltipMessage="Upload your project to cloud storage (e.g., Google Drive, OneDrive, Dropbox) and paste the share link here. Set the link so that 'Anyone with the link can view'. If that's not possible, grant access to contact@isaaccomputerscience.org."
                 />
+              </Col>
+              <Col lg={6}>
+                <FormInput
+                  label="Project description (max. 250 characters)"
+                  type="textarea"
+                  id="projectDescription"
+                  required
+                  disabled={false}
+                  maxLength={250}
+                  value={projectDescription}
+                  onChange={(e) => setProjectDescription(e.target.value)}
+                  placeholder="Write a brief description of the project"
+                  rows={4}
+                  className="mb-2"
+                />
+                <div className="mb-3">Characters left: {250 - projectDescription.length} </div>
               </Col>
             </Row>
 

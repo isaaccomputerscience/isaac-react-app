@@ -19,6 +19,9 @@ interface FormInputProps {
   setSelectedGroup?: (group: AppGroup | null) => void;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   tooltipMessage?: string;
+  rows?: number;
+  maxLength?: number;
+  className?: string;
 }
 
 const FormInput = ({
@@ -36,9 +39,12 @@ const FormInput = ({
   setSelectedGroup,
   onChange,
   tooltipMessage,
+  rows,
+  maxLength,
+  className,
 }: FormInputProps) => {
   return (
-    <FormGroup>
+    <FormGroup className={className}>
       <Label className="entry-form-sub-title">
         {label} {required && <span className="entry-form-asterisk">*</span>}
         {tooltipMessage && <CustomTooltip id={`${id}-tooltip`} message={tooltipMessage} />}
@@ -85,6 +91,8 @@ const FormInput = ({
           value={value}
           placeholder={placeholder}
           onChange={onChange}
+          rows={rows}
+          maxLength={maxLength}
           className={id === "projectTitle" || id === "projectLink" ? "white-bg" : undefined}
           autoComplete={id === "projectTitle" || id === "projectLink" ? "off" : undefined}
         />
