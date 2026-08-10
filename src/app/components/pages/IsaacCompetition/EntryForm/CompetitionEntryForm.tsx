@@ -607,28 +607,6 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                       }),
                     }}
                   />
-                  {showNoMembersWarning && (
-                    <div className="entry-form-validation-tooltip" style={{ marginTop: "12px" }}>
-                      <div className="tooltip-content">
-                        <div className="tooltip-arrow"></div>
-                        <img src="/assets/warning_icon.svg" alt="no members found error" />
-                        <div className="tooltip-text" style={{ color: "#000" }}>
-                          No students found in the selected group. To add students go to the{" "}
-                          <a href="/groups" style={{ color: "#1D70B8", textDecoration: "underline" }}>
-                            Manage groups page
-                          </a>{" "}
-                          and invite them using a URL or authentication code. For guidance, see our{" "}
-                          <a
-                            href="https://isaaccomputerscience.org/support/teacher/assignments#invite_students"
-                            style={{ color: "#1D70B8", textDecoration: "underline" }}
-                          >
-                            FAQ for teachers
-                          </a>
-                          .
-                        </div>
-                      </div>
-                    </div>
-                  )}
                 </FormGroup>
               </Col>
             </Row>
