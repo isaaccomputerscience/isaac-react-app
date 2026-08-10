@@ -38,15 +38,15 @@
 }
 
 .manage-group-link {
-  color: #1D70B8;
+  color: #1d70b8;
   text-decoration: underline;
   &:focus {
     outline: none;
   }
 }
 
-.competition-information-text a{
-  color: #1D70B8;
+.competition-information-text a {
+  color: #1d70b8;
   text-decoration: none;
   &:hover {
     text-decoration: underline;
@@ -73,7 +73,8 @@
 
   &-prizes-background {
     background-color: #ffdf80;
-    strong, b {
+    strong,
+    b {
       font-weight: normal !important;
     }
 
@@ -180,6 +181,10 @@
 .entry-form {
   &-section {
     background-color: #ffdf80;
+    input::placeholder,
+    textarea::placeholder {
+      color: hsl(0, 0%, 50%) !important; // match react-select placeholder
+    }
   }
 
   &-background-img {
@@ -207,7 +212,7 @@
   }
 
   &-button {
-    background-color:  #FF248C !important;
+    background-color: #ff248c !important;
     color: #212529 !important;
     border: none !important;
     width: auto;
@@ -222,11 +227,11 @@
     @media (min-width: 1024px) {
       min-width: 500px;
     }
-    
+
     &:disabled {
       opacity: 1 !important;
-      background-color: #FF89C1 !important;
-      color: #495057 !important;
+      background-color: #ff89c1 !important;
+      color: #554759 !important;
     }
   }
 
@@ -234,15 +239,14 @@
     background-color: #d60265;
   }
 
-  &-asterisk{
+  &-asterisk {
     color: red;
   }
 
-  &-validation-tooltip { 
+  &-validation-tooltip {
     position: relative;
     top: -5px;
-    
-    
+
     .tooltip-content {
       position: relative;
       background: white;
@@ -259,7 +263,7 @@
     &-centered .tooltip-content {
       align-items: center;
     }
-    
+
     .tooltip-arrow {
       position: absolute;
       top: -6px;
@@ -269,9 +273,9 @@
       border-left: 6px solid transparent;
       border-right: 6px solid transparent;
       border-bottom: 6px solid #e0e0e0;
-      
+
       &::after {
-        content: '';
+        content: "";
         position: absolute;
         top: 1px;
         left: -5px;
@@ -282,18 +286,18 @@
         border-bottom: 5px solid white;
       }
     }
-    
+
     .tooltip-text {
       flex: 1;
       font-family: "roboto", Roboto, sans-serif;
       color: #dc3545;
       font-size: 14px;
       line-height: 1.4;
-      
+
       a {
         color: #dc3545;
         text-decoration: underline;
-        
+
         &:hover {
           text-decoration: none;
         }
@@ -310,7 +314,7 @@ ul .competition-information-text {
 }
 
 .tooltip-inner {
-  max-width: 300px; 
+  max-width: 300px;
   word-wrap: break-word;
   white-space: normal;
   text-align: left;
