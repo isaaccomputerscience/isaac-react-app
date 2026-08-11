@@ -158,7 +158,7 @@ export default {
       title: "Available support and resources",
       section: [
         "To support your journey in designing Internet of Everything (IoE) devices, we offer a selection of valuable resources. These materials cover the fundamental aspects required for successful device/product development, offering insights into hardware, connectivity, security, and the broader implications of technology.",
-        "<strong>Key topics and resources:</strong>",
+        "<strong>Key topics and resources on Isaac Computer Science:</strong>",
         [
           "<a href='https://isaaccomputerscience.org/concepts/sys_arch_embed_sys'>Embedded Systems</a> – Explore the principles and applications of embedded systems, which are crucial for IoE device functionality.",
           "<a href='https://isaaccomputerscience.org/concepts/sys_arch_processor'>The processor</a> – Understand the role of processors in managing device operations and processing data efficiently.",
@@ -169,10 +169,13 @@ export default {
           "<a href='https://isaaccomputerscience.org/topics/legislation'>Legislation</a> – Review the legal considerations and regulations impacting IoE technologies.",
           "<a href='https://isaaccomputerscience.org/topics/impacts_of_tech'>Impacts of technology</a> – Reflect on the social, economic, and environmental impacts of technological advancements in the IoE sector.",
         ],
-        "<strong>Learning opportunities</strong>",
-        "Cisco and STEM Learning present a free, self-paced course <a href='https://www.netacad.com/courses/introduction-iot?courseLang=en-US&instance_id=37015267-e958-447e-9dfb-853590cc67e1'>‘Introduction to IoT and Digital Transformation’</a>. This course serves as an excellent starting point to gain foundational knowledge about the Internet of Things and the Internet of Everything.",
-        "<strong>Events and further exploration</strong>",
-        "To further enhance your subject knowledge and explore career pathways in computer science, we encourage you to participate in our live booster sessions and discovery events. Find more details and register <a href='https://isaaccomputerscience.org/events'>here</a>.",
+        "<strong>Learning opportunities:</strong>",
+        [
+          "<strong>Computer Science sessions:</strong> Check out our live booster events <a href='https://isaaccomputerscience.org/events'>here</a> to further enhance your subject knowledge.",
+          "<strong>Cisco and STEM Learning</strong>  present a free, self-paced course <a href='https://www.netacad.com/courses/introduction-iot?courseLang=en-US&instance_id=37015267-e958-447e-9dfb-853590cc67e1'>‘Introduction to IoT and Digital Transformation’</a>. This course serves as an excellent starting point to gain foundational knowledge about the Internet of Things and the Internet of Everything.",
+          "<strong>Online resources:</strong> Explore websites and articles on IoE technology, design thinking, and teamwork strategies.",
+          "<strong>Teacher support:</strong> Work closely with your teacher to guide your project and provide insights.",
+        ],
       ],
     },
 
