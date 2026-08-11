@@ -102,7 +102,7 @@ export default {
         "<strong>Video content requirements:</strong>",
         [
           "<strong>Introduction:</strong> Introduce yourself or your team using the first names only and state the title of your project. Be creative and think about how you can make your introduction stand out!",
-          "<strong>Overview of the project:</strong> Explain the global problem your IoE device addresses. Give a short summary of your project and its purpose.",
+          "<strong>Overview of the project:</strong> Explain the global problem your Internet of Everything (IoE) device addresses. Give a short summary of your project and its purpose.",
           "<strong>Impact:</strong> Describe how your IoE device could improve lives globally. Include any benefits for people, communities, or the environment.",
           "<strong>Device description:</strong> Show the design or prototype of your device – it doesn’t have to be perfect or finished! Explain its features, functions, and how it works.",
           "Teamwork or individual approach: <ul><li><strong>If it's a group project:</strong> Explain how you worked together, your collaboration skills, and methods used.</li><li><strong>If it's an individual project:</strong> Describe your approach, how you solved problems, and how you managed the project yourself.</li></ul>",
@@ -117,8 +117,8 @@ export default {
           "Clear audio and video with good lighting.",
           "Recorded in one of the accepted formats such as MP4, MOV, AVI.",
           "Does not include inappropriate content, copyrighted music, or videos.",
-          "If using a PowerPoint presentation for the video, a student(s) should record a voiceover.",
-          "Name your file with your project name and entry title. For example: SmartLab_CompetitionEntry.mp4.",
+          "If using a PowerPoint presentation for the video, a student(s) should record a voiceover. Video with AI-generated audio will be disqualified.",
+          "Name your file with your project name. For example: Smart_Lab_Competition_Entry.mp4.",
           "The video and any additional supporting materials must be uploaded to a cloud storage folder (e.g., Google Drive, Dropbox) ensuring that it is accessible by the Organiser for the duration of the Competition.",
         ],
         "<strong>Supporting Documents</strong>",
@@ -126,20 +126,8 @@ export default {
           "While not mandatory, supporting documents can enhance your submission.",
           "Consider including:<ul><li>Diagrams or sketches of your device.</li><li>A brief written summary of your project.</li><li>Evidence of research or data that supports your concept.</li><li>Reflections on collaboration and teamwork.</li></ul>",
         ],
-        "<strong>Tips for Success</strong>",
-        [
-          "<strong>Identify a Global Challenge:</strong> Consider issues like climate change, health crises, education gaps, or social isolation.",
-          "<strong>Innovative Design:</strong> Think creatively about how your device can uniquely address the problem.",
-          "<strong>Collaboration Skills:</strong> Highlight how you worked together as a team, including communication, conflict resolution, and decision-making processes.",
-          "<strong>Practice Your Presentation:</strong> Rehearse your video to ensure clarity and confidence.",
-        ],
-        "<strong>Resources:</strong>",
-        [
-          "<strong>Workshops:</strong> Attend any available workshops or information sessions to help refine your ideas. Check out our live booster events <a href='https://isaaccomputerscience.org/events'>here</a>.",
-          "<strong>Online Resources:</strong> Explore websites and articles on IoE technology, design thinking, and teamwork strategies.",
-          "<strong>Teacher Support:</strong> Work closely with your teacher to guide your project and provide insights.",
-        ],
-        "If you have any questions or run into problems, contact <a href='https://isaaccomputerscience.org/contact'>here</a>. Good luck — we can’t wait to see your video!",
+
+        "If you have any questions or run into problems, contact <a href='https://isaaccomputerscience.org/contact'>here</a>.",
       ],
     },
     // projectIdeas: {
