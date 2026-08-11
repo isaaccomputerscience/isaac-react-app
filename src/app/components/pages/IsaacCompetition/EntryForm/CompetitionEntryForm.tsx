@@ -20,6 +20,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
   const [projectTitle, setProjectTitle] = useState("");
   const [projectLink, setProjectLink] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
+  const [selectedYearGroup, setSelectedYearGroup] = useState<string | null>(null);
   const [submissionAttempted, setSubmissionAttempted] = useState(false);
   const [isLoadingMembers, setIsLoadingMembers] = useState(false);
   const activeGroups = useActiveGroups();
@@ -556,6 +557,56 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                       </div>
                     </div>
                   )}
+                </FormGroup>
+              </Col>
+              <Col lg={6}>
+                <FormGroup>
+                  <Label className="entry-form-sub-title">
+                    Year group of selected student(s) <span className="entry-form-asterisk">*</span>
+                    <CustomTooltip
+                      id="year-group-selection-tooltip"
+                      message="Select the year group of the student(s) you're entering. To be eligible for the competition, student(s) must be in Year 9, 10, or 11 during the 2026/27 academic year."
+                    />
+                  </Label>
+                  <Select
+                    inputId="year-group-select"
+                    required
+                    isClearable
+                    placeholder="Choose the year group your student(s) are in"
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    value={
+                      selectedYearGroup
+                        ? {
+                            value: selectedYearGroup,
+                            label: `Year ${selectedYearGroup}`,
+                          }
+                        : null
+                    }
+                    onChange={(option) => setSelectedYearGroup(option?.value ?? null)}
+                    options={[
+                      { value: "9", label: "Year 9" },
+                      { value: "10", label: "Year 10" },
+                      { value: "11", label: "Year 11" },
+                    ]}
+                    closeMenuOnSelect={false}
+                    maxMenuHeight={200}
+                    isLoading={isLoadingMembers}
+                    styles={{
+                      control: (provided) => ({
+                        ...provided,
+                        border: "1px solid #ced4da",
+                        borderRadius: "0.375rem",
+                        minHeight: "38px",
+                        backgroundColor:
+                          !selectedGroup || isLoadingMembers || !selectedGroup?.members?.length ? "#f8f9fa" : "white",
+                      }),
+                      menu: (provided) => ({
+                        ...provided,
+                        zIndex: 9998,
+                      }),
+                    }}
+                  />
                 </FormGroup>
               </Col>
             </Row>

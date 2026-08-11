@@ -168,6 +168,64 @@ describe("CompetitionEntryForm", () => {
 
       expect(projectLinkInput).toHaveValue("https://example.com");
     });
+
+    it("should update project description when user enters a value in this field", async () => {
+      const user = userEvent.setup();
+      setupTest();
+
+      const projectDescriptionInput = screen.getByPlaceholderText("Write a brief description of the project");
+      await user.type(projectDescriptionInput, "A short project summary");
+
+      expect(projectDescriptionInput).toHaveValue("A short project summary");
+    });
+
+    it("should show characters left counter for project description", async () => {
+      const user = userEvent.setup();
+      setupTest();
+
+      expect(screen.getByText(/Characters left: 250/)).toBeInTheDocument();
+
+      const projectDescriptionInput = screen.getByPlaceholderText("Write a brief description of the project");
+      await user.type(projectDescriptionInput, "Hello");
+
+      expect(screen.getByText(/Characters left: 245/)).toBeInTheDocument();
+    });
+
+    it("should enforce max length of 250 characters on project description", () => {
+      setupTest();
+
+      const projectDescriptionInput = screen.getByPlaceholderText("Write a brief description of the project");
+      expect(projectDescriptionInput).toHaveAttribute("maxLength", "250");
+    });
+  });
+
+  describe("Year group selection", () => {
+    it("should show year group placeholder", () => {
+      setupTest();
+
+      expect(screen.getByText("Choose the year group your student(s) are in")).toBeInTheDocument();
+    });
+
+    it("should show Year 9, 10, and 11 options", async () => {
+      const user = userEvent.setup();
+      setupTest();
+
+      await user.click(screen.getByText("Choose the year group your student(s) are in"));
+
+      expect(await screen.findByText("Year 9")).toBeInTheDocument();
+      expect(screen.getByText("Year 10")).toBeInTheDocument();
+      expect(screen.getByText("Year 11")).toBeInTheDocument();
+    });
+
+    it("should update year group when an option is selected", async () => {
+      const user = userEvent.setup();
+      setupTest();
+
+      await user.click(screen.getByText("Choose the year group your student(s) are in"));
+      await user.click(await screen.findByText("Year 10"));
+
+      expect(screen.getByText("Year 10")).toBeInTheDocument();
+    });
   });
 
   describe("Group selection behavior", () => {
@@ -595,8 +653,10 @@ describe("CompetitionEntryForm", () => {
         "My current school or college",
         "Project title",
         "Project link",
+        "Project description (max. 250 characters)",
         "Select your student group",
         "Select student(s)",
+        "Year group of selected student(s)",
       ];
 
       requiredFields.forEach((fieldLabel) => {
