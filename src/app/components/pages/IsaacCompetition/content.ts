@@ -1,5 +1,3 @@
-// import { liveQandASessionDate } from "./dateUtils";
-// const isBeforeQandALiveSession = liveQandASessionDate > new Date();
 export default {
   section1: {
     header: {
@@ -102,6 +100,7 @@ export default {
         "These ideas are only the beginning – we can’t wait to see the innovative solutions you come up with! Keep in mind, you don’t need to build the final product; instead, record a video to showcase your idea or concept with designs and/or prototypes in any format you prefer.",
       ],
     },
+
     entryRequirements: {
       title: "Entry requirements",
       section: [
@@ -137,18 +136,7 @@ export default {
         "If you have any questions or run into problems, contact <a href='https://isaaccomputerscience.org/contact'>here</a>.",
       ],
     },
-    // projectIdeas: {
-    //   title: "Project ideas to get started",
-    //   section: [
-    //     "There are endless possibilities! We know how challenging it can be to start with a blank page, so here are a few ideas to spark your creativity:",
-    //     [
-    //       "Present a concept for an application or game designed to encourage healthy sleep patterns.",
-    //       "Develop a device proposal aimed at keeping public spaces clean.",
-    //       "Suggest an idea for an intelligent device intended to support mental health and wellbeing.",
-    //     ],
-    //     "These ideas are only the beginning – we can’t wait to see the innovative solutions you come up with! Keep in mind, you don’t need to build the final product; instead, record a video to showcase your idea or concept with designs and/or prototypes in any format you prefer.",
-    //   ],
-    // },
+
     availableSupportAndResources: {
       title: "Available support and resources",
       section: [
@@ -205,6 +193,7 @@ export default {
         "If you have any questions or run into problems, contact <a href='https://isaaccomputerscience.org/contact'>here</a>.",
       ],
     },
+
     assessmentCriteria: {
       title: "Assessment criteria",
       section: [
@@ -253,25 +242,6 @@ export default {
         ],
       ],
     },
-    // industry: {
-    //   title: "Industry partners",
-    //   section: [
-    //     "<strong>Birmingham City University</strong> continues its important role as a leading partner in the competition. This year, the university will once again host the <strong>final at their Innovation Fest in Birmingham this May.</strong> The festival offers students and teachers a chance to engage in a vibrant celebration of creativity, innovation, and emerging talent.",
-    //     "Thank you to our industry partners for supporting this competition with judges and prizes. Our thanks go to:",
-    //     [
-    //       "AstraZeneca",
-    //       "BT",
-    //       "Cisco",
-    //       "Civil Aviation Authority",
-    //       "Dassault Systèmes",
-    //       "Herd Consulting",
-    //       "JLR",
-    //       "Kainos",
-    //       "McLaren Racing and Automotive",
-    //       "Rolls Royce",
-    //     ],
-    //   ],
-    // },
     termsAndConditions: {
       title: "Terms and Conditions – 2025/26",
       section: [
