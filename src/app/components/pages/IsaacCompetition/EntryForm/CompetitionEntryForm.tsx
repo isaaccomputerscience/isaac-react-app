@@ -591,21 +591,13 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
                       { value: "10", label: "Year 10" },
                       { value: "11", label: "Year 11" },
                     ]}
-                    closeMenuOnSelect={false}
-                    maxMenuHeight={200}
-                    isLoading={isLoadingMembers}
                     styles={{
                       control: (provided) => ({
                         ...provided,
                         border: "1px solid #ced4da",
                         borderRadius: "0.375rem",
                         minHeight: "38px",
-                        backgroundColor:
-                          !selectedGroup || isLoadingMembers || !selectedGroup?.members?.length ? "#f8f9fa" : "white",
-                      }),
-                      menu: (provided) => ({
-                        ...provided,
-                        zIndex: 9998,
+                        backgroundColor: "white",
                       }),
                     }}
                   />
