@@ -93,6 +93,13 @@ export default {
           "connected cars: cars can communicate with each other to avoid accidents. They can also tell you when they need repairs or even call for help if there’s an emergency",
         ],
         "The Internet of Everything isn’t just about smart devices; it’s about connecting everything to make life easier, safer, and more enjoyable. It’s like a superpower that lets us make objects work together — but we must use this power responsibly and safely.",
+        "There are endless possibilities! We know how challenging it can be to start with a blank page, so here are a few ideas to spark your creativity:",
+        [
+          "Present a concept for an application or game designed to encourage healthy sleep patterns.",
+          "Develop a device proposal aimed at keeping public spaces clean.",
+          "Suggest an idea for an intelligent device intended to support mental health and wellbeing.",
+        ],
+        "These ideas are only the beginning – we can’t wait to see the innovative solutions you come up with! Keep in mind, you don’t need to build the final product; instead, record a video to showcase your idea or concept with designs and/or prototypes in any format you prefer.",
       ],
     },
     entryRequirements: {
