@@ -212,8 +212,10 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
 
     setProjectTitle("");
     setProjectLink("");
+    setProjectDescription("");
     setSelectedMembers([]);
     setSelectedGroupId(null);
+    setSelectedYearGroup(null);
     setIsDuplicateTitle(false);
     setExistingProjectTitles(new Set());
   };
