@@ -95,7 +95,7 @@ export default {
         "The Internet of Everything isn’t just about smart devices; it’s about connecting everything to make life easier, safer, and more enjoyable. It’s like a superpower that lets us make objects work together — but we must use this power responsibly and safely.",
       ],
     },
-    video: {
+    entryRequirements: {
       title: "Entry requirements",
       section: [
         "The competition entry should be submitted in video format of <strong>up to 5 minutes long.</strong> Any videos longer than 5 minutes will not be reviewed.",
@@ -154,8 +154,8 @@ export default {
     //     "These ideas are only the beginning – we can’t wait to see the innovative solutions you come up with! Keep in mind, you don’t need to build the final product; instead, record a video to showcase your idea or concept with designs and/or prototypes in any format you prefer.",
     //   ],
     // },
-    availableSupport: {
-      title: "Available support",
+    availableSupportAndResources: {
+      title: "Available support and resources",
       section: [
         "To support your journey in designing Internet of Everything (IoE) devices, we offer a selection of valuable resources. These materials cover the fundamental aspects required for successful device/product development, offering insights into hardware, connectivity, security, and the broader implications of technology.",
         "<strong>Key topics and resources:</strong>",
