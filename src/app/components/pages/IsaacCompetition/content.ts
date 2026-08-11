@@ -95,41 +95,8 @@ export default {
         "The Internet of Everything isn’t just about smart devices; it’s about connecting everything to make life easier, safer, and more enjoyable. It’s like a superpower that lets us make objects work together — but we must use this power responsibly and safely.",
       ],
     },
-    projectIdeas: {
-      title: "Project ideas to get started",
-      section: [
-        "There are endless possibilities! We know how challenging it can be to start with a blank page, so here are a few ideas to spark your creativity:",
-        [
-          "Present a concept for an application or game designed to encourage healthy sleep patterns.",
-          "Develop a device proposal aimed at keeping public spaces clean.",
-          "Suggest an idea for an intelligent device intended to support mental health and wellbeing.",
-        ],
-        "These ideas are only the beginning – we can’t wait to see the innovative solutions you come up with! Keep in mind, you don’t need to build the final product; instead, record a video to showcase your idea or concept with designs and/or prototypes in any format you prefer.",
-      ],
-    },
-    availableSupport: {
-      title: "Available support",
-      section: [
-        "To support your journey in designing Internet of Everything (IoE) devices, we offer a selection of valuable resources. These materials cover the fundamental aspects required for successful device/product development, offering insights into hardware, connectivity, security, and the broader implications of technology.",
-        "<strong>Key topics and resources:</strong>",
-        [
-          "<a href='https://isaaccomputerscience.org/concepts/sys_arch_embed_sys'>Embedded Systems</a> – Explore the principles and applications of embedded systems, which are crucial for IoE device functionality.",
-          "<a href='https://isaaccomputerscience.org/concepts/sys_arch_processor'>The processor</a> – Understand the role of processors in managing device operations and processing data efficiently.",
-          "<a href='https://isaaccomputerscience.org/concepts/sys_arch_performance'>Factors affecting processor performance</a> – Learn about the various elements that influence processor speed and effectiveness in IoE devices.",
-          "<a href='https://isaaccomputerscience.org/concepts/sys_arch_memory'>RAM: Main memory</a> – Discover the importance of main memory (RAM) in ensuring smooth performance and data handling.",
-          "<a href='https://isaaccomputerscience.org/concepts/net_network_wired_wireless'>Wired and Wireless networks</a> – Investigate the connectivity options available for IoE devices, including both wired and wireless networks.",
-          "<a href='https://isaaccomputerscience.org/concepts/net_sec_threats'>Cybersecurity: Network threats</a> – Delve into the cybersecurity challenges and network threats that IoE devices may face.",
-          "<a href='https://isaaccomputerscience.org/topics/legislation'>Legislation</a> – Review the legal considerations and regulations impacting IoE technologies.",
-          "<a href='https://isaaccomputerscience.org/topics/impacts_of_tech'>Impacts of technology</a> – Reflect on the social, economic, and environmental impacts of technological advancements in the IoE sector.",
-        ],
-        "<strong>Learning opportunities</strong>",
-        "Cisco and STEM Learning present a free, self-paced course <a href='https://www.netacad.com/courses/introduction-iot?courseLang=en-US&instance_id=37015267-e958-447e-9dfb-853590cc67e1'>‘Introduction to IoT and Digital Transformation’</a>. This course serves as an excellent starting point to gain foundational knowledge about the Internet of Things and the Internet of Everything.",
-        "<strong>Events and further exploration</strong>",
-        "To further enhance your subject knowledge and explore career pathways in computer science, we encourage you to participate in our live booster sessions and discovery events. Find more details and register <a href='https://isaaccomputerscience.org/events'>here</a>.",
-      ],
-    },
     video: {
-      title: "Video entry requirements",
+      title: "Entry requirements",
       section: [
         "The competition entry should be submitted in video format of <strong>up to 5 minutes long.</strong> Any videos longer than 5 minutes will not be reviewed.",
         "<strong>Video content requirements:</strong>",
@@ -175,8 +142,42 @@ export default {
         "If you have any questions or run into problems, contact <a href='https://isaaccomputerscience.org/contact'>here</a>. Good luck — we can’t wait to see your video!",
       ],
     },
+    // projectIdeas: {
+    //   title: "Project ideas to get started",
+    //   section: [
+    //     "There are endless possibilities! We know how challenging it can be to start with a blank page, so here are a few ideas to spark your creativity:",
+    //     [
+    //       "Present a concept for an application or game designed to encourage healthy sleep patterns.",
+    //       "Develop a device proposal aimed at keeping public spaces clean.",
+    //       "Suggest an idea for an intelligent device intended to support mental health and wellbeing.",
+    //     ],
+    //     "These ideas are only the beginning – we can’t wait to see the innovative solutions you come up with! Keep in mind, you don’t need to build the final product; instead, record a video to showcase your idea or concept with designs and/or prototypes in any format you prefer.",
+    //   ],
+    // },
+    availableSupport: {
+      title: "Available support",
+      section: [
+        "To support your journey in designing Internet of Everything (IoE) devices, we offer a selection of valuable resources. These materials cover the fundamental aspects required for successful device/product development, offering insights into hardware, connectivity, security, and the broader implications of technology.",
+        "<strong>Key topics and resources:</strong>",
+        [
+          "<a href='https://isaaccomputerscience.org/concepts/sys_arch_embed_sys'>Embedded Systems</a> – Explore the principles and applications of embedded systems, which are crucial for IoE device functionality.",
+          "<a href='https://isaaccomputerscience.org/concepts/sys_arch_processor'>The processor</a> – Understand the role of processors in managing device operations and processing data efficiently.",
+          "<a href='https://isaaccomputerscience.org/concepts/sys_arch_performance'>Factors affecting processor performance</a> – Learn about the various elements that influence processor speed and effectiveness in IoE devices.",
+          "<a href='https://isaaccomputerscience.org/concepts/sys_arch_memory'>RAM: Main memory</a> – Discover the importance of main memory (RAM) in ensuring smooth performance and data handling.",
+          "<a href='https://isaaccomputerscience.org/concepts/net_network_wired_wireless'>Wired and Wireless networks</a> – Investigate the connectivity options available for IoE devices, including both wired and wireless networks.",
+          "<a href='https://isaaccomputerscience.org/concepts/net_sec_threats'>Cybersecurity: Network threats</a> – Delve into the cybersecurity challenges and network threats that IoE devices may face.",
+          "<a href='https://isaaccomputerscience.org/topics/legislation'>Legislation</a> – Review the legal considerations and regulations impacting IoE technologies.",
+          "<a href='https://isaaccomputerscience.org/topics/impacts_of_tech'>Impacts of technology</a> – Reflect on the social, economic, and environmental impacts of technological advancements in the IoE sector.",
+        ],
+        "<strong>Learning opportunities</strong>",
+        "Cisco and STEM Learning present a free, self-paced course <a href='https://www.netacad.com/courses/introduction-iot?courseLang=en-US&instance_id=37015267-e958-447e-9dfb-853590cc67e1'>‘Introduction to IoT and Digital Transformation’</a>. This course serves as an excellent starting point to gain foundational knowledge about the Internet of Things and the Internet of Everything.",
+        "<strong>Events and further exploration</strong>",
+        "To further enhance your subject knowledge and explore career pathways in computer science, we encourage you to participate in our live booster sessions and discovery events. Find more details and register <a href='https://isaaccomputerscience.org/events'>here</a>.",
+      ],
+    },
+
     groupEntry: {
-      title: "How to create a group and submit your entry (for teachers)",
+      title: "Submitting an entry (for teachers)",
       section: [
         "<strong>How to create a group:</strong>",
         [
@@ -252,25 +253,25 @@ export default {
         ],
       ],
     },
-    industry: {
-      title: "Industry partners",
-      section: [
-        "<strong>Birmingham City University</strong> continues its important role as a leading partner in the competition. This year, the university will once again host the <strong>final at their Innovation Fest in Birmingham this May.</strong> The festival offers students and teachers a chance to engage in a vibrant celebration of creativity, innovation, and emerging talent.",
-        "Thank you to our industry partners for supporting this competition with judges and prizes. Our thanks go to:",
-        [
-          "AstraZeneca",
-          "BT",
-          "Cisco",
-          "Civil Aviation Authority",
-          "Dassault Systèmes",
-          "Herd Consulting",
-          "JLR",
-          "Kainos",
-          "McLaren Racing and Automotive",
-          "Rolls Royce",
-        ],
-      ],
-    },
+    // industry: {
+    //   title: "Industry partners",
+    //   section: [
+    //     "<strong>Birmingham City University</strong> continues its important role as a leading partner in the competition. This year, the university will once again host the <strong>final at their Innovation Fest in Birmingham this May.</strong> The festival offers students and teachers a chance to engage in a vibrant celebration of creativity, innovation, and emerging talent.",
+    //     "Thank you to our industry partners for supporting this competition with judges and prizes. Our thanks go to:",
+    //     [
+    //       "AstraZeneca",
+    //       "BT",
+    //       "Cisco",
+    //       "Civil Aviation Authority",
+    //       "Dassault Systèmes",
+    //       "Herd Consulting",
+    //       "JLR",
+    //       "Kainos",
+    //       "McLaren Racing and Automotive",
+    //       "Rolls Royce",
+    //     ],
+    //   ],
+    // },
     termsAndConditions: {
       title: "Terms and Conditions – 2025/26",
       section: [
