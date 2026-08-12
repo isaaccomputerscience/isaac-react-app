@@ -1,5 +1,3 @@
-// import { liveQandASessionDate } from "./dateUtils";
-// const isBeforeQandALiveSession = liveQandASessionDate > new Date();
 export default {
   section1: {
     header: {
@@ -93,11 +91,6 @@ export default {
           "connected cars: cars can communicate with each other to avoid accidents. They can also tell you when they need repairs or even call for help if there’s an emergency",
         ],
         "The Internet of Everything isn’t just about smart devices; it’s about connecting everything to make life easier, safer, and more enjoyable. It’s like a superpower that lets us make objects work together — but we must use this power responsibly and safely.",
-      ],
-    },
-    projectIdeas: {
-      title: "Project ideas to get started",
-      section: [
         "There are endless possibilities! We know how challenging it can be to start with a blank page, so here are a few ideas to spark your creativity:",
         [
           "Present a concept for an application or game designed to encourage healthy sleep patterns.",
@@ -107,35 +100,15 @@ export default {
         "These ideas are only the beginning – we can’t wait to see the innovative solutions you come up with! Keep in mind, you don’t need to build the final product; instead, record a video to showcase your idea or concept with designs and/or prototypes in any format you prefer.",
       ],
     },
-    availableSupport: {
-      title: "Available support",
-      section: [
-        "To support your journey in designing Internet of Everything (IoE) devices, we offer a selection of valuable resources. These materials cover the fundamental aspects required for successful device/product development, offering insights into hardware, connectivity, security, and the broader implications of technology.",
-        "<strong>Key topics and resources:</strong>",
-        [
-          "<a href='https://isaaccomputerscience.org/concepts/sys_arch_embed_sys'>Embedded Systems</a> – Explore the principles and applications of embedded systems, which are crucial for IoE device functionality.",
-          "<a href='https://isaaccomputerscience.org/concepts/sys_arch_processor'>The processor</a> – Understand the role of processors in managing device operations and processing data efficiently.",
-          "<a href='https://isaaccomputerscience.org/concepts/sys_arch_performance'>Factors affecting processor performance</a> – Learn about the various elements that influence processor speed and effectiveness in IoE devices.",
-          "<a href='https://isaaccomputerscience.org/concepts/sys_arch_memory'>RAM: Main memory</a> – Discover the importance of main memory (RAM) in ensuring smooth performance and data handling.",
-          "<a href='https://isaaccomputerscience.org/concepts/net_network_wired_wireless'>Wired and Wireless networks</a> – Investigate the connectivity options available for IoE devices, including both wired and wireless networks.",
-          "<a href='https://isaaccomputerscience.org/concepts/net_sec_threats'>Cybersecurity: Network threats</a> – Delve into the cybersecurity challenges and network threats that IoE devices may face.",
-          "<a href='https://isaaccomputerscience.org/topics/legislation'>Legislation</a> – Review the legal considerations and regulations impacting IoE technologies.",
-          "<a href='https://isaaccomputerscience.org/topics/impacts_of_tech'>Impacts of technology</a> – Reflect on the social, economic, and environmental impacts of technological advancements in the IoE sector.",
-        ],
-        "<strong>Learning opportunities</strong>",
-        "Cisco and STEM Learning present a free, self-paced course <a href='https://www.netacad.com/courses/introduction-iot?courseLang=en-US&instance_id=37015267-e958-447e-9dfb-853590cc67e1'>‘Introduction to IoT and Digital Transformation’</a>. This course serves as an excellent starting point to gain foundational knowledge about the Internet of Things and the Internet of Everything.",
-        "<strong>Events and further exploration</strong>",
-        "To further enhance your subject knowledge and explore career pathways in computer science, we encourage you to participate in our live booster sessions and discovery events. Find more details and register <a href='https://isaaccomputerscience.org/events'>here</a>.",
-      ],
-    },
-    video: {
-      title: "Video entry requirements",
+
+    entryRequirements: {
+      title: "Entry requirements",
       section: [
         "The competition entry should be submitted in video format of <strong>up to 5 minutes long.</strong> Any videos longer than 5 minutes will not be reviewed.",
         "<strong>Video content requirements:</strong>",
         [
           "<strong>Introduction:</strong> Introduce yourself or your team using the first names only and state the title of your project. Be creative and think about how you can make your introduction stand out!",
-          "<strong>Overview of the project:</strong> Explain the global problem your IoE device addresses. Give a short summary of your project and its purpose.",
+          "<strong>Overview of the project:</strong> Explain the global problem your Internet of Everything (IoE) device addresses. Give a short summary of your project and its purpose.",
           "<strong>Impact:</strong> Describe how your IoE device could improve lives globally. Include any benefits for people, communities, or the environment.",
           "<strong>Device description:</strong> Show the design or prototype of your device – it doesn’t have to be perfect or finished! Explain its features, functions, and how it works.",
           "Teamwork or individual approach: <ul><li><strong>If it's a group project:</strong> Explain how you worked together, your collaboration skills, and methods used.</li><li><strong>If it's an individual project:</strong> Describe your approach, how you solved problems, and how you managed the project yourself.</li></ul>",
@@ -150,8 +123,8 @@ export default {
           "Clear audio and video with good lighting.",
           "Recorded in one of the accepted formats such as MP4, MOV, AVI.",
           "Does not include inappropriate content, copyrighted music, or videos.",
-          "If using a PowerPoint presentation for the video, a student(s) should record a voiceover.",
-          "Name your file with your project name and entry title. For example: SmartLab_CompetitionEntry.mp4.",
+          "If using a PowerPoint presentation for the video, a student(s) should record a voiceover. Video with AI-generated audio will be disqualified.",
+          "Name your file with your project name. For example: Smart_Lab_Competition_Entry.mp4.",
           "The video and any additional supporting materials must be uploaded to a cloud storage folder (e.g., Google Drive, Dropbox) ensuring that it is accessible by the Organiser for the duration of the Competition.",
         ],
         "<strong>Supporting Documents</strong>",
@@ -159,24 +132,38 @@ export default {
           "While not mandatory, supporting documents can enhance your submission.",
           "Consider including:<ul><li>Diagrams or sketches of your device.</li><li>A brief written summary of your project.</li><li>Evidence of research or data that supports your concept.</li><li>Reflections on collaboration and teamwork.</li></ul>",
         ],
-        "<strong>Tips for Success</strong>",
-        [
-          "<strong>Identify a Global Challenge:</strong> Consider issues like climate change, health crises, education gaps, or social isolation.",
-          "<strong>Innovative Design:</strong> Think creatively about how your device can uniquely address the problem.",
-          "<strong>Collaboration Skills:</strong> Highlight how you worked together as a team, including communication, conflict resolution, and decision-making processes.",
-          "<strong>Practice Your Presentation:</strong> Rehearse your video to ensure clarity and confidence.",
-        ],
-        "<strong>Resources:</strong>",
-        [
-          "<strong>Workshops:</strong> Attend any available workshops or information sessions to help refine your ideas. Check out our live booster events <a href='https://isaaccomputerscience.org/events'>here</a>.",
-          "<strong>Online Resources:</strong> Explore websites and articles on IoE technology, design thinking, and teamwork strategies.",
-          "<strong>Teacher Support:</strong> Work closely with your teacher to guide your project and provide insights.",
-        ],
-        "If you have any questions or run into problems, contact <a href='https://isaaccomputerscience.org/contact'>here</a>. Good luck — we can’t wait to see your video!",
+
+        "If you have any questions or run into problems, contact <a href='https://isaaccomputerscience.org/contact'>here</a>.",
       ],
     },
+
+    availableSupportAndResources: {
+      title: "Available support and resources",
+      section: [
+        "To support your journey in designing Internet of Everything (IoE) devices, we offer a selection of valuable resources. These materials cover the fundamental aspects required for successful device/product development, offering insights into hardware, connectivity, security, and the broader implications of technology.",
+        "<strong>Key topics and resources on Isaac Computer Science:</strong>",
+        [
+          "<a href='https://isaaccomputerscience.org/concepts/sys_arch_embed_sys'>Embedded Systems</a> – Explore the principles and applications of embedded systems, which are crucial for IoE device functionality.",
+          "<a href='https://isaaccomputerscience.org/concepts/sys_arch_processor'>The processor</a> – Understand the role of processors in managing device operations and processing data efficiently.",
+          "<a href='https://isaaccomputerscience.org/concepts/sys_arch_performance'>Factors affecting processor performance</a> – Learn about the various elements that influence processor speed and effectiveness in IoE devices.",
+          "<a href='https://isaaccomputerscience.org/concepts/sys_arch_memory'>RAM: Main memory</a> – Discover the importance of main memory (RAM) in ensuring smooth performance and data handling.",
+          "<a href='https://isaaccomputerscience.org/concepts/net_network_wired_wireless'>Wired and Wireless networks</a> – Investigate the connectivity options available for IoE devices, including both wired and wireless networks.",
+          "<a href='https://isaaccomputerscience.org/concepts/net_sec_threats'>Cybersecurity: Network threats</a> – Delve into the cybersecurity challenges and network threats that IoE devices may face.",
+          "<a href='https://isaaccomputerscience.org/topics/legislation'>Legislation</a> – Review the legal considerations and regulations impacting IoE technologies.",
+          "<a href='https://isaaccomputerscience.org/topics/impacts_of_tech'>Impacts of technology</a> – Reflect on the social, economic, and environmental impacts of technological advancements in the IoE sector.",
+        ],
+        "<strong>Learning opportunities:</strong>",
+        [
+          "<strong>Computer Science sessions:</strong> Check out our live booster events <a href='https://isaaccomputerscience.org/events'>here</a> to further enhance your subject knowledge.",
+          "<strong>Cisco and STEM Learning</strong>  present a free, self-paced course <a href='https://www.netacad.com/courses/introduction-iot?courseLang=en-US&instance_id=37015267-e958-447e-9dfb-853590cc67e1'>‘Introduction to IoT and Digital Transformation’</a>. This course serves as an excellent starting point to gain foundational knowledge about the Internet of Things and the Internet of Everything.",
+          "<strong>Online resources:</strong> Explore websites and articles on IoE technology, design thinking, and teamwork strategies.",
+          "<strong>Teacher support:</strong> Work closely with your teacher to guide your project and provide insights.",
+        ],
+      ],
+    },
+
     groupEntry: {
-      title: "How to create a group and submit your entry (for teachers)",
+      title: "Submitting an entry (for teachers)",
       section: [
         "<strong>How to create a group:</strong>",
         [
@@ -198,12 +185,15 @@ export default {
           "Make sure that your account details are accurate in the <strong>‘Your account information’ section</strong> of the entry form. If necessary, you can update your information in your <a href = 'https://isaaccomputerscience.org/account'>account settings</a>.",
           "In the <strong>'Project title’ field,</strong> enter the title of the project your students worked on. Each title must be unique.",
           "In the <strong>‘Project link’ field,</strong> provide a link to the cloud storage where a video and any supporting materials are saved. Make sure the link is accessible to the Organiser by setting it to 'Anyone with the link can view'. If that's not possible, grant access to <a href='mailto:contact@isaaccomputerscience.org'>contact@isaaccomputerscience.org</a>.",
+          "In the <strong>‘Project description’ field,</strong> briefly describe the project your student(s) worked on, using no more than 250 characters.",
           "In the <strong>‘Select your student group’ field,</strong> choose from the groups you've created or create one first. If no groups are available, go to Teachers > <a href = 'https://isaaccomputerscience.org/groups'>Manage groups</a> to create one and invite students to join.",
-          "In the <strong>‘Select student(s)’</strong> field, choose 1-4 students from your selected student group who worked on the submitted project. If no students are found in the selected group, make sure students join the group first. Go to the <a href = 'https://isaaccomputerscience.org/groups'>Manage groups</a> page and invite them using a URL or authentication code.",
+          "In the <strong>‘Select student(s)’ field,</strong> choose 1-4 students from your selected student group who worked on the submitted project. If no students are found in the selected group, make sure students join the group first. Go to the <a href = 'https://isaaccomputerscience.org/groups'>Manage groups</a> page and invite them using a URL or authentication code.",
+          "In the <strong>‘Year group of selected student(s)’,</strong> select the year group of the student(s) you're entering in the competition. To be eligible, student(s) must be in Year 9, 10, or 11 during the 2026/2027 academic year.",
         ],
         "If you have any questions or run into problems, contact <a href='https://isaaccomputerscience.org/contact'>here</a>.",
       ],
     },
+
     assessmentCriteria: {
       title: "Assessment criteria",
       section: [
@@ -249,25 +239,6 @@ export default {
           "Does it use visuals to make it interesting?",
           "Is the video clear and easy to watch?",
           "Does the video explain why your idea is a good solution?",
-        ],
-      ],
-    },
-    industry: {
-      title: "Industry partners",
-      section: [
-        "<strong>Birmingham City University</strong> continues its important role as a leading partner in the competition. This year, the university will once again host the <strong>final at their Innovation Fest in Birmingham this May.</strong> The festival offers students and teachers a chance to engage in a vibrant celebration of creativity, innovation, and emerging talent.",
-        "Thank you to our industry partners for supporting this competition with judges and prizes. Our thanks go to:",
-        [
-          "AstraZeneca",
-          "BT",
-          "Cisco",
-          "Civil Aviation Authority",
-          "Dassault Systèmes",
-          "Herd Consulting",
-          "JLR",
-          "Kainos",
-          "McLaren Racing and Automotive",
-          "Rolls Royce",
         ],
       ],
     },

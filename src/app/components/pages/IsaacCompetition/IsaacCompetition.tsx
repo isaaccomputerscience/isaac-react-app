@@ -51,13 +51,15 @@ export const IsaacCompetition = () => {
 
   const accordionSections = [
     { id: "0", title: accordion.internetOfEverything.title, section: accordion.internetOfEverything.section },
-    { id: "1", title: accordion.projectIdeas.title, section: accordion.projectIdeas.section },
-    { id: "2", title: accordion.availableSupport.title, section: accordion.availableSupport.section },
-    { id: "3", title: accordion.video.title, section: accordion.video.section },
-    { id: "4", title: accordion.groupEntry.title, section: accordion.groupEntry.section },
-    { id: "5", title: accordion.assessmentCriteria.title, section: accordion.assessmentCriteria.section },
-    { id: "6", title: accordion.industry.title, section: accordion.industry.section },
-    { id: "7", title: accordion.termsAndConditions.title, section: accordion.termsAndConditions.section },
+    { id: "1", title: accordion.entryRequirements.title, section: accordion.entryRequirements.section },
+    { id: "2", title: accordion.assessmentCriteria.title, section: accordion.assessmentCriteria.section },
+    { id: "3", title: accordion.groupEntry.title, section: accordion.groupEntry.section },
+    {
+      id: "4",
+      title: accordion.availableSupportAndResources.title,
+      section: accordion.availableSupportAndResources.section,
+    },
+    { id: "5", title: accordion.termsAndConditions.title, section: accordion.termsAndConditions.section },
   ];
 
   return (
