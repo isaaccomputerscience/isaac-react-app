@@ -14,6 +14,8 @@ export default {
       facebookLink: "https://www.facebook.com/IsaacComputerScience",
       instagramLink: "https://www.instagram.com/isaaccomputerscience",
     },
+    imageCaption:
+      "The 2025/2026 competition winners: the 'Binary Sorter' project from Newstead Wood School (four students on the left) and 'Smart Port Locker' from Stroud High School (a student on the right)",
   },
 
   section3: {
