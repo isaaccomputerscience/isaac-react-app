@@ -2,7 +2,7 @@ export default {
   section1: {
     header: {
       section1: [
-        "Calling all computer science fans! We are hosting a national competition to challenge students to imagine, design, and pitch a groundbreaking new product for the Internet of Everything (IOE).",
+        "Calling all computer science fans! We are hosting a national competition to challenge students to imagine, design, and pitch a groundbreaking new product for the Internet of Everything.",
       ],
       section2: [
         "The competition is a fantastic opportunity for students to apply their knowledge to real-world ideas.",

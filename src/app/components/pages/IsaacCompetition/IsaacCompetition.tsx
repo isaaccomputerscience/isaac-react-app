@@ -95,7 +95,7 @@ export const IsaacCompetition = () => {
                 </a>
                 {` ${section1.note.callToAction}`}
               </p>
-              <Row className="justify-content-left mt-4">
+              <Row className="justify-content-left mt-5">
                 <Col xs="auto">
                   <CompetitionWrapper beforeCompetitionOpenContent={<CompetitionButton buttons={[eoiButton]} />}>
                     {null}
@@ -104,13 +104,13 @@ export const IsaacCompetition = () => {
               </Row>
             </Col>
             <Col md={6} className="mt-4 pb-md-0 d-none d-md-block">
-              <figure className="competition-hero-image mb-3">
+              <div className="competition-hero-image mb-3">
                 <img
                   src="/assets/new_homepage_image.png"
                   alt="The 2025/2026 competition winners"
                   className="img-fluid"
                 />
-              </figure>
+              </div>
               <p className="competition-hero-caption text-center mt-2 mb-0 px-5">{section1.imageCaption}</p>
             </Col>
           </Row>
