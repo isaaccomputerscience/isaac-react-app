@@ -104,11 +104,11 @@ export const IsaacCompetition = () => {
               </Row>
             </Col>
             <Col md={6} className="mt-4 pb-md-0 d-none d-md-block">
-              <div className="competition-hero-image mb-3">
+              <div className="mb-3">
                 <img
                   src="/assets/new_homepage_image.png"
                   alt="The 2025/2026 competition winners"
-                  className="img-fluid"
+                  className="img-fluid w-100 h-auto d-block p-0"
                 />
               </div>
               <p className="competition-hero-caption text-center mt-2 mb-0 px-5">{section1.imageCaption}</p>
