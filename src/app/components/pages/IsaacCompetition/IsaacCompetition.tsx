@@ -103,7 +103,7 @@ export const IsaacCompetition = () => {
                 </Col>
               </Row>
             </Col>
-            <Col xs={12} md={6} className="mt-4 pb-md-0 d-none d-md-block">
+            <Col md={6} className="mt-4 pb-md-0 d-none d-md-block">
               <figure className="competition-hero-image mb-3">
                 <img
                   src="/assets/new_homepage_image.png"
