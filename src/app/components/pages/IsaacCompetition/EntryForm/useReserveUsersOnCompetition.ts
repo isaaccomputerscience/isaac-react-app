@@ -11,6 +11,8 @@ export const useReserveUsersOnCompetition = () => {
     submissionLink: string,
     projectTitle: string,
     groupName?: string,
+    yearGroup?: string,
+    projectDescription?: string,
   ) => {
     try {
       await api.eventBookings.reserveUsersOnCompetition(
@@ -19,6 +21,8 @@ export const useReserveUsersOnCompetition = () => {
         submissionLink,
         groupName ?? "",
         projectTitle,
+        yearGroup ?? "",
+        projectDescription ?? "",
       );
       dispatch(
         showSuccessToast("Competition entry submitted", "You have successfully submitted your competition entry"),
