@@ -480,12 +480,16 @@ export const api = {
       submissionLink: string,
       groupName: string,
       projectTitle: string,
+      yearGroup: string,
+      projectDescription: string,
     ) => {
       return endpoint.post(`/events/${eventId}/competitionEntries`, {
         entrantIds: userIds,
         submissionURL: submissionLink,
         groupName: groupName,
         projectTitle: projectTitle,
+        yearGroup: yearGroup,
+        projectDescription: projectDescription,
       });
     },
     cancelUsersReservationsOnEvent: (eventId: string, userIds: number[]) => {

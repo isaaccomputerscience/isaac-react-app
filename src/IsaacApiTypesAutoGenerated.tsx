@@ -492,6 +492,8 @@ export interface CompetitionEntryDTO {
   submissionURL?: string;
   groupName?: string;
   projectTitle?: string;
+  yearGroup?: string;
+  projectDescription?: string;
 }
 
 export interface DetailedEventBookingDTO extends EventBookingDTO {

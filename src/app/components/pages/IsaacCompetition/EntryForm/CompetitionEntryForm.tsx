@@ -207,7 +207,15 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
         .map((memberId) => Number.parseInt(memberId, 10))
         .filter((id) => !Number.isNaN(id));
 
-      reserveUsersOnCompetition(COMPETITON_ID, reservableIds, projectLink, projectTitle, groupName);
+      reserveUsersOnCompetition(
+        COMPETITON_ID,
+        reservableIds,
+        projectLink,
+        projectTitle,
+        groupName,
+        selectedYearGroup ?? undefined,
+        projectDescription,
+      );
     }
 
     setProjectTitle("");
