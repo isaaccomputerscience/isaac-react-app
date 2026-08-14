@@ -10,7 +10,7 @@ import CompetitionTimeline from "./CompetitionInformation/CompetitionTimeline";
 import EntryFormHandler, { eoiButton } from "./EntryForm/EntryFormHandler";
 import CompetitionButton from "./Buttons/CompetitionButton";
 import CompetitionWrapper from "./CompetitionWrapper";
-import { liveQandASessionDate } from "./dateUtils";
+import { isBeforeCompetitionOpenDate, liveQandASessionDate } from "./dateUtils";
 
 const { section1, section3, accordion } = content;
 
@@ -75,30 +75,36 @@ export const IsaacCompetition = () => {
               <p className="mt-4 body-text">{section1.header.section1}</p>
               <p className="mt-4 body-text">{section1.header.section2}</p>
               <p className="mt-4 mb-0 body-text">
-                <span>{section1.note.entryDetails} </span>
-                <a
-                  href={section1.note.facebookLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-decoration-underline"
-                >
-                  Facebook
-                </a>
-                {` and `}
-                <a
-                  href={section1.note.instagramLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-decoration-underline"
-                >
-                  Instagram
-                </a>
-                {` ${section1.note.callToAction}`}
+                {isBeforeCompetitionOpenDate(new Date()) ? (
+                  <>
+                    <span>{section1.note.beforeOpen.entryDetails} </span>
+                    <a
+                      href={section1.note.beforeOpen.facebookLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-decoration-underline"
+                    >
+                      Facebook
+                    </a>
+                    {` and `}
+                    <a
+                      href={section1.note.beforeOpen.instagramLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-decoration-underline"
+                    >
+                      Instagram
+                    </a>
+                    {` ${section1.note.beforeOpen.callToAction}`}
+                  </>
+                ) : (
+                  section1.note.afterOpen.entryDetails
+                )}
               </p>
               <Row className="justify-content-left mt-5">
                 <Col xs="auto">
-                  <CompetitionWrapper beforeCompetitionOpenContent={<CompetitionButton buttons={[eoiButton]} />}>
-                    {null}
+                  <CompetitionWrapper>
+                    <CompetitionButton buttons={[eoiButton]} />
                   </CompetitionWrapper>
                 </Col>
               </Row>
