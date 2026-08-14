@@ -6,11 +6,12 @@ import { selectors, useAppSelector } from "../../../../state";
 import { isStudent, isAdmin, isTeacher } from "../../../../services";
 import CompetitionWrapper from "../CompetitionWrapper";
 import { CLOSED_MESSAGE, STUDENT_MESSAGE, TEACHER_MESSAGE } from "../constants";
+import { isBeforeCompetitionOpenDate } from "../dateUtils";
 
 // EOI button configuration - same as HomepageHighlight
 export const eoiButton = {
   to: "https://forms.cloud.microsoft/e/K4GmaA3QEF",
-  label: "Express your interest",
+  label: isBeforeCompetitionOpenDate(new Date()) ? "Express your interest" : "Submit your project",
 };
 
 const StudentMessage = () => (
