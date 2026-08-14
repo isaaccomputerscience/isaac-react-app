@@ -71,7 +71,7 @@ export const IsaacCompetition = () => {
         <Container className="pt-4 z1">
           <Row className="pb-5">
             <h1 className="primary-heading pl-3">National Computer Science Competition</h1>
-            <Col xs={12} md={6} lg={8} className="pb-3">
+            <Col xs={12} md={6} className="pb-3">
               <p className="mt-4 body-text">{section1.header.section1}</p>
               <p className="mt-4 body-text">{section1.header.section2}</p>
               <p className="mt-4 mb-0 body-text">
@@ -95,7 +95,7 @@ export const IsaacCompetition = () => {
                 </a>
                 {` ${section1.note.callToAction}`}
               </p>
-              <Row className="justify-content-left mt-4">
+              <Row className="justify-content-left mt-5">
                 <Col xs="auto">
                   <CompetitionWrapper beforeCompetitionOpenContent={<CompetitionButton buttons={[eoiButton]} />}>
                     {null}
@@ -103,13 +103,15 @@ export const IsaacCompetition = () => {
                 </Col>
               </Row>
             </Col>
-            <Col lg={4} md={6} className="order-lg-2 order-3 mt-4 mt-lg-0 pb-md-0">
-              <img
-                src="/assets/competition-image.png"
-                alt="Competition"
-                className="img-fluid d-none d-md-block"
-                style={{ maxWidth: "100%", height: "auto" }}
-              />
+            <Col md={6} className="mt-4 pb-md-0 d-none d-md-block">
+              <div className="mb-3">
+                <img
+                  src="/assets/new_homepage_image.png"
+                  alt="The 2025/2026 competition winners"
+                  className="img-fluid w-100 h-auto d-block p-0"
+                />
+              </div>
+              <p className="competition-hero-caption text-center mt-2 mb-0 px-5">{section1.imageCaption}</p>
             </Col>
           </Row>
         </Container>
