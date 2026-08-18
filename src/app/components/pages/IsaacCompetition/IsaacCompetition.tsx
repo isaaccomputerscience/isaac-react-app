@@ -7,10 +7,11 @@ import "../../../../scss/cs/competition.scss";
 import Accordion from "./Accordion/Accordion";
 import InformationCard from "./CompetitionInformation/InformationCard";
 import CompetitionTimeline from "./CompetitionInformation/CompetitionTimeline";
-import EntryFormHandler, { eoiButton } from "./EntryForm/EntryFormHandler";
+import EntryFormHandler, { getHeadlineCtaButton } from "./EntryForm/EntryFormHandler";
 import CompetitionButton from "./Buttons/CompetitionButton";
 import CompetitionWrapper from "./CompetitionWrapper";
 import { isBeforeCompetitionOpenDate, liveQandASessionDate } from "./dateUtils";
+import { selectors, useAppSelector } from "../../../state";
 
 const { section1, section3, accordion } = content;
 
@@ -19,12 +20,8 @@ export const IsaacCompetition = () => {
     document.title = "Isaac " + SITE_SUBJECT_TITLE;
   }, []);
 
-  const buttons = [
-    {
-      to: "/login",
-      label: "Submit a project",
-    },
-  ];
+  const user = useAppSelector(selectors.user.orNull);
+  const headlineCtaButton = getHeadlineCtaButton(user);
 
   const [open, setOpen] = useState<string | null>(null);
 
@@ -103,8 +100,10 @@ export const IsaacCompetition = () => {
               </p>
               <Row className="justify-content-left mt-5">
                 <Col xs="auto">
-                  <CompetitionWrapper beforeCompetitionOpenContent={<CompetitionButton buttons={[eoiButton]} />}>
-                    <CompetitionButton buttons={[eoiButton]} />
+                  <CompetitionWrapper
+                    beforeCompetitionOpenContent={<CompetitionButton buttons={[headlineCtaButton]} />}
+                  >
+                    <CompetitionButton buttons={[headlineCtaButton]} />
                   </CompetitionWrapper>
                 </Col>
               </Row>
@@ -121,7 +120,7 @@ export const IsaacCompetition = () => {
             </Col>
           </Row>
         </Container>
-        <EntryFormHandler buttons={buttons} handleTermsClick={handleTermsClick} />
+        <EntryFormHandler handleTermsClick={handleTermsClick} />
       </section>
       <section id="internetOfEverything" className="event-section">
         <div className="event-section-background-img"></div>

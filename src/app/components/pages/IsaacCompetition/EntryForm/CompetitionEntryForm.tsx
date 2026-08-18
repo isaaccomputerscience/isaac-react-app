@@ -262,7 +262,7 @@ export const CompetitionEntryForm = ({ handleTermsClick }: CompetitionEntryFormP
     selectedGroup && selectedGroup.members !== undefined && !isLoadingMembers && selectedGroup.members.length === 0;
 
   return (
-    <div className="pt-5">
+      <div className="pt-5" id="competition-entry-form">
       <div className="entry-form-background-img entry-form-section">
         <Container className="pb-2">
           <Form onSubmit={handleSubmit}>
