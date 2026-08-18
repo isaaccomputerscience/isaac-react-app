@@ -103,7 +103,7 @@ export const IsaacCompetition = () => {
               </p>
               <Row className="justify-content-left mt-5">
                 <Col xs="auto">
-                  <CompetitionWrapper>
+                  <CompetitionWrapper beforeCompetitionOpenContent={<CompetitionButton buttons={[eoiButton]} />}>
                     <CompetitionButton buttons={[eoiButton]} />
                   </CompetitionWrapper>
                 </Col>
