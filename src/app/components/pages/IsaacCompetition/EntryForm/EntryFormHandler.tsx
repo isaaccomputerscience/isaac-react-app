@@ -1,17 +1,28 @@
 import React from "react";
 import { Container, Col } from "reactstrap";
 import CompetitionEntryForm from "./CompetitionEntryForm";
-import CompetitionButton from "../Buttons/CompetitionButton";
 import { selectors, useAppSelector } from "../../../../state";
-import { isStudent, isAdmin, isTeacher } from "../../../../services";
+import { isStudent, isAdmin, isTeacher, isLoggedIn } from "../../../../services";
 import CompetitionWrapper from "../CompetitionWrapper";
-import { CLOSED_MESSAGE, STUDENT_MESSAGE, TEACHER_MESSAGE } from "../constants";
+import { CLOSED_MESSAGE, STUDENT_MESSAGE } from "../constants";
 import { isBeforeCompetitionOpenDate } from "../dateUtils";
+import { PotentialUser } from "../../../../../IsaacAppTypes";
+import { Immutable } from "immer";
 
-// EOI button configuration - same as HomepageHighlight
-export const eoiButton = {
-  to: "https://forms.cloud.microsoft/e/K4GmaA3QEF",
-  label: isBeforeCompetitionOpenDate(new Date()) ? "Express your interest" : "Submit your project",
+const EOI_FORM_URL = "https://forms.cloud.microsoft/e/K4GmaA3QEF";
+const ENTRY_FORM_ANCHOR = "#competition-entry-form";
+
+export const getHeadlineCtaButton = (user?: Immutable<PotentialUser> | null) => {
+  const beforeOpen = isBeforeCompetitionOpenDate(new Date());
+  if (beforeOpen) {
+    return { to: EOI_FORM_URL, label: "Express your interest" };
+  }
+
+  if (isLoggedIn(user) && (isTeacher(user) || isAdmin(user))) {
+    return { to: ENTRY_FORM_ANCHOR, label: "Submit your project" };
+  }
+
+  return { to: "/login", label: "Submit your project" };
 };
 
 const StudentMessage = () => (
@@ -22,25 +33,11 @@ const StudentMessage = () => (
   </Container>
 );
 
-interface DefaultMessageProps {
-  buttons: { to: string; label: string }[];
-}
-
-const DefaultMessage: React.FC<DefaultMessageProps> = ({ buttons }) => (
-  <Container>
-    <Col className="d-flex flex-column align-items-start pb-4 pl-0" xs="auto">
-      <p className="pb-3 body-text">{TEACHER_MESSAGE}</p>
-      <CompetitionButton buttons={buttons} />
-    </Col>
-  </Container>
-);
-
 interface EntryFormHandlerProps {
-  buttons: { to: string; label: string }[];
   handleTermsClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }
 
-const EntryFormHandler = ({ buttons, handleTermsClick }: EntryFormHandlerProps) => {
+const EntryFormHandler = ({ handleTermsClick }: EntryFormHandlerProps) => {
   const user = useAppSelector(selectors.user.orNull);
 
   const renderEntryForm = () => {
@@ -53,9 +50,10 @@ const EntryFormHandler = ({ buttons, handleTermsClick }: EntryFormHandlerProps) 
       );
     } else if (isStudent(user)) {
       return <StudentMessage />;
-    } else {
-      return <DefaultMessage buttons={buttons} />;
     }
+
+    // Logged-out CTA lives in the headline (teacher copy + Submit your project)
+    return null;
   };
 
   return (

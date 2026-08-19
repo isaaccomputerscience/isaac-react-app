@@ -16,15 +16,18 @@ const CompetitionButton = ({ buttons }: CompetitionButtonProps) => {
   };
 
   const handleClick = (to: string) => {
-    persistence.save(KEY.AFTER_AUTH_PATH, location.pathname);
+    if (to.startsWith("#")) {
+      document.getElementById(to.slice(1))?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
 
     if (isExternalLink(to)) {
-      // For external links, open in the new tab
       window.open(to, "_blank", "noopener, noreferrer");
-    } else {
-      // For internal links, use React Router
-      history.push(to);
+      return;
     }
+
+    persistence.save(KEY.AFTER_AUTH_PATH, location.pathname);
+    history.push(to);
   };
 
   return (
