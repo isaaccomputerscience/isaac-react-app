@@ -45,6 +45,7 @@ import {
 import { AdditionalInformation } from "../../../IsaacAppTypes";
 import { DateString } from "../elements/DateString";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import { EventBookingForm } from "../elements/EventBookingForm";
 import { reservationsModal } from "../elements/modals/ReservationsModal";
 import { IsaacContent } from "../content/IsaacContent";
@@ -157,6 +158,12 @@ const EventDetails = ({
 
         return (
           <Container className="events mb-5">
+            {/* Individual event pages are transient (booking closes/event expires) and are
+                intentionally excluded from the sitemap; noindex here stops Google from
+                indexing them when it follows internal links to them anyway. */}
+            <Helmet>
+              <meta name="robots" content="noindex,follow" />
+            </Helmet>
             <TitleAndBreadcrumb
               currentPageTitle={event.title as string}
               subTitle={event.subtitle}

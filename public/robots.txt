@@ -2,14 +2,47 @@
 # Disallow: /private/ prevents crawlers from accessing the /private/ directory.
 # Allow: / allows crawlers to access everything else.
 
+# Routes below always redirect an unauthenticated request (crawlers included)
+# to / login, so there is no indexable content behind them.
+# See the Search Console issues for isaaccomputerscience.org.
+
+User-agent: *
+Disallow: /questions/
+Disallow: /tests
+Disallow: /account
+Disallow: /assignment/
+Disallow: /assignments
+Disallow: /progress
+Disallow: /my_gameboards
+Disallow: /my_markbook
+Disallow: /gameboard_builder
+Disallow: /set_assignments
+Disallow: /teacher_account_request
+Disallow: /login
+Disallow: /concepts/*?
+Disallow: /topics/*?
+
 # Block a specific crawler
 User-agent: AdsBot-Google
-Disallow: 
+Disallow:
 
-# Allow Googlebot access to everything
+# Allow Googlebot access to everything else
 User-agent: Googlebot
 User-agent: Bingbot
-Disallow:
+Disallow: /questions/
+Disallow: /tests
+Disallow: /account
+Disallow: /assignment/
+Disallow: /assignments
+Disallow: /progress
+Disallow: /my_gameboards
+Disallow: /my_markbook
+Disallow: /gameboard_builder
+Disallow: /set_assignments
+Disallow: /teacher_account_request
+Disallow: /login
+Disallow: /concepts/*?
+Disallow: /topics/*?
 
 # Sitemap location
 Sitemap: https://isaaccomputerscience.org/sitemap.xml

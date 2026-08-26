@@ -191,39 +191,6 @@ async function getConceptUrls(): Promise<SitemapURL[]> {
 }
 
 /**
- * QUESTIONS
- * 
- */
-async function getQuestionUrls(): Promise<SitemapURL[]> {
-  console.log("Fetching questions...");
-
-  try {
-    const response = await withRetry(() =>
-      api.get<ResultsWrapper<ContentSummary>>("/pages/questions/", {
-        params: { limit: API_CONFIG.pageLimit },
-      })
-    );
-
-    const questions = response.data.results || [];
-    console.log(`  Found ${questions.length} questions`);
-
-    const { priority, changefreq } = CONTENT_PRIORITIES.question;
-
-    return questions
-      .filter((question) => question.id && question.published !== false && !EXCLUDED_IDS.includes(question.id))
-      .map((question) => ({
-        loc: `${API_CONFIG.siteUrl}/questions/${question.id}`,
-        lastmod: contentDates[question.id!], // git date from content repo, or undefined
-        changefreq,
-        priority,
-      }));
-  } catch (error) {
-    console.error("  Error fetching questions:", (error as Error).message);
-    return [];
-  }
-}
-
-/**
  * NEWS PAGES
  * Fetches news pods from the API and extracts their target URLs.
  * Individual event pages are intentionally excluded.
@@ -340,10 +307,13 @@ async function generateSitemap(): Promise<void> {
   const conceptUrls = await getConceptUrls();
   allUrls.push(...conceptUrls);
 
-  const questionUrls = await getQuestionUrls();
-  allUrls.push(...questionUrls);
+  // Individual question pages are intentionally excluded: they require login,
+  // so an unauthenticated crawler is always redirected to /login and the URL
+  // can never be indexed (see the "Page with redirect" Search Console issue).
 
-  // Individual event pages are excluded pending a separate un-indexing piece of work
+  // Individual event pages are excluded: they're transient (booking closes/event
+  // expires) and are noindexed in EventDetails.tsx to stop Google indexing them
+  // when it follows internal links to them anyway.
   const newsPageUrls = await getNewsPageUrls();
   allUrls.push(...newsPageUrls);
 
@@ -375,7 +345,6 @@ async function generateSitemap(): Promise<void> {
   console.log(`Static routes: ${staticUrls.length}`);
   console.log(`Topics: ${topicUrls.length}`);
   console.log(`Concepts: ${conceptUrls.length}`);
-  console.log(`Questions: ${questionUrls.length}`);
   console.log(`News pages: ${newsPageUrls.length}`);
   console.log(`Total URLs: ${sortedUrls.length}`);
   console.log("\nDone!");
