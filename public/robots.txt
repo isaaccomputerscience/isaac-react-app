@@ -3,14 +3,9 @@
 # Allow: / allows crawlers to access everything else.
 
 # Routes below always redirect an unauthenticated request (crawlers included)
-# to /login, so there is no indexable content behind them — see the
-# "Page with redirect" Search Console issue for isaaccomputerscience.org.
-#
-# Query-string variants of /concepts/ and /topics/ (e.g. ?examBoard=,
-# ?stage=, ?topic=) self-canonicalize to the bare path — see
-# CanonicalHrefElement.tsx — so crawling them wastes crawl budget on known
-# duplicates. See the "Alternative page with proper canonical tag" Search
-# Console issue for isaaccomputerscience.org.
+# to / login, so there is no indexable content behind them.
+# See the Search Console issues for isaaccomputerscience.org.
+
 User-agent: *
 Disallow: /questions/
 Disallow: /tests
