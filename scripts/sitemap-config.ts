@@ -82,8 +82,12 @@ export const STATIC_ROUTES: SitemapRoute[] = [
   { path: "/glossary", priority: 0.7, changefreq: "monthly" },
 
   // Student and teacher info pages
+  // "/teachers" removed: no real internal links point to it (only dead/disabled
+  // components do — WhySignUpTabs.tsx isn't rendered, TeacherOrTutorRequest.tsx
+  // is disabled per ticket #213); the main nav's "Benefits for teachers" link
+  // points to /pages/teacher_landing_page instead. See the "Discovered –
+  // currently not indexed" Search Console issue.
   { path: "/students", priority: 0.7, changefreq: "monthly" },
-  { path: "/teachers", priority: 0.7, changefreq: "monthly" },
 
   // Competition page
   { path: "/national-computer-science-competition", priority: 0.7, changefreq: "weekly" },
@@ -92,8 +96,19 @@ export const STATIC_ROUTES: SitemapRoute[] = [
   { path: "/careers_in_computer_science", priority: 0.6, changefreq: "monthly" },
 
   // Contact and support
+  // Bare "/support" immediately client-redirects to /support/student/general
+  // (see Support.tsx) and has no internal links pointing to it, so it was
+  // listed in the sitemap but never linked to — weak/no indexing signal, see
+  // the "Discovered – currently not indexed" Search Console issue. List the
+  // actual linked-to support pages instead.
   { path: "/contact", priority: 0.6, changefreq: "monthly" },
-  { path: "/support", priority: 0.5, changefreq: "monthly" },
+  { path: "/support/student/general", priority: 0.5, changefreq: "monthly" },
+  { path: "/support/student/homework", priority: 0.5, changefreq: "monthly" },
+  { path: "/support/student/code", priority: 0.5, changefreq: "monthly" },
+  { path: "/support/teacher/general", priority: 0.5, changefreq: "monthly" },
+  { path: "/support/teacher/assignments", priority: 0.5, changefreq: "monthly" },
+  { path: "/support/teacher/progress", priority: 0.5, changefreq: "monthly" },
+  { path: "/support/teacher/code", priority: 0.5, changefreq: "monthly" },
 
   // Static info pages
   { path: "/about", priority: 0.5, changefreq: "monthly" },
@@ -238,7 +253,6 @@ export const EXCLUDED_IDS: string[] = [
 export const CONTENT_PRIORITIES = {
   topic: { priority: 0.8, changefreq: "weekly" as ChangeFreq },
   concept: { priority: 0.7, changefreq: "monthly" as ChangeFreq },
-  question: { priority: 0.7, changefreq: "monthly" as ChangeFreq },
   event: { priority: 0.6, changefreq: "weekly" as ChangeFreq },
   page: { priority: 0.5, changefreq: "monthly" as ChangeFreq },
 };
