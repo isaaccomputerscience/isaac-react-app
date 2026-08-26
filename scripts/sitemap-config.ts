@@ -83,10 +83,10 @@ export const STATIC_ROUTES: SitemapRoute[] = [
 
   // Student and teacher info pages
   // "/teachers" removed: no real internal links point to it (only dead/disabled
-  // components do — WhySignUpTabs.tsx isn't rendered, TeacherOrTutorRequest.tsx
+  // components do WhySignUpTabs.tsx isn't rendered, TeacherOrTutorRequest.tsx
   // is disabled per ticket #213); the main nav's "Benefits for teachers" link
-  // points to /pages/teacher_landing_page instead. See the "Discovered –
-  // currently not indexed" Search Console issue.
+  // points to /pages/teacher_landing_page instead. 
+  // See the "Discovered currently not indexed" Search Console issue.
   { path: "/students", priority: 0.7, changefreq: "monthly" },
 
   // Competition page
@@ -98,8 +98,8 @@ export const STATIC_ROUTES: SitemapRoute[] = [
   // Contact and support
   // Bare "/support" immediately client-redirects to /support/student/general
   // (see Support.tsx) and has no internal links pointing to it, so it was
-  // listed in the sitemap but never linked to — weak/no indexing signal, see
-  // the "Discovered – currently not indexed" Search Console issue. List the
+  // listed in the sitemap but never linked to weak/no indexing signal, see
+  // the "Discovered currently not indexed" Search Console issue. List the
   // actual linked-to support pages instead.
   { path: "/contact", priority: 0.6, changefreq: "monthly" },
   { path: "/support/student/general", priority: 0.5, changefreq: "monthly" },
