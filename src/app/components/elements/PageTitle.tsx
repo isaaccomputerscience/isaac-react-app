@@ -83,12 +83,8 @@ export const PageTitle = ({
   const renderHelpOrBoosterButton = () => {
     if (boosterVideoButton) {
       return (
-        <Button
-          tag={Link}
-          to="/booster_video_binary_conversion_and_addition"
-          className="primary-button text-light align-self-center ml-sm-2"
-        >
-          Watch booster videos
+        <Button tag={Link} to="/pages/on-demand-events" className="primary-button text-light align-self-center ml-sm-2">
+          On-demand events
         </Button>
       );
     }
