@@ -289,8 +289,7 @@ export default {
         ],
         "4. Entry requirements",
         [
-          "4.1. Student(s) must design a concept for an Internet of Everything (IoE) device aimed at improving people’s lives nationally or globally. Each Entry must showcase the concept, including the design or prototype, along with any supporting documents if desired.",
-          "4.1.1. Entries must not require Students to undertake unsafe activities or construct devices that present a risk to health, safety, property, or the environment.",
+          "4.1. Student(s) must design a concept for an Internet of Everything (IoE) device aimed at improving people’s lives nationally or globally. Each Entry must showcase the concept, including the design or prototype, along with any supporting documents if desired. <ul><li>Entries must not require Students to undertake unsafe activities or construct devices that present a risk to health, safety, property, or the environment.</li></ul>",
           "4.2. The Entry must be submitted in video format and may not exceed 5 minutes. For any video longer than 5 minutes, the judging panel will review only the first five minutes.",
           "4.3. Video content requirements: <ul><li>The video must give an overview of the project outlining the national or global problem addressed by the IoE device.</li><li>The video must describe the device and its features, showcasing a design or prototype.</li><li>The video must explain why the idea is unique and innovative.</li><li>If a group Entry is submitted, the video must discuss the collaboration skills and methods used when working on the project. In case of an individual Entry, the Student must explain their approach when working on the project.</li></ul>",
           "4.4. Student(s) may optionally include additional materials to support their video submission, such as: <ul><li>Diagrams, sketches, or visual representations of the IoE device.</li><li>A concise written summary of the project.</li><li>Research data or evidence supporting the feasibility and impact of the concept.</li><li>Reflections on collaboration and teamwork during the project’s development.</li></ul>",
@@ -326,16 +325,14 @@ export default {
         ],
         "8. Prizes",
         [
-          "8.1. Each Finalist will receive a certificate of participation. Each Winner will receive a certificate of achievement.",
-          "8.1.1. Certificates will be awarded to Finalists and Winners only. Due to the high volume of entries received, we are unable to provide certificates to all participants who submit an Entry. Non-finalists will not receive a certificate of participation.",
+          "8.1. Each Finalist will receive a certificate of participation. Each Winner will receive a certificate of achievement. <ul><li>Certificates will be awarded to Finalists and Winners only. Due to the high volume of entries received, we are unable to provide certificates to all participants who submit an Entry. Non-finalists will not receive a certificate of participation.</li></ul>",
           "8.2. Additional Prizes for Winners may include, but are subject to change: <ul><li>A trophy for each Winner.</li><li>A £50 Amazon gift voucher for each Winner.</li><li>Isaac Computer Science merchandise, such as poster, notebook, bottle, and pen, for each Winner.</li><li>An exclusive experience day hosted by a partner organisation for all Winners.</li></ul>",
           "8.3. The Winner accepts and agrees that: <ul><li>The Prize must be taken as stated, it is non-transferable, and cannot be deferred, exchanged, or redeemed for its value.</li><li>No alternative to the Prize will be available.</li><li>Our decision is final and binding and no correspondence will be entered into about it.</li><li>All Prizes will be given to the Teacher who submitted the winning Entry and it is their responsibility to ensure the Prize is given to the Student(s).</li></ul>",
         ],
         "9. Rights and Permissions",
         [
           "9.1. By entering, you grant the Organiser and its partners a non-exclusive, perpetual, royalty-free licence to use the Entry material for promotional purposes of the Competition.",
-          "9.2. Finalists and Winners may be asked to participate in additional promotional activities, including media coverage.",
-          "9.2.1. We may announce the Winners via: STEM Learning, National Centre for Computing Education and Isaac Computer Science websites and social media channels, email correspondence, and other relevant third parties involved in the Competition.",
+          "9.2. Finalists and Winners may be asked to participate in additional promotional activities, including media coverage. <ul><li>We may announce the Winners via: STEM Learning, National Centre for Computing Education and Isaac Computer Science websites and social media channels, email correspondence, and other relevant third parties involved in the Competition.</li></ul>",
           "9.3. Any Entry found to have infringed third-party intellectual property rights, or to consist substantially of content generated by artificial intelligence without meaningful Student contribution, may be withdrawn from the Competition.",
           "9.4. The intellectual property rights of the submitted work remain with the Student(s) who submitted the Entry.",
           "9.5. Student(s) taking part in the Competition agree to allow the Organiser and its partners to retain the exclusive right to use their Entry online, in marketing, media and public display to promote the Competition free of charge and with no time limit.",
