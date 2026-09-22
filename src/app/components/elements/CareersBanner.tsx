@@ -34,7 +34,7 @@ interface CareerCardProps {
 const CareerCard = ({ imgSrc, imgAlt, title, text, linkTo, linkText, children }: CareerCardProps) => (
   <Card className="career-card h-100 w-100">
     {imgSrc && <CardImg variant="top" src={imgSrc} alt={imgAlt} className="career-media-row-image" />}
-    <CardBody className="career-card-body d-flex flex-wrap flex-column">
+    <CardBody className="career-card-body d-flex flex-column">
       {children}
       <CardTitle className="career-subtitle">{title}</CardTitle>
       <CardText className="career-text">{text}</CardText>
