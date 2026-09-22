@@ -320,10 +320,9 @@ export default {
         [
           "7.1. The final will be a one-day event consisting of presentations, talks and workshops from industry representatives, as well as final presentations of the IoE device concepts and prototypes from the Competition Finalists.",
           "7.2. Finalists must attend the final event in person and present their IoE device concept or prototype. Virtual attendance is not permitted.",
-          "7.3. Finalists must present their concept or prototype in person. Virtual attendance is not permitted.",
-          "7.4. The Winners will be selected by a judging panel appointed by the Organiser, based on the assessment criteria set out in section 6.1 and the Students’ final presentations. Winners will be determined and announced during the final event.",
-          "7.5. Each Finalist’s school is responsible for arranging and paying for travel to and from the final event for the Student or Students and accompanying school staff. Limited support may be available in exceptional circumstances, subject to availability and at the Organiser’s discretion.",
-          "7.6. Student(s) must be accompanied by an appropriate member of school staff, who must hold a valid DBS certificate and obtain consent forms from the Student’s parents or guardians.",
+          "7.3. The Winners will be selected by a judging panel appointed by the Organiser, based on the assessment criteria set out in section 6.1 and the Students’ final presentations. Winners will be determined and announced during the final event.",
+          "7.4. Each Finalist’s school is responsible for arranging and paying for travel to and from the final event for the Student or Students and accompanying school staff. Limited support may be available in exceptional circumstances, subject to availability and at the Organiser’s discretion.",
+          "7.5. Student(s) must be accompanied by an appropriate member of school staff, who must hold a valid DBS certificate and obtain consent forms from the Student’s parents or guardians.",
         ],
         "8. Prizes",
         [
