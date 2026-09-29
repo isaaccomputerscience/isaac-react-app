@@ -46,9 +46,9 @@ export default {
       ],
     },
     qanda: {
-      title: "Q&A - Everything you need to know",
+      title: "Check out the competition trailer",
       description: "",
-      videoUrl: "p04Ve9dM3oA",
+      videoUrl: "q-MUbxavqVk",
     },
 
     eligibility: {
