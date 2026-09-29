@@ -32,20 +32,24 @@
     padding: 10px 30px;
   }
 
-  &-media-row-image,
-  &-media-row-video {
+  &-media-row-image {
     width: 100%;
     height: auto;
     object-fit: cover;
     border-radius: 5px 5px 0 0;
     max-height: 300px;
   }
-  &-media-row-video {
-    height: 300px;
-    display: block;
 
-    @media (max-width: 1200px) {
-      height: 250px;
+  &-media-row-column {
+    .content-video-container {
+      height: 300px;
+      padding-bottom: 0;
+      border-radius: 5px 5px 0 0;
+      overflow: hidden;
+
+      @media (max-width: 1200px) {
+        height: 250px;
+      }
     }
   }
 
