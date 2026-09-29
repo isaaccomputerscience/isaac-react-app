@@ -46,9 +46,9 @@ export default {
       ],
     },
     qanda: {
-      title: "Q&A - Everything you need to know",
+      title: "Check out the competition trailer",
       description: "",
-      videoUrl: "p04Ve9dM3oA",
+      videoUrl: "q-MUbxavqVk",
     },
 
     eligibility: {
@@ -198,6 +198,15 @@ export default {
           "In the <strong>‘Year group of selected student(s)’,</strong> select the year group of the student(s) you're entering in the competition. To be eligible, student(s) must be in Year 9, 10, or 11 during the 2026/2027 academic year.",
         ],
         "If you have any questions or run into problems, contact <a href='https://isaaccomputerscience.org/contact'>here</a>.",
+      ],
+    },
+
+    integratingIoE: {
+      title: "Integrating IoE in your curriculum (for teachers)",
+      section: [
+        "The Internet of Everything (IoE) provides an excellent context for demonstrating how computing connects with other subjects and real-world challenges.",
+        "Teachers do not need specialist knowledge of IoE to incorporate the theme into their lessons; IoE can simply provide a contemporary context through which existing subject content is taught, helping students develop their understanding of emerging technology and their impact on society.",
+        "Learn more about how the Internet of Everything can be adapted to the <a href='https://media.teachcomputing.org/Teacher_guide_Integrating_Io_E_in_your_curriculum_95f2a6645a.pdf'>Teach Computing Curriculum, as well as the wider curriculum</a>.",
       ],
     },
 

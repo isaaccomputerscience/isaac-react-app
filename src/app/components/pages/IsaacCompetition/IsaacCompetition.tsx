@@ -51,12 +51,13 @@ export const IsaacCompetition = () => {
     { id: "1", title: accordion.entryRequirements.title, section: accordion.entryRequirements.section },
     { id: "2", title: accordion.assessmentCriteria.title, section: accordion.assessmentCriteria.section },
     { id: "3", title: accordion.groupEntry.title, section: accordion.groupEntry.section },
+    { id: "4", title: accordion.integratingIoE.title, section: accordion.integratingIoE.section },
     {
-      id: "4",
+      id: "5",
       title: accordion.availableSupportAndResources.title,
       section: accordion.availableSupportAndResources.section,
     },
-    { id: "5", title: accordion.termsAndConditions.title, section: accordion.termsAndConditions.section },
+    { id: "6", title: accordion.termsAndConditions.title, section: accordion.termsAndConditions.section },
   ];
 
   return (
