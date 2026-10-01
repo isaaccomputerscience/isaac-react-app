@@ -46,9 +46,9 @@ export default {
       ],
     },
     qanda: {
-      title: "Q&A - Everything you need to know",
+      title: "Check out the competition trailer",
       description: "",
-      videoUrl: "p04Ve9dM3oA",
+      videoUrl: "q-MUbxavqVk",
     },
 
     eligibility: {
@@ -56,7 +56,7 @@ export default {
       joinList: [
         "Teams of 2-4 students and individual entries",
         "Must be in Year 9, 10, or 11 during the 2026/2027 academic year",
-        "Attend a state-funded school in England; private, independent, and home-educated students are not eligible",
+        "Attend a state-funded school in England; students in private, independent, or home-education settings are not eligible.",
       ],
     },
     prizes: {
@@ -166,6 +166,22 @@ export default {
           "<strong>Online resources:</strong> Explore websites and articles on IoE technology, design thinking, and teamwork strategies.",
           "<strong>Teacher support:</strong> Work closely with your teacher to guide your project and provide insights.",
         ],
+        "<strong>Suggested free video-editing apps and software</strong>",
+        "Whether you are creating a narrated presentation or filming a creative video, these free video editing tools can help you prepare your competition entry.",
+        "<strong>Before choosing a tool:</strong>",
+        [
+          "Before downloading software or creating an online account, check your school’s IT policies.",
+          "<strong>Students:</strong> Make sure your school’s IT department (and your parent or guardian, where applicable) has approved the app or platform.",
+          "<strong>Teachers:</strong> Before students create an account, review each third-party tool’s privacy policy and terms of service to ensure that it meets your school’s safeguarding and data protection requirements.",
+        ],
+        "<strong>Video-editing tools:</strong>",
+        [
+          "<strong>Microsoft Clipchamp:</strong> A user-friendly video editor well suited to schools and students who use Microsoft products. It is built into Windows 11 and is also available for Windows 10 through the Microsoft Store or a web browser.",
+          "<strong>Google Vids:</strong> A video-creation tool built into Google Workspace for Education and available with free and paid editions. Gemini can help you plan, write, and produce videos.",
+          "<strong>OpenShot:</strong> A free cross-platform editor that is easy to learn for basic trimming, effects, and audio adjustments. It supports Windows, macOS, Linux, and ChromeOS.",
+          "<strong>CapCut:</strong> A popular, user-friendly editor available on desktop computers, mobile devices, tablets, and web browsers. Please note that some features require payment.",
+          "<strong>VN Video Editor:</strong> A free professional video- and photo- editing app available on iOS and Android, with no watermark.",
+        ],
       ],
     },
 
@@ -191,13 +207,22 @@ export default {
           "Teachers are responsible for submitting the work of students on their behalf.",
           "Make sure that your account details are accurate in the <strong>‘Your account information’ section</strong> of the entry form. If necessary, you can update your information in your <a href = 'https://isaaccomputerscience.org/account'>account settings</a>.",
           "In the <strong>'Project title’ field,</strong> enter the title of the project your students worked on. Each title must be unique.",
-          "In the <strong>‘Project link’ field,</strong> provide a link to the cloud storage where a video and any supporting materials are saved. Make sure the link is accessible to the Organiser by setting it to 'Anyone with the link can view'. If that's not possible, grant access to <a href='mailto:contact@isaaccomputerscience.org'>contact@isaaccomputerscience.org</a>.",
+          "In the <strong>‘Project link’ field,</strong> provide a link to the cloud storage location containing the video and any supporting materials, such as Google Drive, OneDrive, or Dropbox. Please ensure the Organiser can access your files by selecting 'Anyone with the link can view'. We recommend Dropbox because it allows you to share the link with anyone. If you experience any difficulties sharing the link, please contact us at <a href='mailto:contact@isaaccomputerscience.org'>contact@isaaccomputerscience.org</a>.",
           "In the <strong>‘Project description’ field,</strong> briefly describe the project your student(s) worked on, using no more than 250 characters.",
           "In the <strong>‘Select your student group’ field,</strong> choose from the groups you've created or create one first. If no groups are available, go to Teachers > <a href = 'https://isaaccomputerscience.org/groups'>Manage groups</a> to create one and invite students to join.",
           "In the <strong>‘Select student(s)’ field,</strong> choose 1-4 students from your selected student group who worked on the submitted project. If no students are found in the selected group, make sure students join the group first. Go to the <a href = 'https://isaaccomputerscience.org/groups'>Manage groups</a> page and invite them using a URL or authentication code.",
-          "In the <strong>‘Year group of selected student(s)’,</strong> select the year group of the student(s) you're entering in the competition. To be eligible, student(s) must be in Year 9, 10, or 11 during the 2026/2027 academic year.",
+          "In the <strong>‘Year group of selected student(s)’,</strong> select the year group of the student(s) you’re entering into the competition. To be eligible, student(s) must be in Year 9, 10, or 11 during the 2026/2027 academic year.",
         ],
         "If you have any questions or run into problems, contact <a href='https://isaaccomputerscience.org/contact'>here</a>.",
+      ],
+    },
+
+    integratingIoE: {
+      title: "Integrating IoE in your curriculum (for teachers)",
+      section: [
+        "The Internet of Everything (IoE) provides an excellent context for demonstrating how computing connects with other subjects and real-world challenges.",
+        "Teachers do not need specialist knowledge of IoE to incorporate the theme into their lessons; IoE can simply provide a contemporary context through which existing subject content is taught, helping students develop their understanding of emerging technology and their impact on society.",
+        "Learn more about how the Internet of Everything can be adapted to the <a href='https://media.teachcomputing.org/Teacher_guide_Integrating_Io_E_in_your_curriculum_95f2a6645a.pdf'>Teach Computing Curriculum, as well as the wider curriculum</a>.",
       ],
     },
 
