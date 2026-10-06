@@ -19,7 +19,7 @@ export const getHeadlineCtaButton = (user?: Immutable<PotentialUser> | null) => 
   }
 
   if (isLoggedIn(user) && (isTeacher(user) || isAdmin(user))) {
-    return { to: ENTRY_FORM_ANCHOR, label: "Submit your project" };
+    return { to: ENTRY_FORM_ANCHOR, label: "Submit a project" };
   }
 
   if (isLoggedIn(user)) {
@@ -27,7 +27,7 @@ export const getHeadlineCtaButton = (user?: Immutable<PotentialUser> | null) => 
     return null;
   }
 
-  return { to: "/login", label: "Submit your project" };
+  return { to: "/login", label: "Submit a project" };
 };
 
 interface EntryFormHandlerProps {

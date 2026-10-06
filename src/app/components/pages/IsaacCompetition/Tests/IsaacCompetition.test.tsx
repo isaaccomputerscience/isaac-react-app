@@ -40,7 +40,7 @@ describe("IsaacCompetition role-based visibility", () => {
   it("shows the teacher login prompt and login CTA to logged-out users", async () => {
     setup("ANONYMOUS");
     expect(await screen.findByText(TEACHER_LOGIN_PROMPT)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Submit your project" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Submit a project" })).toBeInTheDocument();
     expect(screen.queryByText(STUDENT_MESSAGE)).not.toBeInTheDocument();
     expect(document.getElementById("competition-entry-form")).toBeNull();
   });
@@ -49,7 +49,7 @@ describe("IsaacCompetition role-based visibility", () => {
     setup("STUDENT");
     expect(await screen.findByText(STUDENT_MESSAGE)).toBeInTheDocument();
     expect(screen.queryByText(TEACHER_LOGIN_PROMPT)).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Submit your project" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Submit a project" })).not.toBeInTheDocument();
     expect(document.getElementById("competition-entry-form")).toBeNull();
   });
 
@@ -58,6 +58,6 @@ describe("IsaacCompetition role-based visibility", () => {
     await waitFor(() => expect(document.getElementById("competition-entry-form")).not.toBeNull());
     expect(screen.queryByText(TEACHER_LOGIN_PROMPT)).not.toBeInTheDocument();
     expect(screen.queryByText(STUDENT_MESSAGE)).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Submit your project" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Submit a project" })).toBeInTheDocument();
   });
 });
