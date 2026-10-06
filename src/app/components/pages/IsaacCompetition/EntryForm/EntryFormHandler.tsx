@@ -22,6 +22,11 @@ export const getHeadlineCtaButton = (user?: Immutable<PotentialUser> | null) => 
     return { to: ENTRY_FORM_ANCHOR, label: "Submit your project" };
   }
 
+  if (isLoggedIn(user)) {
+    // Students (and any other logged-in role) have nothing to submit
+    return null;
+  }
+
   return { to: "/login", label: "Submit your project" };
 };
 

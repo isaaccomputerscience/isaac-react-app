@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { SITE_SUBJECT_TITLE } from "../../../services";
+import { SITE_SUBJECT_TITLE, isLoggedIn } from "../../../services";
 import { BreadcrumbTrail } from "../../elements/TitleAndBreadcrumb";
 import { Col, Container, Row } from "reactstrap";
 import content from "./content";
@@ -96,18 +96,21 @@ export const IsaacCompetition = () => {
                     {` ${section1.note.beforeOpen.callToAction}`}
                   </>
                 ) : (
-                  section1.note.afterOpen.entryDetails
+                  // Log-in prompt is only relevant to logged-out users
+                  !isLoggedIn(user) && section1.note.afterOpen.entryDetails
                 )}
               </p>
-              <Row className="justify-content-left mt-5">
-                <Col xs="auto">
-                  <CompetitionWrapper
-                    beforeCompetitionOpenContent={<CompetitionButton buttons={[headlineCtaButton]} />}
-                  >
-                    <CompetitionButton buttons={[headlineCtaButton]} />
-                  </CompetitionWrapper>
-                </Col>
-              </Row>
+              {headlineCtaButton && (
+                <Row className="justify-content-left mt-5">
+                  <Col xs="auto">
+                    <CompetitionWrapper
+                      beforeCompetitionOpenContent={<CompetitionButton buttons={[headlineCtaButton]} />}
+                    >
+                      <CompetitionButton buttons={[headlineCtaButton]} />
+                    </CompetitionWrapper>
+                  </Col>
+                </Row>
+              )}
             </Col>
             <Col md={6} className="mt-4 pb-md-0 d-none d-md-block">
               <div className="mb-3">
