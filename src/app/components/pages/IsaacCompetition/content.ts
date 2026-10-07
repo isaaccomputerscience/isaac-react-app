@@ -77,7 +77,7 @@ export default {
         { event: "Entries open", date: "October 2026" },
         { event: "Entries close", date: "31 March 2027" },
         { event: "Finalists selected", date: "May 2027" },
-        { event: "The final", date: "June 2027" },
+        { event: "The final", date: "22 June 2027" },
       ],
     },
   },

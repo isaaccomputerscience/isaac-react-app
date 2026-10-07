@@ -2,9 +2,9 @@ import React from "react";
 import { Container, Col } from "reactstrap";
 import CompetitionEntryForm from "./CompetitionEntryForm";
 import { selectors, useAppSelector } from "../../../../state";
-import { isStudent, isAdmin, isTeacher, isLoggedIn } from "../../../../services";
+import { isAdmin, isTeacher, isLoggedIn } from "../../../../services";
 import CompetitionWrapper from "../CompetitionWrapper";
-import { CLOSED_MESSAGE, STUDENT_MESSAGE } from "../constants";
+import { CLOSED_MESSAGE } from "../constants";
 import { isBeforeCompetitionOpenDate } from "../dateUtils";
 import { PotentialUser } from "../../../../../IsaacAppTypes";
 import { Immutable } from "immer";
@@ -19,19 +19,16 @@ export const getHeadlineCtaButton = (user?: Immutable<PotentialUser> | null) => 
   }
 
   if (isLoggedIn(user) && (isTeacher(user) || isAdmin(user))) {
-    return { to: ENTRY_FORM_ANCHOR, label: "Submit your project" };
+    return { to: ENTRY_FORM_ANCHOR, label: "Submit a project" };
   }
 
-  return { to: "/login", label: "Submit your project" };
-};
+  if (isLoggedIn(user)) {
+    // Students (and any other logged-in role) have nothing to submit
+    return null;
+  }
 
-const StudentMessage = () => (
-  <Container>
-    <Col className="d-flex flex-column align-items-start pb-4 pl-0" xs="auto">
-      <p className="body-text">{STUDENT_MESSAGE}</p>
-    </Col>
-  </Container>
-);
+  return { to: "/login", label: "Submit a project" };
+};
 
 interface EntryFormHandlerProps {
   handleTermsClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
@@ -48,11 +45,9 @@ const EntryFormHandler = ({ handleTermsClick }: EntryFormHandlerProps) => {
           <CompetitionEntryForm handleTermsClick={handleTermsClick} />
         </CompetitionWrapper>
       );
-    } else if (isStudent(user)) {
-      return <StudentMessage />;
     }
 
-    // Logged-out CTA lives in the headline (teacher copy + Submit your project)
+    // Logged-out CTA and the student message live in the headline text column
     return null;
   };
 

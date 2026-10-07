@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { SITE_SUBJECT_TITLE } from "../../../services";
+import { SITE_SUBJECT_TITLE, isLoggedIn, isStudent } from "../../../services";
 import { BreadcrumbTrail } from "../../elements/TitleAndBreadcrumb";
 import { Col, Container, Row } from "reactstrap";
 import content from "./content";
+import { STUDENT_MESSAGE } from "./constants";
 import "../../../../scss/cs/competition.scss";
 import Accordion from "./Accordion/Accordion";
 import InformationCard from "./CompetitionInformation/InformationCard";
@@ -96,18 +97,21 @@ export const IsaacCompetition = () => {
                     {` ${section1.note.beforeOpen.callToAction}`}
                   </>
                 ) : (
-                  section1.note.afterOpen.entryDetails
+                  // Teacher log-in prompt is for logged-out users; students are told to ask their teacher
+                  (!isLoggedIn(user) && section1.note.afterOpen.entryDetails) || (isStudent(user) && STUDENT_MESSAGE)
                 )}
               </p>
-              <Row className="justify-content-left mt-5">
-                <Col xs="auto">
-                  <CompetitionWrapper
-                    beforeCompetitionOpenContent={<CompetitionButton buttons={[headlineCtaButton]} />}
-                  >
-                    <CompetitionButton buttons={[headlineCtaButton]} />
-                  </CompetitionWrapper>
-                </Col>
-              </Row>
+              {headlineCtaButton && (
+                <Row className="justify-content-left mt-5">
+                  <Col xs="auto">
+                    <CompetitionWrapper
+                      beforeCompetitionOpenContent={<CompetitionButton buttons={[headlineCtaButton]} />}
+                    >
+                      <CompetitionButton buttons={[headlineCtaButton]} />
+                    </CompetitionWrapper>
+                  </Col>
+                </Row>
+              )}
             </Col>
             <Col md={6} className="mt-4 pb-md-0 d-none d-md-block">
               <div className="mb-3">
