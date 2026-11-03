@@ -137,6 +137,7 @@ export const STATIC_ROUTES: SitemapRoute[] = [
   { path: "/pages/questionfinder", priority: 0.8, changefreq: "monthly" },
   { path: "/pages/gcse-events-feb24", priority: 0.8, changefreq: "monthly" },
   { path: "/pages/gameboard-tutorial", priority: 0.8, changefreq: "monthly" },
+  { path: "/pages/on-demand-events", priority: 0.8, changefreq: "monthly" },
 
   // News / announcement pages (also fetched dynamically via news pods — deduplication handles overlaps)
   { path: "/pages/2025_10_competition_last_year", priority: 0.5, changefreq: "monthly" },
