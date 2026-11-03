@@ -1,4 +1,5 @@
 import React from "react";
+import { Helmet } from "react-helmet";
 import { useLocation } from "react-router-dom";
 import { Container } from "reactstrap";
 import { TitleAndBreadcrumb } from "../elements/TitleAndBreadcrumb";
@@ -11,6 +12,10 @@ export const NotFound = () => {
     `&url=${encodeURIComponent(globalThis.location.href)}`;
   return (
     <Container>
+      <Helmet>
+        {/* The SPA serves HTTP 200 for unknown URLs; noindex stops Google reporting them as soft 404s */}
+        <meta name="robots" content="noindex" />
+      </Helmet>
       <div>
         <TitleAndBreadcrumb breadcrumbTitleOverride="Unknown page" currentPageTitle="Page not found (404)" />
         <h3 className="my-4">
