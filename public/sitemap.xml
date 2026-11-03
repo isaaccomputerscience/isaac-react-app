@@ -2,121 +2,127 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://isaaccomputerscience.org/</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/topics</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/topics/a_level</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/topics/gcse</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/booster_video_binary_conversion_and_addition</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/booster_video_boolean_logic</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/booster_video_robust_programs</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/booster_video_systems_architecture</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/events</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/gcse_teaching_order</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/on-demand-discovery-events</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/pages/computer_science_journeys_gallery</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/pages/gameboard-tutorial</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/pages/gcse-events-feb24</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/pages/hints-and-tips-teaching-gcse</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://isaaccomputerscience.org/pages/on-demand-events</loc>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/pages/questionfinder</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/pages/tips-for-your-alevel-students</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/pages/top-tips-alevel</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/teacher_gcse_revision_page</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/teaching_order</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2092,55 +2098,55 @@
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/glossary</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/national-computer-science-competition</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/students</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/careers_in_computer_science</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/contact</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/about</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/gcse_programming_challenges</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/pages/2025_08_exam_results</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/pages/2025_10_competition_last_year</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -2156,91 +2162,101 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://isaaccomputerscience.org/pages/2026_06_year_of_reading</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://isaaccomputerscience.org/pages/2026_08_planned_transition</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://isaaccomputerscience.org/pages/2026_11_mclaren_tour</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://isaaccomputerscience.org/pages/cs_journeys_mikaela</loc>
     <lastmod>2024-01-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://isaaccomputerscience.org/pages/september_privacy_policy_update</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
     <loc>https://isaaccomputerscience.org/support/student/code</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/support/student/general</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/support/student/homework</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/support/teacher/assignments</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/support/teacher/code</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/support/teacher/general</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/support/teacher/progress</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/teachcomputing</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/accessibility</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/cookies</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/privacy</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/safeguarding</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://isaaccomputerscience.org/terms</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
