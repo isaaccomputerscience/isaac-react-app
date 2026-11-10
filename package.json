@@ -12,7 +12,7 @@
     "@dnd-kit/sortable": "^8.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@reduxjs/toolkit": "^1.9.7",
-    "axios": "^1.7.4",
+    "axios": "^1.20.0",
     "billboard.js": "^3.12.4",
     "dayjs": "^1.11.11",
     "he": "^1.2.0",
@@ -23,8 +23,8 @@
     "immer": "^10.1.1",
     "inequality": "1.1.0",
     "inequality-grammar": "1.1.1",
-    "js-cookie": "^3.0.5",
-    "katex": "^0.16.10",
+    "js-cookie": "^3.0.8",
+    "katex": "^0.18.2",
     "leaflet": "^1.9.4",
     "lodash": "^4.17.21",
     "object-hash": "^3.0.0",
@@ -49,7 +49,7 @@
     "redux-logger": "^3.0.6",
     "remarkable": "^2.0.1",
     "string.prototype.matchall": "^4.0.11",
-    "uuid": "^9.0.1"
+    "uuid": "^14.0.3"
   },
   "scripts": {
     "generate-sitemap": "ts-node --project scripts/tsconfig.json scripts/generate-sitemap.ts",
@@ -116,7 +116,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "@babel/core": "^7.28.3",
+    "@babel/core": "^8.1.0",
     "@babel/eslint-parser": "^7.29.7",
     "@babel/plugin-transform-classes": "^7.24.7",
     "@babel/plugin-transform-modules-commonjs": "^7.24.7",
@@ -172,7 +172,7 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jest-watch-typeahead": "^2.2.2",
-    "js-yaml": "^4.1.1",
+    "js-yaml": "^4.3.2",
     "mini-css-extract-plugin": "^2.9.0",
     "msw": "^1.3.3",
     "prettier": "^3.0.3",
@@ -191,7 +191,7 @@
     "webpack": "^5.101.3",
     "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.1"
+    "webpack-dev-server": "^5.2.6"
   },
   "msw": {
     "workerDirectory": "public"
