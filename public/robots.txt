@@ -19,8 +19,8 @@ Disallow: /gameboard_builder
 Disallow: /set_assignments
 Disallow: /teacher_account_request
 Disallow: /login
-Disallow: /concepts/*?
-Disallow: /topics/*?
+Disallow: /booster_video_
+Disallow: /on-demand-discovery-events
 
 # Block a specific crawler
 User-agent: AdsBot-Google
@@ -41,8 +41,8 @@ Disallow: /gameboard_builder
 Disallow: /set_assignments
 Disallow: /teacher_account_request
 Disallow: /login
-Disallow: /concepts/*?
-Disallow: /topics/*?
+Disallow: /booster_video_
+Disallow: /on-demand-discovery-events
 
 # Sitemap location
 Sitemap: https://isaaccomputerscience.org/sitemap.xml
