@@ -1,4 +1,5 @@
 import React, { lazy, Suspense, useEffect } from "react";
+import { CanonicalHrefElement } from "./CanonicalHrefElement";
 import {
   AppState,
   fetchGlossaryTerms,
@@ -157,6 +158,8 @@ export const IsaacApp = () => {
   return (
     <Router history={history}>
       <ErrorClear />
+      {/* Site-wide canonical (query string stripped) so utm_/ref/trk/examBoard variants consolidate. Page-level canonicals override this. */}
+      <CanonicalHrefElement />
       <Header />
       <Toasts />
       <ActiveModals />

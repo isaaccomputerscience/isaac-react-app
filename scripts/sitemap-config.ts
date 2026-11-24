@@ -121,13 +121,9 @@ export const STATIC_ROUTES: SitemapRoute[] = [
   { path: "/gcse_programming_challenges", priority: 0.5, changefreq: "monthly" },
 
   // Additional pages (added per ticket requirements)
+  // Login-gated routes (/booster_video_*, /on-demand-discovery-events) are intentionally
+  // excluded: anonymous crawlers are redirected to /login ("Page with redirect" in Search Console).
   { path: "/pages/computer_science_journeys_gallery", priority: 0.8, changefreq: "monthly" },
-  { path: "/booster_video_binary_conversion_and_addition", priority: 0.8, changefreq: "monthly" },
-  { path: "/booster_video_binary_conversion_and_addition", priority: 0.8, changefreq: "monthly" },
-  { path: "/booster_video_systems_architecture", priority: 0.8, changefreq: "monthly" },
-  { path: "/booster_video_boolean_logic", priority: 0.8, changefreq: "monthly" },
-  { path: "/booster_video_robust_programs", priority: 0.8, changefreq: "monthly" },
-  { path: "/on-demand-discovery-events", priority: 0.8, changefreq: "monthly" },
   { path: "/gcse_teaching_order", priority: 0.8, changefreq: "monthly" },
   { path: "/teaching_order", priority: 0.8, changefreq: "monthly" },
   { path: "/teacher_gcse_revision_page", priority: 0.8, changefreq: "monthly" },
